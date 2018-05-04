@@ -30,11 +30,13 @@ class Html
     /**
      * @param $string
      * @return FormattedString
+     * @throws IcingaException
      */
     public static function sprintf($string)
     {
         $args = func_get_args();
         array_shift($args);
+
         return new FormattedString($string, $args);
     }
 
@@ -98,6 +100,7 @@ class Html
             return gettype($any);
         }
     }
+
     /**
      * @param $name
      * @param $arguments
