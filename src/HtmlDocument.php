@@ -141,12 +141,17 @@ class HtmlDocument implements ValidHtml, Countable
         return $this;
     }
 
+    protected function assemble()
+    {
+    }
+
     /**
      * @inheritdoc
      */
     public function render()
     {
-        $html = array();
+        $html = [];
+        $this->assemble();
 
         foreach ($this->content as $element) {
             if (is_string($element)) {
