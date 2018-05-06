@@ -19,6 +19,7 @@ class Attributes
     /**
      * Attributes constructor.
      * @param Attribute[] $attributes
+     * @throws ProgrammingError
      */
     public function __construct(array $attributes = null)
     {
@@ -40,6 +41,7 @@ class Attributes
     /**
      * @param Attribute[] $attributes
      * @return static
+     * @throws ProgrammingError
      */
     public static function create(array $attributes = null)
     {
@@ -85,6 +87,7 @@ class Attributes
      * @param Attribute|string $attribute
      * @param string|array $value
      * @return $this
+     * @throws ProgrammingError
      */
     public function add($attribute, $value = null)
     {
@@ -109,6 +112,7 @@ class Attributes
      * @param Attribute|array|string $attribute
      * @param string|array $value
      * @return $this
+     * @throws ProgrammingError
      */
     public function set($attribute, $value = null)
     {
@@ -134,15 +138,14 @@ class Attributes
     /**
      * @param $name
      * @return Attribute
+     * @throws ProgrammingError
      */
     public function get($name)
     {
         if ($this->has($name)) {
             return $this->attributes[$name];
         } else {
-            $this->attributes[$name] = new Attribute($name);
-
-            return $this->attributes[$name];
+            return Attribute::createEmpty($name);
         }
     }
 

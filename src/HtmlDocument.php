@@ -20,9 +20,12 @@ class HtmlDocument implements ValidHtml, Countable
     /** @var array */
     private $contentIndex = [];
 
+    protected $hasBeenAssembled = false;
+
     /**
      * @param ValidHtml|array|string $content
      * @return $this
+     * @throws \Icinga\Exception\IcingaException
      */
     public function add($content)
     {
@@ -75,6 +78,7 @@ class HtmlDocument implements ValidHtml, Countable
     /**
      * @param $content
      * @return $this
+     * @throws \Icinga\Exception\IcingaException
      */
     public function prepend($content)
     {
@@ -126,7 +130,7 @@ class HtmlDocument implements ValidHtml, Countable
     public function setContent($content)
     {
         $this->content = array();
-        static::add($content);
+        $this->add($content);
 
         return $this;
     }
@@ -151,7 +155,10 @@ class HtmlDocument implements ValidHtml, Countable
     public function render()
     {
         $html = [];
-        $this->assemble();
+        if (! $this->hasBeenAssembled) {
+            $this->hasBeenAssembled = true;
+            $this->assemble();
+        }
 
         foreach ($this->content as $element) {
             if (is_string($element)) {
@@ -164,15 +171,6 @@ class HtmlDocument implements ValidHtml, Countable
     }
 
     /**
-     * @param Exception|string $error
-     * @return string
-     */
-    protected function renderError($error)
-    {
-        return Html::renderError($error);
-    }
-
-    /**
      * @return string
      */
     public function __toString()
@@ -180,7 +178,7 @@ class HtmlDocument implements ValidHtml, Countable
         try {
             return $this->render();
         } catch (Exception $e) {
-            return $this->renderError($e);
+            return Html::renderError($e);
         }
     }
 

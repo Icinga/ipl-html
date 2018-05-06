@@ -32,6 +32,8 @@ abstract class BaseHtmlElement extends HtmlDocument
         'wbr'
     ];
 
+    protected $isVoid;
+
     /**
      * @return Attributes
      */
@@ -52,6 +54,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * @param Attributes|array|null $attributes
      * @return $this
+     * @throws \Icinga\Exception\IcingaException
      */
     public function setAttributes($attributes)
     {
@@ -59,6 +62,12 @@ abstract class BaseHtmlElement extends HtmlDocument
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     * @throws \Icinga\Exception\ProgrammingError
+     */
     public function setAttribute($key, $value)
     {
         $this->getAttributes()->set($key, $value);
@@ -100,6 +109,10 @@ abstract class BaseHtmlElement extends HtmlDocument
     {
     }
 
+    /**
+     * @param array|ValidHtml|string $content
+     * @return $this
+     */
     public function add($content)
     {
         if (! $this->hasBeenAssembled) {
@@ -156,7 +169,18 @@ abstract class BaseHtmlElement extends HtmlDocument
 
     public function isVoidElement()
     {
-        return in_array($this->tag, self::$voidElements);
+        if ($this->isVoid === null) {
+            $this->isVoid = in_array($this->tag, self::$voidElements);
+        }
+
+        return $this->isVoid;
+    }
+
+    public function setVoid($void = true)
+    {
+        $this->isVoid = $void;
+
+        return $this;
     }
 
     /**
