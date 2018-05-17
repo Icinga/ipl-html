@@ -7,14 +7,35 @@ use Icinga\Exception\IcingaException;
 
 class Html
 {
-    /** Charset to be used - we only support UTF-8 */
-    const CHARSET = 'UTF-8';
-
-    /** @var int The flags we use for htmlspecialchars depend on our PHP version */
-    protected static $htmlEscapeFlags;
-
     /** @var bool */
     protected static $showTraces = true;
+
+    /**
+     * Convert special characters to HTML5 entities using the UTF-8 character set for encoding
+     *
+     * This method internally uses {@link htmlspecialchars} with the following flags:
+     * * Single quotes are not escaped (ENT_COMPAT)
+     * * Uses HTML5 entities, disallowing &#013; (ENT_HTML5)
+     * * Invalid characters are replaced with � (ENT_SUBSTITUTE)
+     *
+     * Already existing HTML entities will be encoded as well.
+     *
+     * @param   string  $content        The content to encode
+     *
+     * @return  string  The encoded content
+     */
+    public static function encode($content)
+    {
+        return htmlspecialchars($content, ENT_COMPAT | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /**
+     * @deprecated Use {@link Html::encode()} instead
+     */
+    public static function escapeForHtml($content)
+    {
+        return self::encode($content);
+    }
 
     /**
      * Create a HTML element from the given tag, attributes and content
@@ -44,22 +65,6 @@ class Html
         array_shift($args);
 
         return new FormattedString($string, $args);
-    }
-
-    /**
-     * Escape the given value top be safely used in view scripts
-     *
-     * @param  string $value  The output to be escaped
-     * @return string
-     */
-    public static function escapeForHtml($value)
-    {
-        return htmlspecialchars(
-            $value,
-            static::htmlEscapeFlags(),
-            self::CHARSET,
-            true
-        );
     }
 
     /**
@@ -188,28 +193,5 @@ class Html
         }
 
         return self::$showTraces;
-    }
-
-    /**
-     * This defines the flags used when escaping for HTML
-     *
-     * - Single quotes are not escaped (ENT_COMPAT)
-     * - With PHP >= 5.4, invalid characters are replaced with � (ENT_SUBSTITUTE)
-     * - With PHP 5.3 they are ignored (ENT_IGNORE, less secure)
-     * - Uses HTML5 entities for PHP >= 5.4, disallowing &#013;
-     *
-     * @return int
-     */
-    protected static function htmlEscapeFlags()
-    {
-        if (self::$htmlEscapeFlags === null) {
-            if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-                self::$htmlEscapeFlags = ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5;
-            } else {
-                self::$htmlEscapeFlags = ENT_COMPAT | ENT_IGNORE;
-            }
-        }
-
-        return self::$htmlEscapeFlags;
     }
 }
