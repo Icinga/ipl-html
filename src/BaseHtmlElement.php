@@ -122,29 +122,34 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
-     * @return string
+     * @inheritdoc
+     *
+     * @throws  \RuntimeException   If the element is void but has content
      */
     public function renderUnwrapped()
     {
         $this->ensureAssembled();
-        $tag = $this->getTag();
 
+        $tag = $this->getTag();
+        $attributes = $this->getAttributes()->render();
         $content = $this->renderContent();
-        if (strlen($content) || $this->wantsClosingTag()) {
-            return sprintf(
-                '<%s%s>%s</%s>',
-                $tag,
-                $this->getAttributes()->render(),
-                $content,
-                $tag
-            );
-        } else {
-            return sprintf(
-                '<%s%s />',
-                $tag,
-                $this->getAttributes()->render()
-            );
+
+        if (! $this->wantsClosingTag()) {
+            if (strlen($content)) {
+                // @TODO(el): Should we add a dedicated exception class?
+                throw new \RuntimeException('Void elements must not have content');
+            }
+
+            return sprintf('<%s%s />', $tag, $attributes);
         }
+
+        return sprintf(
+            '<%s%s>%s</%s>',
+            $tag,
+            $attributes,
+            $content,
+            $tag
+        );
     }
 
     /**

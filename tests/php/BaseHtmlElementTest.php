@@ -21,6 +21,16 @@ class DefaultAttributesAsMethod extends BaseHtmlElement
     }
 }
 
+class VoidElementWithContent extends BaseHtmlElement
+{
+    protected $tag = 'img';
+
+    protected function assemble()
+    {
+        $this->add('content');
+    }
+}
+
 class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
 {
     public function testRenderDefaultAttributesAsProperty()
@@ -37,5 +47,13 @@ class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
             '<div class="test"></div>',
             (new DefaultAttributesAsMethod())->render()
         );
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testExceptionThrownForVoidElementsWithContent()
+    {
+        (new VoidElementWithContent())->render();
     }
 }
