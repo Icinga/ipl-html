@@ -24,7 +24,7 @@ class Html
      *
      * @return  string  The encoded content
      */
-    public static function encode($content)
+    public static function escape($content)
     {
         return htmlspecialchars($content, ENT_COMPAT | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
     }
@@ -34,7 +34,7 @@ class Html
      */
     public static function escapeForHtml($content)
     {
-        return self::encode($content);
+        return static::escape($content);
     }
 
     /**
@@ -160,13 +160,13 @@ class Html
             // TODO: translate? Be careful when doing so, it must be failsafe!
             "<div class=\"exception\">\n<h1><i class=\"icon-bug\">"
             . "</i>Oops, an error occurred!</h1>\n<pre>%s</pre>\n",
-            static::encode($msg)
+            static::escape($msg)
         );
 
         if (static::showTraces()) {
             $output .= sprintf(
                 "<pre>%s</pre>\n",
-                static::encode($error->getTraceAsString())
+                static::escape($error->getTraceAsString())
             );
         }
         $output .= "</div>\n";

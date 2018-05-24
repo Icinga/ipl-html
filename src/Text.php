@@ -57,7 +57,7 @@ class Text implements ValidHtml
         if ($this->escaped) {
             return $this->string;
         } else {
-            return Html::escapeForHtml($this->string);
+            return Html::escape($this->string);
         }
     }
 

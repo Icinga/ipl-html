@@ -185,9 +185,9 @@ class Attribute
     {
         // TODO: escape differently
         if (is_array($value)) {
-            return Html::encode(implode(' ', $value));
+            return Html::escape(implode(' ', $value));
         } else {
-            return Html::encode((string) $value);
+            return Html::escape((string) $value);
         }
     }
 }
