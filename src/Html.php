@@ -40,18 +40,29 @@ class Html
     /**
      * Create a HTML element from the given tag, attributes and content
      *
-     * This method does not render the HTML element but creates a {@link HtmlElement} instance from the given tag,
-     * attributes and content
+     * This method does not render the HTML element but creates a {@link HtmlElement}
+     * instance from the given tag, attributes and content
      *
-     * @param   string                  $tag        The tag for the element
-     * @param   Attributes|array        $attributes The HTML attributes for the element
-     * @param   ValidHtml|string|array  $content    The contentl of the element
+     * @param   string $name       The desired HTML tag name
+     * @param   mixed  $attributes HTML attributes or content for the element
+     * @param   mixed  $content    The content of the element if no attributes have been given
      *
      * @return  HtmlElement The created element
      */
-    public static function tag($tag, $attributes = null, $content = null)
+    public static function tag($name, $attributes = null, $content = null)
     {
-        return HtmlElement::create($tag, $attributes, $content);
+        if ($attributes instanceof ValidHtml || is_string($attributes)) {
+            $content = $attributes;
+            $attributes = null;
+        } elseif (is_array($attributes)) {
+            reset($attributes);
+            if (is_int(key($attributes))) {
+                $content = $attributes;
+                $attributes = null;
+            }
+        }
+
+        return new HtmlElement($name, $attributes, $content);
     }
 
     /**
@@ -119,28 +130,9 @@ class Html
     public static function __callStatic($name, $arguments)
     {
         $attributes = array_shift($arguments);
-        $content = null;
-        if ($attributes instanceof ValidHtml || is_string($attributes)) {
-            $content = $attributes;
-            $attributes = null;
-        } elseif (is_array($attributes)) {
-            if (empty($attributes)) {
-                $attributes = null;
-            } elseif (is_int(key($attributes))) {
-                $content = $attributes;
-                $attributes = null;
-            }
-        }
+        $content = array_shift($arguments);
 
-        if (!empty($arguments)) {
-            if (null === $content) {
-                $content = $arguments;
-            } else {
-                $content = [$content, $arguments];
-            }
-        }
-
-        return HtmlElement::create($name, $attributes, $content);
+        return static::tag($name, $attributes, $content);
     }
 
     /**
