@@ -13,6 +13,15 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var string */
     protected $tag;
 
+    /**
+     * List of void elements which must not contain end tags or content
+     *
+     * This property should be used to decide whether the content and end tag has to be rendered.
+     *
+     * @var array
+     *
+     * @see https://www.w3.org/TR/html5/syntax.html#void-elements
+     */
     protected static $voidElements = [
         'area',
         'base',
