@@ -100,16 +100,16 @@ abstract class BaseHtmlElement extends HtmlDocument
         return $this->defaultAttributes;
     }
 
+    public function getTag()
+    {
+        return $this->tag;
+    }
+
     public function setTag($tag)
     {
         $this->tag = $tag;
 
         return $this;
-    }
-
-    public function getTag()
-    {
-        return $this->tag;
     }
 
     public function renderContent()
