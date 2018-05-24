@@ -181,7 +181,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     public function isVoidElement()
     {
         if ($this->isVoid === null) {
-            $this->isVoid = in_array($this->tag, self::$voidElements);
+            $this->isVoid = in_array($this->getTag(), self::$voidElements);
         }
 
         return $this->isVoid;

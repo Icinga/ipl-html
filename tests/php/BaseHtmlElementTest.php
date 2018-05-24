@@ -31,6 +31,14 @@ class VoidElementWithContent extends BaseHtmlElement
     }
 }
 
+class Img extends BaseHtmlElement
+{
+    public function getTag()
+    {
+        return 'img';
+    }
+}
+
 class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
 {
     public function testRenderDefaultAttributesAsProperty()
@@ -55,5 +63,14 @@ class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
     public function testExceptionThrownForVoidElementsWithContent()
     {
         (new VoidElementWithContent())->render();
+    }
+
+    public function testGetTag()
+    {
+        $element = new Img();
+
+        $this->assertSame('img', $element->getTag());
+        $this->assertTrue($element->isVoidElement());
+        $this->assertFalse($element->wantsClosingTag());
     }
 }
