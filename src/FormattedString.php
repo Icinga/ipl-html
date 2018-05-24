@@ -16,7 +16,6 @@ class FormattedString implements ValidHtml
      * FormattedString constructor.
      * @param $string
      * @param array $arguments
-     * @throws \Icinga\Exception\IcingaException
      */
     public function __construct($string, array $arguments = [])
     {
@@ -30,7 +29,6 @@ class FormattedString implements ValidHtml
     /**
      * @param $string
      * @return static
-     * @throws \Icinga\Exception\IcingaException
      */
     public static function create($string)
     {

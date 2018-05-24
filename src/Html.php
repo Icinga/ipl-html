@@ -3,7 +3,7 @@
 namespace ipl\Html;
 
 use Exception;
-use Icinga\Exception\IcingaException;
+use InvalidArgumentException;
 
 class Html
 {
@@ -57,7 +57,6 @@ class Html
     /**
      * @param $string
      * @return FormattedString
-     * @throws IcingaException
      */
     public static function sprintf($string)
     {
@@ -70,7 +69,7 @@ class Html
     /**
      * @param $any
      * @return ValidHtml
-     * @throws IcingaException
+     * @throws InvalidArgumentException
      */
     public static function wantHtml($any)
     {
@@ -87,10 +86,10 @@ class Html
             return $html;
         } else {
             // TODO: Should we add a dedicated Exception class?
-            throw new IcingaException(
+            throw new InvalidArgumentException(sprintf(
                 'String, Html Element or Array of such expected, got "%s"',
                 Html::getPhpTypeName($any)
-            );
+            ));
         }
     }
 
@@ -169,13 +168,13 @@ class Html
             // TODO: translate? Be careful when doing so, it must be failsafe!
             "<div class=\"exception\">\n<h1><i class=\"icon-bug\">"
             . "</i>Oops, an error occurred!</h1>\n<pre>%s</pre>\n",
-            static::escapeForHtml($msg)
+            static::encode($msg)
         );
 
         if (static::showTraces()) {
             $output .= sprintf(
                 "<pre>%s</pre>\n",
-                static::escapeForHtml($error->getTraceAsString())
+                static::encode($error->getTraceAsString())
             );
         }
         $output .= "</div>\n";
