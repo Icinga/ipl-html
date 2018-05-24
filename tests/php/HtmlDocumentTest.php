@@ -18,7 +18,7 @@ class HtmlDocumentTest extends \PHPUnit_Framework_TestCase
         $this->assertRendersHtml('<span>&gt;5</span>', h::span(['>5']));
         $this->assertRendersHtml(
             '<span><b>&gt;5</b>&lt;</span>',
-            h::span(h::b(['>5']), '<')
+            h::span([h::b(['>5']), '<'])
         );
     }
 
