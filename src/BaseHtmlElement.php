@@ -175,10 +175,10 @@ abstract class BaseHtmlElement extends HtmlDocument
     public function wantsClosingTag()
     {
         // TODO: There is more. SVG and MathML namespaces
-        return ! $this->isVoidElement();
+        return ! $this->isVoid();
     }
 
-    public function isVoidElement()
+    public function isVoid()
     {
         if ($this->isVoid !== null) {
             return $this->isVoid;

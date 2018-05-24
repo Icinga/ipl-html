@@ -75,7 +75,7 @@ class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
         $element = new Img();
 
         $this->assertSame('img', $element->getTag());
-        $this->assertTrue($element->isVoidElement());
+        $this->assertTrue($element->isVoid());
         $this->assertFalse($element->wantsClosingTag());
     }
 
@@ -84,13 +84,13 @@ class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
         $element = new Div();
 
         $this->assertSame('div', $element->getTag());
-        $this->assertFalse($element->isVoidElement());
+        $this->assertFalse($element->isVoid());
         $this->assertTrue($element->wantsClosingTag());
 
         $element->setTag('img');
 
         $this->assertSame('img', $element->getTag());
-        $this->assertTrue($element->isVoidElement());
+        $this->assertTrue($element->isVoid());
         $this->assertFalse($element->wantsClosingTag());
     }
 }
