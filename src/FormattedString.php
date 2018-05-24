@@ -2,6 +2,8 @@
 
 namespace ipl\Html;
 
+use Exception;
+
 class FormattedString implements ValidHtml
 {
     protected $escaped = true;
@@ -44,5 +46,17 @@ class FormattedString implements ValidHtml
             $this->string->render(),
             $this->arguments
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        try {
+            return $this->render();
+        } catch (Exception $e) {
+            return Html::renderError($e);
+        }
     }
 }

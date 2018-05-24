@@ -136,6 +136,9 @@ class Html
     }
 
     /**
+     * TODO: Allow to (statically) inject an error renderer. This will allow
+     *       us to satisfy "Show exceptions" settings and/or preferences
+     *
      * @param Exception|string $error
      * @return string
      */
