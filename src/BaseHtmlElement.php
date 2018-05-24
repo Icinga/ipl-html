@@ -23,20 +23,20 @@ abstract class BaseHtmlElement extends HtmlDocument
      * @see https://www.w3.org/TR/html5/syntax.html#void-elements
      */
     protected static $voidElements = [
-        'area',
-        'base',
-        'br',
-        'col',
-        'embed',
-        'hr',
-        'img',
-        'input',
-        'link',
-        'meta',
-        'param',
-        'source',
-        'track',
-        'wbr'
+        'area'   => 1,
+        'base'   => 1,
+        'br'     => 1,
+        'col'    => 1,
+        'embed'  => 1,
+        'hr'     => 1,
+        'img'    => 1,
+        'input'  => 1,
+        'link'   => 1,
+        'meta'   => 1,
+        'param'  => 1,
+        'source' => 1,
+        'track'  => 1,
+        'wbr'    => 1
     ];
 
     protected $isVoid;
@@ -180,11 +180,13 @@ abstract class BaseHtmlElement extends HtmlDocument
 
     public function isVoidElement()
     {
-        if ($this->isVoid === null) {
-            $this->isVoid = in_array($this->getTag(), self::$voidElements);
+        if ($this->isVoid !== null) {
+            return $this->isVoid;
         }
 
-        return $this->isVoid;
+        $tag = $this->getTag();
+
+        return isset(self::$voidElements[$tag]);
     }
 
     public function setVoid($void = true)

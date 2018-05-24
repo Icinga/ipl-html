@@ -39,6 +39,11 @@ class Img extends BaseHtmlElement
     }
 }
 
+class Div extends BaseHtmlElement
+{
+    protected $tag = 'div';
+}
+
 class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
 {
     public function testRenderDefaultAttributesAsProperty()
@@ -68,6 +73,21 @@ class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
     public function testGetTag()
     {
         $element = new Img();
+
+        $this->assertSame('img', $element->getTag());
+        $this->assertTrue($element->isVoidElement());
+        $this->assertFalse($element->wantsClosingTag());
+    }
+
+    public function testSetTag()
+    {
+        $element = new Div();
+
+        $this->assertSame('div', $element->getTag());
+        $this->assertFalse($element->isVoidElement());
+        $this->assertTrue($element->wantsClosingTag());
+
+        $element->setTag('img');
 
         $this->assertSame('img', $element->getTag());
         $this->assertTrue($element->isVoidElement());
