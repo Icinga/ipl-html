@@ -179,15 +179,4 @@ abstract class BaseHtmlElement extends HtmlDocument
 
         return $this;
     }
-
-    /**
-     * Whether the given something can be rendered
-     *
-     * @param mixed $any
-     * @return bool
-     */
-    protected function canBeRendered($any)
-    {
-        return is_string($any) || is_int($any) || is_null($any);
-    }
 }
