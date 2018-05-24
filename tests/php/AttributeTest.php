@@ -1,11 +1,10 @@
 <?php
 
-namespace test\ipl\Html;
+namespace ipl\Tests\Html;
 
 use ipl\Html\Attribute;
-use ipl\Test\BaseTestCase;
 
-class AttributeTest extends BaseTestCase
+class AttributeTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimpleAttributeCanBeRendered()
     {
@@ -111,7 +110,7 @@ class AttributeTest extends BaseTestCase
     }
 
     /**
-     * @expectedException \Icinga\Exception\ProgrammingError
+     * @expectedException \InvalidArgumentException
      */
     public function testSpecialCharactersInAttributeNamesAreNotYetSupported()
     {

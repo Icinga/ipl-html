@@ -1,11 +1,11 @@
 <?php
 
-namespace test\ipl\Html;
+namespace ipl\Tests\Html;
 
 use ipl\Html\Html as h;
-use ipl\Test\HtmlTestCase;
+use ipl\Html\ValidHtml;
 
-class HtmlDocumentTest extends HtmlTestCase
+class HtmlDocumentTest extends \PHPUnit_Framework_TestCase
 {
     public function testStaticCallsGiveValidElements()
     {
@@ -40,5 +40,10 @@ class HtmlDocumentTest extends HtmlTestCase
             '<span class="test it">&gt;5</span>',
             h::span(['class' => 'test it'], ['>5'])
         );
+    }
+
+    protected function assertRendersHtml($html, ValidHtml $element)
+    {
+        $this->assertXmlStringEqualsXmlString($html, $element->render());
     }
 }

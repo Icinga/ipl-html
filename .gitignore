@@ -3,3 +3,10 @@
 
 # Except those related to Git
 !.git*
+!.travis.yml
+
+# Exclude build and packaging leftovers
+/debian
+/vendor
+build/*
+composer.lock

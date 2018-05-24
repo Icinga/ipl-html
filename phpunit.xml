@@ -8,11 +8,11 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="test/bootstrap.php"
+         bootstrap="tests/bootstrap.php"
     >
     <testsuites>
         <testsuite name="ipl PHP Unit tests">
-            <directory suffix=".php">test/php</directory>
+            <directory suffix=".php">tests/php</directory>
         </testsuite>
     </testsuites>
 </phpunit>

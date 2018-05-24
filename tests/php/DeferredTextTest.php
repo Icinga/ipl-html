@@ -1,12 +1,11 @@
 <?php
 
-namespace test\ipl\Html;
+namespace ipl\Tests\Html;
 
 use ipl\Html\DeferredText;
-use ipl\Test\BaseTestCase;
 use Exception;
 
-class DeferredTextTest extends BaseTestCase
+class DeferredTextTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanBeConstructed()
     {
