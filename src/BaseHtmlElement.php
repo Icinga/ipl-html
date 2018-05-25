@@ -13,8 +13,6 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var string */
     protected $tag;
 
-    protected $hasBeenAssembled = false;
-
     protected static $voidElements = [
         'area',
         'base',

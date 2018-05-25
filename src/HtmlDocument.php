@@ -261,7 +261,7 @@ class HtmlDocument implements Countable, ValidHtml
         try {
             return $this->render();
         } catch (Exception $e) {
-            return Html::renderError($e);
+            return Error::render($e);
         }
     }
 

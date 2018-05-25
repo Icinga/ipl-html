@@ -2,14 +2,10 @@
 
 namespace ipl\Html;
 
-use Exception;
 use InvalidArgumentException;
 
 class Html
 {
-    /** @var bool */
-    protected static $showTraces = true;
-
     /**
      * Convert special characters to HTML5 entities using the UTF-8 character set for encoding
      *
@@ -96,10 +92,9 @@ class Html
 
             return $html;
         } else {
-            // TODO: Should we add a dedicated Exception class?
             throw new InvalidArgumentException(sprintf(
                 'String, Html Element or Array of such expected, got "%s"',
-                Html::getPhpTypeName($any)
+                Error::getPhpTypeName($any)
             ));
         }
     }
@@ -107,19 +102,6 @@ class Html
     public static function canBeRenderedAsString($any)
     {
         return is_string($any) || is_int($any) || is_null($any) || is_float($any);
-    }
-
-    /**
-     * @param $any
-     * @return string
-     */
-    public static function getPhpTypeName($any)
-    {
-        if (is_object($any)) {
-            return get_class($any);
-        } else {
-            return gettype($any);
-        }
     }
 
     /**
@@ -136,56 +118,10 @@ class Html
     }
 
     /**
-     * TODO: Allow to (statically) inject an error renderer. This will allow
-     *       us to satisfy "Show exceptions" settings and/or preferences
-     *
-     * @param Exception|string $error
-     * @return string
+     * @deprecated Use {@link Error::render()} instead
      */
     public static function renderError($error)
     {
-        if ($error instanceof Exception) {
-            $file = preg_split('/[\/\\\]/', $error->getFile(), -1, PREG_SPLIT_NO_EMPTY);
-            $file = array_pop($file);
-            $msg = sprintf(
-                '%s (%s:%d)',
-                $error->getMessage(),
-                $file,
-                $error->getLine()
-            );
-        } elseif (is_string($error)) {
-            $msg = $error;
-        } else {
-            $msg = 'Got an invalid error'; // TODO: translate?
-        }
-
-        $output = sprintf(
-            // TODO: translate? Be careful when doing so, it must be failsafe!
-            "<div class=\"exception\">\n<h1><i class=\"icon-bug\">"
-            . "</i>Oops, an error occurred!</h1>\n<pre>%s</pre>\n",
-            static::escape($msg)
-        );
-
-        if (static::showTraces()) {
-            $output .= sprintf(
-                "<pre>%s</pre>\n",
-                static::escape($error->getTraceAsString())
-            );
-        }
-        $output .= "</div>\n";
-        return $output;
-    }
-
-    /**
-     * @param null $show
-     * @return bool|null
-     */
-    public static function showTraces($show = null)
-    {
-        if ($show !== null) {
-            self::$showTraces = $show;
-        }
-
-        return self::$showTraces;
+        return Error::render($error);
     }
 }
