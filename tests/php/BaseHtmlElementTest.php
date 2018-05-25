@@ -34,7 +34,7 @@ class VoidElementWithContent extends BaseHtmlElement
 
 class Img extends BaseHtmlElement
 {
-    public function getTag()
+    protected function tag()
     {
         return 'img';
     }
@@ -43,6 +43,11 @@ class Img extends BaseHtmlElement
 class Div extends BaseHtmlElement
 {
     protected $tag = 'div';
+}
+
+class NoTag extends BaseHtmlElement
+{
+
 }
 
 class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
@@ -94,5 +99,29 @@ class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('img', $element->getTag());
         $this->assertTrue($element->isVoid());
         $this->assertFalse($element->wantsClosingTag());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testAssertTagInRender()
+    {
+        (new NoTag())->render();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testAssertTagInIsVoid()
+    {
+        (new NoTag())->isVoid();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testAssertTagInGetTag()
+    {
+        (new NoTag())->getTag();
     }
 }

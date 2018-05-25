@@ -117,7 +117,34 @@ abstract class BaseHtmlElement extends HtmlDocument
         return $this->defaultAttributes;
     }
 
-    public function getTag()
+    /**
+     * Get the tag of the element
+     *
+     * Since HTML Elements must have a tag, this method throws an exception if the element does not have a tag.
+     *
+     * @return  string
+     *
+     * @throws  \RuntimeException   If the element does not have a tag
+     */
+    final public function getTag()
+    {
+        $tag = $this->tag();
+
+        if (! strlen($tag)) {
+            throw new \RuntimeException('Element must have a tag');
+        }
+
+        return $tag;
+    }
+
+    /**
+     * Internal method for accessing the tag
+     *
+     * You may override this method in order to provide the tag dynamically
+     *
+     * @return  string
+     */
+    protected function tag()
     {
         return $this->tag;
     }
@@ -158,7 +185,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * @inheritdoc
      *
-     * @throws  \RuntimeException   If the element is void but has content
+     * @throws  \RuntimeException   If the element does not have a tag or is void but has content
      */
     public function renderUnwrapped()
     {
@@ -220,6 +247,8 @@ abstract class BaseHtmlElement extends HtmlDocument
      * If you want to override this behavior, use {@link setVoid()}.
      *
      * @return  bool
+     *
+     * @throws  \RuntimeException   If the element does not have a tag
      */
     public function isVoid()
     {
