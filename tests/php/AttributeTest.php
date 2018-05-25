@@ -4,7 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\Attribute;
 
-class AttributeTest extends \PHPUnit_Framework_TestCase
+class AttributeTest extends TestCase
 {
     public function testSimpleAttributeCanBeRendered()
     {

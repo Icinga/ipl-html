@@ -5,7 +5,7 @@ namespace ipl\Tests\Html;
 use ipl\Html\DeferredText;
 use Exception;
 
-class DeferredTextTest extends \PHPUnit_Framework_TestCase
+class DeferredTextTest extends TestCase
 {
     public function testCanBeConstructed()
     {
