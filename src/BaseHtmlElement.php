@@ -2,6 +2,8 @@
 
 namespace ipl\Html;
 
+use RuntimeException;
+
 abstract class BaseHtmlElement extends HtmlDocument
 {
     /** @var array You may want to set default attributes when extending this class */
@@ -124,14 +126,14 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * @return  string
      *
-     * @throws  \RuntimeException   If the element does not have a tag
+     * @throws  RuntimeException   If the element does not have a tag
      */
     final public function getTag()
     {
         $tag = $this->tag();
 
         if (! strlen($tag)) {
-            throw new \RuntimeException('Element must have a tag');
+            throw new RuntimeException('Element must have a tag');
         }
 
         return $tag;
@@ -185,7 +187,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * @inheritdoc
      *
-     * @throws  \RuntimeException   If the element does not have a tag or is void but has content
+     * @throws  RuntimeException   If the element does not have a tag or is void but has content
      */
     public function renderUnwrapped()
     {
@@ -197,8 +199,7 @@ abstract class BaseHtmlElement extends HtmlDocument
 
         if (! $this->wantsClosingTag()) {
             if (strlen($content)) {
-                // @TODO(el): Should we add a dedicated exception class?
-                throw new \RuntimeException('Void elements must not have content');
+                throw new RuntimeException('Void elements must not have content');
             }
 
             return sprintf('<%s%s />', $tag, $attributes);
@@ -247,8 +248,6 @@ abstract class BaseHtmlElement extends HtmlDocument
      * If you want to override this behavior, use {@link setVoid()}.
      *
      * @return  bool
-     *
-     * @throws  \RuntimeException   If the element does not have a tag
      */
     public function isVoid()
     {
