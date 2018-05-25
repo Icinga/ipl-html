@@ -68,7 +68,7 @@ this:
 <?= Html::h1('Hello there!');
 ```
 
-This looks better and has the same effect, but the disadvantage that your PHP
+This looks better and has the same effect, at the disadvantage that your PHP
 IDE might not understand your code. Let's move on and try to inject some special
 characters:
 
@@ -80,7 +80,7 @@ characters:
 <h1>Hello &lt;&gt; world!</h1>
 ```
 
-As you can see, the content is getting escaped. You can even add an Array with
+As you can see, the content has been escaped. You can also add an Array with
 multiple strings:
 
 ```php
@@ -189,7 +189,7 @@ Still, we do not consider this code being very readable. In case you ever used
 ```php
 <?= Html::sprintf(
     'Hi %s, are you ok?',
-    Html::tag('strong', 'there')
+    Html::strong('there')
 );
 ```
 
