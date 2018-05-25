@@ -55,7 +55,7 @@ class DeferredText implements ValidHtml
         if ($this->escaped) {
             return $callback();
         } else {
-            return Html::escapeForHtml($callback());
+            return Html::escape($callback());
         }
     }
 
