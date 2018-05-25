@@ -275,7 +275,7 @@ abstract class BaseHtmlElement extends HtmlDocument
      */
     public function setVoid($void = true)
     {
-        $this->isVoid = $void ?: (bool) $void;
+        $this->isVoid = $void === null ?: (bool) $void;
 
         return $this;
     }

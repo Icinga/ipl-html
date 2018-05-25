@@ -124,4 +124,23 @@ class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
     {
         (new NoTag())->getTag();
     }
+
+    public function testSetVoid()
+    {
+        $element = new Img();
+        $this->assertFalse($element->wantsClosingTag());
+        $this->assertEquals('<img />', $element->render());
+        $element->setVoid();
+        $this->assertFalse($element->wantsClosingTag());
+        $this->assertEquals('<img />', $element->render());
+        $element->setVoid(false);
+        $this->assertTrue($element->wantsClosingTag());
+        $this->assertEquals('<img></img>', $element->render());
+        $element->setVoid(true);
+        $this->assertFalse($element->wantsClosingTag());
+        $this->assertEquals('<img />', $element->render());
+        $element->setVoid(null);
+        $this->assertFalse($element->wantsClosingTag());
+        $this->assertEquals('<img />', $element->render());
+    }
 }
