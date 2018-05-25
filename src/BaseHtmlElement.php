@@ -238,13 +238,15 @@ abstract class BaseHtmlElement extends HtmlDocument
      * You may use this method to override the default void detection which checks whether the element's tag is in the
      * list of void elements according to https://www.w3.org/TR/html5/syntax.html#void-elements.
      *
-     * @param   bool    $isVoid
+     * If you specify null, void detection is reset to its default behavior.
+     *
+     * @param   bool|null    $void
      *
      * @return  $this
      */
     public function setVoid($void = true)
     {
-        $this->isVoid = $void;
+        $this->isVoid = $void ?: (bool) $void;
 
         return $this;
     }
