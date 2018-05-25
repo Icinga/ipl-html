@@ -4,35 +4,15 @@ namespace ipl\Html;
 
 use InvalidArgumentException;
 
-class Html
+/**
+ * Class Html
+ *
+ * This is your main utility class when working with ipl\Html
+ *
+ * @package ipl\Html
+ */
+abstract class Html
 {
-    /**
-     * Convert special characters to HTML5 entities using the UTF-8 character set for encoding
-     *
-     * This method internally uses {@link htmlspecialchars} with the following flags:
-     * * Single quotes are not escaped (ENT_COMPAT)
-     * * Uses HTML5 entities, disallowing &#013; (ENT_HTML5)
-     * * Invalid characters are replaced with � (ENT_SUBSTITUTE)
-     *
-     * Already existing HTML entities will be encoded as well.
-     *
-     * @param   string  $content        The content to encode
-     *
-     * @return  string  The encoded content
-     */
-    public static function escape($content)
-    {
-        return htmlspecialchars($content, ENT_COMPAT | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
-    }
-
-    /**
-     * @deprecated Use {@link Html::encode()} instead
-     */
-    public static function escapeForHtml($content)
-    {
-        return static::escape($content);
-    }
-
     /**
      * Create a HTML element from the given tag, attributes and content
      *
@@ -62,6 +42,38 @@ class Html
     }
 
     /**
+     * Convert special characters to HTML5 entities using the UTF-8 character
+     * set for encoding
+     *
+     * This method internally uses {@link htmlspecialchars} with the following
+     * flags:
+     *
+     * * Single quotes are not escaped (ENT_COMPAT)
+     * * Uses HTML5 entities, disallowing &#013; (ENT_HTML5)
+     * * Invalid characters are replaced with � (ENT_SUBSTITUTE)
+     *
+     * Already existing HTML entities will be encoded as well.
+     *
+     * @param   string  $content        The content to encode
+     *
+     * @return  string  The encoded content
+     */
+    public static function escape($content)
+    {
+        return htmlspecialchars($content, ENT_COMPAT | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /**
+     * sprintf()-like helper method
+     *
+     * This allows to use sprintf with ValidHtml elements, but with the
+     * advantage that they'll not be rendered immediately. The result is an
+     * instance of FormattedString, being ValidHtml
+     *
+     * Usage:
+     *
+     *     echo Html::sprintf('Hello %s!', Html::tag('strong', $name));
+     *
      * @param $string
      * @return FormattedString
      */
@@ -74,6 +86,10 @@ class Html
     }
 
     /**
+     * Accept any input and try to convert it to ValidHtml
+     *
+     * Returns the very same element in case it's already valid
+     *
      * @param $any
      * @return ValidHtml
      * @throws InvalidArgumentException
@@ -99,6 +115,12 @@ class Html
         }
     }
 
+    /**
+     * Whether a given variable can be rendered as a string
+     *
+     * @param $any
+     * @return bool
+     */
     public static function canBeRenderedAsString($any)
     {
         return is_string($any) || is_int($any) || is_null($any) || is_float($any);
@@ -115,6 +137,14 @@ class Html
         $content = array_shift($arguments);
 
         return static::tag($name, $attributes, $content);
+    }
+
+    /**
+     * @deprecated Use {@link Html::encode()} instead
+     */
+    public static function escapeForHtml($content)
+    {
+        return static::escape($content);
     }
 
     /**
