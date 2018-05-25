@@ -144,7 +144,7 @@ Attributes and no content is also fine:
 It's perfectly legal to use any `ValidHtml` element as content:
 
 ```php
-<?= Html::tag('ul', ['role' => 'navigation'], Html::tag('li', 'A point'));
+<?= Html::tag('ul', ['role' => 'menu'], Html::tag('li', 'A point'));
 ```
 
 ```html
