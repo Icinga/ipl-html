@@ -81,14 +81,14 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * If the attribute with the given name already exists, it gets overridden.
      *
-     * @param   string              $key    The name of the attribute
+     * @param   string              $name   The name of the attribute
      * @param   string|bool|array   $value  The value of the attribute
      *
      * @return  $this
      */
-    public function setAttribute($key, $value)
+    public function setAttribute($name, $value)
     {
-        $this->getAttributes()->set($key, $value);
+        $this->getAttributes()->set($name, $value);
 
         return $this;
     }
