@@ -16,7 +16,8 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * List of void elements which must not contain end tags or content
      *
-     * This property should be used to decide whether the content and end tag has to be rendered.
+     * If {@link $isVoid} is null, this property should be used to decide whether the content and end tag has to be
+     * rendered.
      *
      * @var array
      *
@@ -39,10 +40,13 @@ abstract class BaseHtmlElement extends HtmlDocument
         'wbr'    => 1
     ];
 
+    /** @var bool|null Whether the element is void. If null, void check should use {@link $voidElements} */
     protected $isVoid;
 
     /**
-     * @return Attributes
+     * Get the attributes of the element
+     *
+     * @return  Attributes
      */
     public function getAttributes()
     {
@@ -59,8 +63,11 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
-     * @param Attributes|array|null $attributes
-     * @return $this
+     * Set the attributes of the element
+     *
+     * @param   Attributes|array|null   $attributes
+     *
+     * @return  $this
      */
     public function setAttributes($attributes)
     {
@@ -70,9 +77,14 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
-     * @param string $key
-     * @param mixed $value
-     * @return $this
+     * Set the attribute with the given name and value
+     *
+     * If the attribute with the given name already exists, it gets overridden.
+     *
+     * @param   string              $key    The name of the attribute
+     * @param   string|bool|array   $value  The value of the attribute
+     *
+     * @return  $this
      */
     public function setAttribute($key, $value)
     {
@@ -82,8 +94,11 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
-     * @param Attributes|array|null $attributes
-     * @return $this
+     * Add the given attributes
+     *
+     * @param   Attributes|array    $attributes
+     *
+     * @return  $this
      */
     public function addAttributes($attributes)
     {
@@ -93,7 +108,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
-     * @return array
+     * Get the default attributes of the element
+     *
+     * @return  array
      */
     public function getDefaultAttributes()
     {
@@ -105,6 +122,13 @@ abstract class BaseHtmlElement extends HtmlDocument
         return $this->tag;
     }
 
+    /**
+     * Set the tag of the element
+     *
+     * @param   string  $tag
+     *
+     * @return  $this
+     */
     public function setTag($tag)
     {
         $this->tag = $tag;
@@ -112,15 +136,16 @@ abstract class BaseHtmlElement extends HtmlDocument
         return $this;
     }
 
+    /**
+     * Render the content of the element to HTML
+     *
+     * @return  string
+     */
     public function renderContent()
     {
         return parent::renderUnwrapped();
     }
 
-    /**
-     * @param array|ValidHtml|string $content
-     * @return $this
-     */
     public function add($content)
     {
         $this->ensureAssembled();
@@ -162,8 +187,11 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
-     * @param HtmlDocument $document
-     * @return $this
+     * Use this element to wrap the given document
+     *
+     * @param   HtmlDocument    $document
+     *
+     * @return  $this
      */
     public function wrap(HtmlDocument $document)
     {
@@ -172,12 +200,27 @@ abstract class BaseHtmlElement extends HtmlDocument
         return $this;
     }
 
+    /**
+     * Get whether the closing tag should be rendered
+     *
+     * @return  bool    True for void elements, false otherwise
+     */
     public function wantsClosingTag()
     {
         // TODO: There is more. SVG and MathML namespaces
         return ! $this->isVoid();
     }
 
+    /**
+     * Get whether the element is void
+     *
+     * The default void detection which checks whether the element's tag is in the list of void elements according to
+     * https://www.w3.org/TR/html5/syntax.html#void-elements.
+     *
+     * If you want to override this behavior, use {@link setVoid()}.
+     *
+     * @return  bool
+     */
     public function isVoid()
     {
         if ($this->isVoid !== null) {
@@ -189,6 +232,16 @@ abstract class BaseHtmlElement extends HtmlDocument
         return isset(self::$voidElements[$tag]);
     }
 
+    /**
+     * Set whether the element is void
+     *
+     * You may use this method to override the default void detection which checks whether the element's tag is in the
+     * list of void elements according to https://www.w3.org/TR/html5/syntax.html#void-elements.
+     *
+     * @param   bool    $isVoid
+     *
+     * @return  $this
+     */
     public function setVoid($void = true)
     {
         $this->isVoid = $void;
