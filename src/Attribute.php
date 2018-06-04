@@ -89,8 +89,11 @@ class Attribute
     }
 
     /**
-     * @param mixed $value
-     * @return $this
+     * Set the value of the attribute
+     *
+     * @param   string|bool|array|null  $value
+     *
+     * @return  $this
      */
     public function setValue($value)
     {
