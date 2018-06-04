@@ -46,7 +46,9 @@ class Attribute
     }
 
     /**
-     * @return string
+     * Get the name of the attribute
+     *
+     * @return  string
      */
     public function getName()
     {
