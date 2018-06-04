@@ -22,11 +22,12 @@ class Attribute
     protected $value;
 
     /**
-     * Attribute constructor.
+     * Create a new HTML attribute from the given name and value
      *
-     * @param $name
-     * @param $value
-     * @throws InvalidArgumentException
+     * @param   string                  $name   The name of the attribute
+     * @param   string|bool|array|null  $value  The value of the attribute
+     *
+     * @throws  InvalidArgumentException        If the name of the attribute contains special characters
      */
     public function __construct($name, $value = null)
     {
