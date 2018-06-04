@@ -79,7 +79,9 @@ class Attribute
     }
 
     /**
-     * @return string
+     * Get the value of the attribute
+     *
+     * @return  string|bool|array|null
      */
     public function getValue()
     {
