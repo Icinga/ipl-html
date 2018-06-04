@@ -53,11 +53,15 @@ class Attribute
     }
 
     /**
-     * @param $name
-     * @return $this
-     * @throws InvalidArgumentException
+     * Set the name of the attribute
+     *
+     * @param   string  $name
+     *
+     * @return  $this
+     *
+     * @throws  InvalidArgumentException    If the name contains special characters
      */
-    public function setName($name)
+    protected function setName($name)
     {
         if (! preg_match('/^[a-z][a-z0-9:-]*$/i', $name)) {
             throw new InvalidArgumentException(sprintf(
@@ -65,6 +69,7 @@ class Attribute
                 $name
             ));
         }
+
         $this->name = $name;
 
         return $this;
