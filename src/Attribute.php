@@ -12,7 +12,6 @@ use InvalidArgumentException;
  *
  * Usually attributes are not instantiated directly, but created through an HTML
  * element's exposed methods.
- *
  */
 class Attribute
 {
