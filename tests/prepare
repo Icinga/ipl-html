@@ -4,6 +4,7 @@ set -ex
 
 composer install --no-dev
 
+PHP_VERSION="$(php -r 'echo phpversion();')"
 PHPCS_VERSION=${PHPCS_VERSION:=3.3.1}
 
 if [ "$PHP_VERSION" '<' 5.6.0 ]; then
