@@ -50,7 +50,7 @@ class NoTag extends BaseHtmlElement
 
 }
 
-class BaseHtmlElementTest extends \PHPUnit_Framework_TestCase
+class BaseHtmlElementTest extends TestCase
 {
     // @codingStandardsIgnoreEnd
     public function testRenderDefaultAttributesAsProperty()

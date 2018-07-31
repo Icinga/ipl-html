@@ -197,6 +197,19 @@ abstract class BaseHtmlElement extends HtmlDocument
         $attributes = $this->getAttributes()->render();
         $content = $this->renderContent();
 
+        if (strlen($this->contentSeparator)) {
+            $length = strlen($content);
+            if ($length > 0) {
+                if ($content[0] === '<') {
+                    $content = $this->contentSeparator . $content;
+                    $length++;
+                }
+                if ($content[$length - 1] === '>') {
+                    $content .= $this->contentSeparator;
+                }
+            }
+        }
+
         if (! $this->wantsClosingTag()) {
             if (strlen($content)) {
                 throw new RuntimeException('Void elements must not have content');
