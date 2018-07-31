@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -ex
+
+composer install --no-dev
+
+PHPCS_VERSION=${PHPCS_VERSION:=3.3.1}
+
+if [ "$PHP_VERSION" '<' 5.6.0 ]; then
+  PHPUNIT_VERSION=${PHPUNIT_VERSION:=4.8}
+else
+  PHPUNIT_VERSION=${PHPUNIT_VERSION:=5.7}
+fi
+
+mkdir -p vendor
+
+PHPUNIT_PATH="vendor/phpunit-${PHPUNIT_VERSION}.phar"
+test -e "${PHPUNIT_PATH}" || wget -q -O "${PHPUNIT_PATH}" \
+    https://phar.phpunit.de/phpunit-${PHPUNIT_VERSION}.phar
+chmod +x "${PHPUNIT_PATH}"
+ln -svf "phpunit-${PHPUNIT_VERSION}.phar" vendor/phpunit
+
+PHPCS_PATH="vendor/phpcs-${PHPCS_VERSION}.phar"
+test -e "${PHPCS_PATH}" || wget -q -O "${PHPCS_PATH}" \
+    https://github.com/squizlabs/PHP_CodeSniffer/releases/download/${PHPCS_VERSION}/phpcs.phar
+chmod +x "$PHPCS_PATH"
+ln -svf "phpcs-${PHPCS_VERSION}.phar" vendor/phpcs

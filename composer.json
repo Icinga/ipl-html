@@ -4,12 +4,13 @@
   "description": "Icinga PHP Library - HTML abstraction layer",
   "keywords": ["html"],
   "homepage": "https://github.com/Icinga/ipl-html",
+  "repositories": [{
+    "type": "vcs",
+    "url": "https://github.com/icinga/ipl-stdlib"
+  }],
   "require": {
-    "php": ">=5.4.0"
-  },
-  "require-dev": {
-    "squizlabs/php_codesniffer": "^2.9.1",
-    "phpunit/phpunit": "^5.7 || ^4.8"
+    "php": ">=5.4.0",
+    "ipl/stdlib": "dev-master"
   },
   "autoload": {
     "psr-4": {

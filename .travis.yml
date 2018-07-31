@@ -20,8 +20,8 @@ matrix:
     - php: nightly
 
 before_script:
-  - ./tests/setup_vendor.sh
+  - tests/prepare
 
 script:
-  - php vendor/phpcs.phar
-  - php vendor/phpunit.phar --testdox || phpunit --verbose
+  - vendor/phpcs
+  - vendor/phpunit --testdox || vendor/phpunit --verbose
