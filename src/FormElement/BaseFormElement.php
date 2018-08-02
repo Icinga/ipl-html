@@ -46,13 +46,7 @@ abstract class BaseFormElement extends BaseHtmlElement
      */
     public function __construct($name, $attributes = null)
     {
-        $this->getAttributes()
-            ->registerAttributeCallback('label', [$this, 'getNoAttribute'], [$this, 'setLabel'])
-            ->registerAttributeCallback('name', [$this, 'getNameAttribute'], [$this, 'setName'])
-            ->registerAttributeCallback('value', [$this, 'getValueAttribute'], [$this, 'setValue'])
-            ->registerAttributeCallback('description', [$this, 'getNoAttribute'], [$this, 'setDescription'])
-            ->registerAttributeCallback('validators', null, [$this, 'setValidators'])
-            ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired']);
+        $this->registerCallbacks();
         if ($attributes !== null) {
             $this->addAttributes($attributes);
         }
@@ -275,5 +269,25 @@ abstract class BaseFormElement extends BaseHtmlElement
         $this->isValid = $isValid;
 
         return $this;
+    }
+
+    protected function registerCallbacks()
+    {
+        $this->registerValueCallback();
+        $this->getAttributes()
+            ->registerAttributeCallback('label', [$this, 'getNoAttribute'], [$this, 'setLabel'])
+            ->registerAttributeCallback('name', [$this, 'getNameAttribute'], [$this, 'setName'])
+            ->registerAttributeCallback('description', [$this, 'getNoAttribute'], [$this, 'setDescription'])
+            ->registerAttributeCallback('validators', null, [$this, 'setValidators'])
+            ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired']);
+    }
+
+    protected function registerValueCallback()
+    {
+        $this->getAttributes()->registerAttributeCallback(
+            'value',
+            [$this, 'getValueAttribute'],
+            [$this, 'setValue']
+        );
     }
 }
