@@ -5,7 +5,7 @@ namespace ipl\Html\FormElement;
 use ipl\Html\Attribute;
 use ipl\Html\BaseHtmlElement;
 use ipl\Stdlib\MessageContainer;
-use ipl\Validator\ValidatorInterface;
+use ipl\Stdlib\Contracts\ValidatorInterface;
 use InvalidArgumentException;
 
 abstract class BaseFormElement extends BaseHtmlElement
