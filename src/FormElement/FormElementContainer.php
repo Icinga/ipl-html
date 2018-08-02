@@ -4,11 +4,11 @@ namespace ipl\Html\FormElement;
 
 use ipl\Html\BaseHtmlElement;
 use InvalidArgumentException;
-use ipl\Stdlib\Loader\PluginLoadingHelper;
+use ipl\Stdlib\Loader\PluginLoader;
 
 trait FormElementContainer
 {
-    use PluginLoadingHelper;
+    use PluginLoader;
 
     /** @var BaseFormElement[] */
     private $elements = [];
