@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\Form;
 use ipl\Html\FormElement\TextElement;
+use ipl\Html\Html;
 
 class DocumentationFormsTest extends TestCase
 {
@@ -80,5 +81,23 @@ class DocumentationFormsTest extends TestCase
         $form = new Form();
         $nameElement = new TextElement('name', ['class' => 'important']);
         $form->addElement($nameElement);
+    }
+
+    public function testCustomHtml()
+    {
+        $form = new Form();
+
+        $this->assertRendersHtml(
+            '<form><div><input name="first_name" type="text" /><br />'
+            . '<input name="last_name" type="text" /></div></form>',
+            $form
+            ->registerElement('text', 'first_name')
+            ->registerElement('text', 'last_name')
+            ->add(Html::tag('div', [
+                $form->getElement('first_name'),
+                Html::tag('br'),
+                $form->getElement('last_name'),
+            ])->setSeparator("\n"))
+        );
     }
 }

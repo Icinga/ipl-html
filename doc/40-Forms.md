@@ -153,8 +153,6 @@ use ipl\Html\Form;
 use ipl\Html\Html;
 
 $form = new Form();
-$firstName = $form->createElement('text', 'first_name');
-$lastName = $form->createElement('text', 'last_name');
 
 echo $form
     ->registerElement('text', 'first_name')
@@ -164,4 +162,14 @@ echo $form
         Html::tag('br'),
         $form->getElement('last_name'),
     ]));
+```
+
+The result looks as expected:
+
+```html
+<form><div>
+<input name="first_name" type="text" />
+<br />
+<input name="last_name" type="text" />
+</div></form>
 ```
