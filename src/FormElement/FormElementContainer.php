@@ -2,8 +2,8 @@
 
 namespace ipl\Html\FormElement;
 
-use ipl\Html\BaseHtmlElement;
 use InvalidArgumentException;
+use ipl\Html\BaseHtmlElement;
 use ipl\Stdlib\Loader\PluginLoader;
 
 trait FormElementContainer
@@ -12,6 +12,8 @@ trait FormElementContainer
 
     /** @var BaseFormElement[] */
     private $elements = [];
+
+    private $populatedValues = [];
 
     /** @var BaseHtmlElement|null */
     protected $defaultElementDecorator;
@@ -22,6 +24,28 @@ trait FormElementContainer
     public function getElements()
     {
         return $this->elements;
+    }
+
+    public function getValues()
+    {
+        $values = [];
+        foreach ($this->getElements() as $element) {
+            if (! $element->isIgnored()) {
+                $values[$element->getName()] = $element->getValue();
+            }
+        }
+
+        return $values;
+    }
+
+    public function populate($values)
+    {
+        foreach ($values as $name => $value) {
+            $this->populatedValues[$name] = $value;
+            if ($this->hasElement($name)) {
+                $this->getElement($name)->setValue($value);
+            }
+        }
     }
 
     public function addElementLoader($namespace, $classPostfix = null)
@@ -124,11 +148,20 @@ trait FormElementContainer
 
         $this->elements[$name] = $type;
 
-        if (method_exists($this, 'onRegisteredElement')) {
-            $this->onRegisteredElement($name, $type);
-        }
+        $this->onElementRegistered($name, $type);
 
         return $this;
+    }
+
+    public function onElementRegistered($name, BaseFormElement $element)
+    {
+        if ($element instanceof SubmitElement && ! $this->hasSubmitButton()) {
+            $this->setSubmitButton($element);
+        }
+
+        if (array_key_exists($name, $this->populatedValues)) {
+            $element->setValue($this->populatedValues[$name]);
+        }
     }
 
     /**

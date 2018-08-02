@@ -2,11 +2,9 @@
 
 namespace ipl\Html;
 
-use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\FormElement\FormElementContainer;
 use ipl\Html\FormElement\SubmitElement;
 use ipl\Stdlib\MessageContainer;
-use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
@@ -22,8 +20,6 @@ class Form extends BaseHtmlElement
 
     /** @var SubmitElement */
     protected $submitButton;
-
-    private $populatedValues = [];
 
     /** @var ServerRequestInterface */
     private $request;
@@ -89,18 +85,6 @@ class Form extends BaseHtmlElement
         */
     }
 
-    // TODO: onElementRegistered
-    public function onRegisteredElement($name, BaseFormElement $element)
-    {
-        if ($element instanceof SubmitElement && ! $this->hasSubmitButton()) {
-            $this->setSubmitButton($element);
-        }
-
-        if (array_key_exists($name, $this->populatedValues)) {
-            $element->setValue($this->populatedValues[$name]);
-        }
-    }
-
     public function isValid()
     {
         if ($this->isValid === null) {
@@ -134,18 +118,6 @@ class Form extends BaseHtmlElement
                 $element->validate();
             }
         }
-    }
-
-    public function getValues()
-    {
-        $values = [];
-        foreach ($this->getElements() as $element) {
-            if (! $element->isIgnored()) {
-                $values[$element->getName()] = $element->getValue();
-            }
-        }
-
-        return $values;
     }
 
     /**
@@ -193,22 +165,6 @@ class Form extends BaseHtmlElement
         $this->submitButton = $element;
 
         return $this;
-    }
-
-    public function populate($values)
-    {
-        foreach ($values as $name => $value) {
-            $this->populatedValues[$name] = $value;
-            if ($this->hasElement($name)) {
-                try {
-                    $element = $this->getElement($name);
-                } catch (InvalidArgumentException $exception) {
-                    // This will not happen, as we checked for hasElement
-                }
-
-                $element->setValue($value);
-            }
-        }
     }
 
     /**
