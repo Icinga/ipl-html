@@ -51,4 +51,22 @@ class DocumentationTablesTest extends TestCase
             (new Table())->add(Table::row($this->sampleRowData))
         );
     }
+
+    public function testAddingMultipleArrayRows()
+    {
+        $table = (new Table())
+            ->add(['app1.example.com', '127.0.0.1', 'production'])
+            ->add(['app2.example.com', '127.0.0.2', 'production'])
+            ->add(['app3.example.com', '127.0.0.3', 'testing']);
+
+        $html = '<table><tbody>'
+            . '<tr><td>app1.example.com</td><td>127.0.0.1</td><td>production</td></tr>'
+            . '<tr><td>app2.example.com</td><td>127.0.0.2</td><td>production</td></tr>'
+            . '<tr><td>app3.example.com</td><td>127.0.0.3</td><td>testing</td></tr>'
+            . '</tbody></table>';
+
+        $this->assertRendersHtml($html, $table);
+    }
+
+
 }
