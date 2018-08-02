@@ -29,7 +29,7 @@ creates a new `tr` Html Element, and accepts an array as it's first parameter.
 Let's give it a try:
 
 ```php
-<?= Table::tr([
+<?= Table::row([
     'app1.example.com',
     '127.0.0.1',
     'production'
@@ -72,7 +72,6 @@ Let's try again with an array:
     'production'
 ]);
 ```
-
 
 Now let's add this row to a table:
 
