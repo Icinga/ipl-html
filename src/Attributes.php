@@ -70,7 +70,7 @@ class Attributes
             } elseif ($attributes !== null) {
                 throw new InvalidArgumentException(sprintf(
                     'Attributes, Array or Null expected, got %s',
-                    Html::getPhpTypeName($attributes)
+                    Error::getPhpTypeName($attributes)
                 ));
             }
             return $self;
