@@ -67,6 +67,4 @@ class DocumentationTablesTest extends TestCase
 
         $this->assertRendersHtml($html, $table);
     }
-
-
 }
