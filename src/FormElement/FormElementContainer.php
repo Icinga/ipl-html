@@ -108,7 +108,7 @@ trait FormElementContainer
     public function registerElement($type, $name = null, $options = null)
     {
         if (is_string($type)) {
-            $type = $this->createElement($name, $type, $options);
+            $type = $this->createElement($type, $name, $options);
         } elseif ($type instanceof BaseHtmlElement) {
             if ($name === null) {
                 $name = $type->getName();
@@ -129,12 +129,12 @@ trait FormElementContainer
     }
 
     /**
-     * @param string $name
      * @param string $type
+     * @param string $name
      * @param mixed $attributes
      * @return BaseFormElement
      */
-    public function createElement($name, $type, $attributes = null)
+    public function createElement($type, $name, $attributes = null)
     {
         $this->eventuallyRegisterDefaultElementLoader();
 
