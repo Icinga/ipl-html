@@ -2,11 +2,13 @@
 
 namespace ipl\Html;
 
+use RuntimeException;
 use Traversable;
+use stdClass;
 
 class Table extends BaseHtmlElement
 {
-    protected $contentSeparator = ' ';
+    protected $contentSeparator = "\n";
 
     /** @var string */
     protected $tag = 'table';
@@ -31,7 +33,7 @@ class Table extends BaseHtmlElement
     {
         $this->ensureAssembled();
 
-        if ($content instanceof HtmlElement) {
+        if ($content instanceof BaseHtmlElement) {
             switch ($content->getTag()) {
                 case 'tr':
                     $this->getBody()->add($content);
@@ -39,21 +41,17 @@ class Table extends BaseHtmlElement
 
                 case 'thead':
                     parent::add($content);
-                    if ($this->header !== null) {
-                        $this->header = $content;
-                    }
+                    $this->header = $content;
                     break;
 
                 case 'tbody':
                     parent::add($content);
-                    if ($this->body !== null) {
-                        // Hint: we might also want to fail here
-                        $this->body = $content;
-                    }
+                    $this->body = $content;
                     break;
 
                 case 'tfoot':
-                    $this->getBody()->add($content);
+                    parent::add($content);
+                    $this->footer = $content;
                     break;
 
                 case 'caption':
@@ -61,19 +59,21 @@ class Table extends BaseHtmlElement
                         $this->prepend($content);
                         $this->caption = $content;
                     } else {
-                        // Hint: we might also want to fail here
-                        $this->add($content);
+                        throw new RuntimeException(
+                            'Tables allow only one <caption> tag'
+                        );
                     }
                     break;
 
                 default:
-                    $this->getBody()->add(static::row($content));
+                    $this->getBody()->add(static::row([$content]));
             }
-            $this->getBody()->add($content);
+        } elseif ($content instanceof stdClass) {
+            $this->getBody()->add(static::row((array) $content));
         } elseif (is_array($content) || $content instanceof Traversable) {
             $this->getBody()->add(static::row($content));
         } else {
-            $this->getBody()->add([$content]);
+            $this->getBody()->add(static::row([$content]));
         }
 
         return $this;
@@ -84,12 +84,20 @@ class Table extends BaseHtmlElement
      *
      * Will be rendered as a "caption" HTML element
      *
-     * @param $content
+     * @param $caption
      * @return $this
      */
-    public function setCaption($content)
+    public function setCaption($caption)
     {
-        $this->caption = new HtmlElement('caption', null, $content);
+        if ($caption instanceof BaseHtmlElement && $caption->getTag() === 'caption') {
+            $this->caption = $caption;
+            $this->prepend($caption);
+        } elseif ($this->caption === null) {
+            $this->caption->setContent($caption);
+        } else {
+            $this->caption = new HtmlElement('caption', null, $caption);
+            $this->prepend($this->caption);
+        }
 
         return $this;
     }
@@ -153,53 +161,10 @@ class Table extends BaseHtmlElement
     /**
      * @return HtmlElement
      */
-    public function generateHeader()
-    {
-        return $this->nextHeader()->add(
-            $this->addHeaderColumnsTo(static::tr())
-        );
-    }
-
-    /**
-     * @return HtmlElement
-     */
-    public function createFooter($columns = null)
-    {
-        return new HtmlElement(
-            'tfoot',
-            null,
-            static::row($columns, 'th')
-        );
-    }
-
-    /**
-     * @param HtmlElement $parent
-     * @return HtmlElement
-     */
-    protected function addHeaderColumnsTo(HtmlElement $parent)
-    {
-        foreach ($this->getHeaderColumns() as $column) {
-            $parent->add(static::th($column));
-        }
-
-        return $parent;
-    }
-
-    /**
-     * @return null|array|Traversable
-     */
-    public function getHeaderColumns()
-    {
-        return [];
-    }
-
-    /**
-     * @return HtmlElement
-     */
     public function getBody()
     {
         if ($this->body === null) {
-            $this->body = Html::tag('tbody')->setSeparator("\n");
+            $this->add(Html::tag('tbody')->setSeparator("\n"));
         }
 
         return $this->body;
@@ -211,7 +176,7 @@ class Table extends BaseHtmlElement
     public function getHeader()
     {
         if ($this->header === null) {
-            $this->header = Html::tag('thead')->setSeparator("\n");
+            $this->add(Html::tag('thead')->setSeparator("\n"));
         }
 
         return $this->header;
@@ -223,7 +188,7 @@ class Table extends BaseHtmlElement
     public function getFooter()
     {
         if ($this->footer === null) {
-            $this->footer = $this->createFooter();
+            $this->add(Html::tag('tfoot')->setSeparator("\n"));
         }
 
         return $this->footer;
@@ -234,10 +199,7 @@ class Table extends BaseHtmlElement
      */
     public function nextBody()
     {
-        if ($this->body !== null) {
-            $this->add($this->body);
-            $this->body = null;
-        }
+        $this->body = null;
 
         return $this->getBody();
     }
@@ -247,35 +209,8 @@ class Table extends BaseHtmlElement
      */
     public function nextHeader()
     {
-        if ($this->header !== null) {
-            $this->add($this->header);
-            $this->header = null;
-        }
+        $this->header = null;
 
         return $this->getHeader();
-    }
-
-    /**
-     * @return string
-     */
-    public function renderContent()
-    {
-        if (null !== $this->caption) {
-            $this->add($this->caption);
-        }
-
-        if (null !== $this->header) {
-            $this->add($this->header);
-        }
-
-        if (null !== $this->body) {
-            $this->add($this->getBody());
-        }
-
-        if (null !== $this->footer) {
-            $this->add($this->footer);
-        }
-
-        return parent::renderContent();
     }
 }
