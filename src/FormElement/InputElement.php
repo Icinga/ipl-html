@@ -11,10 +11,13 @@ abstract class InputElement extends BaseFormElement
     /** @var string */
     protected $type;
 
-    public function __construct($name, $attributes = null)
+    protected function registerCallbacks()
     {
-        parent::__construct($name, $attributes);
-        $this->getAttributes()->registerAttributeCallback('type', [$this, 'getTypeAttribute']);
+        parent::registerCallbacks();
+        $this->getAttributes()->registerAttributeCallback(
+            'type',
+            [$this, 'getTypeAttribute']
+        );
     }
 
     /**
