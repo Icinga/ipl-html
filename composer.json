@@ -6,7 +6,8 @@
   "homepage": "https://github.com/Icinga/ipl-html",
   "repositories": [{
     "type": "vcs",
-    "url": "https://github.com/icinga/ipl-stdlib"
+    "url": "https://github.com/Icinga/ipl-stdlib",
+    "no-api": true
   }],
   "require": {
     "php": ">=5.4.0",
