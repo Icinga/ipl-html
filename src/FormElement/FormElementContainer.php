@@ -13,6 +13,9 @@ trait FormElementContainer
     /** @var BaseFormElement[] */
     private $elements = [];
 
+    /** @var BaseHtmlElement|null */
+    protected $defaultElementDecorator;
+
     /**
      * @return BaseFormElement[]
      */

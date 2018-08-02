@@ -23,9 +23,6 @@ class Form extends BaseHtmlElement
     /** @var SubmitElement */
     protected $submitButton;
 
-    /** @var BaseHtmlElement|null */
-    protected $defaultElementDecorator;
-
     private $populatedValues = [];
 
     /** @var ServerRequestInterface */
