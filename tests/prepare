@@ -3,6 +3,7 @@
 set -ex
 
 composer install --no-dev
+composer update $PREFERRED
 
 PHP_VERSION="$(php -r 'echo phpversion();')"
 PHPCS_VERSION=${PHPCS_VERSION:=3.3.1}
