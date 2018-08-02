@@ -6,9 +6,8 @@ use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\FormElement\FormElementContainer;
 use ipl\Html\FormElement\SubmitElement;
 use ipl\Stdlib\MessageContainer;
-use ipl\Stdlib\Loader\PluginLoadingHelper;
-use Psr\Http\Message\ServerRequestInterface;
 use InvalidArgumentException;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
@@ -47,11 +46,16 @@ class Form extends BaseHtmlElement
      */
     public function handleRequest(ServerRequestInterface $request)
     {
-        $request->getMethod();
-        $request->getParsedBody();
         $this->setRequest($request);
         if ($this->hasBeenSent()) {
-            $this->populate($request->getParams());
+            if ($request->getMethod() === 'POST') {
+                $params = $request->getParsedBody();
+            } elseif ($this->getMethod() === 'GET') {
+                $params = parse_str($request->getUri()->getQuery());
+            } else {
+                $params = [];
+            }
+            $this->populate($params);
         }
 
         $this->ensureAssembled();
@@ -157,8 +161,6 @@ class Form extends BaseHtmlElement
         }
 
         if ($this->request->getMethod() !== $this->getMethod()) {
-            var_dump($this->request->getMethod());
-            var_dump($this->getMethod());
             return false;
         }
 
