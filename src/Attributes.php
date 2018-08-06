@@ -287,8 +287,18 @@ class Attributes
     }
 
     /**
-     * @return string
-     * @throws InvalidArgumentException
+     * Render attributes to HTML
+     *
+     * If the value of an attribute is of type boolean, it will be rendered as
+     * {@link http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes boolean attribute}.
+     *
+     * If the value of an attribute is null, it will be skipped.
+     *
+     * HTML-escaping of the attributes' values takes place automatically using {@link Html::escape()}.
+     *
+     * @return  string
+     *
+     * @throws  InvalidArgumentException    If the result of a callback is invalid
      */
     public function render()
     {
