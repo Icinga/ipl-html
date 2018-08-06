@@ -142,7 +142,9 @@ class Attribute
     }
 
     /**
-     * @return bool
+     * Test and return true if the attribute is boolean, false otherwise
+     *
+     * @return  bool
      */
     public function isBoolean()
     {
@@ -150,7 +152,11 @@ class Attribute
     }
 
     /**
-     * @return bool
+     * Test and return true if the attribute is empty, false otherwise
+     *
+     * Null and the empty array will be considered empty.
+     *
+     * @return  bool
      */
     public function isEmpty()
     {
