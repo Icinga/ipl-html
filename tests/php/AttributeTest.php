@@ -124,6 +124,54 @@ class AttributeTest extends TestCase
         $this->assertSame('', (new Attribute('name', []))->render());
     }
 
+    public function testRemoveValue()
+    {
+        $this->assertSame(
+            null,
+            (new Attribute('name', 'value'))->removeValue('value')->getValue()
+        );
+    }
+
+    public function testRemoveValueNoop()
+    {
+        $this->assertSame(
+            'value',
+            (new Attribute('name', 'value'))->removeValue('noop')->getValue()
+        );
+    }
+
+    public function testRemoveValueWithArrayAndArrayValue()
+    {
+        $this->assertSame(
+            ['foo'],
+            (new Attribute('class', ['foo', 'bar']))->removeValue(['bar'])->getValue()
+        );
+    }
+
+    public function testRemoveValueNoopWithArrayAndArrayValue()
+    {
+        $this->assertSame(
+            ['foo', 'bar'],
+            (new Attribute('class', ['foo', 'bar']))->removeValue(['baz'])->getValue()
+        );
+    }
+
+    public function testRemoveValueWithArrayAndScalarValue()
+    {
+        $this->assertSame(
+            null,
+            (new Attribute('class', 'foo'))->removeValue(['foo'])->getValue()
+        );
+    }
+
+    public function testRemoveValueNoopWithArrayAndScalarValue()
+    {
+        $this->assertSame(
+            'foo',
+            (new Attribute('class', 'foo'))->removeValue(['bar'])->getValue()
+        );
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */

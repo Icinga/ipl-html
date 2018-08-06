@@ -145,6 +145,38 @@ class Attribute
     }
 
     /**
+     * Remove the given value from the attribute
+     *
+     * The current value is set to null if it matches the value to remove
+     * or is in the array of values to remove.
+     *
+     * If the current value is an array, all elements are removed which
+     * match the value(s) to remove.
+     *
+     * Does nothing if there is no such value to remove.
+     *
+     * @param   string|array $value      The value(s) to remove
+     *
+     * @return  $this
+     */
+    public function removeValue($value)
+    {
+        if (! is_array($value)) {
+            $value = [$value];
+        }
+
+        $current = $this->getValue();
+
+        if (is_array($current)) {
+            $this->setValue(array_diff($current, $value));
+        } elseif (in_array($current, $value, true)) {
+            $this->setValue(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Test and return true if the attribute is boolean, false otherwise
      *
      * @return  bool
