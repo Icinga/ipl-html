@@ -39,6 +39,11 @@ class SubFormElement extends BaseFormElement
         return true;
     }
 
+    public function hasSubmitButton()
+    {
+        return true;
+    }
+
     protected function registerValueCallback()
     {
         $this->getAttributes()->registerAttributeCallback(
