@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Html as h;
+use ipl\Html\HtmlDocument;
 
 class HtmlDocumentTest extends TestCase
 {
@@ -38,6 +39,32 @@ class HtmlDocumentTest extends TestCase
         $this->assertRendersHtml(
             '<span class="test it">&gt;5</span>',
             h::span(['class' => 'test it'], ['>5'])
+        );
+    }
+
+    public function testDocumentSupportsMultipleWrappers()
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = (new HtmlDocument())->add('Just some content');
+        $c->addWrapper($a);
+        $c->addWrapper($b);
+        $this->assertRendersHtml(
+            '<b><a>Just some content</a></b>',
+            $c
+        );
+    }
+
+    public function testDocumentSupportsMultiplePrependedWrappers()
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = (new HtmlDocument())->add('Just some content');
+        $c->prependWrapper($a);
+        $c->prependWrapper($b);
+        $this->assertRendersHtml(
+            '<a><b>Just some content</b></a>',
+            $c
         );
     }
 }

@@ -62,7 +62,23 @@ class HtmlDocument implements Countable, ValidHtml
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
         } else {
-            $this->setWrapper($wrapper->wrap($this->wrapper));
+            $this->wrapper->addWrapper($wrapper);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param BaseHtmlElement $wrapper
+     * @return $this
+     */
+    public function prependWrapper(BaseHtmlElement $wrapper)
+    {
+        if ($this->wrapper === null) {
+            $this->setWrapper($wrapper);
+        } else {
+            $wrapper->addWrapper($this->wrapper);
+            $this->setWrapper($wrapper);
         }
 
         return $this;
