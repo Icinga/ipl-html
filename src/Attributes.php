@@ -93,10 +93,17 @@ class Attributes
     }
 
     /**
-     * @param Attribute|string $attribute
-     * @param string|array $value
-     * @return $this
-     * @throws InvalidArgumentException
+     * Add the given attribute(s)
+     *
+     * If an attribute with the same name already exists, the attribute's value will be added to the current value of
+     * the attribute.
+     *
+     * @param   string|array|Attribute|self $attribute  The attribute(s) to add
+     * @param   string|bool|array           $value      The value of the attribute
+     *
+     * @return  $this
+     *
+     * @throws  InvalidArgumentException    If the attribute does not yet exist and its name contains special characters
      */
     public function add($attribute, $value = null)
     {
