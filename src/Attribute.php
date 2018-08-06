@@ -150,6 +150,14 @@ class Attribute
     }
 
     /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return null === $this->value || $this->value === [];
+    }
+
+    /**
      * Render the attribute to HTML
      *
      * If the value of the attribute is of type boolean, it will be rendered as
@@ -198,14 +206,6 @@ class Attribute
     public function renderValue()
     {
         return static::escapeValue($this->value);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEmpty()
-    {
-        return null === $this->value || $this->value === [];
     }
 
     /**
