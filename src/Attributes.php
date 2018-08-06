@@ -107,30 +107,39 @@ class Attributes
      */
     public function set($attribute, $value = null)
     {
-        if ($attribute instanceof static) {
+        if ($attribute instanceof self) {
             foreach ($attribute as $a) {
                 $this->setAttribute($a);
             }
 
             return $this;
-        } elseif ($attribute instanceof Attribute) {
-            return $this->setAttribute($attribute);
-        } elseif (is_array($attribute)) {
+        }
+
+        if ($attribute instanceof Attribute) {
+            $this->setAttribute($attribute);
+
+            return $this;
+        }
+
+        if (is_array($attribute)) {
             foreach ($attribute as $name => $value) {
                 $this->set($name, $value);
             }
 
             return $this;
-        } else {
-            if (array_key_exists($attribute, $this->setterCallbacks)) {
-                $callback = $this->setterCallbacks[$attribute];
-                $callback($value);
-
-                return $this;
-            } else {
-                return $this->setAttribute(new Attribute($attribute, $value));
-            }
         }
+
+        if (array_key_exists($attribute, $this->setterCallbacks)) {
+            $callback = $this->setterCallbacks[$attribute];
+
+            $callback($value);
+
+            return $this;
+        }
+
+        $this->attributes[$attribute] = Attribute::create($attribute, $value);
+
+        return $this;
     }
 
     /**
