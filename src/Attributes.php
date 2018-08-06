@@ -196,8 +196,28 @@ class Attributes
     }
 
     /**
-     * @param Attribute $attribute
-     * @return $this
+     * Set the specified attribute
+     *
+     * @param   Attribute   $attribute
+     *
+     * @return  $this
+     */
+    public function setAttribute(Attribute $attribute)
+    {
+        $name = $attribute->getName();
+        $this->attributes[$name] = $attribute;
+        return $this;
+    }
+
+    /**
+     * Add the specified attribute
+     *
+     * If an attribute with the same name already exists, the given attribute's value
+     * will be added to the current value of the attribute.
+     *
+     * @param   Attribute $attribute
+     *
+     * @return  $this
      */
     public function addAttribute(Attribute $attribute)
     {
@@ -208,17 +228,6 @@ class Attributes
             $this->attributes[$name] = $attribute;
         }
 
-        return $this;
-    }
-
-    /**
-     * @param Attribute $attribute
-     * @return $this
-     */
-    public function setAttribute(Attribute $attribute)
-    {
-        $name = $attribute->getName();
-        $this->attributes[$name] = $attribute;
         return $this;
     }
 
