@@ -61,6 +61,18 @@ class Attributes
     }
 
     /**
+     * Return true if the attribute with the given name exists, false otherwise
+     *
+     * @param   string  $name
+     *
+     * @return  bool
+     */
+    public function has($name)
+    {
+        return array_key_exists($name, $this->attributes);
+    }
+
+    /**
      * @param Attribute|string $attribute
      * @param string|array $value
      * @return $this
@@ -153,15 +165,6 @@ class Attributes
         } else {
             return false;
         }
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function has($name)
-    {
-        return array_key_exists($name, $this->attributes);
     }
 
     /**
