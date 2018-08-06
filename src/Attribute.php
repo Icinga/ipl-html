@@ -195,7 +195,7 @@ class Attribute
      */
     public function isEmpty()
     {
-        return null === $this->value || $this->value === [];
+        return $this->value === null || $this->value === [];
     }
 
     /**

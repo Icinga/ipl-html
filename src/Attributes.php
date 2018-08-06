@@ -311,7 +311,7 @@ class Attributes
                 }
             } elseif (is_string($attribute)) {
                 $parts[] = Attribute::create($name, $attribute)->render();
-            } elseif (null === $attribute) {
+            } elseif ($attribute === null) {
                 continue;
             } else {
                 throw new InvalidArgumentException(
