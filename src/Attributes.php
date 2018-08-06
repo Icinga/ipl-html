@@ -93,6 +93,46 @@ class Attributes
     }
 
     /**
+     * Set the given attribute(s)
+     *
+     * If the attribute with the given name already exists, it gets overridden.
+     *
+     * @param   string|array|Attribute|self $attribute  The attribute(s) to add
+     * @param   string|bool|array           $value      The value of the attribute
+     *
+     * @return  $this
+     *
+     * @throws  InvalidArgumentException    If the attribute name contains special characters
+     */
+    public function set($attribute, $value = null)
+    {
+        if ($attribute instanceof static) {
+            foreach ($attribute as $a) {
+                $this->setAttribute($a);
+            }
+
+            return $this;
+        } elseif ($attribute instanceof Attribute) {
+            return $this->setAttribute($attribute);
+        } elseif (is_array($attribute)) {
+            foreach ($attribute as $name => $value) {
+                $this->set($name, $value);
+            }
+
+            return $this;
+        } else {
+            if (array_key_exists($attribute, $this->setterCallbacks)) {
+                $callback = $this->setterCallbacks[$attribute];
+                $callback($value);
+
+                return $this;
+            } else {
+                return $this->setAttribute(new Attribute($attribute, $value));
+            }
+        }
+    }
+
+    /**
      * Add the given attribute(s)
      *
      * If an attribute with the same name already exists, the attribute's value will be added to the current value of
@@ -128,40 +168,6 @@ class Attributes
         }
 
         return $this;
-    }
-
-    /**
-     * @param Attribute|array|string $attribute
-     * @param string|array $value
-     * @return $this
-     * @throws InvalidArgumentException
-     */
-    public function set($attribute, $value = null)
-    {
-        if ($attribute instanceof static) {
-            foreach ($attribute as $a) {
-                $this->setAttribute($a);
-            }
-
-            return $this;
-        } elseif ($attribute instanceof Attribute) {
-            return $this->setAttribute($attribute);
-        } elseif (is_array($attribute)) {
-            foreach ($attribute as $name => $value) {
-                $this->set($name, $value);
-            }
-
-            return $this;
-        } else {
-            if (array_key_exists($attribute, $this->setterCallbacks)) {
-                $callback = $this->setterCallbacks[$attribute];
-                $callback($value);
-
-                return $this;
-            } else {
-                return $this->setAttribute(new Attribute($attribute, $value));
-            }
-        }
     }
 
     /**
