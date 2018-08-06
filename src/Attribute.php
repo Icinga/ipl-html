@@ -264,7 +264,6 @@ class Attribute
      */
     public static function escapeName($name)
     {
-        // TODO: escape
         return (string) $name;
     }
 
