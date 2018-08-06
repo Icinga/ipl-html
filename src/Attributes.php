@@ -76,7 +76,7 @@ class Attributes
     /**
      * Get the attribute with the given name
      *
-     * If the attribute does not yet exist, it is automatically created.
+     * If the attribute does not yet exist, it is automatically created and registered to this Attributes instance.
      *
      * @param   string  $name
      *
@@ -86,11 +86,11 @@ class Attributes
      */
     public function get($name)
     {
-        if ($this->has($name)) {
-            return $this->attributes[$name];
-        } else {
-            return Attribute::createEmpty($name);
+        if (! $this->has($name)) {
+            $this->attributes[$name] = Attribute::createEmpty($name);
         }
+
+        return $this->attributes[$name];
     }
 
     /**
