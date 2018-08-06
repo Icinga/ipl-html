@@ -134,8 +134,16 @@ class Attribute
      */
     public function render()
     {
-        if ($this->isBoolean() && $this->value) {
-            return $this->renderName();
+        if ($this->isEmpty()) {
+            return '';
+        }
+
+        if ($this->isBoolean()) {
+            if ($this->value) {
+                return $this->renderName();
+            }
+
+            return '';
         } else {
             return sprintf(
                 '%s="%s"',

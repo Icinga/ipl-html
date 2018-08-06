@@ -109,6 +109,21 @@ class AttributeTest extends TestCase
         );
     }
 
+    public function testRenderFalse()
+    {
+        $this->assertSame('', (new Attribute('name', false))->render());
+    }
+
+    public function testRenderNull()
+    {
+        $this->assertSame('', (new Attribute('name', null))->render());
+    }
+
+    public function testRenderEmptyArray()
+    {
+        $this->assertSame('', (new Attribute('name', []))->render());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
