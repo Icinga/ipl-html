@@ -171,19 +171,28 @@ class Attributes
     }
 
     /**
-     * @param $name
-     * @return Attribute|false
+     * Remove the attribute with the given name or remove the given value from the attribute
+     *
+     * @param   string                  $name   The name of the attribute
+     * @param   null|string|array       $value  The value to remove if specified
+     *
+     * @return  Attribute|false
      */
-    public function remove($name)
+    public function remove($name, $value = null)
     {
-        if ($this->has($name)) {
-            $attribute = $this->attributes[$name];
-            unset($this->attributes[$name]);
-
-            return $attribute;
-        } else {
+        if (! $this->has($name)) {
             return false;
         }
+
+        $attribute = $this->attributes[$name];
+
+        if ($value === null) {
+            unset($this->attributes[$name]);
+        } else {
+            $attribute->removeValue($value);
+        }
+
+        return $attribute;
     }
 
     /**
