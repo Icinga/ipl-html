@@ -336,6 +336,13 @@ class Attributes implements ArrayAccess, IteratorAggregate
         return $this;
     }
 
+    public function setCallback($name, $getter, $setter = null)
+    {
+        $this->registerAttributeCallback($name, $getter, $setter);
+
+        return $this;
+    }
+
     /**
      * Register callback for an attribute
      *
