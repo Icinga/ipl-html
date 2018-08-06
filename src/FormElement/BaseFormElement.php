@@ -251,6 +251,14 @@ abstract class BaseFormElement extends BaseHtmlElement
     }
 
     /**
+     * @return bool
+     */
+    public function hasBeenValidatedAndIsNotValid()
+    {
+        return $this->isValid !== null && $this->isValid;
+    }
+
+    /**
      * @return $this
      */
     public function validate()

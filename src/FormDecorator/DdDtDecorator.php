@@ -5,9 +5,8 @@ namespace ipl\Html\FormDecorator;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\Html;
-use ipl\Html\HtmlDocument;
 
-class DdDtDecorator extends BaseHtmlElement
+class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 {
     protected $tag = 'dl';
 
@@ -15,30 +14,29 @@ class DdDtDecorator extends BaseHtmlElement
 
     protected $dd;
 
-    /** @var HtmlDocument */
-    protected $wrapped;
+    /** @var BaseFormElement */
+    protected $wrappedElement;
 
     protected $ready = false;
 
     /**
-     * @param HtmlDocument $document
+     * @param BaseFormElement $element
      * @return static
      */
-    public function wrap(HtmlDocument $document)
+    public function decorate(BaseFormElement $element)
     {
-        // TODO: ignore hidden
-
+        // TODO: ignore hidden?
         $newWrapper = clone($this);
-        $newWrapper->wrapped = $document;
-        $document->addWrapper($newWrapper);
+        $newWrapper->wrappedElement = $element;
+        $element->prependWrapper($newWrapper);
 
         return $newWrapper;
     }
 
     protected function renderLabel()
     {
-        if ($this->wrapped instanceof BaseFormElement) {
-            $label = $this->wrapped->getLabel();
+        if ($this->wrappedElement instanceof BaseFormElement) {
+            $label = $this->wrappedElement->getLabel();
             if (strlen($label)) {
                 return Html::tag('label', null, $label);
             }
@@ -47,22 +45,28 @@ class DdDtDecorator extends BaseHtmlElement
         return null;
     }
 
-    public function XXrenderAttributes()
+    public function getAttributes()
     {
+        $attributes = parent::getAttributes();
+
         // TODO: only when sent?!
-        if ($this->wrapped instanceof BaseFormElement) {
-            if (! $this->wrapped->isValid()) {
-                $this->getAttributes()->add('class', 'errors');
+        if ($this->wrappedElement->hasBeenValidatedAndIsNotValid()) {
+            $classes = $attributes->get('class');
+            if (empty($classes)
+                || (is_array($classes) && ! in_array('errors', $classes))
+                || (is_string($classes) && $classes !== 'errors')
+            ) {
+                $attributes->add('class', 'errors');
             }
         }
 
-        return parent::renderAttributes();
+        return $attributes;
     }
 
     protected function renderDescription()
     {
-        if ($this->wrapped instanceof BaseFormElement) {
-            $description = $this->wrapped->getDescription();
+        if ($this->wrappedElement instanceof BaseFormElement) {
+            $description = $this->wrappedElement->getDescription();
             if (strlen($description)) {
                 return Html::tag('p', ['class' => 'description'], $description);
             }
@@ -73,9 +77,9 @@ class DdDtDecorator extends BaseHtmlElement
 
     protected function renderErrors()
     {
-        if ($this->wrapped instanceof BaseFormElement) {
+        if ($this->wrappedElement instanceof BaseFormElement) {
             $errors = [];
-            foreach ($this->wrapped->getMessages() as $message) {
+            foreach ($this->wrappedElement->getMessages() as $message) {
                 $errors[] = Html::tag('p', ['class' => 'error'], $message);
             }
 
@@ -89,7 +93,8 @@ class DdDtDecorator extends BaseHtmlElement
 
     public function add($content)
     {
-        if ($content !== $this->wrapped) {
+        // TODO: is this required?
+        if ($content !== $this->wrappedElement) {
             parent::add($content);
         }
 
@@ -102,7 +107,7 @@ class DdDtDecorator extends BaseHtmlElement
         $this->ready = true;
     }
 
-    public function dt()
+    protected function dt()
     {
         if ($this->dt === null) {
             $this->dt = Html::tag('dt', null, $this->renderLabel());
@@ -114,16 +119,21 @@ class DdDtDecorator extends BaseHtmlElement
     /**
      * @return \ipl\Html\HtmlElement
      */
-    public function dd()
+    protected function dd()
     {
         if ($this->dd === null) {
             $this->dd = Html::tag('dd', null, [
-                $this->wrapped,
+                $this->wrappedElement,
                 $this->renderErrors(),
                 $this->renderDescription()
             ]);
         }
 
         return $this->dd;
+    }
+
+    public function __destruct()
+    {
+        $this->wrapper = null;
     }
 }

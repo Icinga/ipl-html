@@ -4,6 +4,7 @@ namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Stdlib\Loader\PluginLoader;
 
 trait FormElementContainer
@@ -15,7 +16,7 @@ trait FormElementContainer
 
     private $populatedValues = [];
 
-    /** @var BaseHtmlElement|null */
+    /** @var DecoratorInterface|BaseHtmlElement|null */
     protected $defaultElementDecorator;
 
     /**
@@ -59,6 +60,26 @@ trait FormElementContainer
     {
         if (! $this->hasPluginLoadersFor('element')) {
             $this->addPluginLoader('element', __NAMESPACE__, 'Element');
+        }
+
+        return $this;
+    }
+
+    public function addDecoratorLoader($namespace, $classPostfix = null)
+    {
+        $this->eventuallyRegisterDefaultDecoratorLoader();
+
+        return $this->addPluginLoader('decorator', $namespace, $classPostfix);
+    }
+
+    protected function eventuallyRegisterDefaultDecoratorLoader()
+    {
+        if (! $this->hasPluginLoadersFor('decorator')) {
+            $this->addPluginLoader(
+                'decorator',
+                'ipl\\Html\\FormDecorator',
+                'Decorator'
+            );
         }
 
         return $this;
@@ -117,10 +138,21 @@ trait FormElementContainer
         return $this;
     }
 
+    /**
+     * @param BaseFormElement $element
+     * @return BaseFormElement
+     */
     protected function decorate(BaseFormElement $element)
     {
         if ($this->hasDefaultElementDecorator()) {
-            $this->getDefaultElementDecorator()->wrap($element);
+            $decorator = $this->getDefaultElementDecorator();
+            if ($decorator instanceof DecoratorInterface) {
+                $decorator->decorate($element);
+            } elseif ($decorator instanceof BaseHtmlElement) {
+                $decorator->wrap($element);
+            } else {
+                die('WTF');
+            }
         }
 
         return $element;
@@ -155,6 +187,7 @@ trait FormElementContainer
 
     public function onElementRegistered($name, BaseFormElement $element)
     {
+        // TODO: hasSubmitButton is not here
         if ($element instanceof SubmitElement && ! $this->hasSubmitButton()) {
             $this->setSubmitButton($element);
         }
@@ -194,9 +227,16 @@ trait FormElementContainer
         }
     }
 
-    public function setDefaultElementDecorator(BaseHtmlElement $decorator)
+    public function setDefaultElementDecorator($decorator)
     {
-        $this->defaultElementDecorator = $decorator;
+        if ($decorator instanceof BaseHtmlElement
+            || $decorator instanceof DecoratorInterface
+        ) {
+            $this->defaultElementDecorator = $decorator;
+        } else {
+            $this->eventuallyRegisterDefaultDecoratorLoader();
+            $this->defaultElementDecorator = $this->loadPlugin('decorator', $decorator);
+        }
 
         return $this;
     }
@@ -207,7 +247,7 @@ trait FormElementContainer
     }
 
     /**
-     * @return BaseHtmlElement
+     * @return DecoratorInterface
      */
     public function getDefaultElementDecorator()
     {
