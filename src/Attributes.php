@@ -51,33 +51,6 @@ class Attributes
     }
 
     /**
-     * @param Attributes|array|null $attributes
-     * @return Attributes
-     * @throws InvalidArgumentException
-     */
-    public static function wantAttributes($attributes)
-    {
-        if ($attributes instanceof Attributes) {
-            return $attributes;
-        } else {
-            $self = new static();
-            if (is_array($attributes)) {
-                foreach ($attributes as $k => $v) {
-                    $self->add($k, $v);
-                }
-
-                return $self;
-            } elseif ($attributes !== null) {
-                throw new InvalidArgumentException(sprintf(
-                    'Attributes, Array or Null expected, got %s',
-                    Error::getPhpTypeName($attributes)
-                ));
-            }
-            return $self;
-        }
-    }
-
-    /**
      * @return Attribute[]
      */
     public function getAttributes()
@@ -297,5 +270,32 @@ class Attributes
         $this->prefix = $prefix;
 
         return $this;
+    }
+
+    /**
+     * @param Attributes|array|null $attributes
+     * @return Attributes
+     * @throws InvalidArgumentException
+     */
+    public static function wantAttributes($attributes)
+    {
+        if ($attributes instanceof Attributes) {
+            return $attributes;
+        } else {
+            $self = new static();
+            if (is_array($attributes)) {
+                foreach ($attributes as $k => $v) {
+                    $self->add($k, $v);
+                }
+
+                return $self;
+            } elseif ($attributes !== null) {
+                throw new InvalidArgumentException(sprintf(
+                    'Attributes, Array or Null expected, got %s',
+                    Error::getPhpTypeName($attributes)
+                ));
+            }
+            return $self;
+        }
     }
 }
