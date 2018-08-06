@@ -51,7 +51,9 @@ class Attributes
     }
 
     /**
-     * @return Attribute[]
+     * Get the collection of attributes as array
+     *
+     * @return  Attribute[]
      */
     public function getAttributes()
     {
