@@ -202,7 +202,9 @@ class Attribute
     }
 
     /**
-     * @return string
+     * Render the name of the attribute to HTML
+     *
+     * @return  string
      */
     public function renderName()
     {
@@ -210,7 +212,9 @@ class Attribute
     }
 
     /**
-     * @return string
+     * Render the value of the attribute to HTML
+     *
+     * @return  string
      */
     public function renderValue()
     {
