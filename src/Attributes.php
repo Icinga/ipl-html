@@ -223,7 +223,8 @@ class Attributes
     public function addAttribute(Attribute $attribute)
     {
         $name = $attribute->getName();
-        if (array_key_exists($name, $this->attributes)) {
+
+        if ($this->has($name)) {
             $this->attributes[$name]->addValue($attribute->getValue());
         } else {
             $this->attributes[$name] = $attribute;
