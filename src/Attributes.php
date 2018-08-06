@@ -315,9 +315,20 @@ class Attributes
     }
 
     /**
-     * @param Attributes|array|null $attributes
-     * @return Attributes
-     * @throws InvalidArgumentException
+     * Ensure that the given attributes of mixed type are converted to an instance of attributes
+     *
+     * The conversion procedure is as follows:
+     *
+     * If the given attributes is already an instance of Attributes, returns the very same element.
+     * If the attributes are given as an array of attribute name-value pairs, they are used to
+     * construct and return a new Attributes instance.
+     * If the attributes are null, an empty new instance of Attributes is returned.
+     *
+     * @param   array|static|null   $attributes
+     *
+     * @return  static
+     *
+     * @throws  InvalidArgumentException    In case the given attributes are of an unsupported type
      */
     public static function wantAttributes($attributes)
     {
