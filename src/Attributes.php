@@ -73,6 +73,26 @@ class Attributes
     }
 
     /**
+     * Get the attribute with the given name
+     *
+     * If the attribute does not yet exist, it is automatically created.
+     *
+     * @param   string  $name
+     *
+     * @return  Attribute
+     *
+     * @throws  InvalidArgumentException    If the attribute does not yet exist and its name contains special characters
+     */
+    public function get($name)
+    {
+        if ($this->has($name)) {
+            return $this->attributes[$name];
+        } else {
+            return Attribute::createEmpty($name);
+        }
+    }
+
+    /**
      * @param Attribute|string $attribute
      * @param string|array $value
      * @return $this
@@ -134,20 +154,6 @@ class Attributes
             } else {
                 return $this->setAttribute(new Attribute($attribute, $value));
             }
-        }
-    }
-
-    /**
-     * @param $name
-     * @return Attribute
-     * @throws InvalidArgumentException
-     */
-    public function get($name)
-    {
-        if ($this->has($name)) {
-            return $this->attributes[$name];
-        } else {
-            return Attribute::createEmpty($name);
         }
     }
 
