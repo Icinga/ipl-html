@@ -264,10 +264,11 @@ class Attributes
             } elseif (null === $attribute) {
                 continue;
             } else {
-                throw new InvalidArgumentException(
+                throw new InvalidArgumentException(sprintf(
                     'A registered attribute callback must return string, null'
-                    . ' or an Attribute'
-                );
+                    . ' or an Attribute, got a %s',
+                    Error::getPhpTypeName($attribute)
+                ));
             }
         }
 
