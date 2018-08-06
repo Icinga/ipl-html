@@ -333,7 +333,7 @@ class Attributes
             return '';
         }
 
-        $separator = ' ' . $this->prefix;
+        $separator = ' ' . $this->getPrefix();
 
         return $separator . implode($separator, $parts);
     }
