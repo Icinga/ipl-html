@@ -263,6 +263,30 @@ class Attributes
     }
 
     /**
+     * Get the attributes name prefix
+     *
+     * @return  string|null
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * Set the attributes name prefix
+     *
+     * @param   string  $prefix
+     *
+     * @return  $this
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * @return string
      * @throws InvalidArgumentException
      */
@@ -302,17 +326,6 @@ class Attributes
         $separator = ' ' . $this->prefix;
 
         return $separator . implode($separator, $parts);
-    }
-
-    /**
-     * @param string $prefix
-     * @return $this
-     */
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
-
-        return $this;
     }
 
     /**
