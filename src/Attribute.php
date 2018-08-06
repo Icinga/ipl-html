@@ -130,7 +130,18 @@ class Attribute
     }
 
     /**
-     * @return string
+     * Render the attribute to HTML
+     *
+     * If the value of the attribute is of type boolean, it will be rendered as
+     * {@link http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes boolean attribute}.
+     * Note that in this case if the value of the attribute is false, the empty string will be returned.
+     *
+     * If the value of the attribute is null or an empty array,
+     * the empty string will be returned as well.
+     *
+     * Escaping of the attribute's value takes place automatically using {@link Html::escape()}.
+     *
+     * @return  string
      */
     public function render()
     {
