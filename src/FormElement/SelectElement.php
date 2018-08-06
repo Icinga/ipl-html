@@ -25,6 +25,15 @@ class SelectElement extends BaseFormElement
         );
     }
 
+    public function setValue($value)
+    {
+        if ($value === '') {
+            $value = null;
+        }
+
+        return parent::setValue($value);
+    }
+
     /**
      * @param array $options
      * @return $this
