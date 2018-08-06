@@ -2,6 +2,7 @@
 
 namespace ipl\Html;
 
+use ipl\Stdlib;
 use InvalidArgumentException;
 
 class Attributes
@@ -332,23 +333,21 @@ class Attributes
      */
     public static function wantAttributes($attributes)
     {
-        if ($attributes instanceof Attributes) {
+        if ($attributes instanceof self) {
             return $attributes;
-        } else {
-            $self = new static();
-            if (is_array($attributes)) {
-                foreach ($attributes as $k => $v) {
-                    $self->add($k, $v);
-                }
-
-                return $self;
-            } elseif ($attributes !== null) {
-                throw new InvalidArgumentException(sprintf(
-                    'Attributes, Array or Null expected, got %s',
-                    Error::getPhpTypeName($attributes)
-                ));
-            }
-            return $self;
         }
+
+        if (is_array($attributes)) {
+            return new static($attributes);
+        }
+
+        if ($attributes === null) {
+            return new static();
+        }
+
+        throw new InvalidArgumentException(sprintf(
+            'Attributes instance, array or null expected. Got %s instead.',
+            Stdlib\get_php_type($attributes)
+        ));
     }
 }
