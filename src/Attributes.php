@@ -205,8 +205,8 @@ class Attributes
      */
     public function setAttribute(Attribute $attribute)
     {
-        $name = $attribute->getName();
-        $this->attributes[$name] = $attribute;
+        $this->attributes[$attribute->getName()] = $attribute;
+
         return $this;
     }
 
