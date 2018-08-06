@@ -157,24 +157,40 @@ class Attributes
      */
     public function add($attribute, $value = null)
     {
-        // TODO: do not allow Attribute and Attributes
-        if ($attribute instanceof Attributes) {
-            foreach ($attribute->getAttributes() as $a) {
-                $this->add($a);
+        if ($attribute instanceof self) {
+            foreach ($attribute as $attr) {
+                $this->add($attr);
             }
-        } elseif ($attribute instanceof Attribute) {
-            $this->addAttribute($attribute);
-        } elseif (is_array($attribute)) {
+
+            return $this;
+        }
+
+        if (is_array($attribute)) {
             foreach ($attribute as $name => $value) {
                 $this->add($name, $value);
             }
+
+            return $this;
+        }
+
+        if ($attribute instanceof Attribute) {
+            $this->addAttribute($attribute);
+
+            return $this;
+        }
+
+        if (array_key_exists($attribute, $this->setterCallbacks)) {
+            $callback = $this->setterCallbacks[$attribute];
+
+            $callback($value);
+
+            return $this;
+        }
+
+        if (! array_key_exists($attribute, $this->attributes)) {
+            $this->attributes[$attribute] = Attribute::create($attribute, $value);
         } else {
-            if (array_key_exists($attribute, $this->setterCallbacks)) {
-                $callback = $this->setterCallbacks[$attribute];
-                $callback($value);
-            } else {
-                $this->addAttribute(Attribute::create($attribute, $value));
-            }
+            $this->attributes[$attribute]->addValue($value);
         }
 
         return $this;
