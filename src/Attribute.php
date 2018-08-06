@@ -46,6 +46,16 @@ class Attribute
     }
 
     /**
+     * @param $name
+     * @return static
+     * @throws InvalidArgumentException
+     */
+    public static function createEmpty($name)
+    {
+        return new static($name, null);
+    }
+
+    /**
      * Get the name of the attribute
      *
      * @return  string
@@ -186,16 +196,6 @@ class Attribute
     public function isEmpty()
     {
         return null === $this->value || $this->value === [];
-    }
-
-    /**
-     * @param $name
-     * @return static
-     * @throws InvalidArgumentException
-     */
-    public static function createEmpty($name)
-    {
-        return new static($name, null);
     }
 
     /**
