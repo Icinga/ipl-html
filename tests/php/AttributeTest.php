@@ -77,14 +77,6 @@ class AttributeTest extends TestCase
         );
     }
 
-    public function testSpecialCharactersAreEscaped()
-    {
-        $this->assertEquals(
-            '“‘&gt;&quot;&amp;&lt;’”',
-            Attribute::create('x', '“‘>"&<’”')->renderValue()
-        );
-    }
-
     public function testUmlautCharactersArePreserved()
     {
         $this->assertEquals(
@@ -104,8 +96,40 @@ class AttributeTest extends TestCase
     public function testComplexAttributeIsCorrectlyEscaped()
     {
         $this->assertEquals(
-            'data-some-thing="&quot;sweet&quot; &amp; - $ ist &lt;süß&gt;"',
+            'data-some-thing="&quot;sweet&quot; & - $ ist <süß>"',
             Attribute::create('data-some-thing', '"sweet" & - $ ist <süß>')->render()
+        );
+    }
+
+    public function testEscapeValueEscapesDoubleQuotes()
+    {
+        $this->assertSame(
+            '&quot;value&quot;',
+            Attribute::escapeValue('"value"')
+        );
+    }
+
+    public function testEscapeValueEscapesAmbiguousAmpersands()
+    {
+        $this->assertSame(
+            'value&amp;1234;',
+            Attribute::escapeValue('value&1234;')
+        );
+    }
+
+    public function testEscapeValueDoesNotDoubleQuote()
+    {
+        $this->assertSame(
+            '&quot;value&quot;',
+            Attribute::escapeValue('&quot;value&quot;')
+        );
+    }
+
+    public function testEscapeValueTreatsSpecialCharacters()
+    {
+        $this->assertEquals(
+            '“‘>&quot;&>’”',
+            Attribute::create('x', '“‘>"&>’”')->renderValue()
         );
     }
 

@@ -320,7 +320,7 @@ class Attributes
      *
      * If the value of an attribute is null, it will be skipped.
      *
-     * HTML-escaping of the attributes' values takes place automatically using {@link Html::escape()}.
+     * HTML-escaping of the attributes' values takes place automatically using {@link Attribute::escapeValue()}.
      *
      * @return  string
      *

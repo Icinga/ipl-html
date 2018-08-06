@@ -208,7 +208,7 @@ class Attribute
      * If the value of the attribute is null or an empty array,
      * the empty string will be returned as well.
      *
-     * Escaping of the attribute's value takes place automatically using {@link Html::escape()}.
+     * Escaping of the attribute's value takes place automatically using {@link Attribute::escapeValue()}.
      *
      * @return  string
      */
@@ -273,7 +273,8 @@ class Attribute
      * If the value is an array, returns the string representation
      * of all array elements joined with the specified glue string.
      *
-     * Escaping takes place using {@link Html::encode()}.
+     * Values are escaped according to the HTML5 double-quoted attribute value syntax:
+     * {@link https://html.spec.whatwg.org/multipage/syntax.html#attributes-2 }.
      *
      * @param   string|array    $value
      * @param   string          $glue   Glue string to join elements if value is an array
@@ -282,11 +283,29 @@ class Attribute
      */
     public static function escapeValue($value, $glue = ' ')
     {
-        // TODO: escape differently
         if (is_array($value)) {
-            return Html::escape(implode($glue, $value));
-        } else {
-            return Html::escape((string) $value);
+            $value = implode($glue, $value);
         }
+
+        // We force double-quoted attribute value syntax so let's start by escaping double quotes
+        $value = str_replace('"', '&quot;', $value);
+
+        // In addition, values must not contain ambiguous ampersands
+        $value = preg_replace_callback(
+            '/&[0-9A-Z]+;/i',
+            function ($match) {
+                $subject = $match[0];
+
+                if (htmlspecialchars_decode($subject, ENT_COMPAT | ENT_HTML5) === $subject) {
+                    // Ambiguous ampersand
+                    return str_replace('&', '&amp;', $subject);
+                }
+
+                return $subject;
+            },
+            $value
+        );
+
+        return $value;
     }
 }
