@@ -35,10 +35,14 @@ class Attribute
     }
 
     /**
-     * @param $name
-     * @param $value
-     * @return static
-     * @throws InvalidArgumentException
+     * Create a new HTML attribute from the given name and value
+     *
+     * @param   string                  $name   The name of the attribute
+     * @param   string|bool|array|null  $value  The value of the attribute
+     *
+     * @return  static
+     *
+     * @throws  InvalidArgumentException        If the name of the attribute contains special characters
      */
     public static function create($name, $value)
     {
@@ -46,9 +50,15 @@ class Attribute
     }
 
     /**
-     * @param $name
-     * @return static
-     * @throws InvalidArgumentException
+     * Create a new empty HTML attribute from the given name
+     *
+     * The value of the attribute will be null after construction.
+     *
+     * @param   string                  $name   The name of the attribute
+     *
+     * @return  static
+     *
+     * @throws  InvalidArgumentException        If the name of the attribute contains special characters
      */
     public static function createEmpty($name)
     {
