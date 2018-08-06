@@ -222,8 +222,13 @@ class Attribute
     }
 
     /**
-     * @param $name
-     * @return string
+     * Escape the name of an attribute
+     *
+     * Makes sure that the name of an attribute really is a string.
+     *
+     * @param   string  $name
+     *
+     * @return  string
      */
     public static function escapeName($name)
     {
