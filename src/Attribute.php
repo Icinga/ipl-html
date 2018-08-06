@@ -21,6 +21,9 @@ class Attribute
     /** @var string|array|bool|null */
     protected $value;
 
+    /** @var string Glue string to join elements if the attribute's value is an array */
+    protected $glue = ' ';
+
     /**
      * Create a new HTML attribute from the given name and value
      *
@@ -211,7 +214,7 @@ class Attribute
      */
     public function renderValue()
     {
-        return static::escapeValue($this->value);
+        return static::escapeValue($this->value, $this->glue);
     }
 
     /**
@@ -225,14 +228,23 @@ class Attribute
     }
 
     /**
-     * @param $value
-     * @return string
+     * Escape the value of an attribute
+     *
+     * If the value is an array, returns the string representation
+     * of all array elements joined with the specified glue string.
+     *
+     * Escaping takes place using {@link Html::encode()}.
+     *
+     * @param   string|array    $value
+     * @param   string          $glue   Glue string to join elements if value is an array
+     *
+     * @return  string
      */
-    public static function escapeValue($value)
+    public static function escapeValue($value, $glue = ' ')
     {
         // TODO: escape differently
         if (is_array($value)) {
-            return Html::escape(implode(' ', $value));
+            return Html::escape(implode($glue, $value));
         } else {
             return Html::escape((string) $value);
         }
