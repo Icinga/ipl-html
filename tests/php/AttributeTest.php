@@ -77,14 +77,6 @@ class AttributeTest extends TestCase
         );
     }
 
-    public function testSpecialCharactersAreEscaped()
-    {
-        $this->assertEquals(
-            '“‘&gt;&quot;&amp;&lt;’”',
-            Attribute::create('x', '“‘>"&<’”')->renderValue()
-        );
-    }
-
     public function testUmlautCharactersArePreserved()
     {
         $this->assertEquals(
@@ -104,8 +96,103 @@ class AttributeTest extends TestCase
     public function testComplexAttributeIsCorrectlyEscaped()
     {
         $this->assertEquals(
-            'data-some-thing="&quot;sweet&quot; &amp; - $ ist &lt;süß&gt;"',
+            'data-some-thing="&quot;sweet&quot; & - $ ist <süß>"',
             Attribute::create('data-some-thing', '"sweet" & - $ ist <süß>')->render()
+        );
+    }
+
+    public function testEscapeValueEscapesDoubleQuotes()
+    {
+        $this->assertSame(
+            '&quot;value&quot;',
+            Attribute::escapeValue('"value"')
+        );
+    }
+
+    public function testEscapeValueEscapesAmbiguousAmpersands()
+    {
+        $this->assertSame(
+            'value&amp;1234;',
+            Attribute::escapeValue('value&1234;')
+        );
+    }
+
+    public function testEscapeValueDoesNotDoubleQuote()
+    {
+        $this->assertSame(
+            '&quot;value&quot;',
+            Attribute::escapeValue('&quot;value&quot;')
+        );
+    }
+
+    public function testEscapeValueTreatsSpecialCharacters()
+    {
+        $this->assertEquals(
+            '“‘>&quot;&>’”',
+            Attribute::create('x', '“‘>"&>’”')->renderValue()
+        );
+    }
+
+    public function testRenderFalse()
+    {
+        $this->assertSame('', (new Attribute('name', false))->render());
+    }
+
+    public function testRenderNull()
+    {
+        $this->assertSame('', (new Attribute('name', null))->render());
+    }
+
+    public function testRenderEmptyArray()
+    {
+        $this->assertSame('', (new Attribute('name', []))->render());
+    }
+
+    public function testRemoveValue()
+    {
+        $this->assertSame(
+            null,
+            (new Attribute('name', 'value'))->removeValue('value')->getValue()
+        );
+    }
+
+    public function testRemoveValueNoop()
+    {
+        $this->assertSame(
+            'value',
+            (new Attribute('name', 'value'))->removeValue('noop')->getValue()
+        );
+    }
+
+    public function testRemoveValueWithArrayAndArrayValue()
+    {
+        $this->assertSame(
+            ['foo'],
+            (new Attribute('class', ['foo', 'bar']))->removeValue(['bar'])->getValue()
+        );
+    }
+
+    public function testRemoveValueNoopWithArrayAndArrayValue()
+    {
+        $this->assertSame(
+            ['foo', 'bar'],
+            (new Attribute('class', ['foo', 'bar']))->removeValue(['baz'])->getValue()
+        );
+    }
+
+    public function testRemoveValueWithArrayAndScalarValue()
+    {
+        $this->assertSame(
+            null,
+            (new Attribute('class', 'foo'))->removeValue(['foo'])->getValue()
+        );
+    }
+
+    public function testRemoveValueNoopWithArrayAndScalarValue()
+    {
+        $this->assertSame(
+            'foo',
+            (new Attribute('class', 'foo'))->removeValue(['bar'])->getValue()
         );
     }
 
