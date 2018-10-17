@@ -5,7 +5,7 @@ namespace ipl\Html;
 use ipl\Stdlib;
 use InvalidArgumentException;
 
-class Attributes
+class Attributes implements \IteratorAggregate
 {
     /** @var Attribute[] */
     protected $attributes = [];
@@ -363,6 +363,16 @@ class Attributes
         $separator = ' ' . $this->getPrefix();
 
         return $separator . implode($separator, $parts);
+    }
+
+    /**
+     * Get an iterator for traversing the attributes
+     *
+     * @return  Attribute[]|\ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->attributes);
     }
 
     /**
