@@ -12,7 +12,7 @@ use InvalidArgumentException;
  */
 class HtmlDocument implements Countable, ValidHtml
 {
-    protected $contentSeparator = '';
+    protected $contentSeparator = null;
 
     /** @var BaseHtmlElement */
     protected $wrapper;

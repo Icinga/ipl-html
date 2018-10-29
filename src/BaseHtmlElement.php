@@ -42,6 +42,64 @@ abstract class BaseHtmlElement extends HtmlDocument
         'wbr'    => 1
     ];
 
+    /**
+     * List of elements that fall under 'phrasing content' and should not have a content separator.
+     *
+     * If {@link $contentSeparator} is null, this property should be used to decide whether there should be a newline or
+     * no content separator rendered.
+     *
+     * @var array
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content
+     */
+    protected static $phrasingContent = [
+        'abbr'      => 1,
+        'audio'     => 1,
+        'b'         => 1,
+        'bdo'       => 1,
+        'br'        => 1,
+        'button'    => 1,
+        'canvas'    => 1,
+        'cite'      => 1,
+        'code'      => 1,
+        'command'   => 1,
+        'data'      => 1,
+        'datalist'  => 1,
+        'dfn'       => 1,
+        'em'        => 1,
+        'embed'     => 1,
+        'i'         => 1,
+        'iframe'    => 1,
+        'img'       => 1,
+        'input'     => 1,
+        'kbd'       => 1,
+        'keygen'    => 1,
+        'label'     => 1,
+        'mark'      => 1,
+        'math'      => 1,
+        'meter'     => 1,
+        'noscript'  => 1,
+        'object'    => 1,
+        'output'    => 1,
+        'progress'  => 1,
+        'q'         => 1,
+        'ruby'      => 1,
+        'samp'      => 1,
+        'script'    => 1,
+        'select'    => 1,
+        'small'     => 1,
+        'span'      => 1,
+        'strong'    => 1,
+        'sub'       => 1,
+        'sup'       => 1,
+        'svg'       => 1,
+        'textarea'  => 1,
+        'time'      => 1,
+        'var'       => 1,
+        'video'     => 1,
+        'wbr'       => 1
+    ];
+
     /** @var bool|null Whether the element is void. If null, void check should use {@link $voidElements} */
     protected $isVoid;
 
@@ -197,16 +255,17 @@ abstract class BaseHtmlElement extends HtmlDocument
         $attributes = $this->getAttributes()->render();
         $content = $this->renderContent();
 
+        if ($this->contentSeparator == null) {
+            if ($this->isPhrasingContent()) {
+                $this->setSeparator('');
+            } else {
+                $this->setSeparator("\n");
+            }
+        }
+
         if (strlen($this->contentSeparator)) {
-            $length = strlen($content);
-            if ($length > 0) {
-                if ($content[0] === '<') {
-                    $content = $this->contentSeparator . $content;
-                    $length++;
-                }
-                if ($content[$length - 1] === '>') {
-                    $content .= $this->contentSeparator;
-                }
+            if (strlen($content)) {
+                $content = $this->contentSeparator . $content . $this->contentSeparator;
             }
         }
 
@@ -225,6 +284,19 @@ abstract class BaseHtmlElement extends HtmlDocument
             $content,
             $tag
         );
+    }
+
+    /**
+     * Determines whether this element falls under 'phrasing content'
+     * and should therefore not be rendered with a content separator
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content
+     *
+     * @return bool
+     */
+    public function isPhrasingContent()
+    {
+        return isset(self::$phrasingContent[$this->getTag()]);
     }
 
     /**
