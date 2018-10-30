@@ -17,13 +17,13 @@ fi
 mkdir -p vendor
 
 PHPUNIT_PATH="vendor/phpunit-${PHPUNIT_VERSION}.phar"
-test -e "${PHPUNIT_PATH}" || wget -q -O "${PHPUNIT_PATH}" \
+test -e "${PHPUNIT_PATH}" || curl -s -L -o "${PHPUNIT_PATH}" \
     https://phar.phpunit.de/phpunit-${PHPUNIT_VERSION}.phar
 chmod +x "${PHPUNIT_PATH}"
 ln -svf "phpunit-${PHPUNIT_VERSION}.phar" vendor/phpunit
 
 PHPCS_PATH="vendor/phpcs-${PHPCS_VERSION}.phar"
-test -e "${PHPCS_PATH}" || wget -q -O "${PHPCS_PATH}" \
+test -e "${PHPCS_PATH}" || curl -s -L -o "${PHPCS_PATH}" \
     https://github.com/squizlabs/PHP_CodeSniffer/releases/download/${PHPCS_VERSION}/phpcs.phar
 chmod +x "$PHPCS_PATH"
 ln -svf "phpcs-${PHPCS_VERSION}.phar" vendor/phpcs
