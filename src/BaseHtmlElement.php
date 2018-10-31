@@ -48,6 +48,8 @@ abstract class BaseHtmlElement extends HtmlDocument
      * If {@link $contentSeparator} is null, this property should be used to decide whether there should be a newline or
      * no content separator rendered.
      *
+     * We added the <option> tag.
+     *
      * @var array
      *
      * @see https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content
@@ -80,6 +82,7 @@ abstract class BaseHtmlElement extends HtmlDocument
         'meter'     => 1,
         'noscript'  => 1,
         'object'    => 1,
+        'option'    => 1,
         'output'    => 1,
         'progress'  => 1,
         'q'         => 1,
@@ -253,7 +256,6 @@ abstract class BaseHtmlElement extends HtmlDocument
 
         $tag = $this->getTag();
         $attributes = $this->getAttributes()->render();
-        $content = $this->renderContent();
 
         if ($this->contentSeparator == null) {
             if ($this->isPhrasingContent()) {
@@ -263,11 +265,26 @@ abstract class BaseHtmlElement extends HtmlDocument
             }
         }
 
+        $content = $this->renderContent();
+
+        if (strlen($this->contentSeparator) && strlen($content)) {
+            $content = $this->contentSeparator . $content . $this->contentSeparator;
+        }
+
+        /*
         if (strlen($this->contentSeparator)) {
-            if (strlen($content)) {
-                $content = $this->contentSeparator . $content . $this->contentSeparator;
+            $length = strlen($content);
+            if ($length > 0) {
+                if ($content[0] === '<') {
+                    $content = $this->contentSeparator . $content;
+                    $length++;
+                }
+                if ($content[$length - 1] === '>') {
+                    $content .= $this->contentSeparator;
+                }
             }
         }
+        */
 
         if (! $this->wantsClosingTag()) {
             if (strlen($content)) {
