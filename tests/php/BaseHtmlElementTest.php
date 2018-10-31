@@ -45,6 +45,11 @@ class Div extends BaseHtmlElement
     protected $tag = 'div';
 }
 
+class Span extends BaseHtmlElement
+{
+    protected $tag = 'span';
+}
+
 class NoTag extends BaseHtmlElement
 {
 
@@ -142,5 +147,27 @@ class BaseHtmlElementTest extends TestCase
         $element->setVoid(null);
         $this->assertFalse($element->wantsClosingTag());
         $this->assertEquals('<img />', $element->render());
+    }
+
+    public function testPhrasingContent()
+    {
+        $wrapper = new Div();
+        $content = (new Span())->setContent('bla');
+
+        $this->assertRendersHtml('<span><span>bla</span></span>', (new Span())->setContent($content));
+
+        $this->assertRendersHtml('<div><span>bla</span></div>', $wrapper->setContent($content));
+
+        $this->assertRendersHtml('<div><div></div></div>', $wrapper->setContent(new Div()));
+
+        $html = <<<'HTML'
+<div>
+<div>
+bla
+</div>
+</div>
+HTML;
+        $this->assertRendersHtml($html, $wrapper->setContent((new Div())->setContent('bla')));
+
     }
 }

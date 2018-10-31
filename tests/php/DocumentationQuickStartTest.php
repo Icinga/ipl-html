@@ -124,7 +124,7 @@ Hi
 </p>
 HTML;
         $this->assertRendersHtml(
-            $html, //'<p>Hi <strong>there</strong>, are you ok?</p>',
+            $html,
             Html::tag('p', [
                 'Hi ',
                 Html::tag('strong', 'there'),
