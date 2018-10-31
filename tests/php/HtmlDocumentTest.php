@@ -44,13 +44,20 @@ class HtmlDocumentTest extends TestCase
 
     public function testDocumentSupportsMultipleWrappers()
     {
+        $sample = <<<'HTML'
+<b>
+<a>
+Just some content
+</a>
+</b>
+HTML;
         $a = h::tag('a');
         $b = h::tag('b');
         $c = (new HtmlDocument())->add('Just some content');
         $c->addWrapper($a);
         $c->addWrapper($b);
         $this->assertRendersHtml(
-            '<b><a>Just some content</a></b>',
+            $sample,
             $c
         );
     }
