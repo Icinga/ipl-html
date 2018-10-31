@@ -135,17 +135,9 @@ HTML;
 
     public function testFormattedStrings()
     {
-        $html = <<<'HTML'
-<p>
-Hi 
-<strong>there</strong>
-, are you okay?
-</p>
-HTML;
-
-        $this->assertHtm(
-            $html, //'Hi <strong>there</strong>, are you ok?',
-            Html::sprintf(
+        $this->assertEquals(
+            'Hi <strong>there</strong>, are you okay?',
+            (string) Html::sprintf(
                 'Hi %s, are you okay?',
                 Html::strong('there')
             )
