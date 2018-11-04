@@ -44,7 +44,7 @@ class Form extends BaseHtmlElement
             if ($request->getMethod() === 'POST') {
                 $params = $request->getParsedBody();
             } elseif ($this->getMethod() === 'GET') {
-                $params = parse_str($request->getUri()->getQuery());
+                parse_str($request->getUri()->getQuery(), $params);
             } else {
                 $params = [];
             }
