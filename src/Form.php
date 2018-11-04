@@ -5,6 +5,7 @@ namespace ipl\Html;
 use ipl\Html\FormElement\FormElementContainer;
 use ipl\Html\FormElement\SubmitElement;
 use ipl\Stdlib\MessageContainer;
+use Exception;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
@@ -54,7 +55,12 @@ class Form extends BaseHtmlElement
         $this->ensureAssembled();
         if ($this->hasBeenSubmitted()) {
             if ($this->isValid()) {
-                $this->onSuccess();
+                try {
+                    $this->onSuccess();
+                } catch (\Exception $e) {
+                    $this->addMessage($e->getMessage());
+                    $this->onError();
+                }
             } else {
                 $this->onError();
             }
