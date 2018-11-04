@@ -93,10 +93,10 @@ class Table extends BaseHtmlElement
             $this->caption = $caption;
             $this->prepend($caption);
         } elseif ($this->caption === null) {
-            $this->caption->setContent($caption);
-        } else {
             $this->caption = new HtmlElement('caption', null, $caption);
             $this->prepend($this->caption);
+        } else {
+            $this->caption->setContent($caption);
         }
 
         return $this;
