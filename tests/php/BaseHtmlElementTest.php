@@ -168,6 +168,5 @@ bla
 </div>
 HTML;
         $this->assertRendersHtml($html, $wrapper->setContent((new Div())->setContent('bla')));
-
     }
 }
