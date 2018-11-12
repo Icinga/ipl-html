@@ -4,7 +4,7 @@ namespace ipl\Html\FormElement;
 
 use ipl\Html\Attribute;
 
-abstract class InputElement extends BaseFormElement
+class InputElement extends BaseFormElement
 {
     protected $tag = 'input';
 
@@ -16,7 +16,8 @@ abstract class InputElement extends BaseFormElement
         parent::registerCallbacks();
         $this->getAttributes()->registerAttributeCallback(
             'type',
-            [$this, 'getTypeAttribute']
+            [$this, 'getTypeAttribute'],
+            [$this, 'setType']
         );
     }
 
@@ -26,6 +27,13 @@ abstract class InputElement extends BaseFormElement
     public function getType()
     {
         return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = (string) $type;
+
+        return $this;
     }
 
     /**
