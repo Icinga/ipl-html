@@ -71,6 +71,14 @@ class Form extends BaseHtmlElement
         return $this;
     }
 
+    /**
+     * @return ServerRequestInterface|null
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
     public function onSuccess()
     {
         $this->add(Html::tag('p', ['class' => 'information'], 'SUCCESS'));
