@@ -81,6 +81,12 @@ class DocumentationFormsTest extends TestCase
         $form = new Form();
         $nameElement = new TextElement('name', ['class' => 'important']);
         $form->addElement($nameElement);
+
+        $this->assertRendersHtml(
+            '<form><input type="text" name="name" class="important" />'
+            . '</form>',
+            $form
+        );
     }
 
     public function testCustomHtml()
