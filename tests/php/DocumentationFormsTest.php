@@ -40,7 +40,7 @@ class DocumentationFormsTest extends TestCase
 
         $this->assertEquals(
             '<select name="customer" class="important customer" id="customer-field">' . "\n"
-            . '<option value="" selected>Please choose</option>' . "\n"
+            . '<option value="">Please choose</option>' . "\n"
             . '<option value="1">The one</option>' . "\n"
             . '<option value="4">Four</option>' . "\n"
             . '<option value="5">Hi five</option>' . "\n"
