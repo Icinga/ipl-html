@@ -41,7 +41,6 @@ abstract class BaseFormElement extends BaseHtmlElement
     /**
      * Link constructor.
      * @param $name
-     * @param $value
      * @param \ipl\Html\Attributes|array|null $attributes
      */
     public function __construct($name, $attributes = null)
