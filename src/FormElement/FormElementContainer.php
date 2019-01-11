@@ -4,6 +4,7 @@ namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Stdlib\Loader\PluginLoader;
 
@@ -218,9 +219,9 @@ trait FormElementContainer
     }
 
     /**
-     * @param FormElementContainer $form
+     * @param   Form|SubFormElement $form
      */
-    public function addElementsFrom(FormElementContainer $form)
+    public function addElementsFrom($form)
     {
         foreach ($form->getElements() as $name => $element) {
             $this->addElement($element);
