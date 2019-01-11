@@ -156,9 +156,7 @@ class Attribute
      */
     public function removeValue($value)
     {
-        if (! is_array($value)) {
-            $value = [$value];
-        }
+        $value = (array) $value;
 
         $current = $this->getValue();
 
