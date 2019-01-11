@@ -134,15 +134,7 @@ class Attribute
      */
     public function addValue($value)
     {
-        if (! is_array($this->value)) {
-            $this->value = [$this->value];
-        }
-
-        if (is_array($value)) {
-            $this->value = array_merge($this->value, $value);
-        } else {
-            $this->value[] = $value;
-        }
+        $this->value = array_merge((array) $this->value, (array) $value);
 
         return $this;
     }
