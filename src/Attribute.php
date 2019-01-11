@@ -126,8 +126,11 @@ class Attribute
     }
 
     /**
-     * @param string $value
-     * @return $this
+     * Add the given value(s) to the attribute
+     *
+     * @param   string|array    $value  The value(s) to add
+     *
+     * @return  $this
      */
     public function addValue($value)
     {
