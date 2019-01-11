@@ -55,12 +55,7 @@ class Form extends BaseHtmlElement
         $this->ensureAssembled();
         if ($this->hasBeenSubmitted()) {
             if ($this->isValid()) {
-                try {
-                    $this->onSuccess();
-                } catch (\Exception $e) {
-                    $this->addMessage($e->getMessage());
-                    $this->onError();
-                }
+                $this->onSuccess();
             } else {
                 $this->onError();
             }
