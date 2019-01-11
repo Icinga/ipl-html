@@ -234,7 +234,15 @@ class HtmlDocument implements Countable, ValidHtml
     protected function renderWrappedDocument(HtmlDocument $document)
     {
         $wrapper = clone($this);
-        $wrapper->add($document);
+
+        $wrapper->ensureAssembled();
+
+        $key = spl_object_hash($document);
+
+        if (! array_key_exists($key, $wrapper->contentIndex)) {
+            $wrapper->add($document);
+        }
+
         return $wrapper->render();
     }
 
