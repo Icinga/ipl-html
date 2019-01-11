@@ -335,7 +335,7 @@ class Attributes implements \IteratorAggregate
                 if ($attribute->getValue() !== null) {
                     $parts[] = $attribute->render();
                 }
-            } elseif (is_string($attribute)) {
+            } elseif ($attribute !== null && is_scalar($attribute)) {
                 $parts[] = Attribute::create($name, $attribute)->render();
             } elseif ($attribute === null) {
                 continue;
