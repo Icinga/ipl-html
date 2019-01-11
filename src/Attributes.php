@@ -157,6 +157,10 @@ class Attributes implements \IteratorAggregate
      */
     public function add($attribute, $value = null)
     {
+        if ($attribute === null) {
+            return $this;
+        }
+
         if ($attribute instanceof self) {
             foreach ($attribute as $attr) {
                 $this->add($attr);
