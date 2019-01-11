@@ -6,7 +6,19 @@ use ipl\Html\Table;
 
 class DocumentationTablesTest extends TestCase
 {
-    protected $sampleRow = '<tr><td>app1.example.com</td><td>127.0.0.1</td><td>production</td></tr>';
+    protected $sampleRow = <<<'HTML'
+<tr>
+<td>
+app1.example.com
+</td>
+<td>
+127.0.0.1
+</td>
+<td>
+production
+</td>
+</tr>
+HTML;
 
     protected $sampleRowData = [
         'app1.example.com',
@@ -30,16 +42,36 @@ class DocumentationTablesTest extends TestCase
 
     public function testAddingJustAString()
     {
+        $sampleRow = <<<'HTML'
+<table>
+<tbody>
+<tr>
+<td>
+Some &lt;special&gt; string!
+</td>
+</tr>
+</tbody>
+</table>
+HTML;
+
         $this->assertRendersHtml(
-            '<table><tbody><tr><td>Some &lt;special&gt; string!</td></tr></tbody></table>',
+            $sampleRow,
             (new Table())->add('Some <special> string!')
         );
     }
 
     public function testAddingAnArray()
     {
+        $sample = <<<"HTML"
+<table>
+<tbody>
+$this->sampleRow
+</tbody>
+</table>
+HTML;
+
         $this->assertRendersHtml(
-            '<table><tbody>' . $this->sampleRow . '</tbody></table>',
+            $sample,
             (new Table())->add($this->sampleRowData)
         );
     }
@@ -59,12 +91,46 @@ class DocumentationTablesTest extends TestCase
             ->add(['app2.example.com', '127.0.0.2', 'production'])
             ->add(['app3.example.com', '127.0.0.3', 'testing']);
 
-        $html = '<table><tbody>'
-            . '<tr><td>app1.example.com</td><td>127.0.0.1</td><td>production</td></tr>'
-            . '<tr><td>app2.example.com</td><td>127.0.0.2</td><td>production</td></tr>'
-            . '<tr><td>app3.example.com</td><td>127.0.0.3</td><td>testing</td></tr>'
-            . '</tbody></table>';
+        $sample = <<<"HTML"
+<table>
+<tbody>
+<tr>
+<td>
+app1.example.com
+</td>
+<td>
+127.0.0.1
+</td>
+<td>
+production
+</td>
+</tr>
+<tr>
+<td>
+app2.example.com
+</td>
+<td>
+127.0.0.2
+</td>
+<td>
+production
+</td>
+</tr>
+<tr>
+<td>
+app3.example.com
+</td>
+<td>
+127.0.0.3
+</td>
+<td>
+testing
+</td>
+</tr>
+</tbody>
+</table>
+HTML;
 
-        $this->assertRendersHtml($html, $table);
+        $this->assertRendersHtml($sample, $table);
     }
 }
