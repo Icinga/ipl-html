@@ -140,7 +140,7 @@ class Attribute
     }
 
     /**
-     * Remove the given value from the attribute
+     * Remove the given value(s) from the attribute
      *
      * The current value is set to null if it matches the value to remove
      * or is in the array of values to remove.
@@ -150,7 +150,7 @@ class Attribute
      *
      * Does nothing if there is no such value to remove.
      *
-     * @param   string|array $value      The value(s) to remove
+     * @param   string|array    $value  The value(s) to remove
      *
      * @return  $this
      */
