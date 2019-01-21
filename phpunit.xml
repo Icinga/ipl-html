@@ -11,7 +11,7 @@
          bootstrap="vendor/autoload.php"
     >
     <testsuites>
-        <testsuite name="ipl PHP Unit tests">
+        <testsuite name="ipl/html PHP Unit tests">
             <directory suffix="Test.php">tests/php</directory>
         </testsuite>
     </testsuites>
