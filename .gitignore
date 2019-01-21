@@ -1,12 +1,10 @@
 # Exclude all hidden files
 .*
 
-# Except those related to Git
+# Except those related to Git and Travis CI
 !.git*
 !.travis.yml
 
-# Exclude build and packaging leftovers
-/debian
-/vendor
-build/*
+# Exclude files from composer install
+vendor/
 composer.lock
