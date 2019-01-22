@@ -246,8 +246,7 @@ abstract class BaseFormElement extends BaseHtmlElement
             return new $class($options);
         } else {
             throw new InvalidArgumentException(
-                'Unable to create Validator: %s',
-                $name
+                "Can't create validator $name: Class $class not found"
             );
         }
     }
