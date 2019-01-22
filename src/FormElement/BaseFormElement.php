@@ -203,9 +203,31 @@ abstract class BaseFormElement extends BaseHtmlElement
     public function setValidators(array $validators)
     {
         $this->validators = [];
-        foreach ($validators as $validator => $options) {
+        foreach ($validators as $name => $validator) {
             if (! $validator instanceof ValidatorInterface) {
-                $validator = $this->createValidator($validator, $options);
+                if (is_int($name)) {
+                    if (! is_array($validator)) {
+                        throw new InvalidArgumentException(
+                            'Invalid validator specification: Neither a validator instance nor an array provided'
+                        );
+                    }
+
+                    if (! isset($validator['name'])) {
+                        throw new InvalidArgumentException(
+                            'Invalid validator array specification: Key "name" is missing'
+                        );
+                    }
+
+                    $name = $validator['name'];
+
+                    if (isset($validator['options'])) {
+                        $validator = $validator['options'];
+                    } else {
+                        $validator = null;
+                    }
+                }
+
+                $validator = $this->createValidator($name, $validator);
             }
 
             $this->validators[] = $validator;
