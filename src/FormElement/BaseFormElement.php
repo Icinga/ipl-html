@@ -242,13 +242,14 @@ abstract class BaseFormElement extends BaseHtmlElement
     public function createValidator($name, $options = null)
     {
         $class = 'ipl\\Validator\\' . ucfirst($name) . 'Validator';
-        if (class_exists($class)) {
-            return new $class($options);
-        } else {
+
+        if (! class_exists($class)) {
             throw new InvalidArgumentException(
                 "Can't create validator $name: Class $class not found"
             );
         }
+
+        return new $class($options);
     }
 
     public function hasValue()
