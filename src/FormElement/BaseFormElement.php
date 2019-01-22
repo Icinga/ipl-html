@@ -239,7 +239,7 @@ abstract class BaseFormElement extends BaseHtmlElement
      * @param $options
      * @return ValidatorInterface
      */
-    public function createValidator($name, $options)
+    public function createValidator($name, $options = null)
     {
         $class = 'ipl\\Validator\\' . ucfirst($name) . 'Validator';
         if (class_exists($class)) {
