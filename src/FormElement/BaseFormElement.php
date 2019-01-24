@@ -206,23 +206,22 @@ abstract class BaseFormElement extends BaseHtmlElement
         foreach ($validators as $name => $validator) {
             if (! $validator instanceof ValidatorInterface) {
                 if (is_int($name)) {
-                    if (! is_array($validator)) {
-                        throw new InvalidArgumentException(
-                            'Invalid validator specification: Neither a validator instance nor an array provided'
-                        );
-                    }
+                    if (is_array($validator)) {
+                        if (! isset($validator['name'])) {
+                            throw new InvalidArgumentException(
+                                'Invalid validator array specification: Key "name" is missing'
+                            );
+                        }
 
-                    if (! isset($validator['name'])) {
-                        throw new InvalidArgumentException(
-                            'Invalid validator array specification: Key "name" is missing'
-                        );
-                    }
+                        $name = $validator['name'];
 
-                    $name = $validator['name'];
-
-                    if (isset($validator['options'])) {
-                        $validator = $validator['options'];
+                        if (isset($validator['options'])) {
+                            $validator = $validator['options'];
+                        } else {
+                            $validator = null;
+                        }
                     } else {
+                        $name = $validator;
                         $validator = null;
                     }
                 }

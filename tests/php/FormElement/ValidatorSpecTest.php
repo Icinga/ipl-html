@@ -65,6 +65,20 @@ class ValidatorSpecTest extends TestCase
         $this->assertNull($validators[0]->getOptions());
     }
 
+    public function testWithNameOnly()
+    {
+        $spec = [
+            'test'
+        ];
+
+        $validators = $this->populateValidators($spec);
+
+        $validators = $this->populateValidators($spec);
+
+        $this->assertCount(1, $validators);
+        $this->assertInstanceOf('\\ipl\\Validator\\TestValidator', $validators[0]);
+    }
+
     public function testWithValidatorInstance()
     {
         $spec = [
@@ -84,15 +98,17 @@ class ValidatorSpecTest extends TestCase
             [
                 'name' => 'test'
             ],
+            'test',
             new TestValidator()
         ];
 
         $validators = $this->populateValidators($spec);
 
-        $this->assertCount(3, $validators);
+        $this->assertCount(4, $validators);
         $this->assertInstanceOf('\\ipl\\Validator\\TestValidator', $validators[0]);
         $this->assertInstanceOf('\\ipl\\Validator\\TestValidator', $validators[1]);
         $this->assertInstanceOf('\\ipl\\Validator\\TestValidator', $validators[2]);
+        $this->assertInstanceOf('\\ipl\\Validator\\TestValidator', $validators[3]);
     }
 
     /**
@@ -115,18 +131,6 @@ class ValidatorSpecTest extends TestCase
     {
         $spec = [
             'doesnotexist' => null
-        ];
-
-        $this->populateValidators($spec);
-    }
-
-    /**
-     * @expectedException   \InvalidArgumentException
-     */
-    public function testNameToOptionsSpecExceptionIfNameIsNotTheKeyAndThereforeOptionsNotAnArray()
-    {
-        $spec = [
-            'test'
         ];
 
         $this->populateValidators($spec);
