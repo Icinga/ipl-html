@@ -181,6 +181,47 @@ This works fine:
 <p>Hi <strong>there</strong>, are you ok?</p>
 ```
 
+### Wrapping Lists
+
+Let's once again pick our Menu example. What I do not like about it is that it
+forces me to write `Html::tag('li', $value)` multiple times. That's why we
+introduced the `Html::wrapEach()` helper method:
+
+```php
+<?= Html::tag('ul', ['role' => 'menu'], Html::wrapEach($list, 'li'));
+```
+
+Now with `$list = ['First point', 'Second point', ...]` we get the same output
+as we did before.
+
+You can provide a custom callback instead of a tag name to `Html::wrapEach()`:
+
+```php
+$options = [
+    'jd' => 'John Doe',
+    'pp' => 'Purple Princess',
+    'su' => 'Some User',
+];
+$select = Html::tag('select', Html::wrapEach($options, function ($name, $value) {
+    return Html::tag('option', [
+        'value' => $name
+    ], $value);
+})->setSeparator("\n"))->setSeparator("\n");
+```
+
+Guess what? It looks as expected:
+
+```html
+<select>
+<option value="jd">John Doe</option>
+<option value="pp">Purple Princess</option>
+<option value="su">Some User</option>
+</select>
+```
+
+Pretty cool and simple, isn't it? And before you start coding: there is no need
+to implement Forms on your own, we already [did so](40-Forms.md) for you!
+
 ### Formatted Strings
 
 Still, we do not consider this code being very readable. In case you ever used
