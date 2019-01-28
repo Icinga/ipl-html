@@ -3,6 +3,7 @@
 namespace ipl\Html;
 
 use InvalidArgumentException;
+use Traversable;
 
 /**
  * Class Html
@@ -83,6 +84,42 @@ abstract class Html
         array_shift($args);
 
         return new FormattedString($string, $args);
+    }
+
+    /**
+     * Wraps each Item of a given list
+     *
+     * Wrapper is a simple HTML tag per entry if a string is given, otherwise
+     * a given callback/callable is being called passing key and value of each
+     * list entry as parameters
+     *
+     * @param array|Traversable $list
+     * @param string|callable $wrapper
+     * @return HtmlDocument
+     */
+    public static function wrapEach($list, $wrapper)
+    {
+        if (! is_array($list) && ! $list instanceof Traversable) {
+            throw new InvalidArgumentException(sprintf(
+                'Html::wrapEach() requires a traversable list, got "%s"',
+                Error::getPhpTypeName($list)
+            ));
+        }
+        $result = new HtmlDocument();
+        foreach ($list as $name => $value) {
+            if (is_string($wrapper)) {
+                $result->add(Html::tag($wrapper, $value));
+            } elseif (is_callable($wrapper)) {
+                $result->add($wrapper($name, $value));
+            } else {
+                throw new InvalidArgumentException(sprintf(
+                    'Wrapper must be callable or a string in Html::wrapEach(), got "%s"',
+                    Error::getPhpTypeName($wrapper)
+                ));
+            }
+        }
+
+        return $result;
     }
 
     /**
