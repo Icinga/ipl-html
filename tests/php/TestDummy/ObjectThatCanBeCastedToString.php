@@ -1,6 +1,8 @@
 <?php
 
-class DummyObjectThatCanBeCastedToString
+namespace ipl\Tests\Html\TestDummy;
+
+class ObjectThatCanBeCastedToString
 {
     public function __toString()
     {

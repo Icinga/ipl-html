@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\Html as h;
 use ipl\Html\HtmlDocument;
+use ipl\Tests\Html\TestDummy\ObjectThatCanBeCastedToString;
 
 class HtmlDocumentTest extends TestCase
 {
@@ -70,8 +71,7 @@ class HtmlDocumentTest extends TestCase
 
     public function testAcceptsObjectsWhichCanBeCastedToString()
     {
-        require_once __DIR__ . '/helpers/DummyObjectThatCanBeCastedToString.php';
-        $object = new \DummyObjectThatCanBeCastedToString();
+        $object = new ObjectThatCanBeCastedToString();
         $a = new HtmlDocument();
         $a->add($object);
         $this->assertEquals('Some String &lt;:-)', $a->render());
