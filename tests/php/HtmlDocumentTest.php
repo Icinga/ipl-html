@@ -67,4 +67,23 @@ class HtmlDocumentTest extends TestCase
             $c
         );
     }
+
+    public function testAcceptsObjectsWhichCanBeCastedToString()
+    {
+        require_once __DIR__ . '/helpers/DummyObjectThatCanBeCastedToString.php';
+        $object = new \DummyObjectThatCanBeCastedToString();
+        $a = new HtmlDocument();
+        $a->add($object);
+        $this->assertEquals('Some String &lt;:-)', $a->render());
+    }
+
+    public function testSkipsNullValues()
+    {
+        $a = new HtmlDocument();
+        $a->setSeparator('x');
+        $a->add([null, null]);
+        $a->add(null);
+        $a->add(null);
+        $this->assertEquals('', $a->render());
+    }
 }

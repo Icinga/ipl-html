@@ -26,7 +26,7 @@ class HtmlDocument implements Countable, ValidHtml
     protected $hasBeenAssembled = false;
 
     /**
-     * @param ValidHtml|array|string $content
+     * @param ValidHtml|mixed $content
      * @return $this
      */
     public function add($content)
@@ -35,7 +35,7 @@ class HtmlDocument implements Countable, ValidHtml
             foreach ($content as $c) {
                 $this->add($c);
             }
-        } else {
+        } elseif ($content !== null) {
             $this->addIndexedContent(Html::wantHtml($content));
         }
 

@@ -90,7 +90,7 @@ abstract class Html
      *
      * Returns the very same element in case it's already valid
      *
-     * @param $any
+     * @param mixed $any
      * @return ValidHtml
      * @throws InvalidArgumentException
      */
@@ -103,7 +103,9 @@ abstract class Html
         } elseif (is_array($any)) {
             $html = new HtmlDocument();
             foreach ($any as $el) {
-                $html->add(static::wantHtml($el));
+                if ($el !== null) {
+                    $html->add(static::wantHtml($el));
+                }
             }
 
             return $html;
@@ -123,7 +125,9 @@ abstract class Html
      */
     public static function canBeRenderedAsString($any)
     {
-        return is_string($any) || is_int($any) || is_null($any) || is_float($any);
+        return is_scalar($any) || is_null($any) || (
+            is_object($any) && method_exists($any, '__toString')
+        );
     }
 
     /**
