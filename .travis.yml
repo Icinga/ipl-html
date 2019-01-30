@@ -15,8 +15,8 @@ cache:
 
 env:
   matrix:
-    - PREFERRED=""
-    - PREFERRED="--prefer-lowest --prefer-stable"
+    - PREFER=""
+    - PREFER="--prefer-lowest --prefer-stable"
 
 matrix:
   fast_finish: true
