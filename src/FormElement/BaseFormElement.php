@@ -123,7 +123,11 @@ abstract class BaseFormElement extends BaseHtmlElement
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        if ($value === '') {
+            $this->value = null;
+        } else {
+            $this->value = $value;
+        }
         $this->isValid = null;
 
         return $this;
