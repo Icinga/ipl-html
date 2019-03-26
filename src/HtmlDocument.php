@@ -268,9 +268,6 @@ class HtmlDocument implements Countable, ValidHtml
         $html = [];
 
         foreach ($this->content as $element) {
-            if (is_string($element)) {
-                var_dump($this->content);
-            }
             $html[] = $element->render();
         }
 
