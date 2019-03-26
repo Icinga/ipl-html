@@ -55,7 +55,12 @@ class Form extends BaseHtmlElement
         $this->ensureAssembled();
         if ($this->hasBeenSubmitted()) {
             if ($this->isValid()) {
-                $this->onSuccess();
+                try {
+                    $this->onSuccess();
+                } catch (Exception $e) {
+                    $this->addMessage($e);
+                    $this->onError();
+                }
             } else {
                 $this->onError();
             }
@@ -82,16 +87,15 @@ class Form extends BaseHtmlElement
 
     public function onError()
     {
-        /**
-        $error = Html::tag('p', ['class' => 'error'], 'ERROR: ');
-        foreach ($this->getElements() as $element) {
-            foreach ($element->getMessages() as $message) {
-                $error->add(sprintf('%s: %s', $element->getName(), $message));
+        $error = Html::tag('p', ['class' => 'error']);
+        foreach ($this->getMessages() as $message) {
+            if ($message instanceof Exception) {
+                $error->add($message->getMessage());
+            } else {
+                $error->add($message);
             }
         }
-
-        $this->add($error);
-        */
+        $this->prepend($error);
     }
 
     public function isValid()
