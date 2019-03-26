@@ -15,7 +15,7 @@
   "require": {
     "php": ">=5.4.0",
     "evenement/evenement": "^2",
-    "ipl/stdlib": "dev-master",
+    "ipl/stdlib": "^0.1",
     "psr/http-message": "~1.0"
   },
   "autoload": {
