@@ -152,7 +152,7 @@ abstract class BaseFormElement extends BaseHtmlElement
 
     public function setIgnored($ignored = true)
     {
-        $this->required = (bool) $ignored;
+        $this->ignored = (bool) $ignored;
 
         return $this;
     }
@@ -290,6 +290,7 @@ abstract class BaseFormElement extends BaseHtmlElement
             ->registerAttributeCallback('name', [$this, 'getNameAttribute'], [$this, 'setName'])
             ->registerAttributeCallback('description', [$this, 'getNoAttribute'], [$this, 'setDescription'])
             ->registerAttributeCallback('validators', null, [$this, 'setValidators'])
+            ->registerAttributeCallback('ignore', null, [$this, 'setIgnored'])
             ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired']);
     }
 
