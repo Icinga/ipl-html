@@ -28,6 +28,32 @@ trait FormElementContainer
         return $this->elements;
     }
 
+    /**
+     * Returns the value for the $name element
+     *
+     * Returns $default in case the element does not exist or has no value
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return mixed|null
+     */
+    public function getValue($name, $default = null)
+    {
+        if ($this->hasElement($name)) {
+            $value = $this->getElement($name)->getValue();
+            if ($value !== null) {
+                return $value;
+            }
+        }
+
+        return $default;
+    }
+
+    /**
+     * Returns a name => value array for all but ignored elements
+     *
+     * @return array
+     */
     public function getValues()
     {
         $values = [];
