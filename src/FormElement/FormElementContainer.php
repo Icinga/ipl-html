@@ -7,11 +7,13 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
+use ipl\Stdlib\EventEmitter;
 use ipl\Stdlib\Loader\PluginLoader;
 
 trait FormElementContainer
 {
     use PluginLoader;
+    use EventEmitter;
 
     /** @var BaseFormElement[] */
     private $elements = [];
@@ -119,7 +121,7 @@ trait FormElementContainer
      */
     public function getElement($name)
     {
-        if (! array_key_exists($name, $this->elements)) {
+        if (! \array_key_exists($name, $this->elements)) {
             throw new InvalidArgumentException(sprintf(
                 'Trying to get non-existent element "%s"',
                 $name
@@ -134,10 +136,10 @@ trait FormElementContainer
      */
     public function hasElement($element)
     {
-        if (is_string($element)) {
-            return array_key_exists($element, $this->elements);
+        if (\is_string($element)) {
+            return \array_key_exists($element, $this->elements);
         } elseif ($element instanceof BaseFormElement) {
-            return in_array($element, $this->elements, true);
+            return \in_array($element, $this->elements, true);
         } else {
             return false;
         }
@@ -194,7 +196,7 @@ trait FormElementContainer
      */
     public function registerElement($type, $name = null, $options = null)
     {
-        if (is_string($type)) {
+        if (\is_string($type)) {
             $type = $this->createElement($type, $name, $options);
         // TODO: } elseif ($type instanceof FormElementInterface) {
         } elseif ($type instanceof BaseHtmlElement) {
@@ -210,6 +212,7 @@ trait FormElementContainer
         $this->elements[$name] = $type;
 
         $this->onElementRegistered($name, $type);
+        $this->emit(Form::ON_ELEMENT_REGISTERED, [$name, $type]);
 
         return $this;
     }
@@ -221,7 +224,7 @@ trait FormElementContainer
             $this->setSubmitButton($element);
         }
 
-        if (array_key_exists($name, $this->populatedValues)) {
+        if (\array_key_exists($name, $this->populatedValues)) {
             $element->setValue($this->populatedValues[$name]);
         }
     }
@@ -306,5 +309,15 @@ trait FormElementContainer
     public function getDefaultElementDecorator()
     {
         return $this->defaultElementDecorator;
+    }
+
+    public function isValidEvent($event)
+    {
+        return \in_array($event, [
+            Form::ON_SUCCESS,
+            Form::ON_ERROR,
+            Form::ON_REQUEST,
+            Form::ON_ELEMENT_REGISTERED,
+        ]);
     }
 }
