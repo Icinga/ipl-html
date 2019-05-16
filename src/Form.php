@@ -10,6 +10,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
+    const ON_ELEMENT_REGISTERED = 'elementRegistered';
+    const ON_ERROR = 'error';
+    const ON_REQUEST = 'request';
+    const ON_SUCCESS = 'success';
+
     use FormElementContainer;
     use MessageContainer;
 
@@ -30,6 +35,7 @@ class Form extends BaseHtmlElement
     public function setRequest($request)
     {
         $this->request = $request;
+        $this->emit(Form::ON_REQUEST, [$request]);
 
         return $this;
     }
@@ -57,9 +63,11 @@ class Form extends BaseHtmlElement
             if ($this->isValid()) {
                 try {
                     $this->onSuccess();
+                    $this->emitOnce(Form::ON_SUCCESS, [$this]);
                 } catch (Exception $e) {
                     $this->addMessage($e);
                     $this->onError();
+                    $this->emit(Form::ON_ERROR, [$e, $this]);
                 }
             } else {
                 $this->onError();

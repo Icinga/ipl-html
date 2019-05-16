@@ -7,15 +7,9 @@
   "config": {
     "sort-packages": true
   },
-  "repositories": [{
-    "type": "vcs",
-    "url": "https://github.com/Icinga/ipl-stdlib",
-    "no-api": true
-  }],
   "require": {
     "php": ">=5.4.0",
-    "evenement/evenement": "^2",
-    "ipl/stdlib": "^0.1",
+    "ipl/stdlib": "dev-feature/event-emitter || ^0.2",
     "psr/http-message": "~1.0"
   },
   "autoload": {
