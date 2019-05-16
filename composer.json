@@ -2,6 +2,7 @@
   "name": "ipl/html",
   "type": "library",
   "description": "Icinga PHP Library - HTML abstraction layer",
+  "license": "MIT",
   "keywords": ["html"],
   "homepage": "https://github.com/Icinga/ipl-html",
   "config": {
@@ -9,7 +10,7 @@
   },
   "require": {
     "php": ">=5.4.0",
-    "ipl/stdlib": "dev-feature/event-emitter || ^0.2",
+    "ipl/stdlib": ">=0.2",
     "psr/http-message": "~1.0"
   },
   "autoload": {
