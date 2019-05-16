@@ -212,6 +212,7 @@ class Form extends BaseHtmlElement
      */
     public function getAction()
     {
+        // TODO: get Request URL if no action
         return $this->getAttributes()->get('action')->getValue();
     }
 
