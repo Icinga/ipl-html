@@ -3,7 +3,7 @@
 namespace ipl\Html\FormDecorator;
 
 use ipl\Html\BaseHtmlElement;
-use ipl\Html\FormElement\BaseFormElement;
+use ipl\Html\FormElement\FormElementInterface;
 use ipl\Html\Html;
 
 class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
@@ -14,16 +14,16 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected $dd;
 
-    /** @var BaseFormElement */
+    /** @var FormElementInterface */
     protected $wrappedElement;
 
     protected $ready = false;
 
     /**
-     * @param BaseFormElement $element
+     * @param BaseHtmlElement $element
      * @return static
      */
-    public function decorate(BaseFormElement $element)
+    public function decorate(BaseHtmlElement $element)
     {
         // TODO: ignore hidden?
         $newWrapper = clone($this);
@@ -35,9 +35,9 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected function renderLabel()
     {
-        if ($this->wrappedElement instanceof BaseFormElement) {
+        if ($this->wrappedElement instanceof FormElementInterface) {
             $label = $this->wrappedElement->getLabel();
-            if (strlen($label)) {
+            if (\strlen($label)) {
                 return Html::tag('label', null, $label);
             }
         }
@@ -50,11 +50,13 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
         $attributes = parent::getAttributes();
 
         // TODO: only when sent?!
-        if ($this->wrappedElement->hasBeenValidatedAndIsNotValid()) {
+        if ($this->wrappedElement instanceof FormElementInterface
+            && $this->wrappedElement->hasBeenValidatedAndIsNotValid()
+        ) {
             $classes = $attributes->get('class');
             if (empty($classes)
-                || (is_array($classes) && ! in_array('errors', $classes))
-                || (is_string($classes) && $classes !== 'errors')
+                || (\is_array($classes) && ! in_array('errors', $classes))
+                || (\is_string($classes) && $classes !== 'errors')
             ) {
                 $attributes->add('class', 'errors');
             }
@@ -65,9 +67,9 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected function renderDescription()
     {
-        if ($this->wrappedElement instanceof BaseFormElement) {
+        if ($this->wrappedElement instanceof FormElementInterface) {
             $description = $this->wrappedElement->getDescription();
-            if (strlen($description)) {
+            if (\strlen($description)) {
                 return Html::tag('p', ['class' => 'description'], $description);
             }
         }
@@ -77,7 +79,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected function renderErrors()
     {
-        if ($this->wrappedElement instanceof BaseFormElement) {
+        if ($this->wrappedElement instanceof FormElementInterface) {
             $errors = [];
             foreach ($this->wrappedElement->getMessages() as $message) {
                 $errors[] = Html::tag('p', ['class' => 'error'], $message);

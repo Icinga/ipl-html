@@ -2,14 +2,14 @@
 
 namespace ipl\Html\FormDecorator;
 
-use ipl\Html\FormElement\BaseFormElement;
+use ipl\Html\BaseHtmlElement;
 
 // TODO: FormElementDecoratorInterface?
 interface DecoratorInterface
 {
     /**
-     * @param BaseFormElement $element
+     * @param BaseHtmlElement $element
      * @return static
      */
-    public function decorate(BaseFormElement $element);
+    public function decorate(BaseHtmlElement $element);
 }

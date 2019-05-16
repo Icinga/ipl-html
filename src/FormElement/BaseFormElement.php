@@ -8,7 +8,7 @@ use ipl\Stdlib\MessageContainer;
 use ipl\Stdlib\Contract\ValidatorInterface;
 use InvalidArgumentException;
 
-abstract class BaseFormElement extends BaseHtmlElement
+abstract class BaseFormElement extends BaseHtmlElement implements FormElementInterface
 {
     use MessageContainer;
 

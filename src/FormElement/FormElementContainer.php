@@ -13,7 +13,7 @@ trait FormElementContainer
 {
     use PluginLoader;
 
-    /** @var BaseFormElement[] */
+    /** @var FormElementInterface[] */
     private $elements = [];
 
     private $populatedValues = [];
@@ -22,7 +22,7 @@ trait FormElementContainer
     protected $defaultElementDecorator;
 
     /**
-     * @return BaseFormElement[]
+     * @return FormElementInterface[]
      */
     public function getElements()
     {
@@ -115,11 +115,11 @@ trait FormElementContainer
 
     /**
      * @param $name
-     * @return BaseFormElement
+     * @return FormElementInterface
      */
     public function getElement($name)
     {
-        if (! array_key_exists($name, $this->elements)) {
+        if (! \array_key_exists($name, $this->elements)) {
             throw new InvalidArgumentException(sprintf(
                 'Trying to get non-existent element "%s"',
                 $name
@@ -129,15 +129,15 @@ trait FormElementContainer
     }
 
     /**
-     * @param string|BaseFormElement $element
+     * @param string|FormElementInterface $element
      * @return bool
      */
     public function hasElement($element)
     {
-        if (is_string($element)) {
-            return array_key_exists($element, $this->elements);
+        if (\is_string($element)) {
+            return \array_key_exists($element, $this->elements);
         } elseif ($element instanceof BaseFormElement) {
-            return in_array($element, $this->elements, true);
+            return \in_array($element, $this->elements, true);
         } else {
             return false;
         }
@@ -157,7 +157,7 @@ trait FormElementContainer
         }
 
         $element = $this->getElement($name);
-        if ($this instanceof BaseHtmlElement) {
+        if ($this instanceof FormElementInterface) {
             $element = $this->decorate($element);
         }
 
@@ -170,7 +170,7 @@ trait FormElementContainer
      * @param BaseFormElement $element
      * @return BaseFormElement
      */
-    protected function decorate(BaseFormElement $element)
+    protected function decorate(FormElementInterface $element)
     {
         if ($this->hasDefaultElementDecorator()) {
             $decorator = $this->getDefaultElementDecorator();
@@ -194,10 +194,9 @@ trait FormElementContainer
      */
     public function registerElement($type, $name = null, $options = null)
     {
-        if (is_string($type)) {
+        if (\is_string($type)) {
             $type = $this->createElement($type, $name, $options);
-        // TODO: } elseif ($type instanceof FormElementInterface) {
-        } elseif ($type instanceof BaseHtmlElement) {
+        } elseif ($type instanceof FormElementInterface) {
             if ($name === null) {
                 $name = $type->getName();
             }
@@ -214,7 +213,7 @@ trait FormElementContainer
         return $this;
     }
 
-    public function onElementRegistered($name, BaseFormElement $element)
+    public function onElementRegistered($name, FormElementInterface $element)
     {
         // TODO: hasSubmitButton is not here
         if ($element instanceof SubmitElement && ! $this->hasSubmitButton()) {
@@ -258,8 +257,7 @@ trait FormElementContainer
 
     public function remove(ValidHtml $html)
     {
-        // TODO: FormElementInterface?
-        if ($html instanceof BaseFormElement) {
+        if ($html instanceof FormElementInterface) {
             if ($this->hasElement($html)) {
                 if ($this->submitButton === $html) {
                     $this->submitButton = null;
