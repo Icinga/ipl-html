@@ -86,4 +86,29 @@ class HtmlDocumentTest extends TestCase
         $a->add(null);
         $this->assertEquals('', $a->render());
     }
+
+    public function testElementIsCleanlyRemoved()
+    {
+        $a = new HtmlDocument();
+        $s1 = h::tag('b', 'one');
+        $s2 = h::tag('b', 'two');
+        $s3 = h::tag('b', 'three');
+        $a->add([$s1, $s2, $s3]);
+        $a->ensureAssembled();
+        $a->remove($s2);
+        $this->assertEquals(
+            '<b>one</b><b>three</b>',
+            $a->render()
+        );
+        $a->add($s1);
+        $this->assertEquals(
+            '<b>one</b><b>three</b><b>one</b>',
+            $a->render()
+        );
+        $a->remove($s1);
+        $this->assertEquals(
+            '<b>three</b>',
+            $a->render()
+        );
+    }
 }

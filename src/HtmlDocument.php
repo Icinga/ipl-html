@@ -31,7 +31,7 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function add($content)
     {
-        if (is_array($content)) {
+        if (\is_array($content)) {
             foreach ($content as $c) {
                 $this->add($c);
             }
@@ -105,7 +105,7 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function count()
     {
-        return count($this->content);
+        return \count($this->content);
     }
 
     /**
@@ -133,14 +133,14 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function prepend($content)
     {
-        if (is_array($content)) {
-            foreach (array_reverse($content) as $c) {
+        if (\is_array($content)) {
+            foreach (\array_reverse($content) as $c) {
                 $this->prepend($c);
             }
         } else {
             $pos = 0;
             $html = Html::wantHtml($content);
-            array_unshift($this->content, $html);
+            \array_unshift($this->content, $html);
             $this->incrementIndexKeys();
             $this->addObjectPosition($html, $pos);
         }
@@ -150,12 +150,13 @@ class HtmlDocument implements Countable, ValidHtml
 
     public function remove(ValidHtml $html)
     {
-        $key = spl_object_hash($html);
-        if (array_key_exists($key, $this->contentIndex)) {
+        $key = \spl_object_hash($html);
+        if (\array_key_exists($key, $this->contentIndex)) {
             foreach ($this->contentIndex[$key] as $pos) {
                 unset($this->content[$pos]);
             }
         }
+        $this->content = \array_values($this->content);
 
         $this->reIndexContent();
     }
@@ -166,8 +167,8 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function addPrintf($string)
     {
-        $args = func_get_args();
-        array_shift($args);
+        $args = \func_get_args();
+        \array_shift($args);
 
         return $this->add(
             new FormattedString($string, $args)
@@ -180,7 +181,7 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function setContent($content)
     {
-        $this->content = array();
+        $this->content = [];
         $this->add($content);
 
         return $this;
@@ -193,6 +194,7 @@ class HtmlDocument implements Countable, ValidHtml
     public function setSeparator($separator)
     {
         $this->contentSeparator = $separator;
+
         return $this;
     }
 
@@ -237,9 +239,9 @@ class HtmlDocument implements Countable, ValidHtml
 
         $wrapper->ensureAssembled();
 
-        $key = spl_object_hash($document);
+        $key = \spl_object_hash($document);
 
-        if (! array_key_exists($key, $wrapper->contentIndex)) {
+        if (! \array_key_exists($key, $wrapper->contentIndex)) {
             $wrapper->add($document);
         }
 
@@ -271,7 +273,7 @@ class HtmlDocument implements Countable, ValidHtml
             $html[] = $element->render();
         }
 
-        return implode($this->contentSeparator, $html);
+        return \implode($this->contentSeparator, $html);
     }
 
     /**
@@ -296,8 +298,8 @@ class HtmlDocument implements Countable, ValidHtml
 
     private function addObjectPosition(ValidHtml $html, $pos)
     {
-        $key = spl_object_hash($html);
-        if (array_key_exists($key, $this->contentIndex)) {
+        $key = \spl_object_hash($html);
+        if (\array_key_exists($key, $this->contentIndex)) {
             $this->contentIndex[$key][] = $pos;
         } else {
             $this->contentIndex[$key] = [$pos];
@@ -306,7 +308,7 @@ class HtmlDocument implements Countable, ValidHtml
 
     private function addIndexedContent(ValidHtml $html)
     {
-        $pos = count($this->content);
+        $pos = \count($this->content);
         $this->content[$pos] = $html;
         $this->addObjectPosition($html, $pos);
     }
