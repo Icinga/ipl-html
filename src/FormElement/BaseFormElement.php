@@ -207,12 +207,21 @@ abstract class BaseFormElement extends BaseHtmlElement
     public function setValidators(array $validators)
     {
         $this->validators = [];
-        foreach ($validators as $validator => $options) {
-            if (! $validator instanceof ValidatorInterface) {
-                $validator = $this->createValidator($validator, $options);
-            }
+        $this->addValidators($validators);
+    }
 
-            $this->validators[] = $validator;
+    /**
+     * @param array $validators
+     */
+    public function addValidators(array $validators)
+    {
+        foreach ($validators as $name => $validator) {
+            if ($validator instanceof ValidatorInterface) {
+                $this->validators[] = $validator;
+            } else {
+                $validator = $this->createValidator($name, $validator);
+                $this->validators[] = $validator;
+            }
         }
     }
 
