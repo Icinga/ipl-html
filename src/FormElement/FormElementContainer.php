@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
+use ipl\Html\ValidHtml;
 use ipl\Stdlib\Loader\PluginLoader;
 
 trait FormElementContainer
@@ -195,6 +196,7 @@ trait FormElementContainer
     {
         if (is_string($type)) {
             $type = $this->createElement($type, $name, $options);
+        // TODO: } elseif ($type instanceof FormElementInterface) {
         } elseif ($type instanceof BaseHtmlElement) {
             if ($name === null) {
                 $name = $type->getName();
@@ -252,6 +254,31 @@ trait FormElementContainer
         foreach ($form->getElements() as $name => $element) {
             $this->addElement($element);
         }
+    }
+
+    public function remove(ValidHtml $html)
+    {
+        // TODO: FormElementInterface?
+        if ($html instanceof BaseFormElement) {
+            if ($this->hasElement($html)) {
+                if ($this->submitButton === $html) {
+                    $this->submitButton = null;
+                }
+
+                $kill = [];
+                foreach ($this->elements as $key => $element) {
+                    if ($element === $html) {
+                        $kill[] = $key;
+                    }
+                }
+
+                foreach ($kill as $key) {
+                    unset($this->elements[$key]);
+                }
+            }
+        }
+
+        parent::remove($html);
     }
 
     public function setDefaultElementDecorator($decorator)
