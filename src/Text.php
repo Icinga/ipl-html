@@ -9,7 +9,7 @@ class Text implements ValidHtml
     /** @var string */
     protected $string;
 
-    protected $escaped = false;
+    protected $escaped = true;
 
     /**
      * Text constructor.
@@ -54,7 +54,7 @@ class Text implements ValidHtml
      */
     public function render()
     {
-        if ($this->escaped) {
+        if (! $this->escaped) {
             return $this->string;
         } else {
             return Html::escape($this->string);
