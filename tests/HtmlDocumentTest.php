@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\Html as h;
 use ipl\Html\HtmlDocument;
+use ipl\Tests\Html\TestDummy\AddsWrapperDuringAssemble;
 use ipl\Tests\Html\TestDummy\ObjectThatCanBeCastedToString;
 
 class HtmlDocumentTest extends TestCase
@@ -53,6 +54,16 @@ class HtmlDocumentTest extends TestCase
         $this->assertRendersHtml(
             '<b><a>Just some content</a></b>',
             $c
+        );
+    }
+
+    public function testWrapperAddedDuringAssemble()
+    {
+        $addsWrapperDuringAssemble = new AddsWrapperDuringAssemble();
+        $addsWrapperDuringAssemble->add(h::tag('p', 'some text'));
+        $this->assertRendersHtml(
+            '<div><p>some text</p></div>',
+            $addsWrapperDuringAssemble
         );
     }
 
