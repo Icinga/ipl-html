@@ -89,7 +89,6 @@ class Form extends BaseHtmlElement
 
     public function onSuccess()
     {
-        $this->add(Html::tag('p', ['class' => 'information'], 'SUCCESS'));
         // $this->redirectOnSuccess();
     }
 
