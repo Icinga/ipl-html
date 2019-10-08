@@ -8,8 +8,11 @@ use ipl\Html\FormElement\BaseFormElement;
 interface DecoratorInterface
 {
     /**
-     * @param BaseFormElement $element
+     * Set the form element to decorate
+     *
+     * @param BaseFormElement $formElement
+     *
      * @return static
      */
-    public function decorate(BaseFormElement $element);
+    public function decorate(BaseFormElement $formElement);
 }
