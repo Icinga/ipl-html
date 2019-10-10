@@ -11,7 +11,7 @@
     >
     <testsuites>
         <testsuite name="ipl/html PHP Unit tests">
-            <directory suffix="Test.php">tests/php</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

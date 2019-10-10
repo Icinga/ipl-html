@@ -20,7 +20,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "ipl\\Tests\\Html\\": "tests/php"
+      "ipl\\Tests\\Html\\": "tests"
     }
   }
 }
