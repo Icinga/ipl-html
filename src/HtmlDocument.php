@@ -207,6 +207,7 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function render()
     {
+        $this->ensureAssembled();
         if ($this->wrapper === null) {
             return $this->renderUnwrapped();
         } else {
