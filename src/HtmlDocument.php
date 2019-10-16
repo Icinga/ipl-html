@@ -158,6 +158,24 @@ class HtmlDocument implements Countable, ValidHtml
         return $this;
     }
 
+    /**
+     * Prepend content
+     *
+     * @param ValidHtml ...$content
+     *
+     * @return $this
+     */
+    public function prependHtml(ValidHtml ...$content)
+    {
+        foreach (array_reverse($content) as $html) {
+            array_unshift($this->content, $html);
+            $this->incrementIndexKeys();
+            $this->addObjectPosition($html, 0);
+        }
+
+        return $this;
+    }
+
     public function remove(ValidHtml $html)
     {
         $key = \spl_object_hash($html);
