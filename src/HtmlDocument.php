@@ -83,7 +83,7 @@ class HtmlDocument implements Countable, Wrappable
     public function setContent($content)
     {
         $this->content = [];
-        $this->add($content);
+        $this->setHtmlContent(...Html::wantHtmlList($content));
 
         return $this;
     }
