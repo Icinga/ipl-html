@@ -5,6 +5,7 @@ namespace ipl\Html\FormDecorator;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\Html;
+use ipl\Html\ValidHtml;
 
 class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 {
@@ -92,11 +93,11 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
         return null;
     }
 
-    public function add($content)
+    public function addHtml(ValidHtml ...$content)
     {
         // TODO: is this required?
-        if ($content !== $this->wrappedElement) {
-            parent::add($content);
+        if (! in_array($this->wrappedElement, $content, true)) {
+            parent::addHtml(...$content);
         }
 
         return $this;
