@@ -156,6 +156,22 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Add content
+     *
+     * @param ValidHtml ...$content
+     *
+     * @return $this
+     */
+    public function addHtml(ValidHtml ...$content)
+    {
+        foreach ($content as $element) {
+            $this->addIndexedContent($element);
+        }
+
+        return $this;
+    }
+
+    /**
      * Add content from the given document
      *
      * @param HtmlDocument $from
