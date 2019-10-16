@@ -112,6 +112,22 @@ class Attributes implements ArrayAccess, IteratorAggregate
     }
 
     /**
+     * Merge the given attributes
+     *
+     * @param Attributes $attributes
+     *
+     * @return $this
+     */
+    public function merge(Attributes $attributes)
+    {
+        foreach ($attributes as $attribute) {
+            $this->addAttribute($attribute);
+        }
+
+        return $this;
+    }
+
+    /**
      * Return true if the attribute with the given name exists, false otherwise
      *
      * @param string $name
