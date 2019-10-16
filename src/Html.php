@@ -113,7 +113,7 @@ abstract class Html
         $result = new HtmlDocument();
         foreach ($list as $name => $value) {
             if (is_string($wrapper)) {
-                $result->add(Html::tag($wrapper, $value));
+                $result->addHtml(Html::tag($wrapper, $value));
             } elseif (is_callable($wrapper)) {
                 $result->add($wrapper($name, $value));
             } else {
@@ -146,7 +146,7 @@ abstract class Html
             $html = new HtmlDocument();
             foreach ($any as $el) {
                 if ($el !== null) {
-                    $html->add(static::wantHtml($el));
+                    $html->addHtml(static::wantHtml($el));
                 }
             }
 

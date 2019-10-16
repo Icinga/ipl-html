@@ -189,7 +189,7 @@ class HtmlDocument implements Countable, ValidHtml
         $args = \func_get_args();
         \array_shift($args);
 
-        return $this->add(
+        return $this->addHtml(
             new FormattedString($string, $args)
         );
     }
@@ -279,7 +279,7 @@ class HtmlDocument implements Countable, ValidHtml
         $key = \spl_object_hash($document);
 
         if (! \array_key_exists($key, $wrapper->contentIndex)) {
-            $wrapper->add($document);
+            $wrapper->addHtml($document);
         }
 
         return $wrapper->render();

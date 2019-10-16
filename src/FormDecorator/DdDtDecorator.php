@@ -104,7 +104,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected function assemble()
     {
-        $this->add([$this->dt(), $this->dd()]);
+        $this->addHtml($this->dt(), $this->dd());
         $this->ready = true;
     }
 

@@ -109,11 +109,10 @@ class DivDecorator extends BaseHtmlElement implements DecoratorInterface
 
         $this->formElement->getAttributes()->add('class');
 
-        $this->add(array_filter([
+        $this->addHtml(...array_filter(array_merge([
             $this->assembleLabel(),
             $this->formElement,
-            $this->assembleDescription(),
-            $this->assembleErrors()
-        ]));
+            $this->assembleDescription()
+        ], $this->assembleErrors() ?: [])));
     }
 }
