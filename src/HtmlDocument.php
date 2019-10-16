@@ -238,17 +238,7 @@ class HtmlDocument implements Countable, Wrappable
      */
     public function prepend($content)
     {
-        if (is_iterable($content) && ! $content instanceof ValidHtml) {
-            foreach (array_reverse(is_array($content) ? $content : iterator_to_array($content)) as $c) {
-                $this->prepend($c);
-            }
-        } elseif ($content !== null) {
-            $pos = 0;
-            $html = Html::wantHtml($content);
-            array_unshift($this->content, $html);
-            $this->incrementIndexKeys();
-            $this->addObjectPosition($html, $pos);
-        }
+        $this->prependHtml(...Html::wantHtmlList($content));
 
         return $this;
     }
