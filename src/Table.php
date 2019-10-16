@@ -97,7 +97,7 @@ class Table extends BaseHtmlElement
      *
      * Will be rendered as a "caption" HTML element
      *
-     * @param $caption
+     * @param mixed $caption
      * @return $this
      */
     public function setCaption($caption)
@@ -106,7 +106,7 @@ class Table extends BaseHtmlElement
             $this->caption = $caption;
             $this->prepend($caption);
         } elseif ($this->caption === null) {
-            $this->caption = new HtmlElement('caption', null, $caption);
+            $this->caption = new HtmlElement('caption', null, ...Html::wantHtmlList($caption));
             $this->prepend($this->caption);
         } else {
             $this->caption->setContent($caption);

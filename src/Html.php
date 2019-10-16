@@ -28,18 +28,23 @@ abstract class Html
      */
     public static function tag($name, $attributes = null, $content = null)
     {
-        if ($attributes instanceof ValidHtml || is_scalar($attributes)) {
-            $content = $attributes;
+        if ($content !== null) {
+            $content = static::wantHtmlList($content);
+        } elseif ($attributes instanceof ValidHtml || is_scalar($attributes)) {
+            $content = static::wantHtmlList($attributes);
             $attributes = null;
-        } elseif (is_array($attributes)) {
-            reset($attributes);
-            if (is_int(key($attributes))) {
-                $content = $attributes;
+        }
+
+        if ($attributes !== null) {
+            if (! is_array($attributes) || ! is_int(key($attributes))) {
+                $attributes = Attributes::wantAttributes($attributes);
+            } elseif (is_array($attributes)) {
+                $content = static::wantHtmlList($attributes);
                 $attributes = null;
             }
         }
 
-        return new HtmlElement($name, $attributes, $content);
+        return new HtmlElement($name, $attributes, ...($content ?: []));
     }
 
     /**
