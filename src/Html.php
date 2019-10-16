@@ -153,6 +153,32 @@ abstract class Html
     }
 
     /**
+     * Accept any input and return it as list of ValidHtml
+     *
+     * @param mixed $content
+     *
+     * @return ValidHtml[]
+     */
+    public static function wantHtmlList($content)
+    {
+        $list = [];
+
+        if ($content === null) {
+            return $list;
+        } elseif (! is_iterable($content)) {
+            $list[] = static::wantHtml($content);
+        } elseif ($content instanceof ValidHtml) {
+            $list[] = $content;
+        } else {
+            foreach ($content as $part) {
+                $list = array_merge($list, static::wantHtmlList($part));
+            }
+        }
+
+        return $list;
+    }
+
+    /**
      * Get whether the given variable be rendered as a string
      *
      * @param mixed $any
