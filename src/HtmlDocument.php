@@ -340,7 +340,7 @@ class HtmlDocument implements Countable, ValidHtml
         }
     }
 
-    private function addIndexedContent(ValidHtml $html)
+    protected function addIndexedContent(ValidHtml $html)
     {
         $pos = \count($this->content);
         $this->content[$pos] = $html;
