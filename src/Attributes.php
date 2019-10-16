@@ -240,23 +240,25 @@ class Attributes implements \IteratorAggregate
     }
 
     /**
-     * Add the specified attribute
+     * Add the specified attribute(s)
      *
      * If an attribute with the same name already exists, the given attribute's value
      * will be added to the current value of the attribute.
      *
-     * @param   Attribute $attribute
+     * @param   Attribute ...$attributes
      *
      * @return  $this
      */
-    public function addAttribute(Attribute $attribute)
+    public function addAttribute(Attribute ...$attributes)
     {
-        $name = $attribute->getName();
+        foreach ($attributes as $attribute) {
+            $name = $attribute->getName();
 
-        if ($this->has($name)) {
-            $this->attributes[$name]->addValue($attribute->getValue());
-        } else {
-            $this->attributes[$name] = $attribute;
+            if ($this->has($name)) {
+                $this->attributes[$name]->addValue($attribute->getValue());
+            } else {
+                $this->attributes[$name] = $attribute;
+            }
         }
 
         return $this;
