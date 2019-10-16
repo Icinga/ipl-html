@@ -301,11 +301,11 @@ abstract class BaseHtmlElement extends HtmlDocument
     {
     }
 
-    public function add($content)
+    public function addHtml(ValidHtml ...$content)
     {
         $this->ensureAssembled();
 
-        parent::add($content);
+        parent::addHtml(...$content);
 
         return $this;
     }
