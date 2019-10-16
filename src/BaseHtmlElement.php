@@ -175,11 +175,11 @@ abstract class BaseHtmlElement extends HtmlDocument
         return parent::renderUnwrapped();
     }
 
-    public function add($content)
+    public function addHtml(ValidHtml ...$content)
     {
         $this->ensureAssembled();
 
-        parent::add($content);
+        parent::addHtml(...$content);
 
         return $this;
     }

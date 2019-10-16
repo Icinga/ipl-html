@@ -26,18 +26,12 @@ class HtmlDocument implements Countable, ValidHtml
     protected $hasBeenAssembled = false;
 
     /**
-     * @param ValidHtml|mixed $content
+     * @param mixed $content
      * @return $this
      */
     public function add($content)
     {
-        if (\is_array($content)) {
-            foreach ($content as $c) {
-                $this->add($c);
-            }
-        } elseif ($content !== null) {
-            $this->addIndexedContent(Html::wantHtml($content));
-        }
+        $this->addHtml(...Html::wantHtmlList($content));
 
         return $this;
     }

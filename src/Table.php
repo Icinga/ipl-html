@@ -26,38 +26,36 @@ class Table extends BaseHtmlElement
     private $footer;
 
     /**
-     * @param array|ValidHtml|string $content
+     * @param ValidHtml $html
      * @return $this
      */
-    public function add($content)
+    protected function addIndexedContent(ValidHtml $html)
     {
-        $this->ensureAssembled();
-
-        if ($content instanceof BaseHtmlElement) {
-            switch ($content->getTag()) {
+        if ($html instanceof BaseHtmlElement) {
+            switch ($html->getTag()) {
                 case 'tr':
-                    $this->getBody()->add($content);
+                    $this->getBody()->addHtml($html);
                     break;
 
                 case 'thead':
-                    parent::add($content);
-                    $this->header = $content;
+                    parent::addIndexedContent($html);
+                    $this->header = $html;
                     break;
 
                 case 'tbody':
-                    parent::add($content);
-                    $this->body = $content;
+                    parent::addIndexedContent($html);
+                    $this->body = $html;
                     break;
 
                 case 'tfoot':
-                    parent::add($content);
-                    $this->footer = $content;
+                    parent::addIndexedContent($html);
+                    $this->footer = $html;
                     break;
 
                 case 'caption':
                     if ($this->caption === null) {
-                        $this->prepend($content);
-                        $this->caption = $content;
+                        $this->prepend($html);
+                        $this->caption = $html;
                     } else {
                         throw new RuntimeException(
                             'Tables allow only one <caption> tag'
@@ -66,14 +64,29 @@ class Table extends BaseHtmlElement
                     break;
 
                 default:
-                    $this->getBody()->add(static::row([$content]));
+                    $this->getBody()->addHtml(static::row([$html]));
             }
-        } elseif ($content instanceof stdClass) {
-            $this->getBody()->add(static::row((array) $content));
-        } elseif (is_array($content) || $content instanceof Traversable) {
-            $this->getBody()->add(static::row($content));
         } else {
-            $this->getBody()->add(static::row([$content]));
+            $this->getBody()->addHtml(static::row([$html]));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $content
+     * @return $this
+     */
+    public function add($content)
+    {
+        if ($content instanceof stdClass) {
+            $this->getBody()->addHtml(static::row((array) $content));
+        } elseif (is_array($content) || $content instanceof Traversable) {
+            $this->getBody()->addHtml(static::row($content));
+        } elseif ($content instanceof ValidHtml) {
+            $this->addHtml($content);
+        } else {
+            $this->getBody()->addHtml(static::row([$content]));
         }
 
         return $this;
@@ -164,7 +177,7 @@ class Table extends BaseHtmlElement
     public function getBody()
     {
         if ($this->body === null) {
-            $this->add(Html::tag('tbody')->setSeparator("\n"));
+            $this->addHtml(Html::tag('tbody')->setSeparator("\n"));
         }
 
         return $this->body;
@@ -176,7 +189,7 @@ class Table extends BaseHtmlElement
     public function getHeader()
     {
         if ($this->header === null) {
-            $this->add(Html::tag('thead')->setSeparator("\n"));
+            $this->addHtml(Html::tag('thead')->setSeparator("\n"));
         }
 
         return $this->header;
@@ -188,7 +201,7 @@ class Table extends BaseHtmlElement
     public function getFooter()
     {
         if ($this->footer === null) {
-            $this->add(Html::tag('tfoot')->setSeparator("\n"));
+            $this->addHtml(Html::tag('tfoot')->setSeparator("\n"));
         }
 
         return $this->footer;
