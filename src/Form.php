@@ -350,7 +350,7 @@ class Form extends BaseHtmlElement
         }
 
         if (! $errors->isEmpty()) {
-            $this->prepend($errors);
+            $this->prependHtml($errors);
         }
     }
 

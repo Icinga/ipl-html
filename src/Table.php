@@ -50,7 +50,7 @@ class Table extends BaseHtmlElement
                         break;
                     case 'caption':
                         if ($this->caption === null) {
-                            $this->prepend($html);
+                            $this->prependHtml($html);
                             $this->caption = $html;
                         } else {
                             throw new RuntimeException(
@@ -101,10 +101,10 @@ class Table extends BaseHtmlElement
     {
         if ($caption instanceof BaseHtmlElement && $caption->getTag() === 'caption') {
             $this->caption = $caption;
-            $this->prepend($caption);
+            $this->prependHtml($caption);
         } elseif ($this->caption === null) {
             $this->caption = new HtmlElement('caption', null, ...Html::wantHtmlList($caption));
-            $this->prepend($this->caption);
+            $this->prependHtml($this->caption);
         } else {
             $this->caption->setContent($caption);
         }
