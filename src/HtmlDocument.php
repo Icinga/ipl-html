@@ -138,22 +138,13 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @param $content
+     * @param mixed $content
+     *
      * @return $this
      */
     public function prepend($content)
     {
-        if (\is_array($content)) {
-            foreach (\array_reverse($content) as $c) {
-                $this->prepend($c);
-            }
-        } else {
-            $pos = 0;
-            $html = Html::wantHtml($content);
-            \array_unshift($this->content, $html);
-            $this->incrementIndexKeys();
-            $this->addObjectPosition($html, $pos);
-        }
+        $this->prependHtml(...Html::wantHtmlList($content));
 
         return $this;
     }
