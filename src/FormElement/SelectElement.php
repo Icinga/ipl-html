@@ -111,7 +111,7 @@ class SelectElement extends BaseFormElement
         if (is_array($label)) {
             $grp = Html::tag('optgroup', ['label' => $value]);
             foreach ($label as $option => $val) {
-                $grp->add($this->makeOption($option, $val));
+                $grp->addHtml($this->makeOption($option, $val));
             }
 
             return $grp;
@@ -134,8 +134,6 @@ class SelectElement extends BaseFormElement
 
     protected function assemble()
     {
-        foreach ($this->optionContent as $value => $option) {
-            $this->add($option);
-        }
+        $this->addHtml(...array_values($this->optionContent));
     }
 }

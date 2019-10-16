@@ -120,7 +120,7 @@ class TemplateString extends FormattedString
             ));
         }
 
-        return (new HtmlDocument())->add(HtmlString::create($buffer));
+        return (new HtmlDocument())->addHtml(HtmlString::create($buffer));
     }
 
     /**

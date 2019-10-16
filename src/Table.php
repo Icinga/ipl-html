@@ -158,7 +158,7 @@ class Table extends BaseHtmlElement
     {
         $tr = static::tr();
         foreach ((array) $row as $value) {
-            $tr->add(Html::tag($tag, null, $value));
+            $tr->addHtml(Html::tag($tag, null, $value));
         }
 
         if ($attributes !== null) {

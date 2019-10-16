@@ -41,7 +41,7 @@ abstract class Error
 
         $result = static::renderErrorMessage($msg);
         if (static::showTraces()) {
-            $result->add(Html::tag('pre', $error->getTraceAsString()));
+            $result->addHtml(Html::tag('pre', $error->getTraceAsString()));
         }
 
         return $result;
@@ -101,7 +101,7 @@ abstract class Error
     protected static function renderErrorMessage($message)
     {
         $output = new HtmlDocument();
-        $output->add(
+        $output->addHtml(
             Html::tag('div', ['class' => 'exception'], [
                 Html::tag('h1', [
                     Html::tag('i', ['class' => 'icon-bug']),
