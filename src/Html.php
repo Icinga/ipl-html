@@ -26,17 +26,32 @@ abstract class Html
      */
     public static function tag($name, $attributes = null, $content = null)
     {
-        if ($attributes instanceof ValidHtml || is_scalar($attributes)) {
-            $content = $attributes;
+        if ($content !== null) {
+            // If not null, it's html content, no question
+            $content = static::wantHtmlList($content);
+        } elseif ($attributes instanceof ValidHtml || is_scalar($attributes)) {
+            // Otherwise $attributes may be $content, but only if definitely **NOT** attributes
+            $content = static::wantHtmlList($attributes);
             $attributes = null;
-        } elseif (is_iterable($attributes)) {
-            if (is_int(iterable_key_first($attributes))) {
-                $content = $attributes;
+        }
+
+        if ($attributes !== null) {
+            if (! is_iterable($attributes) || ! is_int(iterable_key_first($attributes))) {
+                // Not an array (e.g. instance of Attributes) or an associative array
+                $attributes = Attributes::wantAttributes($attributes);
+            } elseif (is_iterable($attributes)) {
+                // $attributes may still be $content, in case of a sequenced array
+                if ($content !== null) {
+                    // But not if there's already $content
+                    throw new InvalidArgumentException('Value of argument $attributes are no attributes');
+                }
+
+                $content = static::wantHtmlList($attributes);
                 $attributes = null;
             }
         }
 
-        return new HtmlElement($name, $attributes, $content);
+        return new HtmlElement($name, $attributes, ...($content ?: []));
     }
 
     /**
