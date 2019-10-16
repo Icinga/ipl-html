@@ -102,7 +102,7 @@ class Form extends BaseHtmlElement
                 $error->add($message);
             }
         }
-        $this->prepend($error);
+        $this->prependHtml($error);
     }
 
     public function isValid()
