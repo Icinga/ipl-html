@@ -186,13 +186,13 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @param HtmlDocument|array|string $content
+     * @param mixed $content
+     *
      * @return $this
      */
     public function setContent($content)
     {
-        $this->content = [];
-        $this->add($content);
+        $this->setHtmlContent(...Html::wantHtmlList($content));
 
         return $this;
     }
