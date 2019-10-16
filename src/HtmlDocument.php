@@ -204,6 +204,23 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
+     * Set content
+     *
+     * @param ValidHtml ...$content
+     *
+     * @return $this
+     */
+    public function setHtmlContent(ValidHtml ...$content)
+    {
+        $this->content = [];
+        foreach ($content as $element) {
+            $this->addIndexedContent($element);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param $separator
      * @return self
      */
