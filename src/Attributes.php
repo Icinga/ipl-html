@@ -62,6 +62,20 @@ class Attributes implements \IteratorAggregate
     }
 
     /**
+     * Add the given attributes
+     *
+     * @param Attributes $attributes
+     *
+     * @return $this
+     */
+    public function addAttributes(Attributes $attributes)
+    {
+        $this->addAttribute(...array_values($attributes->getAttributes()));
+
+        return $this;
+    }
+
+    /**
      * Return true if the attribute with the given name exists, false otherwise
      *
      * @param   string  $name
