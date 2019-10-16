@@ -7,6 +7,7 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\FormElement\SubmitElement;
 use ipl\Html\Html;
+use ipl\Html\ValidHtml;
 
 /**
  * Form element decorator based on div elements
@@ -84,9 +85,9 @@ class DivDecorator extends BaseHtmlElement implements DecoratorInterface
         return null;
     }
 
-    public function add($content)
+    protected function addIndexedContent(ValidHtml $html)
     {
-        if ($content === $this->formElement) {
+        if ($html === $this->formElement) {
             // Our wrapper implementation automatically adds the wrapped element but we already did this in assemble
             if ($this->formElementAdded) {
                 return $this;
@@ -95,7 +96,7 @@ class DivDecorator extends BaseHtmlElement implements DecoratorInterface
             $this->formElementAdded = true;
         }
 
-        parent::add($content);
+        parent::addIndexedContent($html);
 
         return $this;
     }
