@@ -88,6 +88,70 @@ class HtmlDocumentTest extends TestCase
         $this->assertEquals('Some String &lt;:-)', $a->render());
     }
 
+    public function testSetContentFlattensNestedArrays()
+    {
+        $doc = new HtmlDocument();
+        $doc->setSeparator(';');
+        $doc->setContent([
+            h::tag('span'),
+            [
+                'foo',
+                'bar',
+                [
+                    h::tag('p', 'test'),
+                    h::tag('strong', 'bla')
+                ]
+            ]
+        ]);
+        $this->assertEquals(
+            '<span></span>;foo;bar;<p>test</p>;<strong>bla</strong>',
+            $doc->render()
+        );
+    }
+
+
+    public function testAddFlattensNestedArrays()
+    {
+        $doc = new HtmlDocument();
+        $doc->setSeparator(';');
+        $doc->add([
+            h::tag('span'),
+            [
+                'foo',
+                'bar',
+                [
+                    h::tag('p', 'test'),
+                    h::tag('strong', 'bla')
+                ]
+            ]
+        ]);
+        $this->assertEquals(
+            '<span></span>;foo;bar;<p>test</p>;<strong>bla</strong>',
+            $doc->render()
+        );
+    }
+
+    public function testPrependFlattensNestedArrays()
+    {
+        $doc = new HtmlDocument();
+        $doc->setSeparator(';');
+        $doc->prepend([
+            h::tag('span'),
+            [
+                'foo',
+                'bar',
+                [
+                    h::tag('p', 'test'),
+                    h::tag('strong', 'bla')
+                ]
+            ]
+        ]);
+        $this->assertEquals(
+            '<span></span>;foo;bar;<p>test</p>;<strong>bla</strong>',
+            $doc->render()
+        );
+    }
+
     public function testSkipsNullValues()
     {
         $a = new HtmlDocument();
