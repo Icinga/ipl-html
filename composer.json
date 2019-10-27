@@ -9,7 +9,7 @@
     "sort-packages": true
   },
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.6.0",
     "ipl/stdlib": ">=0.2",
     "psr/http-message": "~1.0"
   },
