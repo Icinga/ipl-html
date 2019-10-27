@@ -162,20 +162,21 @@ abstract class Html
     /**
      * Accept any input and return it as list of ValidHtml
      *
-     * @param mixed       $content
-     * @param ValidHtml[] $list
+     * @param mixed $content
      *
      * @return ValidHtml[]
      */
-    public static function wantHtmlList($content, &$list = [])
+    public static function wantHtmlList($content)
     {
+        $list = [];
+
         if ($content === null) {
             return $list;
-        } elseif (! is_array($content) && ! $content instanceof Traversable) {
+        } elseif (! is_iterable($content)) {
             $list[] = static::wantHtml($content);
         } else {
-            foreach ($content as $entry) {
-                static::wantHtmlList($entry, $list);
+            foreach ($content as $part) {
+                $list = array_merge($list, static::wantHtmlList($part));
             }
         }
 
