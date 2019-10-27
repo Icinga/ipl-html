@@ -62,13 +62,13 @@ class Attributes implements \IteratorAggregate
     }
 
     /**
-     * Add the given attributes
+     * Merge the given attributes
      *
      * @param Attributes $attributes
      *
      * @return $this
      */
-    public function addAttributes(Attributes $attributes)
+    public function merge(Attributes $attributes)
     {
         $this->addAttribute(...array_values($attributes->getAttributes()));
 

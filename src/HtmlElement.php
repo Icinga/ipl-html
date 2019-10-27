@@ -21,7 +21,7 @@ class HtmlElement extends BaseHtmlElement
         $this->tag = $tag;
 
         if ($attributes !== null) {
-            $this->getAttributes()->addAttributes($attributes);
+            $this->getAttributes()->merge($attributes);
         }
 
         foreach ($content as $element) {
