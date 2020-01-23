@@ -286,7 +286,8 @@ trait FormElementContainer
 
     public function setDefaultElementDecorator($decorator)
     {
-        if ($decorator instanceof BaseHtmlElement
+        if (
+            $decorator instanceof BaseHtmlElement
             || $decorator instanceof DecoratorInterface
         ) {
             $this->defaultElementDecorator = $decorator;

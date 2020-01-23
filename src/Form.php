@@ -10,13 +10,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
+    use FormElementContainer;
+    use MessageContainer;
+
     const ON_ELEMENT_REGISTERED = 'elementRegistered';
     const ON_ERROR = 'error';
     const ON_REQUEST = 'request';
     const ON_SUCCESS = 'success';
-
-    use FormElementContainer;
-    use MessageContainer;
 
     protected $tag = 'form';
 
