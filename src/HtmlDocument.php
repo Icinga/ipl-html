@@ -324,8 +324,6 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @deprecated
-     *
      * return ValidHtml[]
      */
     public function getContent()
