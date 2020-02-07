@@ -5,6 +5,8 @@ namespace ipl\Html;
 use InvalidArgumentException;
 use Traversable;
 
+use function ipl\Stdlib\iterable_key_first;
+
 /**
  * Class Html
  *
@@ -31,9 +33,8 @@ abstract class Html
         if ($attributes instanceof ValidHtml || is_scalar($attributes)) {
             $content = $attributes;
             $attributes = null;
-        } elseif (is_array($attributes)) {
-            reset($attributes);
-            if (is_int(key($attributes))) {
+        } elseif (is_iterable($attributes)) {
+            if (is_int(iterable_key_first($attributes))) {
                 $content = $attributes;
                 $attributes = null;
             }
