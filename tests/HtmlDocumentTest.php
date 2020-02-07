@@ -161,4 +161,30 @@ class HtmlDocumentTest extends TestCase
             $div
         );
     }
+
+    public function testAddSupportsIterable()
+    {
+        $content = function () {
+            yield h::tag('b', 'foo');
+            yield h::tag('b', 'bar');
+        };
+
+        $html = (new HtmlDocument())
+            ->add($content());
+
+        $this->assertHtml('<b>foo</b><b>bar</b>', $html);
+    }
+
+    public function testPrependSupportsIterable()
+    {
+        $content = function () {
+            yield h::tag('b', 'foo');
+        };
+
+        $html = (new HtmlDocument())
+            ->add(h::tag('b', 'bar'))
+            ->prepend($content());
+
+        $this->assertHtml('<b>foo</b><b>bar</b>', $html);
+    }
 }
