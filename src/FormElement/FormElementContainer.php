@@ -32,6 +32,92 @@ trait FormElementContainer
     }
 
     /**
+     * @param string|BaseFormElement $element
+     * @return bool
+     */
+    public function hasElement($element)
+    {
+        if (\is_string($element)) {
+            return \array_key_exists($element, $this->elements);
+        } elseif ($element instanceof BaseFormElement) {
+            return \in_array($element, $this->elements, true);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $name
+     * @return BaseFormElement
+     */
+    public function getElement($name)
+    {
+        if (! \array_key_exists($name, $this->elements)) {
+            throw new InvalidArgumentException(sprintf(
+                'Trying to get non-existent element "%s"',
+                $name
+            ));
+        }
+        return $this->elements[$name];
+    }
+
+    /**
+     * @param string $name
+     * @param string|BaseFormElement $type
+     * @param array|null $options
+     * @return $this
+     */
+    public function addElement($type, $name = null, $options = null)
+    {
+        $this->registerElement($type, $name, $options);
+        if ($name === null) {
+            $name = $type->getName();
+        }
+
+        $element = $this->getElement($name);
+        if ($this instanceof BaseHtmlElement) {
+            $element = $this->decorate($element);
+        }
+
+        $this->add($element);
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string|BaseFormElement $type
+     * @param array|null $options
+     * @return $this
+     */
+    public function registerElement($type, $name = null, $options = null)
+    {
+        if (\is_string($type)) {
+            $type = $this->createElement($type, $name, $options);
+            // TODO: } elseif ($type instanceof FormElementInterface) {
+        } elseif ($type instanceof BaseHtmlElement) {
+            if ($name === null) {
+                $name = $type->getName();
+            }
+        } else {
+            throw new InvalidArgumentException(sprintf(
+                'FormElement or element type is required' // TODO: got %s
+            ));
+        }
+
+        $this->elements[$name] = $type;
+
+        if (array_key_exists($name, $this->populatedValues)) {
+            $type->setValue($this->populatedValues[$name]);
+        }
+
+        $this->onElementRegistered($type);
+        $this->emit(Form::ON_ELEMENT_REGISTERED, [$type]);
+
+        return $this;
+    }
+
+    /**
      * Returns the value for the $name element
      *
      * Returns $default in case the element does not exist or has no value
@@ -116,59 +202,6 @@ trait FormElementContainer
     }
 
     /**
-     * @param string|BaseFormElement $element
-     * @return bool
-     */
-    public function hasElement($element)
-    {
-        if (\is_string($element)) {
-            return \array_key_exists($element, $this->elements);
-        } elseif ($element instanceof BaseFormElement) {
-            return \in_array($element, $this->elements, true);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @param $name
-     * @return BaseFormElement
-     */
-    public function getElement($name)
-    {
-        if (! \array_key_exists($name, $this->elements)) {
-            throw new InvalidArgumentException(sprintf(
-                'Trying to get non-existent element "%s"',
-                $name
-            ));
-        }
-        return $this->elements[$name];
-    }
-
-    /**
-     * @param string $name
-     * @param string|BaseFormElement $type
-     * @param array|null $options
-     * @return $this
-     */
-    public function addElement($type, $name = null, $options = null)
-    {
-        $this->registerElement($type, $name, $options);
-        if ($name === null) {
-            $name = $type->getName();
-        }
-
-        $element = $this->getElement($name);
-        if ($this instanceof BaseHtmlElement) {
-            $element = $this->decorate($element);
-        }
-
-        $this->add($element);
-
-        return $this;
-    }
-
-    /**
      * @param BaseFormElement $element
      * @return BaseFormElement
      */
@@ -186,39 +219,6 @@ trait FormElementContainer
         }
 
         return $element;
-    }
-
-    /**
-     * @param string $name
-     * @param string|BaseFormElement $type
-     * @param array|null $options
-     * @return $this
-     */
-    public function registerElement($type, $name = null, $options = null)
-    {
-        if (\is_string($type)) {
-            $type = $this->createElement($type, $name, $options);
-        // TODO: } elseif ($type instanceof FormElementInterface) {
-        } elseif ($type instanceof BaseHtmlElement) {
-            if ($name === null) {
-                $name = $type->getName();
-            }
-        } else {
-            throw new InvalidArgumentException(sprintf(
-                'FormElement or element type is required' // TODO: got %s
-            ));
-        }
-
-        $this->elements[$name] = $type;
-
-        if (array_key_exists($name, $this->populatedValues)) {
-            $type->setValue($this->populatedValues[$name]);
-        }
-
-        $this->onElementRegistered($type);
-        $this->emit(Form::ON_ELEMENT_REGISTERED, [$type]);
-
-        return $this;
     }
 
     /**
