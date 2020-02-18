@@ -85,6 +85,26 @@ trait FormElementContainer
     }
 
     /**
+     * @param string $type
+     * @param string $name
+     * @param mixed $attributes
+     * @return BaseFormElement
+     */
+    public function createElement($type, $name, $attributes = null)
+    {
+        $this->eventuallyRegisterDefaultElementLoader();
+
+        $class = $this->eventuallyGetPluginClass('element', $type);
+        /** @var BaseFormElement $element */
+        $element = new $class($name);
+        if ($attributes !== null) {
+            $element->addAttributes($attributes);
+        }
+
+        return $element;
+    }
+
+    /**
      * @param string $name
      * @param string|BaseFormElement $type
      * @param array|null $options
@@ -216,26 +236,6 @@ trait FormElementContainer
             } else {
                 die('WTF');
             }
-        }
-
-        return $element;
-    }
-
-    /**
-     * @param string $type
-     * @param string $name
-     * @param mixed $attributes
-     * @return BaseFormElement
-     */
-    public function createElement($type, $name, $attributes = null)
-    {
-        $this->eventuallyRegisterDefaultElementLoader();
-
-        $class = $this->eventuallyGetPluginClass('element', $type);
-        /** @var BaseFormElement $element */
-        $element = new $class($name);
-        if ($attributes !== null) {
-            $element->addAttributes($attributes);
         }
 
         return $element;
