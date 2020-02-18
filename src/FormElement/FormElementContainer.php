@@ -15,13 +15,13 @@ trait FormElementContainer
     use PluginLoader;
     use EventEmitter;
 
+    /** @var DecoratorInterface|BaseHtmlElement|null */
+    protected $defaultElementDecorator;
+
     /** @var BaseFormElement[] */
     private $elements = [];
 
     private $populatedValues = [];
-
-    /** @var DecoratorInterface|BaseHtmlElement|null */
-    protected $defaultElementDecorator;
 
     /**
      * @return BaseFormElement[]
