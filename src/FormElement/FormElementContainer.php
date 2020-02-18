@@ -116,21 +116,6 @@ trait FormElementContainer
     }
 
     /**
-     * @param $name
-     * @return BaseFormElement
-     */
-    public function getElement($name)
-    {
-        if (! \array_key_exists($name, $this->elements)) {
-            throw new InvalidArgumentException(sprintf(
-                'Trying to get non-existent element "%s"',
-                $name
-            ));
-        }
-        return $this->elements[$name];
-    }
-
-    /**
      * @param string|BaseFormElement $element
      * @return bool
      */
@@ -143,6 +128,21 @@ trait FormElementContainer
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param $name
+     * @return BaseFormElement
+     */
+    public function getElement($name)
+    {
+        if (! \array_key_exists($name, $this->elements)) {
+            throw new InvalidArgumentException(sprintf(
+                'Trying to get non-existent element "%s"',
+                $name
+            ));
+        }
+        return $this->elements[$name];
     }
 
     /**
