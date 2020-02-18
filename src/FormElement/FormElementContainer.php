@@ -12,8 +12,8 @@ use ipl\Stdlib\Loader\PluginLoader;
 
 trait FormElementContainer
 {
-    use PluginLoader;
     use EventEmitter;
+    use PluginLoader;
 
     /** @var DecoratorInterface|BaseHtmlElement|null */
     protected $defaultElementDecorator;
