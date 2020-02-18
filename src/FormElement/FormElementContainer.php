@@ -24,6 +24,8 @@ trait FormElementContainer
     private $populatedValues = [];
 
     /**
+     * Get all elements
+     *
      * @return BaseFormElement[]
      */
     public function getElements()
