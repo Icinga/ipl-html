@@ -198,6 +198,11 @@ trait FormElementContainer
         return $values;
     }
 
+    /**
+     * Populate values of registered elements
+     *
+     * @param iterable $values Values as name-value pairs
+     */
     public function populate($values)
     {
         foreach ($values as $name => $value) {
