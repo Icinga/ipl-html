@@ -205,6 +205,8 @@ trait FormElementContainer
      * Populate values of registered elements
      *
      * @param iterable $values Values as name-value pairs
+     *
+     * @return $this
      */
     public function populate($values)
     {
@@ -214,6 +216,8 @@ trait FormElementContainer
                 $this->getElement($name)->setValue($value);
             }
         }
+
+        return $this;
     }
 
     public function addElementLoader($namespace, $classPostfix = null)
