@@ -3,8 +3,9 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Attribute;
+use ipl\Html\Contract\FormSubmitElement;
 
-class SubmitElement extends InputElement
+class SubmitElement extends InputElement implements FormSubmitElement
 {
     protected $type = 'submit';
 
@@ -37,9 +38,6 @@ class SubmitElement extends InputElement
         return new Attribute('value', $this->getButtonLabel());
     }
 
-    /**
-     * @return bool
-     */
     public function hasBeenPressed()
     {
         return $this->getButtonLabel() === $this->getValue();
