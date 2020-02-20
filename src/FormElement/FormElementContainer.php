@@ -35,7 +35,10 @@ trait FormElementContainer
     }
 
     /**
+     * Get whether the given element exists
+     *
      * @param string|BaseFormElement $element
+     *
      * @return bool
      */
     public function hasElement($element)
