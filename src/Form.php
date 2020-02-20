@@ -2,8 +2,9 @@
 
 namespace ipl\Html;
 
+use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\FormElement\FormElementContainer;
-use ipl\Html\FormElement\SubmitElement;
 use ipl\Stdlib\MessageContainer;
 use Exception;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,7 +25,7 @@ class Form extends BaseHtmlElement
 
     protected $method;
 
-    /** @var SubmitElement */
+    /** @var FormSubmitElement */
     protected $submitButton;
 
     /** @var ServerRequestInterface */
@@ -180,7 +181,7 @@ class Form extends BaseHtmlElement
         return $this->submitButton !== null;
     }
 
-    public function setSubmitButton(SubmitElement $element)
+    public function setSubmitButton(FormSubmitElement $element)
     {
         $this->submitButton = $element;
 
@@ -232,5 +233,14 @@ class Form extends BaseHtmlElement
         $this->getAttributes()->set('action', $action);
 
         return $this;
+    }
+
+    protected function onElementRegistered(BaseFormElement $element)
+    {
+        if ($element instanceof FormSubmitElement) {
+            if (! $this->hasSubmitButton()) {
+                $this->setSubmitButton($element);
+            }
+        }
     }
 }
