@@ -122,19 +122,24 @@ trait FormElementContainer
     }
 
     /**
-     * @param string $name
-     * @param string|BaseFormElement $type
-     * @param array|null $options
+     * Register an element
+     *
+     * Registers the element for value and validation handling but does not add it to the render stack.
+     *
+     * @param string|BaseFormElement $typeOrElement Type of the element as string or an instance of BaseFormElement
+     * @param string                 $name          Name of the element
+     * @param mixed                  $options       Element options as key-value pairs
+     *
      * @return $this
      */
-    public function registerElement($type, $name = null, $options = null)
+    public function registerElement($typeOrElement, $name = null, $options = null)
     {
-        if (\is_string($type)) {
-            $type = $this->createElement($type, $name, $options);
+        if (is_string($typeOrElement)) {
+            $typeOrElement = $this->createElement($typeOrElement, $name, $options);
             // TODO: } elseif ($type instanceof FormElementInterface) {
-        } elseif ($type instanceof BaseHtmlElement) {
+        } elseif ($typeOrElement instanceof BaseHtmlElement) {
             if ($name === null) {
-                $name = $type->getName();
+                $name = $typeOrElement->getName();
             }
         } else {
             throw new InvalidArgumentException(sprintf(
@@ -142,14 +147,14 @@ trait FormElementContainer
             ));
         }
 
-        $this->elements[$name] = $type;
+        $this->elements[$name] = $typeOrElement;
 
         if (array_key_exists($name, $this->populatedValues)) {
-            $type->setValue($this->populatedValues[$name]);
+            $typeOrElement->setValue($this->populatedValues[$name]);
         }
 
-        $this->onElementRegistered($type);
-        $this->emit(Form::ON_ELEMENT_REGISTERED, [$type]);
+        $this->onElementRegistered($typeOrElement);
+        $this->emit(Form::ON_ELEMENT_REGISTERED, [$typeOrElement]);
 
         return $this;
     }
