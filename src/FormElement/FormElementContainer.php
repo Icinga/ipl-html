@@ -182,9 +182,9 @@ trait FormElementContainer
     }
 
     /**
-     * Returns a name => value array for all but ignored elements
+     * Get the values for all but ignored elements
      *
-     * @return array
+     * @return array Values as name-value pairs
      */
     public function getValues()
     {
