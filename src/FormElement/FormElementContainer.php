@@ -23,6 +23,9 @@ trait FormElementContainer
     /** @var bool Whether the default element decorator loader has been registered */
     private $defaultElementDecoratorLoaderRegistered = false;
 
+    /** @var bool Whether the default element loader has been registered */
+    private $defaultElementLoaderRegistered = false;
+
     /** @var BaseFormElement[] */
     private $elements = [];
 
@@ -308,8 +311,10 @@ trait FormElementContainer
 
     protected function ensureDefaultElementLoaderRegistered()
     {
-        if (! $this->hasPluginLoadersFor('element')) {
+        if (! $this->defaultElementLoaderRegistered) {
             $this->addPluginLoader('element', __NAMESPACE__, 'Element');
+
+            $this->defaultElementLoaderRegistered = true;
         }
 
         return $this;
