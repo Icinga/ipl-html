@@ -160,13 +160,14 @@ trait FormElementContainer
     }
 
     /**
-     * Returns the value for the $name element
+     * Get the value of the element specified by name
      *
-     * Returns $default in case the element does not exist or has no value
+     * Returns $default if the element does not exist or has no value.
      *
      * @param string $name
-     * @param mixed $default
-     * @return mixed|null
+     * @param mixed  $default
+     *
+     * @return mixed
      */
     public function getValue($name, $default = null)
     {
