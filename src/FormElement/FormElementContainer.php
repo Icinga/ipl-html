@@ -147,7 +147,7 @@ trait FormElementContainer
         if (is_string($typeOrElement)) {
             $typeOrElement = $this->createElement($typeOrElement, $name, $options);
             // TODO: } elseif ($type instanceof FormElementInterface) {
-        } elseif ($typeOrElement instanceof BaseHtmlElement) {
+        } elseif ($typeOrElement instanceof BaseFormElement) {
             if ($name === null) {
                 $name = $typeOrElement->getName();
             }
