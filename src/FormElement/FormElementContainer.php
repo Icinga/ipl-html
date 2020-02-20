@@ -311,6 +311,19 @@ trait FormElementContainer
         parent::remove($html);
     }
 
+    public function hasDefaultElementDecorator()
+    {
+        return $this->defaultElementDecorator !== null;
+    }
+
+    /**
+     * @return DecoratorInterface
+     */
+    public function getDefaultElementDecorator()
+    {
+        return $this->defaultElementDecorator;
+    }
+
     public function setDefaultElementDecorator($decorator)
     {
         if (
@@ -324,19 +337,6 @@ trait FormElementContainer
         }
 
         return $this;
-    }
-
-    public function hasDefaultElementDecorator()
-    {
-        return $this->defaultElementDecorator !== null;
-    }
-
-    /**
-     * @return DecoratorInterface
-     */
-    public function getDefaultElementDecorator()
-    {
-        return $this->defaultElementDecorator;
     }
 
     public function isValidEvent($event)
