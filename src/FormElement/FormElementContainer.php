@@ -18,6 +18,9 @@ trait FormElementContainer
     /** @var DecoratorInterface|BaseHtmlElement|null */
     protected $defaultElementDecorator;
 
+    /** @var bool Whether the default element decorator loader has been registered */
+    private $defaultElementDecoratorLoaderRegistered = false;
+
     /** @var BaseFormElement[] */
     private $elements = [];
 
@@ -293,12 +296,14 @@ trait FormElementContainer
 
     protected function ensureDefaultElementDecoratorLoaderRegistered()
     {
-        if (! $this->hasPluginLoadersFor('decorator')) {
+        if (! $this->defaultElementDecoratorLoaderRegistered) {
             $this->addPluginLoader(
                 'decorator',
                 'ipl\\Html\\FormDecorator',
                 'Decorator'
             );
+
+            $this->defaultElementDecoratorLoaderRegistered = true;
         }
 
         return $this;
