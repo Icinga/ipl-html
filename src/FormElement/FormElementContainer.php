@@ -73,16 +73,19 @@ trait FormElementContainer
     }
 
     /**
-     * @param string $name
-     * @param string|BaseFormElement $type
-     * @param array|null $options
+     * Add an element
+     *
+     * @param string|BaseFormElement $typeOrElement Type of the element as string or an instance of BaseFormElement
+     * @param string                 $name          Name of the element
+     * @param mixed                  $options       Element options as key-value pairs
+     *
      * @return $this
      */
-    public function addElement($type, $name = null, $options = null)
+    public function addElement($typeOrElement, $name = null, $options = null)
     {
-        $this->registerElement($type, $name, $options);
+        $this->registerElement($typeOrElement, $name, $options);
         if ($name === null) {
-            $name = $type->getName();
+            $name = $typeOrElement->getName();
         }
 
         $element = $this->getElement($name);
