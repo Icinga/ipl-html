@@ -28,6 +28,9 @@ class Form extends BaseHtmlElement
     /** @var FormSubmitElement */
     protected $submitButton;
 
+    /** @var FormSubmitElement[] */
+    protected $submitElements = [];
+
     /** @var ServerRequestInterface */
     private $request;
 
@@ -235,9 +238,27 @@ class Form extends BaseHtmlElement
         return $this;
     }
 
+    /**
+     * Get the submit element used to send the form
+     *
+     * @return FormSubmitElement|null
+     */
+    public function getPressedSubmitElement()
+    {
+        foreach ($this->submitElements as $submitElement) {
+            if ($submitElement->hasBeenPressed()) {
+                return $submitElement;
+            }
+        }
+
+        return null;
+    }
+
     protected function onElementRegistered(BaseFormElement $element)
     {
         if ($element instanceof FormSubmitElement) {
+            $this->submitElements[$element->getName()] = $element;
+
             if (! $this->hasSubmitButton()) {
                 $this->setSubmitButton($element);
             }
