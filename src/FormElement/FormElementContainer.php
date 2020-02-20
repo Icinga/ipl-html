@@ -71,6 +71,7 @@ trait FormElementContainer
                 $name
             ));
         }
+
         return $this->elements[$name];
     }
 
