@@ -99,20 +99,23 @@ trait FormElementContainer
     }
 
     /**
-     * @param string $type
-     * @param string $name
-     * @param mixed $attributes
+     * Create an element
+     *
+     * @param string $type    Type of the element
+     * @param string $name    Name of the element
+     * @param mixed  $options Element options as key-value pairs
+     *
      * @return BaseFormElement
      */
-    public function createElement($type, $name, $attributes = null)
+    public function createElement($type, $name, $options = null)
     {
         $this->eventuallyRegisterDefaultElementLoader();
 
         $class = $this->eventuallyGetPluginClass('element', $type);
         /** @var BaseFormElement $element */
         $element = new $class($name);
-        if ($attributes !== null) {
-            $element->addAttributes($attributes);
+        if ($options !== null) {
+            $element->addAttributes($options);
         }
 
         return $element;
