@@ -307,8 +307,6 @@ trait FormElementContainer
 
     public function addDecoratorLoader($namespace, $classPostfix = null)
     {
-        $this->ensureDefaultElementDecoratorLoaderRegistered();
-
         return $this->addPluginLoader('decorator', $namespace, $classPostfix);
     }
 
