@@ -289,11 +289,21 @@ trait FormElementContainer
         return $this;
     }
 
-    public function addElementLoader($namespace, $classPostfix = null)
+    /**
+     * Add an element loader
+     *
+     * @param string $namespace Namespace of the elements
+     * @param string $postfix   Element name postfix, if any
+     *
+     * @return $this
+     */
+    public function addElementLoader($namespace, $postfix = null)
     {
         $this->eventuallyRegisterDefaultElementLoader();
 
-        return $this->addPluginLoader('element', $namespace, $classPostfix);
+        $this->addPluginLoader('element', $namespace, $postfix);
+
+        return $this;
     }
 
     protected function eventuallyRegisterDefaultElementLoader()
