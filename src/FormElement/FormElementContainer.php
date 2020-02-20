@@ -182,6 +182,19 @@ trait FormElementContainer
         return $this->defaultElementDecorator;
     }
 
+    /**
+     * Set the default element decorator
+     *
+     * If $decorator is a string, the decorator will be automatically created from a registered decorator loader.
+     * A loader for the namespace ipl\\Html\\FormDecorator is automatically registered by default.
+     * See {@link addDecoratorLoader()} for registering a custom loader.
+     *
+     * @param DecoratorInterface|BaseHtmlElement|string $decorator
+     *
+     * @return $this
+     *
+     * @throws InvalidArgumentException If $decorator is a string and can't be loaded from registered decorator loaders
+     */
     public function setDefaultElementDecorator($decorator)
     {
         if (
