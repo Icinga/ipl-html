@@ -53,8 +53,13 @@ trait FormElementContainer
     }
 
     /**
-     * @param $name
+     * Get the element by the given name
+     *
+     * @param string $name
+     *
      * @return BaseFormElement
+     *
+     * @throws InvalidArgumentException If no element with the given name exists
      */
     public function getElement($name)
     {
