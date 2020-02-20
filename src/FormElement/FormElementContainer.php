@@ -375,6 +375,16 @@ trait FormElementContainer
         }
     }
 
+    public function isValidEvent($event)
+    {
+        return in_array($event, [
+            Form::ON_SUCCESS,
+            Form::ON_ERROR,
+            Form::ON_REQUEST,
+            Form::ON_ELEMENT_REGISTERED,
+        ]);
+    }
+
     public function remove(ValidHtml $html)
     {
         // TODO: FormElementInterface?
@@ -398,16 +408,6 @@ trait FormElementContainer
         }
 
         parent::remove($html);
-    }
-
-    public function isValidEvent($event)
-    {
-        return in_array($event, [
-            Form::ON_SUCCESS,
-            Form::ON_ERROR,
-            Form::ON_REQUEST,
-            Form::ON_ELEMENT_REGISTERED,
-        ]);
     }
 
     protected function onElementRegistered(BaseFormElement $element)
