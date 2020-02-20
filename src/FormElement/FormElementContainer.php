@@ -173,7 +173,9 @@ trait FormElementContainer
     }
 
     /**
-     * @return DecoratorInterface
+     * Get the default element decorator, if any
+     *
+     * @return DecoratorInterface|BaseHtmlElement|null
      */
     public function getDefaultElementDecorator()
     {
