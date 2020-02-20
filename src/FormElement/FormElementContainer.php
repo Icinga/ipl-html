@@ -302,8 +302,6 @@ trait FormElementContainer
      */
     public function addElementLoader($namespace, $postfix = null)
     {
-        $this->ensureDefaultElementLoaderRegistered();
-
         $this->addPluginLoader('element', $namespace, $postfix);
 
         return $this;
