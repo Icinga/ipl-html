@@ -139,6 +139,8 @@ trait FormElementContainer
      * @param mixed                  $options       Element options as key-value pairs
      *
      * @return $this
+     *
+     * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of BaseFormElement
      */
     public function registerElement($typeOrElement, $name = null, $options = null)
     {
@@ -151,7 +153,10 @@ trait FormElementContainer
             }
         } else {
             throw new InvalidArgumentException(sprintf(
-                'FormElement or element type is required' // TODO: got %s
+                '%s() expects parameter 1 to be a string or an instance of %s, %s given',
+                __METHOD__,
+                BaseFormElement::class,
+                get_php_type($typeOrElement)
             ));
         }
 
