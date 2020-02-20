@@ -203,7 +203,7 @@ trait FormElementContainer
         ) {
             $this->defaultElementDecorator = $decorator;
         } else {
-            $this->eventuallyRegisterDefaultDecoratorLoader();
+            $this->ensureDefaultElementDecoratorLoaderRegistered();
             $this->defaultElementDecorator = $this->loadPlugin('decorator', $decorator);
         }
 
@@ -286,12 +286,12 @@ trait FormElementContainer
 
     public function addDecoratorLoader($namespace, $classPostfix = null)
     {
-        $this->eventuallyRegisterDefaultDecoratorLoader();
+        $this->ensureDefaultElementDecoratorLoaderRegistered();
 
         return $this->addPluginLoader('decorator', $namespace, $classPostfix);
     }
 
-    protected function eventuallyRegisterDefaultDecoratorLoader()
+    protected function ensureDefaultElementDecoratorLoaderRegistered()
     {
         if (! $this->hasPluginLoadersFor('decorator')) {
             $this->addPluginLoader(
