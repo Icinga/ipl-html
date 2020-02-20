@@ -215,7 +215,7 @@ trait FormElementContainer
             $type->setValue($this->populatedValues[$name]);
         }
 
-        $this->onElementRegistered($name, $type);
+        $this->onElementRegistered($type);
         $this->emit(Form::ON_ELEMENT_REGISTERED, [$name, $type]);
 
         return $this;
@@ -314,7 +314,7 @@ trait FormElementContainer
         ]);
     }
 
-    protected function onElementRegistered($name, BaseFormElement $element)
+    protected function onElementRegistered(BaseFormElement $element)
     {
     }
 }
