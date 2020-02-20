@@ -21,6 +21,7 @@ trait FormElementContainer
     /** @var BaseFormElement[] */
     private $elements = [];
 
+    /** @var array */
     private $populatedValues = [];
 
     /**
