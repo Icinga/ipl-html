@@ -10,6 +10,8 @@ use ipl\Html\ValidHtml;
 use ipl\Stdlib\EventEmitter;
 use ipl\Stdlib\Loader\PluginLoader;
 
+use function ipl\Stdlib\get_php_type;
+
 trait FormElementContainer
 {
     use EventEmitter;
@@ -197,17 +199,28 @@ trait FormElementContainer
      * @return $this
      *
      * @throws InvalidArgumentException If $decorator is a string and can't be loaded from registered decorator loaders
+     *                                  or if a decorator loader does not return an instance of
+     *                                  {@link DecoratorInterface} or {@link BaseHtmlElement}
      */
     public function setDefaultElementDecorator($decorator)
     {
-        if (
-            $decorator instanceof BaseHtmlElement
-            || $decorator instanceof DecoratorInterface
-        ) {
+        if ($decorator instanceof DecoratorInterface || $decorator instanceof BaseHtmlElement) {
             $this->defaultElementDecorator = $decorator;
         } else {
             $this->ensureDefaultElementDecoratorLoaderRegistered();
-            $this->defaultElementDecorator = $this->loadPlugin('decorator', $decorator);
+
+            $d = $this->loadPlugin('decorator', $decorator);
+
+            if (! $d instanceof DecoratorInterface || ! $d instanceof BaseHtmlElement) {
+                throw new InvalidArgumentException(sprintf(
+                    "Expected instance of DecoratorInterface or BaseHtmlElement for decorator '%s'."
+                    . " Got '%s' from a decorator loader instead",
+                    $decorator,
+                    get_php_type($d)
+                ));
+            }
+
+            $this->defaultElementDecorator = $d;
         }
 
         return $this;
