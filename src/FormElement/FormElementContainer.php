@@ -67,7 +67,7 @@ trait FormElementContainer
     {
         if (! array_key_exists($name, $this->elements)) {
             throw new InvalidArgumentException(sprintf(
-                'Trying to get non-existent element "%s"',
+                "Can't get element '%s'. Element does not exist",
                 $name
             ));
         }
