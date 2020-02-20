@@ -293,6 +293,16 @@ trait FormElementContainer
     }
 
     /**
+     * @param   Form|SubFormElement $form
+     */
+    public function addElementsFrom($form)
+    {
+        foreach ($form->getElements() as $name => $element) {
+            $this->addElement($element);
+        }
+    }
+
+    /**
      * Add an element loader
      *
      * @param string $namespace Namespace of the elements
@@ -366,16 +376,6 @@ trait FormElementContainer
         }
 
         return $element;
-    }
-
-    /**
-     * @param   Form|SubFormElement $form
-     */
-    public function addElementsFrom($form)
-    {
-        foreach ($form->getElements() as $name => $element) {
-            $this->addElement($element);
-        }
     }
 
     public function isValidEvent($event)
