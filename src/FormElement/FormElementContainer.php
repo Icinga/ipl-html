@@ -216,7 +216,7 @@ trait FormElementContainer
         }
 
         $this->onElementRegistered($type);
-        $this->emit(Form::ON_ELEMENT_REGISTERED, [$name, $type]);
+        $this->emit(Form::ON_ELEMENT_REGISTERED, [$type]);
 
         return $this;
     }
