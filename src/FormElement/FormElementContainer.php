@@ -117,7 +117,7 @@ trait FormElementContainer
      */
     public function createElement($type, $name, $options = null)
     {
-        $this->eventuallyRegisterDefaultElementLoader();
+        $this->ensureDefaultElementLoaderRegistered();
 
         $class = $this->eventuallyGetPluginClass('element', $type);
         /** @var BaseFormElement $element */
@@ -299,14 +299,14 @@ trait FormElementContainer
      */
     public function addElementLoader($namespace, $postfix = null)
     {
-        $this->eventuallyRegisterDefaultElementLoader();
+        $this->ensureDefaultElementLoaderRegistered();
 
         $this->addPluginLoader('element', $namespace, $postfix);
 
         return $this;
     }
 
-    protected function eventuallyRegisterDefaultElementLoader()
+    protected function ensureDefaultElementLoaderRegistered()
     {
         if (! $this->hasPluginLoadersFor('element')) {
             $this->addPluginLoader('element', __NAMESPACE__, 'Element');
