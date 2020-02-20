@@ -296,12 +296,16 @@ trait FormElementContainer
      * Add all elements from the given element collection
      *
      * @param Form|SubFormElement $form
+     *
+     * @return $this
      */
     public function addElementsFrom($form)
     {
         foreach ($form->getElements() as $name => $element) {
             $this->addElement($element);
         }
+
+        return $this;
     }
 
     /**
