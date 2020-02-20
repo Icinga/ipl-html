@@ -43,13 +43,15 @@ trait FormElementContainer
      */
     public function hasElement($element)
     {
-        if (\is_string($element)) {
-            return \array_key_exists($element, $this->elements);
-        } elseif ($element instanceof BaseFormElement) {
-            return \in_array($element, $this->elements, true);
-        } else {
-            return false;
+        if (is_string($element)) {
+            return array_key_exists($element, $this->elements);
         }
+
+        if ($element instanceof BaseFormElement) {
+            return in_array($element, $this->elements, true);
+        }
+
+        return false;
     }
 
     /**
