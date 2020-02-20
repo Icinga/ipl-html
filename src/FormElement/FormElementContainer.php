@@ -65,7 +65,7 @@ trait FormElementContainer
      */
     public function getElement($name)
     {
-        if (! \array_key_exists($name, $this->elements)) {
+        if (! array_key_exists($name, $this->elements)) {
             throw new InvalidArgumentException(sprintf(
                 'Trying to get non-existent element "%s"',
                 $name
@@ -336,7 +336,7 @@ trait FormElementContainer
 
     public function isValidEvent($event)
     {
-        return \in_array($event, [
+        return in_array($event, [
             Form::ON_SUCCESS,
             Form::ON_ERROR,
             Form::ON_REQUEST,
