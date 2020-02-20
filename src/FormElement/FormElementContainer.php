@@ -162,6 +162,11 @@ trait FormElementContainer
         return $this;
     }
 
+    /**
+     * Get whether a default element decorator exists
+     *
+     * @return bool
+     */
     public function hasDefaultElementDecorator()
     {
         return $this->defaultElementDecorator !== null;
