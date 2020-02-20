@@ -18,7 +18,7 @@ trait FormElementContainer
     use PluginLoader;
 
     /** @var DecoratorInterface|BaseHtmlElement|null */
-    protected $defaultElementDecorator;
+    private $defaultElementDecorator;
 
     /** @var bool Whether the default element decorator loader has been registered */
     private $defaultElementDecoratorLoaderRegistered = false;
