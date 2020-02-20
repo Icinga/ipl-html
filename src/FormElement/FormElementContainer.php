@@ -221,10 +221,6 @@ trait FormElementContainer
         return $this;
     }
 
-    public function onElementRegistered($name, BaseFormElement $element)
-    {
-    }
-
     /**
      * @param string $type
      * @param string $name
@@ -316,5 +312,9 @@ trait FormElementContainer
             Form::ON_REQUEST,
             Form::ON_ELEMENT_REGISTERED,
         ]);
+    }
+
+    protected function onElementRegistered($name, BaseFormElement $element)
+    {
     }
 }
