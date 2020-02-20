@@ -162,6 +162,34 @@ trait FormElementContainer
         return $this;
     }
 
+    public function hasDefaultElementDecorator()
+    {
+        return $this->defaultElementDecorator !== null;
+    }
+
+    /**
+     * @return DecoratorInterface
+     */
+    public function getDefaultElementDecorator()
+    {
+        return $this->defaultElementDecorator;
+    }
+
+    public function setDefaultElementDecorator($decorator)
+    {
+        if (
+            $decorator instanceof BaseHtmlElement
+            || $decorator instanceof DecoratorInterface
+        ) {
+            $this->defaultElementDecorator = $decorator;
+        } else {
+            $this->eventuallyRegisterDefaultDecoratorLoader();
+            $this->defaultElementDecorator = $this->loadPlugin('decorator', $decorator);
+        }
+
+        return $this;
+    }
+
     /**
      * Get the value of the element specified by name
      *
@@ -309,34 +337,6 @@ trait FormElementContainer
         }
 
         parent::remove($html);
-    }
-
-    public function hasDefaultElementDecorator()
-    {
-        return $this->defaultElementDecorator !== null;
-    }
-
-    /**
-     * @return DecoratorInterface
-     */
-    public function getDefaultElementDecorator()
-    {
-        return $this->defaultElementDecorator;
-    }
-
-    public function setDefaultElementDecorator($decorator)
-    {
-        if (
-            $decorator instanceof BaseHtmlElement
-            || $decorator instanceof DecoratorInterface
-        ) {
-            $this->defaultElementDecorator = $decorator;
-        } else {
-            $this->eventuallyRegisterDefaultDecoratorLoader();
-            $this->defaultElementDecorator = $this->loadPlugin('decorator', $decorator);
-        }
-
-        return $this;
     }
 
     public function isValidEvent($event)
