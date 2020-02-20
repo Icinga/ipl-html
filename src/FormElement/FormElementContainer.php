@@ -211,6 +211,10 @@ trait FormElementContainer
 
         $this->elements[$name] = $type;
 
+        if (array_key_exists($name, $this->populatedValues)) {
+            $type->setValue($this->populatedValues[$name]);
+        }
+
         $this->onElementRegistered($name, $type);
         $this->emit(Form::ON_ELEMENT_REGISTERED, [$name, $type]);
 
@@ -219,14 +223,6 @@ trait FormElementContainer
 
     public function onElementRegistered($name, BaseFormElement $element)
     {
-        // TODO: hasSubmitButton is not here
-        if ($element instanceof SubmitElement && ! $this->hasSubmitButton()) {
-            $this->setSubmitButton($element);
-        }
-
-        if (\array_key_exists($name, $this->populatedValues)) {
-            $element->setValue($this->populatedValues[$name]);
-        }
     }
 
     /**
