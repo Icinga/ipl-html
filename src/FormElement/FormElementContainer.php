@@ -315,9 +315,19 @@ trait FormElementContainer
         return $this;
     }
 
-    public function addDecoratorLoader($namespace, $classPostfix = null)
+    /**
+     * Add a decorator loader
+     *
+     * @param string $namespace Namespace of the decorators
+     * @param string $postfix   Decorator name postfix, if any
+     *
+     * @return $this
+     */
+    public function addDecoratorLoader($namespace, $postfix = null)
     {
-        return $this->addPluginLoader('decorator', $namespace, $classPostfix);
+        $this->addPluginLoader('decorator', $namespace, $postfix);
+
+        return $this;
     }
 
     protected function ensureDefaultElementDecoratorLoaderRegistered()
