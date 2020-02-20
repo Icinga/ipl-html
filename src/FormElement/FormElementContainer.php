@@ -293,7 +293,9 @@ trait FormElementContainer
     }
 
     /**
-     * @param   Form|SubFormElement $form
+     * Add all elements from the given element collection
+     *
+     * @param Form|SubFormElement $form
      */
     public function addElementsFrom($form)
     {
