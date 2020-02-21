@@ -425,29 +425,23 @@ trait FormElementContainer
         ]);
     }
 
-    public function remove(ValidHtml $html)
+    public function remove(ValidHtml $elementOrHtml)
     {
         // TODO: FormElementInterface?
-        if ($html instanceof BaseFormElement) {
-            if ($this->hasElement($html)) {
-                if ($this->submitButton === $html) {
+        if ($elementOrHtml instanceof BaseFormElement) {
+            if ($this->hasElement($elementOrHtml)) {
+                if ($this->submitButton === $elementOrHtml) {
                     $this->submitButton = null;
                 }
 
-                $kill = [];
-                foreach ($this->elements as $key => $element) {
-                    if ($element === $html) {
-                        $kill[] = $key;
-                    }
-                }
-
-                foreach ($kill as $key) {
-                    unset($this->elements[$key]);
+                $name = array_search($elementOrHtml, $this->elements, true);
+                if ($name !== false) {
+                    unset($this->elements[$name]);
                 }
             }
         }
 
-        parent::remove($html);
+        parent::remove($elementOrHtml);
     }
 
     protected function onElementRegistered(BaseFormElement $element)
