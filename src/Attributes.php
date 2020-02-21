@@ -336,15 +336,15 @@ class Attributes implements IteratorAggregate
     }
 
     /**
-     * Callback must return an instance of Attribute
+     * Register callback for an attribute
      *
-     * TODO: setCallback
+     * @param string   $name            Name of the attribute to register the callback for
+     * @param callable $callback        Callback to call when retrieving the attribute
+     * @param callable $setterCallback  Callback to call when setting the attribute
      *
-     * @param string $name
-     * @param callable $callback
-     * @param callable $setterCallback
      * @return $this
-     * @throws InvalidArgumentException
+     *
+     * @throws InvalidArgumentException If $callback is not callable or if $setterCallback is set and not callable
      */
     public function registerAttributeCallback($name, $callback, $setterCallback = null)
     {
