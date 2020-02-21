@@ -359,6 +359,11 @@ trait FormElementContainer
         return $this;
     }
 
+    /**
+     * Ensure that our default element loader is registered
+     *
+     * @return $this
+     */
     protected function ensureDefaultElementLoaderRegistered()
     {
         if (! $this->defaultElementLoaderRegistered) {
