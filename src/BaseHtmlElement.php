@@ -4,6 +4,33 @@ namespace ipl\Html;
 
 use RuntimeException;
 
+/**
+ * Base class for HTML elements
+ *
+ * Extend this class in order to provide concrete HTML elements or series of HTML elements, e.g. widgets.
+ * When extending this class you should provide the element's tag with {@link $tag}. Setting default attributes is
+ * possible via {@link $defaultAttributes}. And the content of the element is provided in {@link assemble()}.
+ *
+ * # Example Usage
+ * ```
+ * namespace Acme\Widgets;
+ *
+ * use ipl\Html\BaseHtmlElement;
+ *
+ * class Dashboard extends BaseHtmlElement
+ * {
+ *     protected $defaultAttributes = ['class' => 'acme-dashboard'];
+ *
+ *     protected $tag = 'div';
+ *
+ *     protected function assemble()
+ *     {
+ *         // ...
+ *         $this->add($content);
+ *     }
+ * }
+ * ```
+ */
 abstract class BaseHtmlElement extends HtmlDocument
 {
     /** @var array You may want to set default attributes when extending this class */
