@@ -69,6 +69,62 @@ class Attribute
     }
 
     /**
+     * Escape the name of an attribute
+     *
+     * Makes sure that the name of an attribute really is a string.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function escapeName($name)
+    {
+        return (string) $name;
+    }
+
+    /**
+     * Escape the value of an attribute
+     *
+     * If the value is an array, returns the string representation
+     * of all array elements joined with the specified glue string.
+     *
+     * Values are escaped according to the HTML5 double-quoted attribute value syntax:
+     * {@link https://html.spec.whatwg.org/multipage/syntax.html#attributes-2 }.
+     *
+     * @param string|array $value
+     * @param string       $glue Glue string to join elements if value is an array
+     *
+     * @return string
+     */
+    public static function escapeValue($value, $glue = ' ')
+    {
+        if (is_array($value)) {
+            $value = implode($glue, $value);
+        }
+
+        // We force double-quoted attribute value syntax so let's start by escaping double quotes
+        $value = str_replace('"', '&quot;', $value);
+
+        // In addition, values must not contain ambiguous ampersands
+        $value = preg_replace_callback(
+            '/&[0-9A-Z]+;/i',
+            function ($match) {
+                $subject = $match[0];
+
+                if (htmlspecialchars_decode($subject, ENT_COMPAT | ENT_HTML5) === $subject) {
+                    // Ambiguous ampersand
+                    return str_replace('&', '&amp;', $subject);
+                }
+
+                return $subject;
+            },
+            $value
+        );
+
+        return $value;
+    }
+
+    /**
      * Get the name of the attribute
      *
      * @return string
@@ -244,61 +300,5 @@ class Attribute
     public function renderValue()
     {
         return static::escapeValue($this->value, $this->glue);
-    }
-
-    /**
-     * Escape the name of an attribute
-     *
-     * Makes sure that the name of an attribute really is a string.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public static function escapeName($name)
-    {
-        return (string) $name;
-    }
-
-    /**
-     * Escape the value of an attribute
-     *
-     * If the value is an array, returns the string representation
-     * of all array elements joined with the specified glue string.
-     *
-     * Values are escaped according to the HTML5 double-quoted attribute value syntax:
-     * {@link https://html.spec.whatwg.org/multipage/syntax.html#attributes-2 }.
-     *
-     * @param string|array $value
-     * @param string       $glue Glue string to join elements if value is an array
-     *
-     * @return string
-     */
-    public static function escapeValue($value, $glue = ' ')
-    {
-        if (is_array($value)) {
-            $value = implode($glue, $value);
-        }
-
-        // We force double-quoted attribute value syntax so let's start by escaping double quotes
-        $value = str_replace('"', '&quot;', $value);
-
-        // In addition, values must not contain ambiguous ampersands
-        $value = preg_replace_callback(
-            '/&[0-9A-Z]+;/i',
-            function ($match) {
-                $subject = $match[0];
-
-                if (htmlspecialchars_decode($subject, ENT_COMPAT | ENT_HTML5) === $subject) {
-                    // Ambiguous ampersand
-                    return str_replace('&', '&amp;', $subject);
-                }
-
-                return $subject;
-            },
-            $value
-        );
-
-        return $value;
     }
 }
