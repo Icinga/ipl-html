@@ -75,7 +75,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Get the attributes of the element
      *
-     * @return  Attributes
+     * @return Attributes
      */
     public function getAttributes()
     {
@@ -94,9 +94,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Set the attributes of the element
      *
-     * @param   Attributes|array|null   $attributes
+     * @param Attributes|array|null $attributes
      *
-     * @return  $this
+     * @return $this
      */
     public function setAttributes($attributes)
     {
@@ -110,10 +110,10 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * If the attribute with the given name already exists, it gets overridden.
      *
-     * @param   string              $name   The name of the attribute
-     * @param   string|bool|array   $value  The value of the attribute
+     * @param string            $name  The name of the attribute
+     * @param string|bool|array $value The value of the attribute
      *
-     * @return  $this
+     * @return $this
      */
     public function setAttribute($name, $value)
     {
@@ -125,9 +125,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Add the given attributes
      *
-     * @param   Attributes|array    $attributes
+     * @param Attributes|array $attributes
      *
-     * @return  $this
+     * @return $this
      */
     public function addAttributes($attributes)
     {
@@ -139,7 +139,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Get the default attributes of the element
      *
-     * @return  array
+     * @return array
      */
     public function getDefaultAttributes()
     {
@@ -151,9 +151,9 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * Since HTML Elements must have a tag, this method throws an exception if the element does not have a tag.
      *
-     * @return  string
+     * @return string
      *
-     * @throws  RuntimeException   If the element does not have a tag
+     * @throws RuntimeException If the element does not have a tag
      */
     final public function getTag()
     {
@@ -171,7 +171,7 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * You may override this method in order to provide the tag dynamically
      *
-     * @return  string
+     * @return string
      */
     protected function tag()
     {
@@ -181,9 +181,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Set the tag of the element
      *
-     * @param   string  $tag
+     * @param string $tag
      *
-     * @return  $this
+     * @return $this
      */
     public function setTag($tag)
     {
@@ -195,7 +195,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Render the content of the element to HTML
      *
-     * @return  string
+     * @return string
      */
     public function renderContent()
     {
@@ -229,7 +229,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * @inheritdoc
      *
-     * @throws  RuntimeException   If the element does not have a tag or is void but has content
+     * @throws RuntimeException If the element does not have a tag or is void but has content
      */
     public function renderUnwrapped()
     {
@@ -272,9 +272,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Use this element to wrap the given document
      *
-     * @param   HtmlDocument    $document
+     * @param HtmlDocument $document
      *
-     * @return  $this
+     * @return $this
      */
     public function wrap(HtmlDocument $document)
     {
@@ -286,7 +286,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /**
      * Get whether the closing tag should be rendered
      *
-     * @return  bool    True for void elements, false otherwise
+     * @return bool True for void elements, false otherwise
      */
     public function wantsClosingTag()
     {
@@ -302,7 +302,7 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * If you want to override this behavior, use {@link setVoid()}.
      *
-     * @return  bool
+     * @return bool
      */
     public function isVoid()
     {
@@ -323,9 +323,9 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * If you specify null, void detection is reset to its default behavior.
      *
-     * @param   bool|null    $void
+     * @param bool|null $void
      *
-     * @return  $this
+     * @return $this
      */
     public function setVoid($void = true)
     {
