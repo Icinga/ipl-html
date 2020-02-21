@@ -365,7 +365,10 @@ trait FormElementContainer
     }
 
     /**
+     * Decorate the given element
+     *
      * @param BaseFormElement $element
+     *
      * @return BaseFormElement
      */
     protected function decorate(BaseFormElement $element)
