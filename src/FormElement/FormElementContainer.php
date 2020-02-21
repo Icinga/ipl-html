@@ -380,7 +380,7 @@ trait FormElementContainer
      *
      * @param BaseFormElement $element
      *
-     * @return BaseFormElement
+     * @return $this
      *
      * @throws UnexpectedValueException If the default decorator is set but neither an instance of
      *                                  {@link DecoratorInterface} nor {@link BaseHtmlElement}
@@ -404,7 +404,7 @@ trait FormElementContainer
             }
         }
 
-        return $element;
+        return $this;
     }
 
     public function isValidEvent($event)
