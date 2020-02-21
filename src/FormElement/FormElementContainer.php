@@ -9,6 +9,7 @@ use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
 use ipl\Stdlib\EventEmitter;
 use ipl\Stdlib\Loader\PluginLoader;
+use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
 
@@ -370,6 +371,9 @@ trait FormElementContainer
      * @param BaseFormElement $element
      *
      * @return BaseFormElement
+     *
+     * @throws UnexpectedValueException If the default decorator is set but neither an instance of
+     *                                  {@link DecoratorInterface} nor {@link BaseHtmlElement}
      */
     protected function decorate(BaseFormElement $element)
     {
@@ -380,7 +384,13 @@ trait FormElementContainer
             } elseif ($decorator instanceof BaseHtmlElement) {
                 $decorator->wrap($element);
             } else {
-                die('WTF');
+                throw new UnexpectedValueException(sprintf(
+                    '%s expects the default decorator to be an instance of %s or %s, got %s instead',
+                    __METHOD__,
+                    DecoratorInterface::class,
+                    BaseHtmlElement::class,
+                    get_php_type($decorator)
+                ));
             }
         }
 
