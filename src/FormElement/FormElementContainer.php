@@ -323,17 +323,6 @@ trait FormElementContainer
         return $this;
     }
 
-    protected function ensureDefaultElementLoaderRegistered()
-    {
-        if (! $this->defaultElementLoaderRegistered) {
-            $this->addPluginLoader('element', __NAMESPACE__, 'Element');
-
-            $this->defaultElementLoaderRegistered = true;
-        }
-
-        return $this;
-    }
-
     /**
      * Add a decorator loader
      *
@@ -359,6 +348,17 @@ trait FormElementContainer
             );
 
             $this->defaultElementDecoratorLoaderRegistered = true;
+        }
+
+        return $this;
+    }
+
+    protected function ensureDefaultElementLoaderRegistered()
+    {
+        if (! $this->defaultElementLoaderRegistered) {
+            $this->addPluginLoader('element', __NAMESPACE__, 'Element');
+
+            $this->defaultElementLoaderRegistered = true;
         }
 
         return $this;
