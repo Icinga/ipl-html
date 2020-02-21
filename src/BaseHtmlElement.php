@@ -193,6 +193,46 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
+     * Get whether the element is void
+     *
+     * The default void detection which checks whether the element's tag is in the list of void elements according to
+     * https://www.w3.org/TR/html5/syntax.html#void-elements.
+     *
+     * If you want to override this behavior, use {@link setVoid()}.
+     *
+     * @return bool
+     */
+    public function isVoid()
+    {
+        if ($this->isVoid !== null) {
+            return $this->isVoid;
+        }
+
+        $tag = $this->getTag();
+
+        return isset(self::$voidElements[$tag]);
+    }
+
+    /**
+     * Set whether the element is void
+     *
+     * You may use this method to override the default void detection which checks whether the element's tag is in the
+     * list of void elements according to https://www.w3.org/TR/html5/syntax.html#void-elements.
+     *
+     * If you specify null, void detection is reset to its default behavior.
+     *
+     * @param bool|null $void
+     *
+     * @return $this
+     */
+    public function setVoid($void = true)
+    {
+        $this->isVoid = $void === null ?: (bool) $void;
+
+        return $this;
+    }
+
+    /**
      * Render the content of the element to HTML
      *
      * @return string
@@ -292,45 +332,5 @@ abstract class BaseHtmlElement extends HtmlDocument
     {
         // TODO: There is more. SVG and MathML namespaces
         return ! $this->isVoid();
-    }
-
-    /**
-     * Get whether the element is void
-     *
-     * The default void detection which checks whether the element's tag is in the list of void elements according to
-     * https://www.w3.org/TR/html5/syntax.html#void-elements.
-     *
-     * If you want to override this behavior, use {@link setVoid()}.
-     *
-     * @return bool
-     */
-    public function isVoid()
-    {
-        if ($this->isVoid !== null) {
-            return $this->isVoid;
-        }
-
-        $tag = $this->getTag();
-
-        return isset(self::$voidElements[$tag]);
-    }
-
-    /**
-     * Set whether the element is void
-     *
-     * You may use this method to override the default void detection which checks whether the element's tag is in the
-     * list of void elements according to https://www.w3.org/TR/html5/syntax.html#void-elements.
-     *
-     * If you specify null, void detection is reset to its default behavior.
-     *
-     * @param bool|null $void
-     *
-     * @return $this
-     */
-    public function setVoid($void = true)
-    {
-        $this->isVoid = $void === null ?: (bool) $void;
-
-        return $this;
     }
 }
