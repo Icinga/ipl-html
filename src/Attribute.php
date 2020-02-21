@@ -27,10 +27,10 @@ class Attribute
     /**
      * Create a new HTML attribute from the given name and value
      *
-     * @param   string                  $name   The name of the attribute
-     * @param   string|bool|array|null  $value  The value of the attribute
+     * @param string                 $name  The name of the attribute
+     * @param string|bool|array|null $value The value of the attribute
      *
-     * @throws  InvalidArgumentException        If the name of the attribute contains special characters
+     * @throws InvalidArgumentException If the name of the attribute contains special characters
      */
     public function __construct($name, $value = null)
     {
@@ -40,12 +40,12 @@ class Attribute
     /**
      * Create a new HTML attribute from the given name and value
      *
-     * @param   string                  $name   The name of the attribute
-     * @param   string|bool|array|null  $value  The value of the attribute
+     * @param string                 $name  The name of the attribute
+     * @param string|bool|array|null $value The value of the attribute
      *
-     * @return  static
+     * @return static
      *
-     * @throws  InvalidArgumentException        If the name of the attribute contains special characters
+     * @throws InvalidArgumentException If the name of the attribute contains special characters
      */
     public static function create($name, $value)
     {
@@ -57,11 +57,11 @@ class Attribute
      *
      * The value of the attribute will be null after construction.
      *
-     * @param   string                  $name   The name of the attribute
+     * @param string $name The name of the attribute
      *
-     * @return  static
+     * @return static
      *
-     * @throws  InvalidArgumentException        If the name of the attribute contains special characters
+     * @throws InvalidArgumentException If the name of the attribute contains special characters
      */
     public static function createEmpty($name)
     {
@@ -71,7 +71,7 @@ class Attribute
     /**
      * Get the name of the attribute
      *
-     * @return  string
+     * @return string
      */
     public function getName()
     {
@@ -81,11 +81,11 @@ class Attribute
     /**
      * Set the name of the attribute
      *
-     * @param   string  $name
+     * @param string $name
      *
-     * @return  $this
+     * @return $this
      *
-     * @throws  InvalidArgumentException    If the name contains special characters
+     * @throws InvalidArgumentException If the name contains special characters
      */
     protected function setName($name)
     {
@@ -104,7 +104,7 @@ class Attribute
     /**
      * Get the value of the attribute
      *
-     * @return  string|bool|array|null
+     * @return string|bool|array|null
      */
     public function getValue()
     {
@@ -114,9 +114,9 @@ class Attribute
     /**
      * Set the value of the attribute
      *
-     * @param   string|bool|array|null  $value
+     * @param string|bool|array|null $value
      *
-     * @return  $this
+     * @return $this
      */
     public function setValue($value)
     {
@@ -128,9 +128,9 @@ class Attribute
     /**
      * Add the given value(s) to the attribute
      *
-     * @param   string|array    $value  The value(s) to add
+     * @param string|array $value The value(s) to add
      *
-     * @return  $this
+     * @return $this
      */
     public function addValue($value)
     {
@@ -150,9 +150,9 @@ class Attribute
      *
      * Does nothing if there is no such value to remove.
      *
-     * @param   string|array    $value  The value(s) to remove
+     * @param string|array $value The value(s) to remove
      *
-     * @return  $this
+     * @return $this
      */
     public function removeValue($value)
     {
@@ -172,7 +172,7 @@ class Attribute
     /**
      * Test and return true if the attribute is boolean, false otherwise
      *
-     * @return  bool
+     * @return bool
      */
     public function isBoolean()
     {
@@ -184,7 +184,7 @@ class Attribute
      *
      * Null and the empty array will be considered empty.
      *
-     * @return  bool
+     * @return bool
      */
     public function isEmpty()
     {
@@ -203,7 +203,7 @@ class Attribute
      *
      * Escaping of the attribute's value takes place automatically using {@link Attribute::escapeValue()}.
      *
-     * @return  string
+     * @return string
      */
     public function render()
     {
@@ -229,7 +229,7 @@ class Attribute
     /**
      * Render the name of the attribute to HTML
      *
-     * @return  string
+     * @return string
      */
     public function renderName()
     {
@@ -239,7 +239,7 @@ class Attribute
     /**
      * Render the value of the attribute to HTML
      *
-     * @return  string
+     * @return string
      */
     public function renderValue()
     {
@@ -251,9 +251,9 @@ class Attribute
      *
      * Makes sure that the name of an attribute really is a string.
      *
-     * @param   string  $name
+     * @param string $name
      *
-     * @return  string
+     * @return string
      */
     public static function escapeName($name)
     {
@@ -269,10 +269,10 @@ class Attribute
      * Values are escaped according to the HTML5 double-quoted attribute value syntax:
      * {@link https://html.spec.whatwg.org/multipage/syntax.html#attributes-2 }.
      *
-     * @param   string|array    $value
-     * @param   string          $glue   Glue string to join elements if value is an array
+     * @param string|array $value
+     * @param string       $glue Glue string to join elements if value is an array
      *
-     * @return  string
+     * @return string
      */
     public static function escapeValue($value, $glue = ' ')
     {
