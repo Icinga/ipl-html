@@ -39,7 +39,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var Attributes */
     protected $attributes;
 
-    /** @var string */
+    /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
 
     /**
