@@ -167,18 +167,6 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
-     * Internal method for accessing the tag
-     *
-     * You may override this method in order to provide the tag dynamically
-     *
-     * @return string
-     */
-    protected function tag()
-    {
-        return $this->tag;
-    }
-
-    /**
      * Set the tag of the element
      *
      * @param string $tag
@@ -265,6 +253,18 @@ abstract class BaseHtmlElement extends HtmlDocument
         $document->addWrapper($this);
 
         return $this;
+    }
+
+    /**
+     * Internal method for accessing the tag
+     *
+     * You may override this method in order to provide the tag dynamically
+     *
+     * @return string
+     */
+    protected function tag()
+    {
+        return $this->tag;
     }
 
     public function add($content)
