@@ -64,11 +64,11 @@ class Attributes implements IteratorAggregate
      * construct and return a new Attributes instance.
      * If the attributes are null, an empty new instance of Attributes is returned.
      *
-     * @param   array|static|null   $attributes
+     * @param array|static|null $attributes
      *
-     * @return  static
+     * @return static
      *
-     * @throws  InvalidArgumentException    In case the given attributes are of an unsupported type
+     * @throws InvalidArgumentException In case the given attributes are of an unsupported type
      */
     public static function wantAttributes($attributes)
     {
@@ -93,7 +93,7 @@ class Attributes implements IteratorAggregate
     /**
      * Get the collection of attributes as array
      *
-     * @return  Attribute[]
+     * @return Attribute[]
      */
     public function getAttributes()
     {
@@ -103,9 +103,9 @@ class Attributes implements IteratorAggregate
     /**
      * Return true if the attribute with the given name exists, false otherwise
      *
-     * @param   string  $name
+     * @param string $name
      *
-     * @return  bool
+     * @return bool
      */
     public function has($name)
     {
@@ -117,11 +117,11 @@ class Attributes implements IteratorAggregate
      *
      * If the attribute does not yet exist, it is automatically created and registered to this Attributes instance.
      *
-     * @param   string  $name
+     * @param string $name
      *
-     * @return  Attribute
+     * @return Attribute
      *
-     * @throws  InvalidArgumentException    If the attribute does not yet exist and its name contains special characters
+     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
     public function get($name)
     {
@@ -137,12 +137,12 @@ class Attributes implements IteratorAggregate
      *
      * If the attribute with the given name already exists, it gets overridden.
      *
-     * @param   string|array|Attribute|self $attribute  The attribute(s) to add
-     * @param   string|bool|array           $value      The value of the attribute
+     * @param string|array|Attribute|self $attribute The attribute(s) to add
+     * @param string|bool|array           $value     The value of the attribute
      *
-     * @return  $this
+     * @return $this
      *
-     * @throws  InvalidArgumentException    If the attribute name contains special characters
+     * @throws InvalidArgumentException If the attribute name contains special characters
      */
     public function set($attribute, $value = null)
     {
@@ -187,12 +187,12 @@ class Attributes implements IteratorAggregate
      * If an attribute with the same name already exists, the attribute's value will be added to the current value of
      * the attribute.
      *
-     * @param   string|array|Attribute|self $attribute  The attribute(s) to add
-     * @param   string|bool|array           $value      The value of the attribute
+     * @param string|array|Attribute|self $attribute The attribute(s) to add
+     * @param string|bool|array           $value     The value of the attribute
      *
-     * @return  $this
+     * @return $this
      *
-     * @throws  InvalidArgumentException    If the attribute does not yet exist and its name contains special characters
+     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
     public function add($attribute, $value = null)
     {
@@ -242,10 +242,10 @@ class Attributes implements IteratorAggregate
     /**
      * Remove the attribute with the given name or remove the given value from the attribute
      *
-     * @param   string                  $name   The name of the attribute
-     * @param   null|string|array       $value  The value to remove if specified
+     * @param string            $name  The name of the attribute
+     * @param null|string|array $value The value to remove if specified
      *
-     * @return  Attribute|false
+     * @return Attribute|false
      */
     public function remove($name, $value = null)
     {
@@ -267,9 +267,9 @@ class Attributes implements IteratorAggregate
     /**
      * Set the specified attribute
      *
-     * @param   Attribute   $attribute
+     * @param Attribute $attribute
      *
-     * @return  $this
+     * @return $this
      */
     public function setAttribute(Attribute $attribute)
     {
@@ -284,9 +284,9 @@ class Attributes implements IteratorAggregate
      * If an attribute with the same name already exists, the given attribute's value
      * will be added to the current value of the attribute.
      *
-     * @param   Attribute $attribute
+     * @param Attribute $attribute
      *
-     * @return  $this
+     * @return $this
      */
     public function addAttribute(Attribute $attribute)
     {
@@ -304,7 +304,7 @@ class Attributes implements IteratorAggregate
     /**
      * Get the attributes name prefix
      *
-     * @return  string|null
+     * @return string|null
      */
     public function getPrefix()
     {
@@ -314,9 +314,9 @@ class Attributes implements IteratorAggregate
     /**
      * Set the attributes name prefix
      *
-     * @param   string  $prefix
+     * @param string $prefix
      *
-     * @return  $this
+     * @return $this
      */
     public function setPrefix($prefix)
     {
@@ -365,9 +365,9 @@ class Attributes implements IteratorAggregate
      *
      * HTML-escaping of the attributes' values takes place automatically using {@link Attribute::escapeValue()}.
      *
-     * @return  string
+     * @return string
      *
-     * @throws  InvalidArgumentException    If the result of a callback is invalid
+     * @throws InvalidArgumentException If the result of a callback is invalid
      */
     public function render()
     {
@@ -411,7 +411,7 @@ class Attributes implements IteratorAggregate
     /**
      * Get an iterator for traversing the attributes
      *
-     * @return  Attribute[]|ArrayIterator
+     * @return Attribute[]|ArrayIterator
      */
     public function getIterator()
     {
