@@ -8,6 +8,14 @@ use IteratorAggregate;
 
 use function ipl\Stdlib\get_php_type;
 
+/**
+ * HTML attributes
+ *
+ * HTML attributes provide additional information about HTML elements, that configure the elements or adjust their
+ * behavior in various ways.
+ *
+ * Attributes usually come in name-value pairs and are rendered as name="value".
+ */
 class Attributes implements IteratorAggregate
 {
     /** @var Attribute[] */
