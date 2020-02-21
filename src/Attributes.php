@@ -13,11 +13,11 @@ class Attributes implements \IteratorAggregate
     /** @var callable[] */
     protected $callbacks = [];
 
-    /** @var callable[] */
-    protected $setterCallbacks = [];
-
     /** @var string */
     protected $prefix = '';
+
+    /** @var callable[] */
+    protected $setterCallbacks = [];
 
     /**
      * Attributes constructor.
