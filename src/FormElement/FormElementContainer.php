@@ -92,20 +92,37 @@ trait FormElementContainer
      * @param mixed                  $options       Element options as key-value pairs
      *
      * @return $this
+     *
+     * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of BaseFormElement
+     *                                  or if $typeOrElement is a string and $name is not set
+     *                                  or if $typeOrElement is an instance of BaseFormElement but does not have a name
      */
     public function addElement($typeOrElement, $name = null, $options = null)
     {
-        $this->registerElement($typeOrElement, $name, $options);
-        if ($name === null) {
-            $name = $typeOrElement->getName();
+        if (is_string($typeOrElement)) {
+            if ($name === null) {
+                throw new InvalidArgumentException(sprintf(
+                    '%s expects parameter 2 to be set if parameter 1 is a string',
+                    __METHOD__
+                ));
+            }
+
+            $element = $this->createElement($typeOrElement, $name, $options);
+        } elseif ($typeOrElement instanceof BaseFormElement) {
+            $element = $typeOrElement;
+        } else {
+            throw new InvalidArgumentException(sprintf(
+                '%s() expects parameter 1 to be a string or an instance of %s, %s given',
+                __METHOD__,
+                BaseFormElement::class,
+                get_php_type($typeOrElement)
+            ));
         }
 
-        $element = $this->getElement($name);
-        if ($this instanceof BaseHtmlElement) {
-            $element = $this->decorate($element);
-        }
-
-        $this->add($element);
+        $this
+            ->registerElement($element) // registerElement() must be called first because of the name check
+            ->decorate($element)
+            ->add($element);
 
         return $this;
     }
@@ -138,40 +155,31 @@ trait FormElementContainer
      *
      * Registers the element for value and validation handling but does not add it to the render stack.
      *
-     * @param string|BaseFormElement $typeOrElement Type of the element as string or an instance of BaseFormElement
-     * @param string                 $name          Name of the element
-     * @param mixed                  $options       Element options as key-value pairs
+     * @param BaseFormElement $element
      *
      * @return $this
      *
-     * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of BaseFormElement
+     * @throws InvalidArgumentException If $element does not provide a name
      */
-    public function registerElement($typeOrElement, $name = null, $options = null)
+    public function registerElement(BaseFormElement $element)
     {
-        if (is_string($typeOrElement)) {
-            $typeOrElement = $this->createElement($typeOrElement, $name, $options);
-            // TODO: } elseif ($type instanceof FormElementInterface) {
-        } elseif ($typeOrElement instanceof BaseFormElement) {
-            if ($name === null) {
-                $name = $typeOrElement->getName();
-            }
-        } else {
+        $name = $element->getName();
+
+        if ($name === null) {
             throw new InvalidArgumentException(sprintf(
-                '%s() expects parameter 1 to be a string or an instance of %s, %s given',
-                __METHOD__,
-                BaseFormElement::class,
-                get_php_type($typeOrElement)
+                '%s expects the element to provide a name',
+                __METHOD__
             ));
         }
 
-        $this->elements[$name] = $typeOrElement;
+        $this->elements[$name] = $element;
 
         if (array_key_exists($name, $this->populatedValues)) {
-            $typeOrElement->setValue($this->populatedValues[$name]);
+            $element->setValue($this->populatedValues[$name]);
         }
 
-        $this->onElementRegistered($typeOrElement);
-        $this->emit(Form::ON_ELEMENT_REGISTERED, [$typeOrElement]);
+        $this->onElementRegistered($element);
+        $this->emit(Form::ON_ELEMENT_REGISTERED, [$element]);
 
         return $this;
     }

@@ -155,8 +155,8 @@ use ipl\Html\Html;
 $form = new Form();
 
 echo $form
-    ->registerElement('text', 'first_name')
-    ->registerElement('text', 'last_name')
+    ->registerElement($form->createElement('text', 'first_name'))
+    ->registerElement($form->createElement('text', 'last_name'))
     ->add(Html::tag('div', [
         $form->getElement('first_name'),
         Html::tag('br'),

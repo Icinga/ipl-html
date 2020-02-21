@@ -97,8 +97,8 @@ class DocumentationFormsTest extends TestCase
             '<form><div><input name="first_name" type="text" /><br />'
             . '<input name="last_name" type="text" /></div></form>',
             $form
-            ->registerElement('text', 'first_name')
-            ->registerElement('text', 'last_name')
+            ->registerElement($form->createElement('text', 'first_name'))
+            ->registerElement($form->createElement('text', 'last_name'))
             ->add(Html::tag('div', [
                 $form->getElement('first_name'),
                 Html::tag('br'),
