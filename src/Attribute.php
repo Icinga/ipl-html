@@ -21,9 +21,6 @@ class Attribute
     /** @var string|array|bool|null */
     protected $value;
 
-    /** @var string Glue string to join elements if the attribute's value is an array */
-    protected $glue = ' ';
-
     /**
      * Create a new HTML attribute from the given name and value
      *
@@ -299,6 +296,6 @@ class Attribute
      */
     public function renderValue()
     {
-        return static::escapeValue($this->value, $this->glue);
+        return static::escapeValue($this->value);
     }
 }
