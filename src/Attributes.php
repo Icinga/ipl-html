@@ -352,6 +352,7 @@ class Attributes implements IteratorAggregate
             if (! is_callable($callback)) {
                 throw new InvalidArgumentException(__METHOD__ . ' expects a callable callback');
             }
+
             $this->callbacks[$name] = $callback;
         }
 
@@ -359,6 +360,7 @@ class Attributes implements IteratorAggregate
             if (! is_callable($setterCallback)) {
                 throw new InvalidArgumentException(__METHOD__ . ' expects a callable setterCallback');
             }
+
             $this->setterCallbacks[$name] = $setterCallback;
         }
 
