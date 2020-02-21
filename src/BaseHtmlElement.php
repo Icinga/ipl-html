@@ -243,6 +243,17 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
+     * Get whether the closing tag should be rendered
+     *
+     * @return bool True for void elements, false otherwise
+     */
+    public function wantsClosingTag()
+    {
+        // TODO: There is more. SVG and MathML namespaces
+        return ! $this->isVoid();
+    }
+
+    /**
      * Use this element to wrap the given document
      *
      * @param HtmlDocument $document
@@ -321,16 +332,5 @@ abstract class BaseHtmlElement extends HtmlDocument
             $content,
             $tag
         );
-    }
-
-    /**
-     * Get whether the closing tag should be rendered
-     *
-     * @return bool True for void elements, false otherwise
-     */
-    public function wantsClosingTag()
-    {
-        // TODO: There is more. SVG and MathML namespaces
-        return ! $this->isVoid();
     }
 }
