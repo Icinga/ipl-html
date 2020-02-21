@@ -302,6 +302,30 @@ class Attributes implements IteratorAggregate
     }
 
     /**
+     * Get the attributes name prefix
+     *
+     * @return  string|null
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * Set the attributes name prefix
+     *
+     * @param   string  $prefix
+     *
+     * @return  $this
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * Callback must return an instance of Attribute
      *
      * TODO: setCallback
@@ -327,30 +351,6 @@ class Attributes implements IteratorAggregate
             }
             $this->setterCallbacks[$name] = $setterCallback;
         }
-
-        return $this;
-    }
-
-    /**
-     * Get the attributes name prefix
-     *
-     * @return  string|null
-     */
-    public function getPrefix()
-    {
-        return $this->prefix;
-    }
-
-    /**
-     * Set the attributes name prefix
-     *
-     * @param   string  $prefix
-     *
-     * @return  $this
-     */
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
 
         return $this;
     }
