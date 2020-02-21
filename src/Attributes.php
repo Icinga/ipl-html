@@ -53,9 +53,11 @@ class Attributes implements IteratorAggregate
     }
 
     /**
-     * @param Attribute[] $attributes
+     * Create new HTML attributes
+     *
+     * @param array $attributes
+     *
      * @return static
-     * @throws InvalidArgumentException
      */
     public static function create(array $attributes = null)
     {
