@@ -309,21 +309,6 @@ trait FormElementContainer
     }
 
     /**
-     * Add an element loader
-     *
-     * @param string $namespace Namespace of the elements
-     * @param string $postfix   Element name postfix, if any
-     *
-     * @return $this
-     */
-    public function addElementLoader($namespace, $postfix = null)
-    {
-        $this->addPluginLoader('element', $namespace, $postfix);
-
-        return $this;
-    }
-
-    /**
      * Add a decorator loader
      *
      * @param string $namespace Namespace of the decorators
@@ -334,6 +319,21 @@ trait FormElementContainer
     public function addDecoratorLoader($namespace, $postfix = null)
     {
         $this->addPluginLoader('decorator', $namespace, $postfix);
+
+        return $this;
+    }
+
+    /**
+     * Add an element loader
+     *
+     * @param string $namespace Namespace of the elements
+     * @param string $postfix   Element name postfix, if any
+     *
+     * @return $this
+     */
+    public function addElementLoader($namespace, $postfix = null)
+    {
+        $this->addPluginLoader('element', $namespace, $postfix);
 
         return $this;
     }
