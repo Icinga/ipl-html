@@ -31,9 +31,9 @@ class Attributes implements IteratorAggregate
     protected $setterCallbacks = [];
 
     /**
-     * Attributes constructor.
-     * @param Attribute[] $attributes
-     * @throws InvalidArgumentException
+     * Create new HTML attributes
+     *
+     * @param array $attributes
      */
     public function __construct(array $attributes = null)
     {
