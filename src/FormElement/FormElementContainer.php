@@ -339,6 +339,11 @@ trait FormElementContainer
         return $this;
     }
 
+    /**
+     * Ensure that our default element decorator loader is registered
+     *
+     * @return $this
+     */
     protected function ensureDefaultElementDecoratorLoaderRegistered()
     {
         if (! $this->defaultElementDecoratorLoaderRegistered) {
