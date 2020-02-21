@@ -242,6 +242,20 @@ abstract class BaseHtmlElement extends HtmlDocument
         return parent::renderUnwrapped();
     }
 
+    /**
+     * Use this element to wrap the given document
+     *
+     * @param HtmlDocument $document
+     *
+     * @return $this
+     */
+    public function wrap(HtmlDocument $document)
+    {
+        $document->addWrapper($this);
+
+        return $this;
+    }
+
     public function add($content)
     {
         $this->ensureAssembled();
@@ -307,20 +321,6 @@ abstract class BaseHtmlElement extends HtmlDocument
             $content,
             $tag
         );
-    }
-
-    /**
-     * Use this element to wrap the given document
-     *
-     * @param HtmlDocument $document
-     *
-     * @return $this
-     */
-    public function wrap(HtmlDocument $document)
-    {
-        $document->addWrapper($this);
-
-        return $this;
     }
 
     /**
