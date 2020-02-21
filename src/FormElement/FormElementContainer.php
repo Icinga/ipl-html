@@ -444,6 +444,11 @@ trait FormElementContainer
         parent::remove($elementOrHtml);
     }
 
+    /**
+     * Handler which is called after an element has been registered
+     *
+     * @param BaseFormElement $element
+     */
     protected function onElementRegistered(BaseFormElement $element)
     {
     }
