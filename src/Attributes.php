@@ -2,10 +2,13 @@
 
 namespace ipl\Html;
 
-use ipl\Stdlib;
+use ArrayIterator;
 use InvalidArgumentException;
+use IteratorAggregate;
 
-class Attributes implements \IteratorAggregate
+use function ipl\Stdlib\get_php_type;
+
+class Attributes implements IteratorAggregate
 {
     /** @var Attribute[] */
     protected $attributes = [];
@@ -83,7 +86,7 @@ class Attributes implements \IteratorAggregate
 
         throw new InvalidArgumentException(sprintf(
             'Attributes instance, array or null expected. Got %s instead.',
-            Stdlib\get_php_type($attributes)
+            get_php_type($attributes)
         ));
     }
 
@@ -408,10 +411,10 @@ class Attributes implements \IteratorAggregate
     /**
      * Get an iterator for traversing the attributes
      *
-     * @return  Attribute[]|\ArrayIterator
+     * @return  Attribute[]|ArrayIterator
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->attributes);
+        return new ArrayIterator($this->attributes);
     }
 }
