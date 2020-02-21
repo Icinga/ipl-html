@@ -33,11 +33,11 @@ use RuntimeException;
  */
 abstract class BaseHtmlElement extends HtmlDocument
 {
-    /** @var array You may want to set default attributes when extending this class */
-    protected $defaultAttributes;
-
     /** @var Attributes */
     protected $attributes;
+
+    /** @var array You may want to set default attributes when extending this class */
+    protected $defaultAttributes;
 
     /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
