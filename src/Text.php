@@ -72,15 +72,6 @@ class Text implements ValidHtml
         return $this;
     }
 
-    public function render()
-    {
-        if ($this->escaped) {
-            return $this->string;
-        } else {
-            return Html::escape($this->string);
-        }
-    }
-
     /**
      * @return string
      */
@@ -90,6 +81,15 @@ class Text implements ValidHtml
             return $this->render();
         } catch (Exception $e) {
             return Error::render($e);
+        }
+    }
+
+    public function render()
+    {
+        if ($this->escaped) {
+            return $this->string;
+        } else {
+            return Html::escape($this->string);
         }
     }
 }
