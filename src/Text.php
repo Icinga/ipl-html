@@ -59,7 +59,10 @@ class Text implements ValidHtml
     }
 
     /**
+     * Set whether the content is already escaped
+     *
      * @param bool $escaped
+     *
      * @return $this
      */
     public function setEscaped($escaped = true)
