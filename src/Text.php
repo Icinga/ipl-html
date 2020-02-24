@@ -15,6 +15,7 @@ class Text implements ValidHtml
     /** @var string */
     protected $string;
 
+    /** @var bool Whether the content is already escaped */
     protected $escaped = false;
 
     /**
