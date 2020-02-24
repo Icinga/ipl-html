@@ -19,7 +19,7 @@ class Text implements ValidHtml
     protected $escaped = false;
 
     /**
-     * Text constructor.
+     * Create a new text node
      *
      * @param string $string
      */
