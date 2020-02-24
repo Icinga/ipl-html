@@ -41,6 +41,8 @@ class Text implements ValidHtml
     }
 
     /**
+     * Get the content
+     *
      * @return string
      */
     public function getContent()
