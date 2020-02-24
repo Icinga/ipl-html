@@ -7,12 +7,15 @@ use Exception;
 use InvalidArgumentException;
 
 /**
- * Class Html
- * @package ipl\Html
+ * HTML document
+ *
+ * An HTML document is composed of a tree of HTML nodes, i.e. text nodes and HTML elements.
  */
 class HtmlDocument implements Countable, ValidHtml
 {
     protected $contentSeparator = '';
+
+    protected $hasBeenAssembled = false;
 
     /** @var BaseHtmlElement */
     protected $wrapper;
@@ -22,8 +25,6 @@ class HtmlDocument implements Countable, ValidHtml
 
     /** @var array */
     private $contentIndex = [];
-
-    protected $hasBeenAssembled = false;
 
     /**
      * @param ValidHtml|mixed $content
