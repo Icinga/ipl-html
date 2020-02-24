@@ -4,6 +4,12 @@ namespace ipl\Html;
 
 use Exception;
 
+/**
+ * A text node
+ *
+ * Primitive element that renders text to HTML while automatically escaping its content.
+ * If the passed content is already escaped, see {@link setEscaped()} to indicate this.
+ */
 class Text implements ValidHtml
 {
     /** @var string */
