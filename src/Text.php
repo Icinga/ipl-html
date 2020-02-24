@@ -13,7 +13,7 @@ use Exception;
 class Text implements ValidHtml
 {
     /** @var string */
-    protected $string;
+    protected $content;
 
     /** @var bool Whether the content is already escaped */
     protected $escaped = false;
@@ -21,23 +21,23 @@ class Text implements ValidHtml
     /**
      * Create a new text node
      *
-     * @param string $string
+     * @param string $content
      */
-    public function __construct($string)
+    public function __construct($content)
     {
-        $this->string = (string) $string;
+        $this->content = (string) $content;
     }
 
     /**
      * Create a new text node
      *
-     * @param string $text
+     * @param string $content
      *
      * @return static
      */
-    public static function create($text)
+    public static function create($content)
     {
-        return new static($text);
+        return new static($content);
     }
 
     /**
@@ -45,7 +45,7 @@ class Text implements ValidHtml
      */
     public function getText()
     {
-        return $this->string;
+        return $this->content;
     }
 
     /**
@@ -92,9 +92,9 @@ class Text implements ValidHtml
     public function render()
     {
         if ($this->escaped) {
-            return $this->string;
+            return $this->content;
         } else {
-            return Html::escape($this->string);
+            return Html::escape($this->content);
         }
     }
 }
