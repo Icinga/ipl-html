@@ -72,9 +72,6 @@ class Text implements ValidHtml
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function render()
     {
         if ($this->escaped) {
