@@ -29,7 +29,9 @@ class Text implements ValidHtml
     }
 
     /**
-     * @param $text
+     * Create a new text node
+     *
+     * @param string $text
      *
      * @return static
      */
