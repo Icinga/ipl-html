@@ -68,6 +68,7 @@ class Text implements ValidHtml
     public function setEscaped($escaped = true)
     {
         $this->escaped = $escaped;
+
         return $this;
     }
 
