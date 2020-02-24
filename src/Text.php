@@ -25,7 +25,7 @@ class Text implements ValidHtml
      */
     public function __construct($content)
     {
-        $this->content = (string) $content;
+        $this->setContent($content);
     }
 
     /**
@@ -48,6 +48,20 @@ class Text implements ValidHtml
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * Set the content
+     *
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setContent($content)
+    {
+        $this->content = (string) $content;
+
+        return $this;
     }
 
     /**
