@@ -43,7 +43,7 @@ class Text implements ValidHtml
     /**
      * @return string
      */
-    public function getText()
+    public function getContent()
     {
         return $this->content;
     }
