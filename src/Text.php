@@ -29,6 +29,16 @@ class Text implements ValidHtml
     }
 
     /**
+     * @param $text
+     *
+     * @return static
+     */
+    public static function create($text)
+    {
+        return new static($text);
+    }
+
+    /**
      * @return string
      */
     public function getText()
@@ -44,16 +54,6 @@ class Text implements ValidHtml
     {
         $this->escaped = $escaped;
         return $this;
-    }
-
-    /**
-     * @param $text
-     *
-     * @return static
-     */
-    public static function create($text)
-    {
-        return new static($text);
     }
 
     /**
