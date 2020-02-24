@@ -49,6 +49,16 @@ class Text implements ValidHtml
     }
 
     /**
+     * Get whether the content promises to be already escaped
+     *
+     * @return bool
+     */
+    public function isEscaped()
+    {
+        return $this->escaped;
+    }
+
+    /**
      * @param bool $escaped
      * @return $this
      */
