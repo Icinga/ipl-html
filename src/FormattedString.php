@@ -40,14 +40,6 @@ class FormattedString implements ValidHtml
         return new static($string, $args);
     }
 
-    public function render()
-    {
-        return vsprintf(
-            $this->string->render(),
-            $this->arguments
-        );
-    }
-
     /**
      * Render text to HTML when treated like a string
      *
@@ -63,5 +55,13 @@ class FormattedString implements ValidHtml
         } catch (Exception $e) {
             return Error::render($e);
         }
+    }
+
+    public function render()
+    {
+        return vsprintf(
+            $this->string->render(),
+            $this->arguments
+        );
     }
 }
