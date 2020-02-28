@@ -6,8 +6,6 @@ use Exception;
 
 class FormattedString implements ValidHtml
 {
-    protected $escaped = true;
-
     /** @var ValidHtml[] */
     protected $arguments = [];
 
