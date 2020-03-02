@@ -4,6 +4,20 @@ namespace ipl\Html;
 
 use Exception;
 
+/**
+ * {@link sprintf()}-like formatted HTML string supporting lazy rendering of {@link ValidHtml} element arguments
+ *
+ * # Example Usage
+ * ```
+ * $info = new FormattedString(
+ *     'Follow the %s for more information on %s',
+ *     [
+ *         new Link('doc/html', 'HTML documentation'),
+ *         Html::tag('strong', 'HTML elements')
+ *     ]
+ * );
+ * ```
+ */
 class FormattedString implements ValidHtml
 {
     /** @var ValidHtml[] */
