@@ -21,7 +21,7 @@ use Exception;
 class FormattedString implements ValidHtml
 {
     /** @var ValidHtml[] */
-    protected $arguments = [];
+    protected $args = [];
 
     /** @var ValidHtml */
     protected $string;
@@ -29,14 +29,14 @@ class FormattedString implements ValidHtml
     /**
      * FormattedString constructor.
      * @param $string
-     * @param array $arguments
+     * @param array $args
      */
-    public function __construct($string, array $arguments = [])
+    public function __construct($string, array $args = [])
     {
         $this->string = Html::wantHtml($string);
 
-        foreach ($arguments as $key => $val) {
-            $this->arguments[$key] = Html::wantHtml($val);
+        foreach ($args as $key => $val) {
+            $this->args[$key] = Html::wantHtml($val);
         }
     }
 
@@ -73,7 +73,7 @@ class FormattedString implements ValidHtml
     {
         return vsprintf(
             $this->string->render(),
-            $this->arguments
+            $this->args
         );
     }
 }
