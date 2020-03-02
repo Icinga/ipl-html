@@ -3,6 +3,9 @@
 namespace ipl\Html;
 
 use Exception;
+use InvalidArgumentException;
+
+use function ipl\Stdlib\get_php_type;
 
 /**
  * {@link sprintf()}-like formatted HTML string supporting lazy rendering of {@link ValidHtml} element arguments
@@ -29,15 +32,27 @@ class FormattedString implements ValidHtml
     /**
      * Create a new {@link sprintf()}-like formatted HTML string
      *
-     * @param string $format
-     * @param array  $args
+     * @param string   $format
+     * @param iterable $args
+     *
+     * @throws InvalidArgumentException If arguments given but not iterable
      */
-    public function __construct($format, array $args = [])
+    public function __construct($format, $args = null)
     {
         $this->format = Html::wantHtml($format);
 
-        foreach ($args as $key => $val) {
-            $this->args[$key] = Html::wantHtml($val);
+        if ($args !== null) {
+            if (! is_iterable($args)) {
+                throw new InvalidArgumentException(sprintf(
+                    '%s expects parameter two to be iterable, got %s instead',
+                    __METHOD__,
+                    get_php_type($args)
+                ));
+            }
+
+            foreach ($args as $key => $val) {
+                $this->args[$key] = Html::wantHtml($val);
+            }
         }
     }
 
