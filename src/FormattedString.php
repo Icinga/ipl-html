@@ -24,16 +24,17 @@ class FormattedString implements ValidHtml
     protected $args = [];
 
     /** @var ValidHtml */
-    protected $string;
+    protected $format;
 
     /**
      * FormattedString constructor.
-     * @param $string
+     *
+     * @param string $format
      * @param array $args
      */
-    public function __construct($string, array $args = [])
+    public function __construct($format, array $args = [])
     {
-        $this->string = Html::wantHtml($string);
+        $this->format = Html::wantHtml($format);
 
         foreach ($args as $key => $val) {
             $this->args[$key] = Html::wantHtml($val);
@@ -41,15 +42,16 @@ class FormattedString implements ValidHtml
     }
 
     /**
-     * @param $string
+     * @param $format
+     *
      * @return static
      */
-    public static function create($string)
+    public static function create($format)
     {
         $args = func_get_args();
         array_shift($args);
 
-        return new static($string, $args);
+        return new static($format, $args);
     }
 
     /**
@@ -72,7 +74,7 @@ class FormattedString implements ValidHtml
     public function render()
     {
         return vsprintf(
-            $this->string->render(),
+            $this->format->render(),
             $this->args
         );
     }
