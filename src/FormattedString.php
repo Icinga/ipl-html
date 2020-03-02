@@ -27,10 +27,10 @@ class FormattedString implements ValidHtml
     protected $format;
 
     /**
-     * FormattedString constructor.
+     * Create a new {@link sprintf()}-like formatted HTML string
      *
      * @param string $format
-     * @param array $args
+     * @param array  $args
      */
     public function __construct($format, array $args = [])
     {
@@ -43,8 +43,10 @@ class FormattedString implements ValidHtml
 
 
     /**
+     * Create a new {@link sprintf()}-like formatted HTML string
+     *
      * @param string $format
-     * @param mixed ...$args
+     * @param mixed  ...$args
      *
      * @return static
      */
