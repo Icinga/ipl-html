@@ -41,16 +41,15 @@ class FormattedString implements ValidHtml
         }
     }
 
+
     /**
-     * @param $format
+     * @param string $format
+     * @param mixed ...$args
      *
      * @return static
      */
-    public static function create($format)
+    public static function create($format, ...$args)
     {
-        $args = func_get_args();
-        array_shift($args);
-
         return new static($format, $args);
     }
 
