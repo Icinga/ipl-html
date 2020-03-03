@@ -40,7 +40,9 @@ class Form extends BaseHtmlElement
     protected $tag = 'form';
 
     /**
-     * @return string
+     * Get the Form submission URL
+     *
+     * @return string|null
      */
     public function getAction()
     {
@@ -49,7 +51,10 @@ class Form extends BaseHtmlElement
     }
 
     /**
-     * @param $action
+     * Set the Form submission URL
+     *
+     * @param string $action
+     *
      * @return $this
      */
     public function setAction($action)
