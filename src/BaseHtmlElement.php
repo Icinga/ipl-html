@@ -63,14 +63,14 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var Attributes */
     protected $attributes;
 
+    /** @var bool|null Whether the element is void. If null, void check should use {@link $voidElements} */
+    protected $isVoid;
+
     /** @var array You may want to set default attributes when extending this class */
     protected $defaultAttributes;
 
     /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
-
-    /** @var bool|null Whether the element is void. If null, void check should use {@link $voidElements} */
-    protected $isVoid;
 
     /**
      * Get the attributes of the element
