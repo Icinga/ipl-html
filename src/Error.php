@@ -5,6 +5,8 @@ namespace ipl\Html;
 use Exception;
 use Throwable;
 
+use function ipl\Stdlib\get_php_type;
+
 /**
  * Class Error
  *
@@ -69,16 +71,11 @@ abstract class Error
     }
 
     /**
-     * @param $any
-     * @return string
+     * @deprecated Use {@link get_php_type()} instead
      */
     public static function getPhpTypeName($any)
     {
-        if (is_object($any)) {
-            return get_class($any);
-        } else {
-            return gettype($any);
-        }
+        return get_php_type($any);
     }
 
     /**
