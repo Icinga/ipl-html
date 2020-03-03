@@ -77,22 +77,6 @@ abstract class Error
     }
 
     /**
-     * @param Exception|Throwable $exception
-     * @return string
-     */
-    protected static function createMessageForException($exception)
-    {
-        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY);
-        $file = array_pop($file);
-        return sprintf(
-            '%s (%s:%d)',
-            $exception->getMessage(),
-            $file,
-            $exception->getLine()
-        );
-    }
-
-    /**
      * @param bool|null $show
      * @return bool
      */
@@ -116,5 +100,21 @@ abstract class Error
         } else {
             return gettype($any);
         }
+    }
+
+    /**
+     * @param Exception|Throwable $exception
+     * @return string
+     */
+    protected static function createMessageForException($exception)
+    {
+        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY);
+        $file = array_pop($file);
+        return sprintf(
+            '%s (%s:%d)',
+            $exception->getMessage(),
+            $file,
+            $exception->getLine()
+        );
     }
 }
