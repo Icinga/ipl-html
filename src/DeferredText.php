@@ -61,12 +61,16 @@ class DeferredText implements ValidHtml
     }
 
     /**
+     * Set whether the callback's content is already escaped
+     *
      * @param bool $escaped
+     *
      * @return $this
      */
     public function setEscaped($escaped = true)
     {
         $this->escaped = $escaped;
+
         return $this;
     }
 
