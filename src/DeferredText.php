@@ -60,17 +60,6 @@ class DeferredText implements ValidHtml
         return new static($callback);
     }
 
-    public function render()
-    {
-        $callback = $this->callback;
-
-        if ($this->escaped) {
-            return $callback();
-        } else {
-            return Html::escape($callback());
-        }
-    }
-
     /**
      * @param bool $escaped
      * @return $this
@@ -93,6 +82,17 @@ class DeferredText implements ValidHtml
             return $this->render();
         } catch (Exception $e) {
             return Error::render($e);
+        }
+    }
+
+    public function render()
+    {
+        $callback = $this->callback;
+
+        if ($this->escaped) {
+            return $callback();
+        } else {
+            return Html::escape($callback());
         }
     }
 }
