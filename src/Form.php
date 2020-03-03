@@ -63,6 +63,33 @@ class Form extends BaseHtmlElement
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getMethod()
+    {
+        $method = $this->getAttributes()->get('method')->getValue();
+        if ($method === null) {
+            // WRONG. Problem:
+            // right now we get the method in assemble, that's too late.
+            // TODO: fix this via getMethodAttribute callback
+            return 'POST';
+        }
+
+        return $method;
+    }
+
+    /**
+     * @param $method
+     * @return $this
+     */
+    public function setMethod($method)
+    {
+        $this->getAttributes()->set('method', strtoupper($method));
+
+        return $this;
+    }
+
     public function setRequest($request)
     {
         $this->request = $request;
@@ -214,33 +241,6 @@ class Form extends BaseHtmlElement
     public function setSubmitButton(FormSubmitElement $element)
     {
         $this->submitButton = $element;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMethod()
-    {
-        $method = $this->getAttributes()->get('method')->getValue();
-        if ($method === null) {
-            // WRONG. Problem:
-            // right now we get the method in assemble, that's too late.
-            // TODO: fix this via getMethodAttribute callback
-            return 'POST';
-        }
-
-        return $method;
-    }
-
-    /**
-     * @param $method
-     * @return $this
-     */
-    public function setMethod($method)
-    {
-        $this->getAttributes()->set('method', strtoupper($method));
 
         return $this;
     }
