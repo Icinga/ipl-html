@@ -237,3 +237,21 @@ Still, we do not consider this code being very readable. In case you ever used
 ```html
 Hi <strong>there</strong>, are you ok?
 ```
+
+### Passing Elements
+
+Say you've now written your own wonderful widget. It's even so wonderful you want to re-use some of its components
+in another widget? You're in luck, there's a handy shortcut with which you can easily pass elements from one widget
+to another.
+
+Let's assume our menu example is a proper widget now and add its entries while transforming them to dashboard tiles:
+
+```php
+<?= Html::tag('div', ['class' => 'dashboard'])->addFrom(new Menu(), function ($li) {
+    return $li->setTag('div');
+}); ?>
+```
+
+```html
+<div class="dashboard"><div>First point</div><div>Second point</div><div>Third point</div></div>
+```

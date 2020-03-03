@@ -43,6 +43,24 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
+     * @param HtmlDocument $from
+     * @param callable     $callback
+     *
+     * @return $this
+     */
+    public function addFrom(HtmlDocument $from, $callback = null)
+    {
+        $from->ensureAssembled();
+
+        $isCallable = is_callable($callback);
+        foreach ($from->getContent() as $item) {
+            $this->add($isCallable ? $callback($item) : $item);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param BaseHtmlElement $wrapper
      * @return $this
      */
@@ -324,8 +342,6 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @deprecated
-     *
      * return ValidHtml[]
      */
     public function getContent()

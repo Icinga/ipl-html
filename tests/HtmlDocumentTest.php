@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html;
 
+use ipl\Html\BaseHtmlElement;
 use ipl\Html\Html as h;
 use ipl\Html\HtmlDocument;
 use ipl\Tests\Html\TestDummy\AddsWrapperDuringAssemble;
@@ -120,6 +121,44 @@ class HtmlDocumentTest extends TestCase
         $this->assertEquals(
             '<b>three</b>',
             $a->render()
+        );
+    }
+
+    public function testAddFromCorrectlyPassesElements()
+    {
+        $ul = h::tag('ul');
+        $ul->add(h::tag('li', ['style' => 'margin:0'], 'one'));
+        $ul->add(h::tag('li', 'two'));
+        $ul->add(h::tag('li', 'three'));
+
+        $ol = h::tag('ol');
+        $ol->addFrom($ul);
+
+        $this->assertRendersHtml(
+            '<ol><li style="margin:0">one</li><li>two</li><li>three</li></ol>',
+            $ol
+        );
+    }
+
+    public function testAddFromCorrectlyPassesElementsWithCallback()
+    {
+        $ul = h::tag('ul');
+        $ul->add(h::tag('li', ['id' => '1'], 'one'));
+        $ul->add(h::tag('li', ['id' => '2'], 'two'));
+        $ul->add(h::tag('li', ['id' => '3'], 'three'));
+
+        $div = h::tag('div');
+        $div->addFrom($ul, function (BaseHtmlElement $item) {
+            if ($item->getAttributes()->get('id')->getValue() !== '2') {
+                $item->setTag('p');
+                $item->getAttributes()->remove('id');
+                return $item;
+            }
+        });
+
+        $this->assertRendersHtml(
+            '<div><p>one</p><p>three</p></div>',
+            $div
         );
     }
 }
