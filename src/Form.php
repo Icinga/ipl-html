@@ -39,6 +39,26 @@ class Form extends BaseHtmlElement
 
     protected $tag = 'form';
 
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        // TODO: get Request URL if no action
+        return $this->getAttributes()->get('action')->getValue();
+    }
+
+    /**
+     * @param $action
+     * @return $this
+     */
+    public function setAction($action)
+    {
+        $this->getAttributes()->set('action', $action);
+
+        return $this;
+    }
+
     public function setRequest($request)
     {
         $this->request = $request;
@@ -217,26 +237,6 @@ class Form extends BaseHtmlElement
     public function setMethod($method)
     {
         $this->getAttributes()->set('method', strtoupper($method));
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        // TODO: get Request URL if no action
-        return $this->getAttributes()->get('action')->getValue();
-    }
-
-    /**
-     * @param $action
-     * @return $this
-     */
-    public function setAction($action)
-    {
-        $this->getAttributes()->set('action', $action);
 
         return $this;
     }
