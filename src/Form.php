@@ -31,11 +31,11 @@ class Form extends BaseHtmlElement
     /** @var FormSubmitElement[] Other elements that may submit the form */
     protected $submitElements = [];
 
-    /** @var ServerRequestInterface The server request being processed */
-    private $request;
-
     /** @var bool Whether the form is valid */
     private $isValid;
+
+    /** @var ServerRequestInterface The server request being processed */
+    private $request;
 
     protected $tag = 'form';
 
