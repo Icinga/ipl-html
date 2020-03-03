@@ -5,6 +5,7 @@ namespace ipl\Html;
 use InvalidArgumentException;
 
 use function ipl\Stdlib\iterable_key_first;
+use function ipl\Stdlib\get_php_type;
 
 /**
  * Class Html
@@ -102,7 +103,7 @@ abstract class Html
         if (! is_iterable($list)) {
             throw new InvalidArgumentException(sprintf(
                 'Html::wrapEach() requires a traversable list, got "%s"',
-                Error::getPhpTypeName($list)
+                get_php_type($list)
             ));
         }
         $result = new HtmlDocument();
@@ -114,7 +115,7 @@ abstract class Html
             } else {
                 throw new InvalidArgumentException(sprintf(
                     'Wrapper must be callable or a string in Html::wrapEach(), got "%s"',
-                    Error::getPhpTypeName($wrapper)
+                    get_php_type($wrapper)
                 ));
             }
         }
@@ -149,7 +150,7 @@ abstract class Html
         } else {
             throw new InvalidArgumentException(sprintf(
                 'String, Html Element or Array of such expected, got "%s"',
-                Error::getPhpTypeName($any)
+                get_php_type($any)
             ));
         }
     }

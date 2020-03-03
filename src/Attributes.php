@@ -398,7 +398,7 @@ class Attributes implements IteratorAggregate
                 throw new InvalidArgumentException(sprintf(
                     'A registered attribute callback must return string, null'
                     . ' or an Attribute, got a %s',
-                    Error::getPhpTypeName($attribute)
+                    get_php_type($attribute)
                 ));
             }
         }
