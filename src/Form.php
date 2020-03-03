@@ -64,7 +64,9 @@ class Form extends BaseHtmlElement
     }
 
     /**
-     * @return mixed
+     * Get the HTTP method to submit the form with
+     *
+     * @return string
      */
     public function getMethod()
     {
@@ -80,7 +82,10 @@ class Form extends BaseHtmlElement
     }
 
     /**
-     * @param $method
+     * Set the HTTP method to submit the form with
+     *
+     * @param string $method
+     *
      * @return $this
      */
     public function setMethod($method)
