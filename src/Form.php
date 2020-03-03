@@ -21,19 +21,22 @@ class Form extends BaseHtmlElement
 
     protected $tag = 'form';
 
+    /** @var string Form submission URL */
     protected $action;
 
+    /** @var string HTTP method to submit the form with */
     protected $method;
 
-    /** @var FormSubmitElement */
+    /** @var FormSubmitElement Primary submit button */
     protected $submitButton;
 
-    /** @var FormSubmitElement[] */
+    /** @var FormSubmitElement[] Other elements that may submit the form */
     protected $submitElements = [];
 
-    /** @var ServerRequestInterface */
+    /** @var ServerRequestInterface The server request being processed */
     private $request;
 
+    /** @var bool Whether the form is valid */
     private $isValid;
 
     public function setRequest($request)
