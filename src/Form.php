@@ -95,6 +95,14 @@ class Form extends BaseHtmlElement
         return $this;
     }
 
+    /**
+     * @return ServerRequestInterface|null
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
     public function setRequest($request)
     {
         $this->request = $request;
@@ -140,14 +148,6 @@ class Form extends BaseHtmlElement
         }
 
         return $this;
-    }
-
-    /**
-     * @return ServerRequestInterface|null
-     */
-    public function getRequest()
-    {
-        return $this->request;
     }
 
     public function onSuccess()
