@@ -5,20 +5,30 @@ namespace ipl\Html;
 use Exception;
 
 /**
- * This class allows to have plain text passed in as a callback. That way it
- * would not be called and stringified unless it is going to be rendered and
- * escaped to HTML
+ * Text node where content creation is deferred until rendering
  *
- * Usage
- * -----
- * <code>
- * $myVar = 'Some value';
- * $text = new DeferredText(function () use ($myVar) {
- *     return $myVar;
+ * The content is created by a passed in callback which is only called when the node is going to be rendered and
+ * automatically escaped to HTML.
+ * If the created content is already escaped, see {@link setEscaped()} to indicate this.
+ *
+ * # Example Usage
+ * ```
+ * $benchmark = new Benchmark();
+ *
+ * $performance = new DeferredText(function () use ($benchmark) {
+ *     return $benchmark->summary();
  * });
- * $myVar = 'Changed idea';
- * echo $text;
- * </code>
+ *
+ * execute_query();
+ *
+ * $benchmark->tick('Fetched results');
+ *
+ * generate_report();
+ *
+ * $benchmark->tick('Report generated');
+ *
+ * echo $performance;
+ * ```
  */
 class DeferredText implements ValidHtml
 {
