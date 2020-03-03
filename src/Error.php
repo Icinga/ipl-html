@@ -2,8 +2,8 @@
 
 namespace ipl\Html;
 
-use Error as PhpError;
 use Exception;
+use Throwable;
 
 /**
  * Class Error
@@ -19,14 +19,16 @@ abstract class Error
 
     /**
      *
-     * @param Exception|PhpError|string $error
+     * @param Exception|Throwable|string $error
      * @return HtmlDocument
      */
     public static function show($error)
     {
-        if ($error instanceof Exception) {
+        if ($error instanceof Throwable) {
+            // PHP 7+
             $msg = static::createMessageForException($error);
-        } elseif ($error instanceof PhpError) {
+        } elseif ($error instanceof Exception) {
+            // PHP 5.x
             $msg = static::createMessageForException($error);
         } elseif (is_string($error)) {
             $msg = $error;
@@ -45,7 +47,7 @@ abstract class Error
 
     /**
      *
-     * @param Exception|PhpError|string $error
+     * @param Exception|Throwable|string $error
      * @return string
      */
     public static function render($error)
@@ -75,7 +77,7 @@ abstract class Error
     }
 
     /**
-     * @param PhpError|Exception $exception
+     * @param Exception|Throwable $exception
      * @return string
      */
     protected static function createMessageForException($exception)
