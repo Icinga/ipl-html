@@ -56,27 +56,6 @@ abstract class Error
     }
 
     /**
-     * @param string
-     * @return HtmlDocument
-     */
-    protected static function renderErrorMessage($message)
-    {
-        $output = new HtmlDocument();
-        $output->add(
-            Html::tag('div', ['class' => 'exception'], [
-                Html::tag('h1', [
-                    Html::tag('i', ['class' => 'icon-bug']),
-                    // TODO: Translate? More hints?
-                    'Oops, an error occurred!'
-                ]),
-                Html::tag('pre', $message)
-            ])
-        );
-
-        return $output;
-    }
-
-    /**
      * @param bool|null $show
      * @return bool
      */
@@ -116,5 +95,26 @@ abstract class Error
             $file,
             $exception->getLine()
         );
+    }
+
+    /**
+     * @param string
+     * @return HtmlDocument
+     */
+    protected static function renderErrorMessage($message)
+    {
+        $output = new HtmlDocument();
+        $output->add(
+            Html::tag('div', ['class' => 'exception'], [
+                Html::tag('h1', [
+                    Html::tag('i', ['class' => 'icon-bug']),
+                    // TODO: Translate? More hints?
+                    'Oops, an error occurred!'
+                ]),
+                Html::tag('pre', $message)
+            ])
+        );
+
+        return $output;
     }
 }
