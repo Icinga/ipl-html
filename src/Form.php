@@ -19,8 +19,6 @@ class Form extends BaseHtmlElement
     const ON_REQUEST = 'request';
     const ON_SUCCESS = 'success';
 
-    protected $tag = 'form';
-
     /** @var string Form submission URL */
     protected $action;
 
@@ -38,6 +36,8 @@ class Form extends BaseHtmlElement
 
     /** @var bool Whether the form is valid */
     private $isValid;
+
+    protected $tag = 'form';
 
     public function setRequest($request)
     {
