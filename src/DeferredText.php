@@ -71,8 +71,10 @@ class DeferredText implements ValidHtml
     }
 
     /**
-     * Calls the render function, but is failsafe. In case an Exception occurs,
-     * an error is rendered instead of the expected HTML
+     * Render text to HTML when treated like a string
+     *
+     * Calls {@link render()} internally in order to render the text to HTML.
+     * Exceptions will be automatically caught and returned as HTML string as well using {@link Error::render()}.
      *
      * @return string
      */
