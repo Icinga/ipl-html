@@ -245,12 +245,12 @@ class Form extends BaseHtmlElement
         return true;
     }
 
-    public function onSuccess()
+    protected function onSuccess()
     {
         // $this->redirectOnSuccess();
     }
 
-    public function onError()
+    protected function onError()
     {
         $error = Html::tag('p', ['class' => 'error']);
         foreach ($this->getMessages() as $message) {
