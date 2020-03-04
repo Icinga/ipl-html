@@ -245,24 +245,6 @@ class Form extends BaseHtmlElement
         return true;
     }
 
-    protected function onSuccess()
-    {
-        // $this->redirectOnSuccess();
-    }
-
-    protected function onError()
-    {
-        $error = Html::tag('p', ['class' => 'error']);
-        foreach ($this->getMessages() as $message) {
-            if ($message instanceof Exception) {
-                $error->add($message->getMessage());
-            } else {
-                $error->add($message);
-            }
-        }
-        $this->prepend($error);
-    }
-
     /**
      * Get whether the form is valid
      *
@@ -317,6 +299,24 @@ class Form extends BaseHtmlElement
         }
 
         return $this;
+    }
+
+    protected function onError()
+    {
+        $error = Html::tag('p', ['class' => 'error']);
+        foreach ($this->getMessages() as $message) {
+            if ($message instanceof Exception) {
+                $error->add($message->getMessage());
+            } else {
+                $error->add($message);
+            }
+        }
+        $this->prepend($error);
+    }
+
+    protected function onSuccess()
+    {
+        // $this->redirectOnSuccess();
     }
 
     protected function onElementRegistered(BaseFormElement $element)
