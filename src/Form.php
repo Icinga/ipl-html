@@ -282,6 +282,8 @@ class Form extends BaseHtmlElement
 
     /**
      * Validate all elements
+     *
+     * @return $this
      */
     public function validate()
     {
@@ -298,6 +300,8 @@ class Form extends BaseHtmlElement
         }
 
         $this->isValid = $valid;
+
+        return $this;
     }
 
     /**
