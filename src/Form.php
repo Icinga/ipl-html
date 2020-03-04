@@ -23,7 +23,7 @@ class Form extends BaseHtmlElement
     protected $action;
 
     /** @var string HTTP method to submit the form with */
-    protected $method;
+    protected $method = 'POST';
 
     /** @var FormSubmitElement Primary submit button */
     protected $submitButton;
@@ -46,7 +46,7 @@ class Form extends BaseHtmlElement
      */
     public function getAction()
     {
-        return $this->getAttributes()->get('action')->getValue();
+        return $this->action;
     }
 
     /**
@@ -58,7 +58,7 @@ class Form extends BaseHtmlElement
      */
     public function setAction($action)
     {
-        $this->getAttributes()->set('action', $action);
+        $this->action = $action;
 
         return $this;
     }
@@ -70,15 +70,7 @@ class Form extends BaseHtmlElement
      */
     public function getMethod()
     {
-        $method = $this->getAttributes()->get('method')->getValue();
-        if ($method === null) {
-            // WRONG. Problem:
-            // right now we get the method in assemble, that's too late.
-            // TODO: fix this via getMethodAttribute callback
-            return 'POST';
-        }
-
-        return $method;
+        return $this->method;
     }
 
     /**
@@ -90,7 +82,7 @@ class Form extends BaseHtmlElement
      */
     public function setMethod($method)
     {
-        $this->getAttributes()->set('method', strtoupper($method));
+        $this->method = strtoupper($method);
 
         return $this;
     }
@@ -336,5 +328,12 @@ class Form extends BaseHtmlElement
                 $this->setSubmitButton($element);
             }
         }
+    }
+
+    protected function registerAttributeCallbacks(Attributes $attributes)
+    {
+        $attributes
+            ->registerAttributeCallback('action', [$this, 'getAction'], [$this, 'setAction'])
+            ->registerAttributeCallback('method', [$this, 'getMethod'], [$this, 'setMethod']);
     }
 }
