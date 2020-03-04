@@ -223,6 +223,10 @@ class Form extends BaseHtmlElement
     }
 
     /**
+     * Get whether the form has been submitted
+     *
+     * A form is submitted when it has been sent and when the primary submit button, if set, has been pressed.
+     *
      * @return bool
      */
     public function hasBeenSubmitted()
