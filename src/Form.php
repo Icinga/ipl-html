@@ -96,6 +96,40 @@ class Form extends BaseHtmlElement
     }
 
     /**
+     * Get whether the form has a primary submit button
+     *
+     * @return bool
+     */
+    public function hasSubmitButton()
+    {
+        return $this->submitButton !== null;
+    }
+
+    /**
+     * Get the primary submit button
+     *
+     * @return FormSubmitElement|null
+     */
+    public function getSubmitButton()
+    {
+        return $this->submitButton;
+    }
+
+    /**
+     * Set the primary submit button
+     *
+     * @param FormSubmitElement $element
+     *
+     * @return $this
+     */
+    public function setSubmitButton(FormSubmitElement $element)
+    {
+        $this->submitButton = $element;
+
+        return $this;
+    }
+
+    /**
      * @return ServerRequestInterface|null
      */
     public function getRequest()
@@ -231,23 +265,6 @@ class Form extends BaseHtmlElement
         } else {
             return $this->hasBeenSent();
         }
-    }
-
-    public function hasSubmitButton()
-    {
-        return $this->submitButton !== null;
-    }
-
-    public function getSubmitButton()
-    {
-        return $this->submitButton;
-    }
-
-    public function setSubmitButton(FormSubmitElement $element)
-    {
-        $this->submitButton = $element;
-
-        return $this;
     }
 
     /**
