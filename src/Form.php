@@ -168,19 +168,35 @@ class Form extends BaseHtmlElement
     public function handleRequest(ServerRequestInterface $request)
     {
         $this->setRequest($request);
-        if ($this->hasBeenSent()) {
-            if ($request->getMethod() === 'POST') {
-                $params = $request->getParsedBody();
-            } elseif ($this->getMethod() === 'GET') {
-                parse_str($request->getUri()->getQuery(), $params);
-            } else {
-                $params = [];
-            }
-            $this->populate($params);
+
+        $method = $request->getMethod();
+
+        if ($method !== $this->getMethod()) {
+            // Always assemble
+            $this->ensureAssembled();
+
+            return $this;
         }
 
+        switch ($method) {
+            case 'POST':
+                $params = $request->getParsedBody();
+
+                break;
+            case 'GET':
+                parse_str($request->getUri()->getQuery(), $params);
+
+                break;
+            default:
+                $params = [];
+        }
+
+        $this->populate($params);
+
+        // Assemble after populate in order to conditionally provide form elements
         $this->ensureAssembled();
-        if ($this->hasBeenSubmitted()) {
+
+        if (! $this->hasSubmitButton() || $this->getSubmitButton()->hasBeenPressed()) {
             if ($this->isValid()) {
                 try {
                     $this->onSuccess();
@@ -193,7 +209,7 @@ class Form extends BaseHtmlElement
             } else {
                 $this->onError();
             }
-        } elseif ($this->hasBeenSent()) {
+        } else {
             $this->validatePartial();
         }
 
