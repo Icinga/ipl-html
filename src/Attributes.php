@@ -387,13 +387,13 @@ class Attributes implements IteratorAggregate
         foreach ($this->callbacks as $name => $callback) {
             $attribute = call_user_func($callback);
             if ($attribute instanceof Attribute) {
-                if ($attribute->getValue() !== null) {
+                if (! $attribute->isEmpty()) {
                     $parts[] = $attribute->render();
                 }
-            } elseif ($attribute !== null && is_scalar($attribute)) {
-                $parts[] = Attribute::create($name, $attribute)->render();
             } elseif ($attribute === null) {
                 continue;
+            } elseif (is_scalar($attribute)) {
+                $parts[] = Attribute::create($name, $attribute)->render();
             } else {
                 throw new InvalidArgumentException(sprintf(
                     'A registered attribute callback must return string, null'
