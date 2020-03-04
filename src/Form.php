@@ -280,6 +280,9 @@ class Form extends BaseHtmlElement
         return $this->isValid;
     }
 
+    /**
+     * Validate all elements
+     */
     public function validate()
     {
         $valid = true;
