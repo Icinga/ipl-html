@@ -229,13 +229,7 @@ class Form extends BaseHtmlElement
             return false;
         }
 
-        if ($this->request->getMethod() !== $this->getMethod()) {
-            return false;
-        }
-
-        // TODO: Check form name element
-
-        return true;
+        return $this->request->getMethod() === $this->getMethod();
     }
 
     /**
