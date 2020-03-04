@@ -201,6 +201,10 @@ class Form extends BaseHtmlElement
     }
 
     /**
+     * Get whether the form has been sent
+     *
+     * A form is considered sent if the request's method equals the form's method.
+     *
      * @return bool
      */
     public function hasBeenSent()
