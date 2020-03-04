@@ -306,6 +306,8 @@ class Form extends BaseHtmlElement
 
     /**
      * Validate all elements that have a value
+     *
+     * @return $this
      */
     public function validatePartial()
     {
@@ -314,6 +316,8 @@ class Form extends BaseHtmlElement
                 $element->validate();
             }
         }
+
+        return $this;
     }
 
     protected function onElementRegistered(BaseFormElement $element)
