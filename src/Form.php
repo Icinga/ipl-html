@@ -271,6 +271,13 @@ class Form extends BaseHtmlElement
         $this->prepend($error);
     }
 
+    /**
+     * Get whether the form is valid
+     *
+     * {@link validate()} is called automatically if the form has not been validated before.
+     *
+     * @return bool
+     */
     public function isValid()
     {
         if ($this->isValid === null) {
