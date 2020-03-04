@@ -236,16 +236,21 @@ class Form extends BaseHtmlElement
      * Get whether the form has been submitted
      *
      * A form is submitted when it has been sent and when the primary submit button, if set, has been pressed.
+     * This method calls {@link hasBeenSent()} in order to detect whether the form has been sent.
      *
      * @return bool
      */
     public function hasBeenSubmitted()
     {
+        if (! $this->hasBeenSent()) {
+            return false;
+        }
+
         if ($this->hasSubmitButton()) {
             return $this->getSubmitButton()->hasBeenPressed();
-        } else {
-            return $this->hasBeenSent();
         }
+
+        return true;
     }
 
     public function onSuccess()
