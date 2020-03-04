@@ -130,6 +130,22 @@ class Form extends BaseHtmlElement
     }
 
     /**
+     * Get the submit element used to send the form
+     *
+     * @return FormSubmitElement|null
+     */
+    public function getPressedSubmitElement()
+    {
+        foreach ($this->submitElements as $submitElement) {
+            if ($submitElement->hasBeenPressed()) {
+                return $submitElement;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return ServerRequestInterface|null
      */
     public function getRequest()
@@ -265,22 +281,6 @@ class Form extends BaseHtmlElement
         } else {
             return $this->hasBeenSent();
         }
-    }
-
-    /**
-     * Get the submit element used to send the form
-     *
-     * @return FormSubmitElement|null
-     */
-    public function getPressedSubmitElement()
-    {
-        foreach ($this->submitElements as $submitElement) {
-            if ($submitElement->hasBeenPressed()) {
-                return $submitElement;
-            }
-        }
-
-        return null;
     }
 
     protected function onElementRegistered(BaseFormElement $element)
