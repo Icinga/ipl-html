@@ -300,6 +300,9 @@ class Form extends BaseHtmlElement
         $this->isValid = $valid;
     }
 
+    /**
+     * Validate all elements that have a value
+     */
     public function validatePartial()
     {
         foreach ($this->getElements() as $element) {
