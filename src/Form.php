@@ -233,14 +233,14 @@ class Form extends BaseHtmlElement
         }
     }
 
-    public function getSubmitButton()
-    {
-        return $this->submitButton;
-    }
-
     public function hasSubmitButton()
     {
         return $this->submitButton !== null;
+    }
+
+    public function getSubmitButton()
+    {
+        return $this->submitButton;
     }
 
     public function setSubmitButton(FormSubmitElement $element)
