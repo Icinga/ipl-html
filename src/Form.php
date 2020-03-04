@@ -200,6 +200,36 @@ class Form extends BaseHtmlElement
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function hasBeenSent()
+    {
+        if ($this->request === null) {
+            return false;
+        }
+
+        if ($this->request->getMethod() !== $this->getMethod()) {
+            return false;
+        }
+
+        // TODO: Check form name element
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasBeenSubmitted()
+    {
+        if ($this->hasSubmitButton()) {
+            return $this->getSubmitButton()->hasBeenPressed();
+        } else {
+            return $this->hasBeenSent();
+        }
+    }
+
     public function onSuccess()
     {
         // $this->redirectOnSuccess();
@@ -250,36 +280,6 @@ class Form extends BaseHtmlElement
             if ($element->hasValue()) {
                 $element->validate();
             }
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasBeenSent()
-    {
-        if ($this->request === null) {
-            return false;
-        }
-
-        if ($this->request->getMethod() !== $this->getMethod()) {
-            return false;
-        }
-
-        // TODO: Check form name element
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasBeenSubmitted()
-    {
-        if ($this->hasSubmitButton()) {
-            return $this->getSubmitButton()->hasBeenPressed();
-        } else {
-            return $this->hasBeenSent();
         }
     }
 
