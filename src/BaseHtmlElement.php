@@ -63,6 +63,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var Attributes */
     protected $attributes;
 
+    /** @var bool Whether possible attribute callbacks have been registered */
+    protected $attributeCallbacksRegistered = false;
+
     /** @var bool|null Whether the element is void. If null, void check should use {@link $voidElements} */
     protected $isVoid;
 
@@ -86,6 +89,8 @@ abstract class BaseHtmlElement extends HtmlDocument
             } else {
                 $this->attributes = Attributes::wantAttributes($default);
             }
+
+            $this->ensureAttributeCallbacksRegistered();
         }
 
         return $this->attributes;
@@ -101,6 +106,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     public function setAttributes($attributes)
     {
         $this->attributes = Attributes::wantAttributes($attributes);
+
+        $this->attributeCallbacksRegistered = false;
+        $this->ensureAttributeCallbacksRegistered();
 
         return $this;
     }
@@ -221,6 +229,23 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
+     * Ensure that possible attribute callbacks have been registered
+     *
+     * Note that this method is automatically called in {@link getAttributes()} and {@link setAttributes()}.
+     *
+     * @return $this
+     */
+    public function ensureAttributeCallbacksRegistered()
+    {
+        if (! $this->attributeCallbacksRegistered) {
+            $this->attributeCallbacksRegistered = true;
+            $this->registerAttributeCallbacks($this->attributes);
+        }
+
+        return $this;
+    }
+
+    /**
      * Render the content of the element to HTML
      *
      * @return string
@@ -265,6 +290,15 @@ abstract class BaseHtmlElement extends HtmlDocument
     protected function tag()
     {
         return $this->tag;
+    }
+
+    /**
+     * Register attribute callbacks
+     *
+     * Override this method in order to register attribute callbacks in concrete classes.
+     */
+    protected function registerAttributeCallbacks(Attributes $attributes)
+    {
     }
 
     public function add($content)
