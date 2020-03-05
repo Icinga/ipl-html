@@ -95,6 +95,7 @@ trait FormElementContainer
      *
      * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of BaseFormElement
      *                                  or if $typeOrElement is a string and $name is not set
+     *                                  or if $typeOrElement is a string but type is unknown
      *                                  or if $typeOrElement is an instance of BaseFormElement but does not have a name
      */
     public function addElement($typeOrElement, $name = null, $options = null)
@@ -135,14 +136,25 @@ trait FormElementContainer
      * @param mixed  $options Element options as key-value pairs
      *
      * @return BaseFormElement
+     *
+     * @throws InvalidArgumentException If the type of the element is unknown
      */
     public function createElement($type, $name, $options = null)
     {
         $this->ensureDefaultElementLoaderRegistered();
 
         $class = $this->loadPlugin('element', $type);
+
+        if (! $class) {
+            throw new InvalidArgumentException(sprintf(
+                "Can't create element of unknown type '%s",
+                $type
+            ));
+        }
+
         /** @var BaseFormElement $element */
         $element = new $class($name);
+
         if ($options !== null) {
             $element->addAttributes($options);
         }
