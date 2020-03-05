@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Attribute;
+use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Stdlib\MessageContainer;
 use ipl\Stdlib\Contract\ValidatorInterface;
@@ -45,7 +46,6 @@ abstract class BaseFormElement extends BaseHtmlElement
      */
     public function __construct($name, $attributes = null)
     {
-        $this->registerCallbacks();
         if ($attributes !== null) {
             $this->addAttributes($attributes);
         }
@@ -291,24 +291,32 @@ abstract class BaseFormElement extends BaseHtmlElement
         return $this;
     }
 
-    protected function registerCallbacks()
+    protected function registerValueCallback(Attributes $attributes)
     {
-        $this->registerValueCallback();
-        $this->getAttributes()
+        $attributes->registerAttributeCallback(
+            'value',
+            [$this, 'getValueAttribute'],
+            [$this, 'setValue']
+        );
+    }
+
+    protected function registerAttributeCallbacks(Attributes $attributes)
+    {
+        $this->registerValueCallback($attributes);
+
+        $attributes
             ->registerAttributeCallback('label', [$this, 'getNoAttribute'], [$this, 'setLabel'])
             ->registerAttributeCallback('name', [$this, 'getNameAttribute'], [$this, 'setName'])
             ->registerAttributeCallback('description', [$this, 'getNoAttribute'], [$this, 'setDescription'])
             ->registerAttributeCallback('validators', null, [$this, 'setValidators'])
             ->registerAttributeCallback('ignore', null, [$this, 'setIgnored'])
             ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired']);
+
+        $this->registerCallbacks();
     }
 
-    protected function registerValueCallback()
+    /** @deprecated Use {@link registerAttributeCallbacks()} instead */
+    protected function registerCallbacks()
     {
-        $this->getAttributes()->registerAttributeCallback(
-            'value',
-            [$this, 'getValueAttribute'],
-            [$this, 'setValue']
-        );
     }
 }

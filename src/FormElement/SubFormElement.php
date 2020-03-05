@@ -2,6 +2,8 @@
 
 namespace ipl\Html\FormElement;
 
+use ipl\Html\Attributes;
+
 class SubFormElement extends BaseFormElement
 {
     use FormElementContainer;
@@ -44,9 +46,9 @@ class SubFormElement extends BaseFormElement
         return true;
     }
 
-    protected function registerValueCallback()
+    protected function registerValueCallback(Attributes $attributes)
     {
-        $this->getAttributes()->registerAttributeCallback(
+        $attributes->registerAttributeCallback(
             'value',
             null,
             [$this, 'setValue']

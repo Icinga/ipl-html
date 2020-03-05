@@ -2,6 +2,8 @@
 
 namespace ipl\Html\FormElement;
 
+use ipl\Html\Attributes;
+
 class TextareaElement extends BaseFormElement
 {
     protected $tag = 'textarea';
@@ -14,9 +16,9 @@ class TextareaElement extends BaseFormElement
         return $this;
     }
 
-    protected function registerValueCallback()
+    protected function registerValueCallback(Attributes $attributes)
     {
-        $this->getAttributes()->registerAttributeCallback(
+        $attributes->registerAttributeCallback(
             'value',
             null,
             [$this, 'setValue']
