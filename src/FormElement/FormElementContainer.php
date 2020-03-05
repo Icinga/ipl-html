@@ -7,16 +7,16 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
-use ipl\Stdlib\EventEmitter;
-use ipl\Stdlib\Loader\PluginLoader;
+use ipl\Stdlib\Events;
+use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
 
 trait FormElementContainer
 {
-    use EventEmitter;
-    use PluginLoader;
+    use Events;
+    use Plugins;
 
     /** @var DecoratorInterface|BaseHtmlElement|null */
     private $defaultElementDecorator;
@@ -140,7 +140,7 @@ trait FormElementContainer
     {
         $this->ensureDefaultElementLoaderRegistered();
 
-        $class = $this->eventuallyGetPluginClass('element', $type);
+        $class = $this->loadPlugin('element', $type);
         /** @var BaseFormElement $element */
         $element = new $class($name);
         if ($options !== null) {
@@ -355,7 +355,7 @@ trait FormElementContainer
     protected function ensureDefaultElementDecoratorLoaderRegistered()
     {
         if (! $this->defaultElementDecoratorLoaderRegistered) {
-            $this->addPluginLoader(
+            $this->addDefaultPluginLoader(
                 'decorator',
                 'ipl\\Html\\FormDecorator',
                 'Decorator'
@@ -375,7 +375,7 @@ trait FormElementContainer
     protected function ensureDefaultElementLoaderRegistered()
     {
         if (! $this->defaultElementLoaderRegistered) {
-            $this->addPluginLoader('element', __NAMESPACE__, 'Element');
+            $this->addDefaultPluginLoader('element', __NAMESPACE__, 'Element');
 
             $this->defaultElementLoaderRegistered = true;
         }
