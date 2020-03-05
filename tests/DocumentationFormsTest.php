@@ -14,7 +14,7 @@ class DocumentationFormsTest extends TestCase
         $form->setAction('/your/url');
         $form->addElement('text', 'name', ['label' => 'Your name']);
         $this->assertRendersHtml(
-            '<form action="/your/url"><input name="name" type="text" /></form>',
+            '<form action="/your/url" method="POST"><input name="name" type="text" /></form>',
             $form
         );
     }
@@ -83,7 +83,7 @@ class DocumentationFormsTest extends TestCase
         $form->addElement($nameElement);
 
         $this->assertRendersHtml(
-            '<form><input type="text" name="name" class="important" />'
+            '<form method="POST"><input type="text" name="name" class="important" />'
             . '</form>',
             $form
         );
@@ -94,7 +94,7 @@ class DocumentationFormsTest extends TestCase
         $form = new Form();
 
         $this->assertRendersHtml(
-            '<form><div><input name="first_name" type="text" /><br />'
+            '<form method="POST"><div><input name="first_name" type="text" /><br />'
             . '<input name="last_name" type="text" /></div></form>',
             $form
             ->registerElement($form->createElement('text', 'first_name'))
