@@ -18,7 +18,7 @@ trait FormElementContainer
     use Events;
     use Plugins;
 
-    /** @var DecoratorInterface|BaseHtmlElement|null */
+    /** @var DecoratorInterface|null */
     private $defaultElementDecorator;
 
     /** @var bool Whether the default element decorator loader has been registered */
@@ -209,7 +209,7 @@ trait FormElementContainer
     /**
      * Get the default element decorator, if any
      *
-     * @return DecoratorInterface|BaseHtmlElement|null
+     * @return DecoratorInterface|null
      */
     public function getDefaultElementDecorator()
     {
@@ -223,27 +223,28 @@ trait FormElementContainer
      * A loader for the namespace ipl\\Html\\FormDecorator is automatically registered by default.
      * See {@link addDecoratorLoader()} for registering a custom loader.
      *
-     * @param DecoratorInterface|BaseHtmlElement|string $decorator
+     * @param DecoratorInterface|string $decorator
      *
      * @return $this
      *
      * @throws InvalidArgumentException If $decorator is a string and can't be loaded from registered decorator loaders
      *                                  or if a decorator loader does not return an instance of
-     *                                  {@link DecoratorInterface} or {@link BaseHtmlElement}
+     *                                  {@link DecoratorInterface}
      */
     public function setDefaultElementDecorator($decorator)
     {
-        if ($decorator instanceof DecoratorInterface || $decorator instanceof BaseHtmlElement) {
+        if ($decorator instanceof DecoratorInterface) {
             $this->defaultElementDecorator = $decorator;
         } else {
             $this->ensureDefaultElementDecoratorLoaderRegistered();
 
             $d = $this->loadPlugin('decorator', $decorator);
 
-            if (! $d instanceof DecoratorInterface || ! $d instanceof BaseHtmlElement) {
+            if (! $d instanceof DecoratorInterface) {
                 throw new InvalidArgumentException(sprintf(
-                    "Expected instance of DecoratorInterface or BaseHtmlElement for decorator '%s'."
-                    . " Got '%s' from a decorator loader instead",
+                    "Expected instance of %s for decorator '%s',"
+                    . " got %s from a decorator loader instead",
+                    DecoratorInterface::class,
                     $decorator,
                     get_php_type($d)
                 ));
@@ -402,26 +403,24 @@ trait FormElementContainer
      *
      * @return $this
      *
-     * @throws UnexpectedValueException If the default decorator is set but neither an instance of
-     *                                  {@link DecoratorInterface} nor {@link BaseHtmlElement}
+     * @throws UnexpectedValueException If the default decorator is set but not an instance of
+     *                                  {@link DecoratorInterface}
      */
     protected function decorate(BaseFormElement $element)
     {
         if ($this->hasDefaultElementDecorator()) {
             $decorator = $this->getDefaultElementDecorator();
-            if ($decorator instanceof DecoratorInterface) {
-                $decorator->decorate($element);
-            } elseif ($decorator instanceof BaseHtmlElement) {
-                $decorator->wrap($element);
-            } else {
+
+            if (! $decorator instanceof DecoratorInterface) {
                 throw new UnexpectedValueException(sprintf(
-                    '%s expects the default decorator to be an instance of %s or %s, got %s instead',
+                    '%s expects the default decorator to be an instance of %s, got %s instead',
                     __METHOD__,
                     DecoratorInterface::class,
-                    BaseHtmlElement::class,
                     get_php_type($decorator)
                 ));
             }
+
+            $decorator->decorate($element);
         }
 
         return $this;
