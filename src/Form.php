@@ -6,13 +6,13 @@ use Exception;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\FormElement\FormElementContainer;
-use ipl\Stdlib\MessageContainer;
+use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
     use FormElementContainer;
-    use MessageContainer;
+    use Messages;
 
     const ON_ELEMENT_REGISTERED = 'elementRegistered';
     const ON_ERROR = 'error';
