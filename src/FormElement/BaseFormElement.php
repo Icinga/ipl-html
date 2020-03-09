@@ -134,34 +134,6 @@ abstract class BaseFormElement extends BaseHtmlElement
     }
 
     /**
-     * @return Attribute|string
-     */
-    public function getNameAttribute()
-    {
-        return $this->getName();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getValueAttribute()
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * @return null|Attribute
-     */
-    public function getRequiredAttribute()
-    {
-        if ($this->isRequired()) {
-            return new Attribute('required', true);
-        }
-
-        return null;
-    }
-
-    /**
      * @return bool
      */
     public function isValid()
@@ -281,6 +253,34 @@ abstract class BaseFormElement extends BaseHtmlElement
         $this->valid = $valid;
 
         return $this;
+    }
+
+    /**
+     * @return Attribute|string
+     */
+    public function getNameAttribute()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * @return null|Attribute
+     */
+    public function getRequiredAttribute()
+    {
+        if ($this->isRequired()) {
+            return new Attribute('required', true);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValueAttribute()
+    {
+        return $this->getValue();
     }
 
     protected function registerValueCallback(Attributes $attributes)
