@@ -109,37 +109,6 @@ abstract class BaseFormElement extends BaseHtmlElement
         return $this;
     }
 
-    public function hasValue()
-    {
-        $value = $this->getValue();
-
-        return $value !== null && $value !== '' && $value !== [];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param $value
-     * @return $this
-     */
-    public function setValue($value)
-    {
-        if ($value === '') {
-            $this->value = null;
-        } else {
-            $this->value = $value;
-        }
-        $this->valid = null;
-
-        return $this;
-    }
-
     public function isIgnored()
     {
         return $this->ignored;
@@ -260,6 +229,37 @@ abstract class BaseFormElement extends BaseHtmlElement
     public function hasBeenValidatedAndIsNotValid()
     {
         return $this->valid !== null && ! $this->valid;
+    }
+
+    public function hasValue()
+    {
+        $value = $this->getValue();
+
+        return $value !== null && $value !== '' && $value !== [];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param $value
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        if ($value === '') {
+            $this->value = null;
+        } else {
+            $this->value = $value;
+        }
+        $this->valid = null;
+
+        return $this;
     }
 
     /**
