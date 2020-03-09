@@ -3,8 +3,8 @@
 namespace ipl\Html;
 
 use RuntimeException;
-use Traversable;
 use stdClass;
+use Traversable;
 
 class Table extends BaseHtmlElement
 {

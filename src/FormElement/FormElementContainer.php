@@ -3,7 +3,6 @@
 namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
-use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
