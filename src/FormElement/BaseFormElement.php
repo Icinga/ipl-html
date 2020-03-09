@@ -109,6 +109,13 @@ abstract class BaseFormElement extends BaseHtmlElement
         return $this;
     }
 
+    public function hasValue()
+    {
+        $value = $this->getValue();
+
+        return $value !== null && $value !== '' && $value !== [];
+    }
+
     /**
      * @return mixed
      */
@@ -241,13 +248,6 @@ abstract class BaseFormElement extends BaseHtmlElement
                 $name
             );
         }
-    }
-
-    public function hasValue()
-    {
-        $value = $this->getValue();
-
-        return $value !== null && $value !== '' && $value !== [];
     }
 
     /**
