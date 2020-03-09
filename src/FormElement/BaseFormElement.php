@@ -40,9 +40,10 @@ abstract class BaseFormElement extends BaseHtmlElement
     // TODO: Validators, errors, errorMessages()
 
     /**
-     * Link constructor.
-     * @param $name
-     * @param \ipl\Html\Attributes|array|null $attributes
+     * Create a new form element
+     *
+     * @param string $name       Name of the form element
+     * @param mixed  $attributes Attributes of the form element
      */
     public function __construct($name, $attributes = null)
     {
