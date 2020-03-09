@@ -140,18 +140,6 @@ abstract class BaseFormElement extends BaseHtmlElement
         return $this;
     }
 
-    public function isRequired()
-    {
-        return $this->required;
-    }
-
-    public function setRequired($required = true)
-    {
-        $this->required = (bool) $required;
-
-        return $this;
-    }
-
     public function isIgnored()
     {
         return $this->ignored;
@@ -160,6 +148,18 @@ abstract class BaseFormElement extends BaseHtmlElement
     public function setIgnored($ignored = true)
     {
         $this->ignored = (bool) $ignored;
+
+        return $this;
+    }
+
+    public function isRequired()
+    {
+        return $this->required;
+    }
+
+    public function setRequired($required = true)
+    {
+        $this->required = (bool) $required;
 
         return $this;
     }
