@@ -162,6 +162,26 @@ abstract class BaseFormElement extends BaseHtmlElement
     }
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        if ($this->valid === null) {
+            $this->validate();
+        }
+
+        return $this->valid;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasBeenValidatedAndIsNotValid()
+    {
+        return $this->valid !== null && ! $this->valid;
+    }
+
+    /**
      * @return ValidatorInterface[]
      */
     public function getValidators()
@@ -209,26 +229,6 @@ abstract class BaseFormElement extends BaseHtmlElement
                 $name
             );
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValid()
-    {
-        if ($this->valid === null) {
-            $this->validate();
-        }
-
-        return $this->valid;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasBeenValidatedAndIsNotValid()
-    {
-        return $this->valid !== null && ! $this->valid;
     }
 
     public function hasValue()
