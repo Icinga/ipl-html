@@ -2,8 +2,6 @@
 
 namespace ipl\Html\FormElement;
 
-use ipl\Html\Attributes;
-
 class TextareaElement extends BaseFormElement
 {
     protected $tag = 'textarea';
@@ -16,12 +14,9 @@ class TextareaElement extends BaseFormElement
         return $this;
     }
 
-    protected function registerValueCallback(Attributes $attributes)
+    public function getValueAttribute()
     {
-        $attributes->registerAttributeCallback(
-            'value',
-            null,
-            [$this, 'setValue']
-        );
+        // textarea elements don't have a value attribute
+        return null;
     }
 }
