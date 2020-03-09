@@ -25,8 +25,8 @@ abstract class BaseFormElement extends BaseHtmlElement
     /** @var string */
     protected $label;
 
-    /** @var null|bool */
-    protected $isValid;
+    /** @var bool */
+    protected $valid;
 
     /** @var bool */
     protected $required = false;
@@ -135,7 +135,7 @@ abstract class BaseFormElement extends BaseHtmlElement
         } else {
             $this->value = $value;
         }
-        $this->isValid = null;
+        $this->valid = null;
 
         return $this;
     }
@@ -247,11 +247,11 @@ abstract class BaseFormElement extends BaseHtmlElement
      */
     public function isValid()
     {
-        if ($this->isValid === null) {
+        if ($this->valid === null) {
             $this->validate();
         }
 
-        return $this->isValid;
+        return $this->valid;
     }
 
     /**
@@ -259,7 +259,7 @@ abstract class BaseFormElement extends BaseHtmlElement
      */
     public function hasBeenValidatedAndIsNotValid()
     {
-        return $this->isValid !== null && ! $this->isValid;
+        return $this->valid !== null && ! $this->valid;
     }
 
     /**
@@ -267,18 +267,18 @@ abstract class BaseFormElement extends BaseHtmlElement
      */
     public function validate()
     {
-        $isValid = true;
+        $valid = true;
 
         foreach ($this->getValidators() as $validator) {
             if (! $validator->isValid($this->getValue())) {
-                $isValid = false;
+                $valid = false;
                 foreach ($validator->getMessages() as $message) {
                     $this->addMessage($message);
                 }
             }
         }
 
-        $this->isValid = $isValid;
+        $this->valid = $valid;
 
         return $this;
     }
