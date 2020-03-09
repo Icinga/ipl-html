@@ -2,7 +2,7 @@
 
 namespace ipl\Html\Contract;
 
-interface FormSubmitElement
+interface FormSubmitElement extends FormElement
 {
     /**
      * Get whether the element has been pressed
