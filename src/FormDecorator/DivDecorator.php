@@ -4,16 +4,17 @@ namespace ipl\Html\FormDecorator;
 
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
-use ipl\Html\FormElement\BaseFormElement;
-use ipl\Html\FormElement\SubmitElement;
+use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecorator;
+use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Html;
 
 /**
  * Form element decorator based on div elements
  */
-class DivDecorator extends BaseHtmlElement implements DecoratorInterface
+class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 {
-    /** @var BaseFormElement The decorated form element */
+    /** @var FormElement The decorated form element */
     protected $formElement;
 
     /** @var bool Whether the form element has been added already */
@@ -21,14 +22,13 @@ class DivDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected $tag = 'div';
 
-    public function decorate(BaseFormElement $formElement)
+    public function decorate(FormElement $formElement)
     {
         $decorator = clone $this;
 
         $decorator->formElement = $formElement;
 
-        // TODO(el): Replace with SubmitElementInterface once introduced
-        if ($formElement instanceof SubmitElement) {
+        if ($formElement instanceof FormSubmitElement) {
             $class = 'form-control';
         } else {
             $class = 'form-element';
@@ -37,8 +37,6 @@ class DivDecorator extends BaseHtmlElement implements DecoratorInterface
         $decorator->getAttributes()->add('class', $class);
 
         $formElement->prependWrapper($decorator);
-
-        return $decorator;
     }
 
     protected function assembleDescription()
@@ -73,9 +71,10 @@ class DivDecorator extends BaseHtmlElement implements DecoratorInterface
 
         if ($label !== null) {
             $attributes = null;
+            $elementAttributes = $this->formElement->getAttributes();
 
-            if ($this->formElement->getAttributes()->has('id')) {
-                $attributes = new Attributes(['for' => $this->formElement->getAttributes()->get('id')]);
+            if (isset($elementAttributes['id'])) {
+                $attributes = new Attributes(['for' => $elementAttributes['id']]);
             }
 
             return Html::tag('label', $attributes, $label);
@@ -102,11 +101,9 @@ class DivDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected function assemble()
     {
-        if ($this->formElement->hasBeenValidatedAndIsNotValid()) {
+        if ($this->formElement->hasBeenValidated() && ! $this->formElement->isValid()) {
             $this->getAttributes()->add('class', 'has-error');
         }
-
-        $this->formElement->getAttributes()->add('class');
 
         $this->add(array_filter([
             $this->assembleLabel(),
