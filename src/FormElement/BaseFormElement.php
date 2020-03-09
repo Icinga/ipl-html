@@ -181,14 +181,6 @@ abstract class BaseFormElement extends BaseHtmlElement
     }
 
     /**
-     * @return null
-     */
-    public function getNoAttribute()
-    {
-        return null;
-    }
-
-    /**
      * @return null|Attribute
      */
     public function getRequiredAttribute()
@@ -305,9 +297,9 @@ abstract class BaseFormElement extends BaseHtmlElement
         $this->registerValueCallback($attributes);
 
         $attributes
-            ->registerAttributeCallback('label', [$this, 'getNoAttribute'], [$this, 'setLabel'])
+            ->registerAttributeCallback('label', null, [$this, 'setLabel'])
             ->registerAttributeCallback('name', [$this, 'getNameAttribute'], [$this, 'setName'])
-            ->registerAttributeCallback('description', [$this, 'getNoAttribute'], [$this, 'setDescription'])
+            ->registerAttributeCallback('description', null, [$this, 'setDescription'])
             ->registerAttributeCallback('validators', null, [$this, 'setValidators'])
             ->registerAttributeCallback('ignore', null, [$this, 'setIgnored'])
             ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired']);
