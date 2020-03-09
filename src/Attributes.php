@@ -2,6 +2,7 @@
 
 namespace ipl\Html;
 
+use ArrayAccess;
 use ArrayIterator;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -16,7 +17,7 @@ use function ipl\Stdlib\get_php_type;
  *
  * Attributes usually come in name-value pairs and are rendered as name="value".
  */
-class Attributes implements IteratorAggregate
+class Attributes implements ArrayAccess, IteratorAggregate
 {
     /** @var Attribute[] */
     protected $attributes = [];
@@ -418,6 +419,59 @@ class Attributes implements IteratorAggregate
         $separator = ' ' . $this->getPrefix();
 
         return $separator . implode($separator, $parts);
+    }
+
+    /**
+     * Get whether the attribute with the given name exists
+     *
+     * @param string $name Name of the attribute
+     *
+     * @return bool
+     */
+    public function offsetExists($name)
+    {
+        return $this->has($name);
+    }
+
+    /**
+     * Get the attribute with the given name
+     *
+     * If the attribute does not yet exist, it is automatically created and registered to this Attributes instance.
+     *
+     * @param string $name Name of the attribute
+     *
+     * @return Attribute
+     *
+     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
+     */
+    public function offsetGet($name)
+    {
+        return $this->get($name);
+    }
+
+    /**
+     * Set the given attribute
+     *
+     * If the attribute with the given name already exists, it gets overridden.
+     *
+     * @param string $name  Name of the attribute
+     * @param mixed  $value Value of the attribute
+     *
+     * @throws InvalidArgumentException If the attribute name contains special characters
+     */
+    public function offsetSet($name, $value)
+    {
+        $this->set($name, $value);
+    }
+
+    /**
+     * Remove the attribute with the given name
+     *
+     * @param string $name Name of the attribute
+     */
+    public function offsetUnset($name)
+    {
+        $this->remove($name);
     }
 
     /**
