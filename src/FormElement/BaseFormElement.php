@@ -14,28 +14,28 @@ abstract class BaseFormElement extends BaseHtmlElement
     use Messages;
 
     /** @var string */
-    protected $name;
-
-    /** @var mixed */
-    protected $value;
-
-    /** @var string */
     protected $description;
 
     /** @var string */
     protected $label;
 
+    /** @var string */
+    protected $name;
+
     /** @var bool */
-    protected $valid;
+    protected $ignored = false;
 
     /** @var bool */
     protected $required = false;
 
     /** @var bool */
-    protected $ignored = false;
+    protected $valid;
 
     /** @var ValidatorInterface[] */
     protected $validators = [];
+
+    /** @var mixed */
+    protected $value;
 
     // TODO: Validators, errors, errorMessages()
 
