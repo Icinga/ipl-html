@@ -5,13 +5,14 @@ namespace ipl\Html;
 use Countable;
 use Exception;
 use InvalidArgumentException;
+use ipl\Html\Contract\Wrappable;
 
 /**
  * HTML document
  *
  * An HTML document is composed of a tree of HTML nodes, i.e. text nodes and HTML elements.
  */
-class HtmlDocument implements Countable, ValidHtml
+class HtmlDocument implements Countable, Wrappable
 {
     protected $contentSeparator = '';
 
@@ -62,10 +63,10 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @param BaseHtmlElement $wrapper
+     * @param Wrappable $wrapper
      * @return $this
      */
-    public function setWrapper(BaseHtmlElement $wrapper)
+    public function setWrapper(Wrappable $wrapper)
     {
         $this->wrapper = $wrapper;
 
@@ -73,10 +74,10 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @param BaseHtmlElement $wrapper
+     * @param Wrappable $wrapper
      * @return $this
      */
-    public function addWrapper(BaseHtmlElement $wrapper)
+    public function addWrapper(Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
@@ -88,10 +89,10 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @param BaseHtmlElement $wrapper
+     * @param Wrappable $wrapper
      * @return $this
      */
-    public function prependWrapper(BaseHtmlElement $wrapper)
+    public function prependWrapper(Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
@@ -104,7 +105,7 @@ class HtmlDocument implements Countable, ValidHtml
     }
 
     /**
-     * @return HtmlDocument|null
+     * @return Wrappable|null
      */
     public function getWrapper()
     {
