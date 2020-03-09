@@ -5,11 +5,12 @@ namespace ipl\Html\FormElement;
 use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\Contract\FormElement;
 use ipl\Stdlib\Messages;
 use ipl\Stdlib\Contract\ValidatorInterface;
 use InvalidArgumentException;
 
-abstract class BaseFormElement extends BaseHtmlElement
+abstract class BaseFormElement extends BaseHtmlElement implements FormElement
 {
     use Messages;
 
@@ -254,6 +255,11 @@ abstract class BaseFormElement extends BaseHtmlElement
         $this->valid = $valid;
 
         return $this;
+    }
+
+    public function hasBeenValidated()
+    {
+        return $this->valid !== null;
     }
 
     /**
