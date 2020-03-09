@@ -33,7 +33,7 @@ class SubFormElement extends BaseFormElement
     public function isValid()
     {
         foreach ($this->getElements() as $element) {
-            if (! $element->isValid) {
+            if (! $element->isValid()) {
                 return false;
             }
         }
