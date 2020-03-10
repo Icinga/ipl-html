@@ -6,7 +6,7 @@ use ipl\Html\Attributes;
 
 class SubFormElement extends BaseFormElement
 {
-    use FormElementContainer;
+    use FormElements;
 
     protected $tag = 'div';
 

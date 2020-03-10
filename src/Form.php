@@ -5,13 +5,13 @@ namespace ipl\Html;
 use Exception;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\BaseFormElement;
-use ipl\Html\FormElement\FormElementContainer;
+use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
-    use FormElementContainer;
+    use FormElements;
     use Messages;
 
     const ON_ELEMENT_REGISTERED = 'elementRegistered';

@@ -13,7 +13,7 @@ use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
 
-trait FormElementContainer
+trait FormElements
 {
     use Events;
     use Plugins;
