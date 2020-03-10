@@ -11,7 +11,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
-    use FormElements;
+    use FormElements {
+        remove as private removeElement;
+    }
     use Messages;
 
     const ON_ELEMENT_REGISTERED = 'elementRegistered';
@@ -299,6 +301,15 @@ class Form extends BaseHtmlElement
         }
 
         return $this;
+    }
+
+    public function remove(ValidHtml $elementOrHtml)
+    {
+        if ($this->submitButton === $elementOrHtml) {
+            $this->submitButton = null;
+        }
+
+        $this->removeElement($elementOrHtml);
     }
 
     protected function onError()

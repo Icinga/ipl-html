@@ -441,10 +441,6 @@ trait FormElements
         // TODO: FormElementInterface?
         if ($elementOrHtml instanceof BaseFormElement) {
             if ($this->hasElement($elementOrHtml)) {
-                if ($this->submitButton === $elementOrHtml) {
-                    $this->submitButton = null;
-                }
-
                 $name = array_search($elementOrHtml, $this->elements, true);
                 if ($name !== false) {
                     unset($this->elements[$name]);
