@@ -2,13 +2,12 @@
 
 namespace ipl\Html\FormElement;
 
-use InvalidArgumentException;
 use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
-use ipl\Stdlib\Contract\ValidatorInterface;
 use ipl\Stdlib\Messages;
+use ipl\Validator\ValidatorChain;
 
 abstract class BaseFormElement extends BaseHtmlElement implements FormElement
 {
@@ -32,13 +31,11 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     /** @var bool */
     protected $valid;
 
-    /** @var ValidatorInterface[] */
-    protected $validators = [];
+    /** @var ValidatorChain */
+    protected $validators;
 
     /** @var mixed */
     protected $value;
-
-    // TODO: Validators, errors, errorMessages()
 
     /**
      * Create a new form element
@@ -156,53 +153,38 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
-     * @return ValidatorInterface[]
+     * @return ValidatorChain
      */
     public function getValidators()
     {
+        if ($this->validators === null) {
+            $this->validators = new ValidatorChain();
+        }
+
         return $this->validators;
     }
 
     /**
-     * @param array $validators
+     * @param iterable $validators
      */
-    public function setValidators(array $validators)
+    public function setValidators($validators)
     {
-        $this->validators = [];
-        $this->addValidators($validators);
+        $this
+            ->getValidators()
+            ->clearValidators()
+            ->addValidators($validators);
+
+        return $this;
     }
 
     /**
-     * @param array $validators
+     * @param iterable $validators
      */
-    public function addValidators(array $validators)
+    public function addValidators($validators)
     {
-        foreach ($validators as $name => $validator) {
-            if ($validator instanceof ValidatorInterface) {
-                $this->validators[] = $validator;
-            } else {
-                $validator = $this->createValidator($name, $validator);
-                $this->validators[] = $validator;
-            }
-        }
-    }
+        $this->getValidators()->addValidators($validators);
 
-    /**
-     * @param $name
-     * @param $options
-     * @return ValidatorInterface
-     */
-    public function createValidator($name, $options)
-    {
-        $class = 'ipl\\Validator\\' . ucfirst($name) . 'Validator';
-        if (class_exists($class)) {
-            return new $class($options);
-        } else {
-            throw new InvalidArgumentException(
-                'Unable to create Validator: %s',
-                $name
-            );
-        }
+        return $this;
     }
 
     public function hasValue()
