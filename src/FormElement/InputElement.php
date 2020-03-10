@@ -7,10 +7,10 @@ use ipl\Html\Attributes;
 
 class InputElement extends BaseFormElement
 {
-    protected $tag = 'input';
-
     /** @var string */
     protected $type;
+
+    protected $tag = 'input';
 
     /**
      * @return string
