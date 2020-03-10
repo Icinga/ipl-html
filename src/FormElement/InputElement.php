@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Attribute;
+use ipl\Html\Attributes;
 
 class InputElement extends BaseFormElement
 {
@@ -10,16 +11,6 @@ class InputElement extends BaseFormElement
 
     /** @var string */
     protected $type;
-
-    protected function registerCallbacks()
-    {
-        parent::registerCallbacks();
-        $this->getAttributes()->registerAttributeCallback(
-            'type',
-            [$this, 'getTypeAttribute'],
-            [$this, 'setType']
-        );
-    }
 
     /**
      * @return string
@@ -42,5 +33,16 @@ class InputElement extends BaseFormElement
     public function getTypeAttribute()
     {
         return new Attribute('type', $this->getType());
+    }
+
+    protected function registerAttributeCallbacks(Attributes $attributes)
+    {
+        parent::registerAttributeCallbacks($attributes);
+
+        $attributes->registerAttributeCallback(
+            'type',
+            [$this, 'getTypeAttribute'],
+            [$this, 'setType']
+        );
     }
 }
