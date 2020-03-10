@@ -6,6 +6,18 @@ use ipl\Html\Html;
 
 class HtmlTest extends TestCase
 {
+    public function testTagSupportsIterable()
+    {
+        $content = function () {
+            yield Html::tag('b', 'foo');
+            yield Html::tag('b', 'bar');
+        };
+
+        $html = Html::tag('div', $content());
+
+        $this->assertHtml('<div><b>foo</b><b>bar</b></div>', $html);
+    }
+
     public function testWrapsListsWithSimpleHtmlTags()
     {
         $this->assertXmlStringEqualsXmlString(

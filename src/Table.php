@@ -70,7 +70,7 @@ class Table extends BaseHtmlElement
             }
         } elseif ($content instanceof stdClass) {
             $this->getBody()->add(static::row((array) $content));
-        } elseif (is_array($content) || $content instanceof Traversable) {
+        } elseif (is_iterable($content)) {
             $this->getBody()->add(static::row($content));
         } else {
             $this->getBody()->add(static::row([$content]));

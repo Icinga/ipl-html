@@ -3,7 +3,8 @@
 namespace ipl\Html;
 
 use InvalidArgumentException;
-use Traversable;
+
+use function ipl\Stdlib\iterable_key_first;
 
 /**
  * Class Html
@@ -31,9 +32,8 @@ abstract class Html
         if ($attributes instanceof ValidHtml || is_scalar($attributes)) {
             $content = $attributes;
             $attributes = null;
-        } elseif (is_array($attributes)) {
-            reset($attributes);
-            if (is_int(key($attributes))) {
+        } elseif (is_iterable($attributes)) {
+            if (is_int(iterable_key_first($attributes))) {
                 $content = $attributes;
                 $attributes = null;
             }
@@ -93,13 +93,13 @@ abstract class Html
      * a given callback/callable is being called passing key and value of each
      * list entry as parameters
      *
-     * @param array|Traversable $list
+     * @param iterable $list
      * @param string|callable $wrapper
      * @return HtmlDocument
      */
     public static function wrapEach($list, $wrapper)
     {
-        if (! is_array($list) && ! $list instanceof Traversable) {
+        if (! is_iterable($list)) {
             throw new InvalidArgumentException(sprintf(
                 'Html::wrapEach() requires a traversable list, got "%s"',
                 Error::getPhpTypeName($list)
@@ -137,7 +137,7 @@ abstract class Html
             return $any;
         } elseif (static::canBeRenderedAsString($any)) {
             return new Text($any);
-        } elseif (is_array($any)) {
+        } elseif (is_iterable($any)) {
             $html = new HtmlDocument();
             foreach ($any as $el) {
                 if ($el !== null) {
