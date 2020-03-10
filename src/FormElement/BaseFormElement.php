@@ -228,9 +228,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         foreach ($this->getValidators() as $validator) {
             if (! $validator->isValid($this->getValue())) {
                 $valid = false;
-                foreach ($validator->getMessages() as $message) {
-                    $this->addMessage($message);
-                }
+
+                $this->addMessages($validator->getMessages());
             }
         }
 
