@@ -3,8 +3,8 @@
 namespace ipl\Html;
 
 use Exception;
+use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
-use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
@@ -330,7 +330,7 @@ class Form extends BaseHtmlElement
         // $this->redirectOnSuccess();
     }
 
-    protected function onElementRegistered(BaseFormElement $element)
+    protected function onElementRegistered(FormElement $element)
     {
         if ($element instanceof FormSubmitElement) {
             $this->submitElements[$element->getName()] = $element;

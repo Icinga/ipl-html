@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
+use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
@@ -27,7 +28,7 @@ trait FormElements
     /** @var bool Whether the default element loader has been registered */
     private $defaultElementLoaderRegistered = false;
 
-    /** @var BaseFormElement[] */
+    /** @var FormElement[] */
     private $elements = [];
 
     /** @var array */
@@ -36,7 +37,7 @@ trait FormElements
     /**
      * Get all elements
      *
-     * @return BaseFormElement[]
+     * @return FormElement[]
      */
     public function getElements()
     {
@@ -46,7 +47,7 @@ trait FormElements
     /**
      * Get whether the given element exists
      *
-     * @param string|BaseFormElement $element
+     * @param string|FormElement $element
      *
      * @return bool
      */
@@ -56,7 +57,7 @@ trait FormElements
             return array_key_exists($element, $this->elements);
         }
 
-        if ($element instanceof BaseFormElement) {
+        if ($element instanceof FormElement) {
             return in_array($element, $this->elements, true);
         }
 
@@ -68,7 +69,7 @@ trait FormElements
      *
      * @param string $name
      *
-     * @return BaseFormElement
+     * @return FormElement
      *
      * @throws InvalidArgumentException If no element with the given name exists
      */
@@ -87,16 +88,16 @@ trait FormElements
     /**
      * Add an element
      *
-     * @param string|BaseFormElement $typeOrElement Type of the element as string or an instance of BaseFormElement
-     * @param string                 $name          Name of the element
-     * @param mixed                  $options       Element options as key-value pairs
+     * @param string|FormElement $typeOrElement Type of the element as string or an instance of FormElement
+     * @param string             $name          Name of the element
+     * @param mixed              $options       Element options as key-value pairs
      *
      * @return $this
      *
-     * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of BaseFormElement
+     * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of FormElement
      *                                  or if $typeOrElement is a string and $name is not set
      *                                  or if $typeOrElement is a string but type is unknown
-     *                                  or if $typeOrElement is an instance of BaseFormElement but does not have a name
+     *                                  or if $typeOrElement is an instance of FormElement but does not have a name
      */
     public function addElement($typeOrElement, $name = null, $options = null)
     {
@@ -109,13 +110,13 @@ trait FormElements
             }
 
             $element = $this->createElement($typeOrElement, $name, $options);
-        } elseif ($typeOrElement instanceof BaseFormElement) {
+        } elseif ($typeOrElement instanceof FormElement) {
             $element = $typeOrElement;
         } else {
             throw new InvalidArgumentException(sprintf(
                 '%s() expects parameter 1 to be a string or an instance of %s, %s given',
                 __METHOD__,
-                BaseFormElement::class,
+                FormElement::class,
                 get_php_type($typeOrElement)
             ));
         }
@@ -135,7 +136,7 @@ trait FormElements
      * @param string $name    Name of the element
      * @param mixed  $options Element options as key-value pairs
      *
-     * @return BaseFormElement
+     * @return FormElement
      *
      * @throws InvalidArgumentException If the type of the element is unknown
      */
@@ -152,7 +153,7 @@ trait FormElements
             ));
         }
 
-        /** @var BaseFormElement $element */
+        /** @var FormElement $element */
         $element = new $class($name);
 
         if ($options !== null) {
@@ -167,13 +168,13 @@ trait FormElements
      *
      * Registers the element for value and validation handling but does not add it to the render stack.
      *
-     * @param BaseFormElement $element
+     * @param FormElement $element
      *
      * @return $this
      *
      * @throws InvalidArgumentException If $element does not provide a name
      */
-    public function registerElement(BaseFormElement $element)
+    public function registerElement(FormElement $element)
     {
         $name = $element->getName();
 
@@ -399,14 +400,14 @@ trait FormElements
     /**
      * Decorate the given element
      *
-     * @param BaseFormElement $element
+     * @param FormElement $element
      *
      * @return $this
      *
      * @throws UnexpectedValueException If the default decorator is set but not an instance of
      *                                  {@link FormElementDecorator}
      */
-    protected function decorate(BaseFormElement $element)
+    protected function decorate(FormElement $element)
     {
         if ($this->hasDefaultElementDecorator()) {
             $decorator = $this->getDefaultElementDecorator();
@@ -438,8 +439,7 @@ trait FormElements
 
     public function remove(ValidHtml $elementOrHtml)
     {
-        // TODO: FormElementInterface?
-        if ($elementOrHtml instanceof BaseFormElement) {
+        if ($elementOrHtml instanceof FormElement) {
             if ($this->hasElement($elementOrHtml)) {
                 $name = array_search($elementOrHtml, $this->elements, true);
                 if ($name !== false) {
@@ -454,9 +454,9 @@ trait FormElements
     /**
      * Handler which is called after an element has been registered
      *
-     * @param BaseFormElement $element
+     * @param FormElement $element
      */
-    protected function onElementRegistered(BaseFormElement $element)
+    protected function onElementRegistered(FormElement $element)
     {
     }
 }
