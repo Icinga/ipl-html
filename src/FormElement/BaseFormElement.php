@@ -13,28 +13,28 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
 {
     use Messages;
 
-    /** @var string */
+    /** @var string Description of the element */
     protected $description;
 
-    /** @var string */
+    /** @var string Label of the element */
     protected $label;
 
-    /** @var string */
+    /** @var string Name of the element */
     protected $name;
 
-    /** @var bool */
+    /** @var bool Whether the element is ignored */
     protected $ignored = false;
 
-    /** @var bool */
+    /** @var bool Whether the element is required */
     protected $required = false;
 
-    /** @var bool */
+    /** @var null|bool Whether the element is valid; null if the element has not been validated yet, bool otherwise */
     protected $valid;
 
-    /** @var ValidatorChain */
+    /** @var ValidatorChain Registered validators */
     protected $validators;
 
-    /** @var mixed */
+    /** @var mixed Value of the element */
     protected $value;
 
     /**
@@ -51,16 +51,16 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         $this->setName($name);
     }
 
-    /**
-     * @return string
-     */
     public function getDescription()
     {
         return $this->description;
     }
 
     /**
+     * Set the description of the element
+     *
      * @param string $description
+     *
      * @return $this
      */
     public function setDescription($description)
@@ -70,16 +70,16 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLabel()
     {
         return $this->label;
     }
 
     /**
+     * Set the label of the element
+     *
      * @param string $label
+     *
      * @return $this
      */
     public function setLabel($label)
@@ -89,16 +89,16 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName()
     {
         return $this->name;
     }
 
     /**
+     * Set the name for the element
+     *
      * @param string $name
+     *
      * @return $this
      */
     public function setName($name)
@@ -113,6 +113,13 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         return $this->ignored;
     }
 
+    /**
+     * Set whether the element is ignored
+     *
+     * @param bool $ignored
+     *
+     * @return $this
+     */
     public function setIgnored($ignored = true)
     {
         $this->ignored = (bool) $ignored;
@@ -125,6 +132,13 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         return $this->required;
     }
 
+    /**
+     * Set whether the element is required
+     *
+     * @param bool $required
+     *
+     * @return $this
+     */
     public function setRequired($required = true)
     {
         $this->required = (bool) $required;
@@ -132,9 +146,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isValid()
     {
         if ($this->valid === null) {
@@ -145,7 +156,11 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
+     * Get whether the element has been validated and is not valid
+     *
      * @return bool
+     *
+     * @deprecated Use {@link hasBeenValidated()} in combination with {@link isValid()} instead
      */
     public function hasBeenValidatedAndIsNotValid()
     {
@@ -153,6 +168,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
+     * Get the validators
+     *
      * @return ValidatorChain
      */
     public function getValidators()
@@ -165,7 +182,11 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
+     * Set the validators
+     *
      * @param iterable $validators
+     *
+     * @return $this
      */
     public function setValidators($validators)
     {
@@ -178,7 +199,11 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
+     * Add validators
+     *
      * @param iterable $validators
+     *
+     * @return $this
      */
     public function addValidators($validators)
     {
@@ -194,18 +219,11 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
         return $value !== null && $value !== '' && $value !== [];
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue()
     {
         return $this->value;
     }
 
-    /**
-     * @param $value
-     * @return $this
-     */
     public function setValue($value)
     {
         if ($value === '') {
@@ -219,6 +237,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
+     * Validate the element using all registered validators
+     *
      * @return $this
      */
     public function validate()
@@ -244,6 +264,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
+     * Callback for the name attribute
+     *
      * @return Attribute|string
      */
     public function getNameAttribute()
@@ -252,7 +274,9 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
-     * @return null|Attribute
+     * Callback for the required attribute
+     *
+     * @return Attribute|null
      */
     public function getRequiredAttribute()
     {
@@ -264,6 +288,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     }
 
     /**
+     * Callback for the value attribute
+     *
      * @return mixed
      */
     public function getValueAttribute()
