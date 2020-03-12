@@ -123,6 +123,27 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * @param $content
+     * @return $this
+     */
+    public function prepend($content)
+    {
+        if (is_iterable($content) && ! $content instanceof ValidHtml) {
+            foreach (array_reverse(is_array($content) ? $content : iterator_to_array($content)) as $c) {
+                $this->prepend($c);
+            }
+        } elseif ($content !== null) {
+            $pos = 0;
+            $html = Html::wantHtml($content);
+            array_unshift($this->content, $html);
+            $this->incrementIndexKeys();
+            $this->addObjectPosition($html, $pos);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param Wrappable $wrapper
      * @return $this
      */
@@ -186,27 +207,6 @@ class HtmlDocument implements Countable, Wrappable
     public function count()
     {
         return count($this->content);
-    }
-
-    /**
-     * @param $content
-     * @return $this
-     */
-    public function prepend($content)
-    {
-        if (is_iterable($content) && ! $content instanceof ValidHtml) {
-            foreach (array_reverse(is_array($content) ? $content : iterator_to_array($content)) as $c) {
-                $this->prepend($c);
-            }
-        } elseif ($content !== null) {
-            $pos = 0;
-            $html = Html::wantHtml($content);
-            array_unshift($this->content, $html);
-            $this->incrementIndexKeys();
-            $this->addObjectPosition($html, $pos);
-        }
-
-        return $this;
     }
 
     public function remove(ValidHtml $html)
