@@ -143,6 +143,19 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
+    public function remove(ValidHtml $html)
+    {
+        $key = spl_object_hash($html);
+        if (array_key_exists($key, $this->contentIndex)) {
+            foreach ($this->contentIndex[$key] as $pos) {
+                unset($this->content[$pos]);
+            }
+        }
+        $this->content = array_values($this->content);
+
+        $this->reIndexContent();
+    }
+
     /**
      * @param Wrappable $wrapper
      * @return $this
@@ -207,19 +220,6 @@ class HtmlDocument implements Countable, Wrappable
     public function count()
     {
         return count($this->content);
-    }
-
-    public function remove(ValidHtml $html)
-    {
-        $key = spl_object_hash($html);
-        if (array_key_exists($key, $this->contentIndex)) {
-            foreach ($this->contentIndex[$key] as $pos) {
-                unset($this->content[$pos]);
-            }
-        }
-        $this->content = array_values($this->content);
-
-        $this->reIndexContent();
     }
 
     protected function assemble()
