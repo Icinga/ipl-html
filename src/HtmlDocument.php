@@ -31,7 +31,7 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function add($content)
     {
-        if (is_iterable($content)) {
+        if (is_iterable($content) && ! $content instanceof ValidHtml) {
             foreach ($content as $c) {
                 $this->add($c);
             }
@@ -151,7 +151,7 @@ class HtmlDocument implements Countable, ValidHtml
      */
     public function prepend($content)
     {
-        if (is_iterable($content)) {
+        if (is_iterable($content) && ! $content instanceof ValidHtml) {
             foreach (\array_reverse(is_array($content) ? $content : iterator_to_array($content)) as $c) {
                 $this->prepend($c);
             }

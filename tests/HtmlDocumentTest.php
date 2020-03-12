@@ -6,6 +6,7 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Html as h;
 use ipl\Html\HtmlDocument;
 use ipl\Tests\Html\TestDummy\AddsWrapperDuringAssemble;
+use ipl\Tests\Html\TestDummy\IterableElement;
 use ipl\Tests\Html\TestDummy\ObjectThatCanBeCastedToString;
 
 class HtmlDocumentTest extends TestCase
@@ -186,5 +187,22 @@ class HtmlDocumentTest extends TestCase
             ->prepend($content());
 
         $this->assertHtml('<b>foo</b><b>bar</b>', $html);
+    }
+
+    public function testAddSupportsIterableValidHtml()
+    {
+        $html = (new HtmlDocument())
+            ->add(new IterableElement());
+
+        $this->assertHtml('<b>foo</b><b>bar</b>', $html);
+    }
+
+    public function testPrependSupportsIterableValidHtml()
+    {
+        $html = (new HtmlDocument())
+            ->add(h::tag('b', 'baz'))
+            ->prepend(new IterableElement());
+
+        $this->assertHtml('<b>foo</b><b>bar</b><b>baz</b>', $html);
     }
 }
