@@ -48,6 +48,16 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Get the content separator
+     *
+     * @return string
+     */
+    public function getSeparator()
+    {
+        return $this->contentSeparator;
+    }
+
+    /**
      * @param $separator
      * @return self
      */
