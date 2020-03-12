@@ -192,6 +192,15 @@ class HtmlDocument implements Countable, Wrappable
         return implode($this->contentSeparator, $html);
     }
 
+    public function __clone()
+    {
+        foreach ($this->content as $key => $element) {
+            $this->content[$key] = clone($element);
+        }
+
+        $this->reIndexContent();
+    }
+
     protected function assemble()
     {
     }
@@ -345,14 +354,5 @@ class HtmlDocument implements Countable, Wrappable
                 $pos++;
             }
         }
-    }
-
-    public function __clone()
-    {
-        foreach ($this->content as $key => $element) {
-            $this->content[$key] = clone($element);
-        }
-
-        $this->reIndexContent();
     }
 }
