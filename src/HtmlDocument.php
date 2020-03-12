@@ -156,6 +156,10 @@ class HtmlDocument implements Countable, Wrappable
         $this->reIndexContent();
     }
 
+    protected function assemble()
+    {
+    }
+
     /**
      * @param Wrappable $wrapper
      * @return $this
@@ -220,10 +224,6 @@ class HtmlDocument implements Countable, Wrappable
     public function count()
     {
         return count($this->content);
-    }
-
-    protected function assemble()
-    {
     }
 
     /**
