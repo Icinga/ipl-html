@@ -218,6 +218,40 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * @return string
+     */
+    protected function renderWrapped()
+    {
+        // TODO: we don't like this, but have no better solution right now.
+        //       However, it works as expected, tests are green
+        $wrapper = $this->wrapper;
+        $this->wrapper = null;
+        $result = $wrapper->renderWrappedDocument($this);
+        $this->wrapper = $wrapper;
+
+        return $result;
+    }
+
+    /**
+     * @param HtmlDocument $document
+     * @return string
+     */
+    protected function renderWrappedDocument(HtmlDocument $document)
+    {
+        $wrapper = clone($this);
+
+        $wrapper->ensureAssembled();
+
+        $key = spl_object_hash($document);
+
+        if (! array_key_exists($key, $wrapper->contentIndex)) {
+            $wrapper->add($document);
+        }
+
+        return $wrapper->render();
+    }
+
+    /**
      * @return int
      */
     public function count()
@@ -286,40 +320,6 @@ class HtmlDocument implements Countable, Wrappable
         } else {
             return $this->renderWrapped();
         }
-    }
-
-    /**
-     * @return string
-     */
-    protected function renderWrapped()
-    {
-        // TODO: we don't like this, but have no better solution right now.
-        //       However, it works as expected, tests are green
-        $wrapper = $this->wrapper;
-        $this->wrapper = null;
-        $result = $wrapper->renderWrappedDocument($this);
-        $this->wrapper = $wrapper;
-
-        return $result;
-    }
-
-    /**
-     * @param HtmlDocument $document
-     * @return string
-     */
-    protected function renderWrappedDocument(HtmlDocument $document)
-    {
-        $wrapper = clone($this);
-
-        $wrapper->ensureAssembled();
-
-        $key = spl_object_hash($document);
-
-        if (! array_key_exists($key, $wrapper->contentIndex)) {
-            $wrapper->add($document);
-        }
-
-        return $wrapper->render();
     }
 
     private function reIndexContent()
