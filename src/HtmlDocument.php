@@ -48,6 +48,17 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * @param $separator
+     * @return self
+     */
+    public function setSeparator($separator)
+    {
+        $this->contentSeparator = $separator;
+
+        return $this;
+    }
+
+    /**
      * @param ValidHtml|mixed $content
      * @return $this
      */
@@ -213,17 +224,6 @@ class HtmlDocument implements Countable, Wrappable
         return $this->add(
             new FormattedString($string, $args)
         );
-    }
-
-    /**
-     * @param $separator
-     * @return self
-     */
-    public function setSeparator($separator)
-    {
-        $this->contentSeparator = $separator;
-
-        return $this;
     }
 
     protected function assemble()
