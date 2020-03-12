@@ -14,20 +14,24 @@ use ipl\Html\Contract\Wrappable;
  */
 class HtmlDocument implements Countable, Wrappable
 {
+    /** @var string Content separator */
     protected $contentSeparator = '';
 
+    /** @var bool Whether the document has been assembled */
     protected $hasBeenAssembled = false;
 
-    /** @var BaseHtmlElement */
+    /** @var Wrappable Wrapper */
     protected $wrapper;
 
-    /** @var ValidHtml[] */
+    /** @var ValidHtml[] Content */
     private $content = [];
 
     /** @var array */
     private $contentIndex = [];
 
     /**
+     * Get the content
+     *
      * return ValidHtml[]
      */
     public function getContent()
@@ -36,7 +40,10 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * @param HtmlDocument|array|string $content
+     * Set the content
+     *
+     * @param mixed $content
+     *
      * @return $this
      */
     public function setContent($content)
@@ -58,8 +65,11 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * @param $separator
-     * @return self
+     * Set the content separator
+     *
+     * @param string $separator
+     *
+     * @return $this
      */
     public function setSeparator($separator)
     {
@@ -69,9 +79,13 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * @param $tag
+     * Get the first {@link BaseHtmlElement} with the given tag
+     *
+     * @param string $tag
+     *
      * @return BaseHtmlElement
-     * @throws InvalidArgumentException
+     *
+     * @throws InvalidArgumentException If no {@link BaseHtmlElement} with the given tag exists
      */
     public function getFirst($tag)
     {
@@ -88,7 +102,10 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * @param ValidHtml|mixed $content
+     * Add content
+     *
+     * @param mixed $content
+     *
      * @return $this
      */
     public function add($content)
@@ -105,8 +122,10 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Add content from the given document
+     *
      * @param HtmlDocument $from
-     * @param callable     $callback
+     * @param callable     $callback Optional callback in order to transform the content to add
      *
      * @return $this
      */
@@ -123,7 +142,10 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * @param $content
+     * Prepend content
+     *
+     * @param mixed $content
+     *
      * @return $this
      */
     public function prepend($content)
@@ -143,6 +165,11 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
+    /**
+     * Remove content
+     *
+     * @param ValidHtml $html
+     */
     public function remove(ValidHtml $html)
     {
         $key = spl_object_hash($html);
@@ -157,6 +184,8 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Ensure that the document has been assembled
+     *
      * @return $this
      */
     public function ensureAssembled()
@@ -170,6 +199,8 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Get whether the document is empty
+     *
      * @return bool
      */
     public function isEmpty()
@@ -178,6 +209,8 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Render the content to HTML but ignore any wrapper
+     *
      * @return string
      */
     public function renderUnwrapped()
@@ -202,6 +235,11 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Render content to HTML when treated like a string
+     *
+     * Calls {@link render()} internally in order to render the text to HTML.
+     * Exceptions will be automatically caught and returned as HTML string as well using {@link Error::render()}.
+     *
      * @return string
      */
     public function __toString()
@@ -213,11 +251,18 @@ class HtmlDocument implements Countable, Wrappable
         }
     }
 
+    /**
+     * Assemble the document
+     *
+     * Override this method in order to provide content in concrete classes.
+     */
     protected function assemble()
     {
     }
 
     /**
+     * Render the document to HTML respecting the set wrapper
+     *
      * @return string
      */
     protected function renderWrapped()
@@ -233,7 +278,10 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Render the given document to HTML by treating this document as the wrapper
+     *
      * @param HtmlDocument $document
+     *
      * @return string
      */
     protected function renderWrappedDocument(HtmlDocument $document)
@@ -251,26 +299,16 @@ class HtmlDocument implements Countable, Wrappable
         return $wrapper->render();
     }
 
-    /**
-     * @return int
-     */
     public function count()
     {
         return count($this->content);
     }
 
-    /**
-     * @return Wrappable|null
-     */
     public function getWrapper()
     {
         return $this->wrapper;
     }
 
-    /**
-     * @param Wrappable $wrapper
-     * @return $this
-     */
     public function setWrapper(Wrappable $wrapper)
     {
         $this->wrapper = $wrapper;
@@ -278,10 +316,6 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * @param Wrappable $wrapper
-     * @return $this
-     */
     public function addWrapper(Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
@@ -293,10 +327,6 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * @param Wrappable $wrapper
-     * @return $this
-     */
     public function prependWrapper(Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
@@ -309,9 +339,6 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function render()
     {
         $this->ensureAssembled();
