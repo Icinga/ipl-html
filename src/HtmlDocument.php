@@ -156,6 +156,19 @@ class HtmlDocument implements Countable, Wrappable
         $this->reIndexContent();
     }
 
+    /**
+     * @return $this
+     */
+    public function ensureAssembled()
+    {
+        if (! $this->hasBeenAssembled) {
+            $this->hasBeenAssembled = true;
+            $this->assemble();
+        }
+
+        return $this;
+    }
+
     protected function assemble()
     {
     }
@@ -271,19 +284,6 @@ class HtmlDocument implements Countable, Wrappable
         }
 
         return $wrapper->render();
-    }
-
-    /**
-     * @return $this
-     */
-    public function ensureAssembled()
-    {
-        if (! $this->hasBeenAssembled) {
-            $this->hasBeenAssembled = true;
-            $this->assemble();
-        }
-
-        return $this;
     }
 
     /**
