@@ -169,6 +169,8 @@ class HtmlDocument implements Countable, Wrappable
      * Remove content
      *
      * @param ValidHtml $html
+     *
+     * @return $this
      */
     public function remove(ValidHtml $html)
     {
@@ -181,6 +183,8 @@ class HtmlDocument implements Countable, Wrappable
         $this->content = array_values($this->content);
 
         $this->reIndexContent();
+
+        return $this;
     }
 
     /**
