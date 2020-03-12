@@ -228,7 +228,7 @@ class HtmlDocument implements Countable, Wrappable
     public function __clone()
     {
         foreach ($this->content as $key => $element) {
-            $this->content[$key] = clone($element);
+            $this->content[$key] = clone $element;
         }
 
         $this->reIndexContent();
@@ -286,7 +286,7 @@ class HtmlDocument implements Countable, Wrappable
      */
     protected function renderWrappedDocument(HtmlDocument $document)
     {
-        $wrapper = clone($this);
+        $wrapper = clone $this;
 
         $wrapper->ensureAssembled();
 
