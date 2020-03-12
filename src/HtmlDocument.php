@@ -169,6 +169,14 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return empty($this->content);
+    }
+
     protected function assemble()
     {
     }
@@ -221,14 +229,6 @@ class HtmlDocument implements Countable, Wrappable
     public function getWrapper()
     {
         return $this->wrapper;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEmpty()
-    {
-        return empty($this->content);
     }
 
     /**
