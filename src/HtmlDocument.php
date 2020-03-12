@@ -177,6 +177,21 @@ class HtmlDocument implements Countable, Wrappable
         return empty($this->content);
     }
 
+    /**
+     * @return string
+     */
+    public function renderUnwrapped()
+    {
+        $this->ensureAssembled();
+        $html = [];
+
+        foreach ($this->content as $element) {
+            $html[] = $element->render();
+        }
+
+        return implode($this->contentSeparator, $html);
+    }
+
     protected function assemble()
     {
     }
@@ -284,21 +299,6 @@ class HtmlDocument implements Countable, Wrappable
         }
 
         return $wrapper->render();
-    }
-
-    /**
-     * @return string
-     */
-    public function renderUnwrapped()
-    {
-        $this->ensureAssembled();
-        $html = [];
-
-        foreach ($this->content as $element) {
-            $html[] = $element->render();
-        }
-
-        return implode($this->contentSeparator, $html);
     }
 
     /**
