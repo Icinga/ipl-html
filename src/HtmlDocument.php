@@ -329,14 +329,6 @@ class HtmlDocument implements Countable, Wrappable
         $this->addObjectPosition($html, $pos);
     }
 
-    private function reIndexContent()
-    {
-        $this->contentIndex = [];
-        foreach ($this->content as $pos => $html) {
-            $this->addObjectPosition($html, $pos);
-        }
-    }
-
     private function addObjectPosition(ValidHtml $html, $pos)
     {
         $key = spl_object_hash($html);
@@ -353,6 +345,14 @@ class HtmlDocument implements Countable, Wrappable
             foreach ($index as & $pos) {
                 $pos++;
             }
+        }
+    }
+
+    private function reIndexContent()
+    {
+        $this->contentIndex = [];
+        foreach ($this->content as $pos => $html) {
+            $this->addObjectPosition($html, $pos);
         }
     }
 }
