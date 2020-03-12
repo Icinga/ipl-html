@@ -226,6 +226,14 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * @return Wrappable|null
+     */
+    public function getWrapper()
+    {
+        return $this->wrapper;
+    }
+
+    /**
      * @param Wrappable $wrapper
      * @return $this
      */
@@ -265,14 +273,6 @@ class HtmlDocument implements Countable, Wrappable
         }
 
         return $this;
-    }
-
-    /**
-     * @return Wrappable|null
-     */
-    public function getWrapper()
-    {
-        return $this->wrapper;
     }
 
     /**
