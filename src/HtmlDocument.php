@@ -28,6 +28,26 @@ class HtmlDocument implements Countable, Wrappable
     private $contentIndex = [];
 
     /**
+     * return ValidHtml[]
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param HtmlDocument|array|string $content
+     * @return $this
+     */
+    public function setContent($content)
+    {
+        $this->content = [];
+        $this->add($content);
+
+        return $this;
+    }
+
+    /**
      * @param ValidHtml|mixed $content
      * @return $this
      */
@@ -196,18 +216,6 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * @param HtmlDocument|array|string $content
-     * @return $this
-     */
-    public function setContent($content)
-    {
-        $this->content = [];
-        $this->add($content);
-
-        return $this;
-    }
-
-    /**
      * @param $separator
      * @return self
      */
@@ -341,14 +349,6 @@ class HtmlDocument implements Countable, Wrappable
                 $pos++;
             }
         }
-    }
-
-    /**
-     * return ValidHtml[]
-     */
-    public function getContent()
-    {
-        return $this->content;
     }
 
     public function __clone()
