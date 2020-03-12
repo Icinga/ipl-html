@@ -155,7 +155,7 @@ class HtmlDocument implements Countable, ValidHtml
             foreach (\array_reverse(is_array($content) ? $content : iterator_to_array($content)) as $c) {
                 $this->prepend($c);
             }
-        } else {
+        } elseif ($content !== null) {
             $pos = 0;
             $html = Html::wantHtml($content);
             \array_unshift($this->content, $html);
