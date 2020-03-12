@@ -222,20 +222,6 @@ class HtmlDocument implements Countable, Wrappable
         $this->reIndexContent();
     }
 
-    /**
-     * @param $string
-     * @return HtmlDocument
-     */
-    public function addPrintf($string)
-    {
-        $args = func_get_args();
-        array_shift($args);
-
-        return $this->add(
-            new FormattedString($string, $args)
-        );
-    }
-
     protected function assemble()
     {
     }
