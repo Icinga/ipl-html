@@ -69,6 +69,25 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * @param $tag
+     * @return BaseHtmlElement
+     * @throws InvalidArgumentException
+     */
+    public function getFirst($tag)
+    {
+        foreach ($this->content as $c) {
+            if ($c instanceof BaseHtmlElement && $c->getTag() === $tag) {
+                return $c;
+            }
+        }
+
+        throw new InvalidArgumentException(sprintf(
+            'Trying to get first %s, but there is no such',
+            $tag
+        ));
+    }
+
+    /**
      * @param ValidHtml|mixed $content
      * @return $this
      */
@@ -167,25 +186,6 @@ class HtmlDocument implements Countable, Wrappable
     public function count()
     {
         return count($this->content);
-    }
-
-    /**
-     * @param $tag
-     * @return BaseHtmlElement
-     * @throws InvalidArgumentException
-     */
-    public function getFirst($tag)
-    {
-        foreach ($this->content as $c) {
-            if ($c instanceof BaseHtmlElement && $c->getTag() === $tag) {
-                return $c;
-            }
-        }
-
-        throw new InvalidArgumentException(sprintf(
-            'Trying to get first %s, but there is no such',
-            $tag
-        ));
     }
 
     /**
