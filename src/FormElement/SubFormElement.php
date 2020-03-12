@@ -2,9 +2,11 @@
 
 namespace ipl\Html\FormElement;
 
+use ipl\Html\Attributes;
+
 class SubFormElement extends BaseFormElement
 {
-    use FormElementContainer;
+    use FormElements;
 
     protected $tag = 'div';
 
@@ -31,7 +33,7 @@ class SubFormElement extends BaseFormElement
     public function isValid()
     {
         foreach ($this->getElements() as $element) {
-            if (! $element->isValid) {
+            if (! $element->isValid()) {
                 return false;
             }
         }
@@ -44,9 +46,9 @@ class SubFormElement extends BaseFormElement
         return true;
     }
 
-    protected function registerValueCallback()
+    protected function registerValueCallback(Attributes $attributes)
     {
-        $this->getAttributes()->registerAttributeCallback(
+        $attributes->registerAttributeCallback(
             'value',
             null,
             [$this, 'setValue']

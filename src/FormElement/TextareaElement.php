@@ -9,17 +9,16 @@ class TextareaElement extends BaseFormElement
     public function setValue($value)
     {
         parent::setValue($value);
+
+        // A textarea's content actually is the value
         $this->setContent($value);
 
         return $this;
     }
 
-    protected function registerValueCallback()
+    public function getValueAttribute()
     {
-        $this->getAttributes()->registerAttributeCallback(
-            'value',
-            null,
-            [$this, 'setValue']
-        );
+        // textarea elements don't have a value attribute
+        return null;
     }
 }

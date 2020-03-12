@@ -2,8 +2,10 @@
 
 namespace ipl\Html;
 
-use Error as PhpError;
 use Exception;
+use Throwable;
+
+use function ipl\Stdlib\get_php_type;
 
 /**
  * Class Error
@@ -19,14 +21,16 @@ abstract class Error
 
     /**
      *
-     * @param Exception|PhpError|string $error
+     * @param Exception|Throwable|string $error
      * @return HtmlDocument
      */
     public static function show($error)
     {
-        if ($error instanceof Exception) {
+        if ($error instanceof Throwable) {
+            // PHP 7+
             $msg = static::createMessageForException($error);
-        } elseif ($error instanceof PhpError) {
+        } elseif ($error instanceof Exception) {
+            // PHP 5.x
             $msg = static::createMessageForException($error);
         } elseif (is_string($error)) {
             $msg = $error;
@@ -45,12 +49,49 @@ abstract class Error
 
     /**
      *
-     * @param Exception|PhpError|string $error
+     * @param Exception|Throwable|string $error
      * @return string
      */
     public static function render($error)
     {
         return static::show($error)->render();
+    }
+
+    /**
+     * @param bool|null $show
+     * @return bool
+     */
+    public static function showTraces($show = null)
+    {
+        if ($show !== null) {
+            self::$showTraces = (bool) $show;
+        }
+
+        return self::$showTraces;
+    }
+
+    /**
+     * @deprecated Use {@link get_php_type()} instead
+     */
+    public static function getPhpTypeName($any)
+    {
+        return get_php_type($any);
+    }
+
+    /**
+     * @param Exception|Throwable $exception
+     * @return string
+     */
+    protected static function createMessageForException($exception)
+    {
+        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY);
+        $file = array_pop($file);
+        return sprintf(
+            '%s (%s:%d)',
+            $exception->getMessage(),
+            $file,
+            $exception->getLine()
+        );
     }
 
     /**
@@ -72,47 +113,5 @@ abstract class Error
         );
 
         return $output;
-    }
-
-    /**
-     * @param PhpError|Exception $exception
-     * @return string
-     */
-    protected static function createMessageForException($exception)
-    {
-        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY);
-        $file = array_pop($file);
-        return sprintf(
-            '%s (%s:%d)',
-            $exception->getMessage(),
-            $file,
-            $exception->getLine()
-        );
-    }
-
-    /**
-     * @param bool|null $show
-     * @return bool
-     */
-    public static function showTraces($show = null)
-    {
-        if ($show !== null) {
-            self::$showTraces = (bool) $show;
-        }
-
-        return self::$showTraces;
-    }
-
-    /**
-     * @param $any
-     * @return string
-     */
-    public static function getPhpTypeName($any)
-    {
-        if (is_object($any)) {
-            return get_class($any);
-        } else {
-            return gettype($any);
-        }
     }
 }

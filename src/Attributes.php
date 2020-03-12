@@ -2,10 +2,22 @@
 
 namespace ipl\Html;
 
-use ipl\Stdlib;
+use ArrayAccess;
+use ArrayIterator;
 use InvalidArgumentException;
+use IteratorAggregate;
 
-class Attributes implements \IteratorAggregate
+use function ipl\Stdlib\get_php_type;
+
+/**
+ * HTML attributes
+ *
+ * HTML attributes provide additional information about HTML elements, that configure the elements or adjust their
+ * behavior in various ways.
+ *
+ * Attributes usually come in name-value pairs and are rendered as name="value".
+ */
+class Attributes implements ArrayAccess, IteratorAggregate
 {
     /** @var Attribute[] */
     protected $attributes = [];
@@ -13,16 +25,16 @@ class Attributes implements \IteratorAggregate
     /** @var callable[] */
     protected $callbacks = [];
 
-    /** @var callable[] */
-    protected $setterCallbacks = [];
-
     /** @var string */
     protected $prefix = '';
 
+    /** @var callable[] */
+    protected $setterCallbacks = [];
+
     /**
-     * Attributes constructor.
-     * @param Attribute[] $attributes
-     * @throws InvalidArgumentException
+     * Create new HTML attributes
+     *
+     * @param array $attributes
      */
     public function __construct(array $attributes = null)
     {
@@ -42,9 +54,11 @@ class Attributes implements \IteratorAggregate
     }
 
     /**
-     * @param Attribute[] $attributes
+     * Create new HTML attributes
+     *
+     * @param array $attributes
+     *
      * @return static
-     * @throws InvalidArgumentException
      */
     public static function create(array $attributes = null)
     {
@@ -52,9 +66,45 @@ class Attributes implements \IteratorAggregate
     }
 
     /**
+     * Ensure that the given attributes of mixed type are converted to an instance of attributes
+     *
+     * The conversion procedure is as follows:
+     *
+     * If the given attributes is already an instance of Attributes, returns the very same element.
+     * If the attributes are given as an array of attribute name-value pairs, they are used to
+     * construct and return a new Attributes instance.
+     * If the attributes are null, an empty new instance of Attributes is returned.
+     *
+     * @param array|static|null $attributes
+     *
+     * @return static
+     *
+     * @throws InvalidArgumentException In case the given attributes are of an unsupported type
+     */
+    public static function wantAttributes($attributes)
+    {
+        if ($attributes instanceof self) {
+            return $attributes;
+        }
+
+        if (is_array($attributes)) {
+            return new static($attributes);
+        }
+
+        if ($attributes === null) {
+            return new static();
+        }
+
+        throw new InvalidArgumentException(sprintf(
+            'Attributes instance, array or null expected. Got %s instead.',
+            get_php_type($attributes)
+        ));
+    }
+
+    /**
      * Get the collection of attributes as array
      *
-     * @return  Attribute[]
+     * @return Attribute[]
      */
     public function getAttributes()
     {
@@ -64,9 +114,9 @@ class Attributes implements \IteratorAggregate
     /**
      * Return true if the attribute with the given name exists, false otherwise
      *
-     * @param   string  $name
+     * @param string $name
      *
-     * @return  bool
+     * @return bool
      */
     public function has($name)
     {
@@ -78,11 +128,11 @@ class Attributes implements \IteratorAggregate
      *
      * If the attribute does not yet exist, it is automatically created and registered to this Attributes instance.
      *
-     * @param   string  $name
+     * @param string $name
      *
-     * @return  Attribute
+     * @return Attribute
      *
-     * @throws  InvalidArgumentException    If the attribute does not yet exist and its name contains special characters
+     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
     public function get($name)
     {
@@ -98,12 +148,12 @@ class Attributes implements \IteratorAggregate
      *
      * If the attribute with the given name already exists, it gets overridden.
      *
-     * @param   string|array|Attribute|self $attribute  The attribute(s) to add
-     * @param   string|bool|array           $value      The value of the attribute
+     * @param string|array|Attribute|self $attribute The attribute(s) to add
+     * @param string|bool|array           $value     The value of the attribute
      *
-     * @return  $this
+     * @return $this
      *
-     * @throws  InvalidArgumentException    If the attribute name contains special characters
+     * @throws InvalidArgumentException If the attribute name contains special characters
      */
     public function set($attribute, $value = null)
     {
@@ -148,12 +198,12 @@ class Attributes implements \IteratorAggregate
      * If an attribute with the same name already exists, the attribute's value will be added to the current value of
      * the attribute.
      *
-     * @param   string|array|Attribute|self $attribute  The attribute(s) to add
-     * @param   string|bool|array           $value      The value of the attribute
+     * @param string|array|Attribute|self $attribute The attribute(s) to add
+     * @param string|bool|array           $value     The value of the attribute
      *
-     * @return  $this
+     * @return $this
      *
-     * @throws  InvalidArgumentException    If the attribute does not yet exist and its name contains special characters
+     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
     public function add($attribute, $value = null)
     {
@@ -203,10 +253,10 @@ class Attributes implements \IteratorAggregate
     /**
      * Remove the attribute with the given name or remove the given value from the attribute
      *
-     * @param   string                  $name   The name of the attribute
-     * @param   null|string|array       $value  The value to remove if specified
+     * @param string            $name  The name of the attribute
+     * @param null|string|array $value The value to remove if specified
      *
-     * @return  Attribute|false
+     * @return Attribute|false
      */
     public function remove($name, $value = null)
     {
@@ -228,9 +278,9 @@ class Attributes implements \IteratorAggregate
     /**
      * Set the specified attribute
      *
-     * @param   Attribute   $attribute
+     * @param Attribute $attribute
      *
-     * @return  $this
+     * @return $this
      */
     public function setAttribute(Attribute $attribute)
     {
@@ -245,9 +295,9 @@ class Attributes implements \IteratorAggregate
      * If an attribute with the same name already exists, the given attribute's value
      * will be added to the current value of the attribute.
      *
-     * @param   Attribute $attribute
+     * @param Attribute $attribute
      *
-     * @return  $this
+     * @return $this
      */
     public function addAttribute(Attribute $attribute)
     {
@@ -263,39 +313,9 @@ class Attributes implements \IteratorAggregate
     }
 
     /**
-     * Callback must return an instance of Attribute
-     *
-     * TODO: setCallback
-     *
-     * @param string $name
-     * @param callable $callback
-     * @param callable $setterCallback
-     * @return $this
-     * @throws InvalidArgumentException
-     */
-    public function registerAttributeCallback($name, $callback, $setterCallback = null)
-    {
-        if ($callback !== null) {
-            if (! is_callable($callback)) {
-                throw new InvalidArgumentException(__METHOD__ . ' expects a callable callback');
-            }
-            $this->callbacks[$name] = $callback;
-        }
-
-        if ($setterCallback !== null) {
-            if (! is_callable($setterCallback)) {
-                throw new InvalidArgumentException(__METHOD__ . ' expects a callable setterCallback');
-            }
-            $this->setterCallbacks[$name] = $setterCallback;
-        }
-
-        return $this;
-    }
-
-    /**
      * Get the attributes name prefix
      *
-     * @return  string|null
+     * @return string|null
      */
     public function getPrefix()
     {
@@ -305,13 +325,45 @@ class Attributes implements \IteratorAggregate
     /**
      * Set the attributes name prefix
      *
-     * @param   string  $prefix
+     * @param string $prefix
      *
-     * @return  $this
+     * @return $this
      */
     public function setPrefix($prefix)
     {
         $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
+     * Register callback for an attribute
+     *
+     * @param string   $name            Name of the attribute to register the callback for
+     * @param callable $callback        Callback to call when retrieving the attribute
+     * @param callable $setterCallback  Callback to call when setting the attribute
+     *
+     * @return $this
+     *
+     * @throws InvalidArgumentException If $callback is not callable or if $setterCallback is set and not callable
+     */
+    public function registerAttributeCallback($name, $callback, $setterCallback = null)
+    {
+        if ($callback !== null) {
+            if (! is_callable($callback)) {
+                throw new InvalidArgumentException(__METHOD__ . ' expects a callable callback');
+            }
+
+            $this->callbacks[$name] = $callback;
+        }
+
+        if ($setterCallback !== null) {
+            if (! is_callable($setterCallback)) {
+                throw new InvalidArgumentException(__METHOD__ . ' expects a callable setterCallback');
+            }
+
+            $this->setterCallbacks[$name] = $setterCallback;
+        }
 
         return $this;
     }
@@ -326,9 +378,9 @@ class Attributes implements \IteratorAggregate
      *
      * HTML-escaping of the attributes' values takes place automatically using {@link Attribute::escapeValue()}.
      *
-     * @return  string
+     * @return string
      *
-     * @throws  InvalidArgumentException    If the result of a callback is invalid
+     * @throws InvalidArgumentException If the result of a callback is invalid
      */
     public function render()
     {
@@ -336,18 +388,18 @@ class Attributes implements \IteratorAggregate
         foreach ($this->callbacks as $name => $callback) {
             $attribute = call_user_func($callback);
             if ($attribute instanceof Attribute) {
-                if ($attribute->getValue() !== null) {
+                if (! $attribute->isEmpty()) {
                     $parts[] = $attribute->render();
                 }
-            } elseif ($attribute !== null && is_scalar($attribute)) {
-                $parts[] = Attribute::create($name, $attribute)->render();
             } elseif ($attribute === null) {
                 continue;
+            } elseif (is_scalar($attribute)) {
+                $parts[] = Attribute::create($name, $attribute)->render();
             } else {
                 throw new InvalidArgumentException(sprintf(
                     'A registered attribute callback must return string, null'
                     . ' or an Attribute, got a %s',
-                    Error::getPhpTypeName($attribute)
+                    get_php_type($attribute)
                 ));
             }
         }
@@ -370,48 +422,65 @@ class Attributes implements \IteratorAggregate
     }
 
     /**
-     * Get an iterator for traversing the attributes
+     * Get whether the attribute with the given name exists
      *
-     * @return  Attribute[]|\ArrayIterator
+     * @param string $name Name of the attribute
+     *
+     * @return bool
      */
-    public function getIterator()
+    public function offsetExists($name)
     {
-        return new \ArrayIterator($this->attributes);
+        return $this->has($name);
     }
 
     /**
-     * Ensure that the given attributes of mixed type are converted to an instance of attributes
+     * Get the attribute with the given name
      *
-     * The conversion procedure is as follows:
+     * If the attribute does not yet exist, it is automatically created and registered to this Attributes instance.
      *
-     * If the given attributes is already an instance of Attributes, returns the very same element.
-     * If the attributes are given as an array of attribute name-value pairs, they are used to
-     * construct and return a new Attributes instance.
-     * If the attributes are null, an empty new instance of Attributes is returned.
+     * @param string $name Name of the attribute
      *
-     * @param   array|static|null   $attributes
+     * @return Attribute
      *
-     * @return  static
-     *
-     * @throws  InvalidArgumentException    In case the given attributes are of an unsupported type
+     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
-    public static function wantAttributes($attributes)
+    public function offsetGet($name)
     {
-        if ($attributes instanceof self) {
-            return $attributes;
-        }
+        return $this->get($name);
+    }
 
-        if (is_array($attributes)) {
-            return new static($attributes);
-        }
+    /**
+     * Set the given attribute
+     *
+     * If the attribute with the given name already exists, it gets overridden.
+     *
+     * @param string $name  Name of the attribute
+     * @param mixed  $value Value of the attribute
+     *
+     * @throws InvalidArgumentException If the attribute name contains special characters
+     */
+    public function offsetSet($name, $value)
+    {
+        $this->set($name, $value);
+    }
 
-        if ($attributes === null) {
-            return new static();
-        }
+    /**
+     * Remove the attribute with the given name
+     *
+     * @param string $name Name of the attribute
+     */
+    public function offsetUnset($name)
+    {
+        $this->remove($name);
+    }
 
-        throw new InvalidArgumentException(sprintf(
-            'Attributes instance, array or null expected. Got %s instead.',
-            Stdlib\get_php_type($attributes)
-        ));
+    /**
+     * Get an iterator for traversing the attributes
+     *
+     * @return Attribute[]|ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->attributes);
     }
 }

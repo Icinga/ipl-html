@@ -19,6 +19,8 @@ In addition to this, there might be:
 * validators (`ipl\Validator`)
 * sub forms, field sets, buttons...
 
+Please note that default HTTP method to submit `ipl\Html\Form` with is **POST**.
+
 Create your very first form
 ---------------------------
 
@@ -37,7 +39,7 @@ echo $form;
 This outputs:
 
 ```html
-<form action="/your/url"><input name="name" type="text" /></form>
+<form action="/your/url" method="POST"><input name="name" type="text" /></form>
 ```
 
 Select
@@ -155,8 +157,8 @@ use ipl\Html\Html;
 $form = new Form();
 
 echo $form
-    ->registerElement('text', 'first_name')
-    ->registerElement('text', 'last_name')
+    ->registerElement($form->createElement('text', 'first_name'))
+    ->registerElement($form->createElement('text', 'last_name'))
     ->add(Html::tag('div', [
         $form->getElement('first_name'),
         Html::tag('br'),
@@ -167,7 +169,7 @@ echo $form
 The result looks as expected:
 
 ```html
-<form><div>
+<form method="POST"><div>
 <input name="first_name" type="text" />
 <br />
 <input name="last_name" type="text" />

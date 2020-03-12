@@ -4,14 +4,11 @@ namespace ipl\Html;
 
 use InvalidArgumentException;
 
+use function ipl\Stdlib\get_php_type;
 use function ipl\Stdlib\iterable_key_first;
 
 /**
- * Class Html
- *
- * This is your main utility class when working with ipl\Html
- *
- * @package ipl\Html
+ * Main utility class when working with ipl\Html
  */
 abstract class Html
 {
@@ -21,11 +18,11 @@ abstract class Html
      * This method does not render the HTML element but creates a {@link HtmlElement}
      * instance from the given tag, attributes and content
      *
-     * @param   string $name       The desired HTML tag name
-     * @param   mixed  $attributes HTML attributes or content for the element
-     * @param   mixed  $content    The content of the element if no attributes have been given
+     * @param string $name       The desired HTML tag name
+     * @param mixed  $attributes HTML attributes or content for the element
+     * @param mixed  $content    The content of the element if no attributes have been given
      *
-     * @return  HtmlElement The created element
+     * @return HtmlElement The created element
      */
     public static function tag($name, $attributes = null, $content = null)
     {
@@ -55,9 +52,9 @@ abstract class Html
      *
      * Already existing HTML entities will be encoded as well.
      *
-     * @param   string  $content        The content to encode
+     * @param string $content The content to encode
      *
-     * @return  string  The encoded content
+     * @return string The encoded content
      */
     public static function escape($content)
     {
@@ -65,36 +62,35 @@ abstract class Html
     }
 
     /**
-     * sprintf()-like helper method
+     * Factory for {@link sprintf()}-like formatted HTML strings
      *
-     * This allows to use sprintf with ValidHtml elements, but with the
-     * advantage that they'll not be rendered immediately. The result is an
-     * instance of FormattedString, being ValidHtml
+     * This allows to use {@link sprintf()}-like format strings with {@link ValidHtml} element arguments, but with the
+     * advantage that they'll not be rendered immediately.
      *
-     * Usage:
+     * # Example Usage
+     * ```
+     * echo Html::sprintf('Hello %s!', Html::tag('strong', $name));
+     * ```
      *
-     *     echo Html::sprintf('Hello %s!', Html::tag('strong', $name));
+     * @param string $format
+     * @param mixed  ...$args
      *
-     * @param $string
      * @return FormattedString
      */
-    public static function sprintf($string)
+    public static function sprintf($format, ...$args)
     {
-        $args = func_get_args();
-        array_shift($args);
-
-        return new FormattedString($string, $args);
+        return new FormattedString($format, $args);
     }
 
     /**
-     * Wraps each Item of a given list
+     * Wrap each item of then given list
      *
-     * Wrapper is a simple HTML tag per entry if a string is given, otherwise
-     * a given callback/callable is being called passing key and value of each
-     * list entry as parameters
+     * $wrapper is a simple HTML tag per entry if a string is given,
+     * otherwise the given callable is called with key and value of each list item as parameters.
      *
-     * @param iterable $list
+     * @param iterable        $list
      * @param string|callable $wrapper
+     *
      * @return HtmlDocument
      */
     public static function wrapEach($list, $wrapper)
@@ -102,7 +98,7 @@ abstract class Html
         if (! is_iterable($list)) {
             throw new InvalidArgumentException(sprintf(
                 'Html::wrapEach() requires a traversable list, got "%s"',
-                Error::getPhpTypeName($list)
+                get_php_type($list)
             ));
         }
         $result = new HtmlDocument();
@@ -114,7 +110,7 @@ abstract class Html
             } else {
                 throw new InvalidArgumentException(sprintf(
                     'Wrapper must be callable or a string in Html::wrapEach(), got "%s"',
-                    Error::getPhpTypeName($wrapper)
+                    get_php_type($wrapper)
                 ));
             }
         }
@@ -123,13 +119,15 @@ abstract class Html
     }
 
     /**
-     * Accept any input and try to convert it to ValidHtml
+     * Ensure that the given content of mixed type is converted to an instance of {@link ValidHtml}
      *
-     * Returns the very same element in case it's already valid
+     * Returns the very same element in case it's already an instance of {@link ValidHtml}.
      *
      * @param mixed $any
+     *
      * @return ValidHtml
-     * @throws InvalidArgumentException
+     *
+     * @throws InvalidArgumentException In case the given content is of an unsupported type
      */
     public static function wantHtml($any)
     {
@@ -149,15 +147,16 @@ abstract class Html
         } else {
             throw new InvalidArgumentException(sprintf(
                 'String, Html Element or Array of such expected, got "%s"',
-                Error::getPhpTypeName($any)
+                get_php_type($any)
             ));
         }
     }
 
     /**
-     * Whether a given variable can be rendered as a string
+     * Get whether the given variable be rendered as a string
      *
-     * @param $any
+     * @param mixed $any
+     *
      * @return bool
      */
     public static function canBeRenderedAsString($any)
@@ -168,8 +167,11 @@ abstract class Html
     }
 
     /**
-     * @param $name
-     * @param $arguments
+     * Forward inaccessible static method calls to {@link Html::tag()} with the method's name as tag
+     *
+     * @param string $name
+     * @param array  $arguments
+     *
      * @return HtmlElement
      */
     public static function __callStatic($name, $arguments)

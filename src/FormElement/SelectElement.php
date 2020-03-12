@@ -44,7 +44,7 @@ class SelectElement extends BaseFormElement
     public function setValue($value)
     {
         if (! $this->hasOption($value)) {
-            $this->isValid = false;
+            $this->valid = false;
             $this->addMessage("'$value' is not allowed here");
 
             return $this;
@@ -56,7 +56,7 @@ class SelectElement extends BaseFormElement
 
         if ($option = $this->getOption($value)) {
             if ($option->getAttributes()->has('disabled')) {
-                $this->isValid = false;
+                $this->valid = false;
                 $this->addMessage("'$value' is not allowed here");
 
                 return $this;
@@ -92,7 +92,7 @@ class SelectElement extends BaseFormElement
             $option->getAttributes()->add('disabled', true);
         }
         if ($this->getValue() == $value) {
-            $this->isValid = false;
+            $this->valid = false;
             $this->addMessage("'$value' is not allowed here");
         }
 

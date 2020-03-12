@@ -2,35 +2,150 @@
 
 namespace ipl\Html;
 
-use ipl\Html\FormElement\FormElementContainer;
-use ipl\Html\FormElement\SubmitElement;
-use ipl\Stdlib\MessageContainer;
 use Exception;
+use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\FormElement\FormElements;
+use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
-    use FormElementContainer;
-    use MessageContainer;
+    use FormElements {
+        remove as private removeElement;
+    }
+    use Messages;
 
     const ON_ELEMENT_REGISTERED = 'elementRegistered';
     const ON_ERROR = 'error';
     const ON_REQUEST = 'request';
     const ON_SUCCESS = 'success';
 
-    protected $tag = 'form';
-
+    /** @var string Form submission URL */
     protected $action;
 
-    protected $method;
+    /** @var string HTTP method to submit the form with */
+    protected $method = 'POST';
 
-    /** @var SubmitElement */
+    /** @var FormSubmitElement Primary submit button */
     protected $submitButton;
 
-    /** @var ServerRequestInterface */
+    /** @var FormSubmitElement[] Other elements that may submit the form */
+    protected $submitElements = [];
+
+    /** @var bool Whether the form is valid */
+    private $isValid;
+
+    /** @var ServerRequestInterface The server request being processed */
     private $request;
 
-    private $isValid;
+    protected $tag = 'form';
+
+    /**
+     * Get the Form submission URL
+     *
+     * @return string|null
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * Set the Form submission URL
+     *
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * Get the HTTP method to submit the form with
+     *
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * Set the HTTP method to submit the form with
+     *
+     * @param string $method
+     *
+     * @return $this
+     */
+    public function setMethod($method)
+    {
+        $this->method = strtoupper($method);
+
+        return $this;
+    }
+
+    /**
+     * Get whether the form has a primary submit button
+     *
+     * @return bool
+     */
+    public function hasSubmitButton()
+    {
+        return $this->submitButton !== null;
+    }
+
+    /**
+     * Get the primary submit button
+     *
+     * @return FormSubmitElement|null
+     */
+    public function getSubmitButton()
+    {
+        return $this->submitButton;
+    }
+
+    /**
+     * Set the primary submit button
+     *
+     * @param FormSubmitElement $element
+     *
+     * @return $this
+     */
+    public function setSubmitButton(FormSubmitElement $element)
+    {
+        $this->submitButton = $element;
+
+        return $this;
+    }
+
+    /**
+     * Get the submit element used to send the form
+     *
+     * @return FormSubmitElement|null
+     */
+    public function getPressedSubmitElement()
+    {
+        foreach ($this->submitElements as $submitElement) {
+            if ($submitElement->hasBeenPressed()) {
+                return $submitElement;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return ServerRequestInterface|null
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
 
     public function setRequest($request)
     {
@@ -47,19 +162,35 @@ class Form extends BaseHtmlElement
     public function handleRequest(ServerRequestInterface $request)
     {
         $this->setRequest($request);
-        if ($this->hasBeenSent()) {
-            if ($request->getMethod() === 'POST') {
-                $params = $request->getParsedBody();
-            } elseif ($this->getMethod() === 'GET') {
-                parse_str($request->getUri()->getQuery(), $params);
-            } else {
-                $params = [];
-            }
-            $this->populate($params);
+
+        $method = $request->getMethod();
+
+        if ($method !== $this->getMethod()) {
+            // Always assemble
+            $this->ensureAssembled();
+
+            return $this;
         }
 
+        switch ($method) {
+            case 'POST':
+                $params = $request->getParsedBody();
+
+                break;
+            case 'GET':
+                parse_str($request->getUri()->getQuery(), $params);
+
+                break;
+            default:
+                $params = [];
+        }
+
+        $this->populate($params);
+
+        // Assemble after populate in order to conditionally provide form elements
         $this->ensureAssembled();
-        if ($this->hasBeenSubmitted()) {
+
+        if (! $this->hasSubmitButton() || $this->getSubmitButton()->hasBeenPressed()) {
             if ($this->isValid()) {
                 try {
                     $this->onSuccess();
@@ -72,7 +203,7 @@ class Form extends BaseHtmlElement
             } else {
                 $this->onError();
             }
-        } elseif ($this->hasBeenSent()) {
+        } else {
             $this->validatePartial();
         }
 
@@ -80,31 +211,49 @@ class Form extends BaseHtmlElement
     }
 
     /**
-     * @return ServerRequestInterface|null
+     * Get whether the form has been sent
+     *
+     * A form is considered sent if the request's method equals the form's method.
+     *
+     * @return bool
      */
-    public function getRequest()
+    public function hasBeenSent()
     {
-        return $this->request;
-    }
-
-    public function onSuccess()
-    {
-        // $this->redirectOnSuccess();
-    }
-
-    public function onError()
-    {
-        $error = Html::tag('p', ['class' => 'error']);
-        foreach ($this->getMessages() as $message) {
-            if ($message instanceof Exception) {
-                $error->add($message->getMessage());
-            } else {
-                $error->add($message);
-            }
+        if ($this->request === null) {
+            return false;
         }
-        $this->prepend($error);
+
+        return $this->request->getMethod() === $this->getMethod();
     }
 
+    /**
+     * Get whether the form has been submitted
+     *
+     * A form is submitted when it has been sent and when the primary submit button, if set, has been pressed.
+     * This method calls {@link hasBeenSent()} in order to detect whether the form has been sent.
+     *
+     * @return bool
+     */
+    public function hasBeenSubmitted()
+    {
+        if (! $this->hasBeenSent()) {
+            return false;
+        }
+
+        if ($this->hasSubmitButton()) {
+            return $this->getSubmitButton()->hasBeenPressed();
+        }
+
+        return true;
+    }
+
+    /**
+     * Get whether the form is valid
+     *
+     * {@link validate()} is called automatically if the form has not been validated before.
+     *
+     * @return bool
+     */
     public function isValid()
     {
         if ($this->isValid === null) {
@@ -114,6 +263,11 @@ class Form extends BaseHtmlElement
         return $this->isValid;
     }
 
+    /**
+     * Validate all elements
+     *
+     * @return $this
+     */
     public function validate()
     {
         $valid = true;
@@ -129,8 +283,15 @@ class Form extends BaseHtmlElement
         }
 
         $this->isValid = $valid;
+
+        return $this;
     }
 
+    /**
+     * Validate all elements that have a value
+     *
+     * @return $this
+     */
     public function validatePartial()
     {
         foreach ($this->getElements() as $element) {
@@ -138,99 +299,52 @@ class Form extends BaseHtmlElement
                 $element->validate();
             }
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasBeenSent()
-    {
-        if ($this->request === null) {
-            return false;
-        }
-
-        if ($this->request->getMethod() !== $this->getMethod()) {
-            return false;
-        }
-
-        // TODO: Check form name element
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasBeenSubmitted()
-    {
-        if ($this->hasSubmitButton()) {
-            return $this->getSubmitButton()->hasBeenPressed();
-        } else {
-            return $this->hasBeenSent();
-        }
-    }
-
-    public function getSubmitButton()
-    {
-        return $this->submitButton;
-    }
-
-    public function hasSubmitButton()
-    {
-        return $this->submitButton !== null;
-    }
-
-    public function setSubmitButton(SubmitElement $element)
-    {
-        $this->submitButton = $element;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMethod()
+    public function remove(ValidHtml $elementOrHtml)
     {
-        $method = $this->getAttributes()->get('method')->getValue();
-        if ($method === null) {
-            // WRONG. Problem:
-            // right now we get the method in assemble, that's too late.
-            // TODO: fix this via getMethodAttribute callback
-            return 'POST';
+        if ($this->submitButton === $elementOrHtml) {
+            $this->submitButton = null;
         }
 
-        return $method;
+        $this->removeElement($elementOrHtml);
     }
 
-    /**
-     * @param $method
-     * @return $this
-     */
-    public function setMethod($method)
+    protected function onError()
     {
-        $this->getAttributes()->set('method', strtoupper($method));
-
-        return $this;
+        $error = Html::tag('p', ['class' => 'error']);
+        foreach ($this->getMessages() as $message) {
+            if ($message instanceof Exception) {
+                $error->add($message->getMessage());
+            } else {
+                $error->add($message);
+            }
+        }
+        $this->prepend($error);
     }
 
-    /**
-     * @return string
-     */
-    public function getAction()
+    protected function onSuccess()
     {
-        // TODO: get Request URL if no action
-        return $this->getAttributes()->get('action')->getValue();
+        // $this->redirectOnSuccess();
     }
 
-    /**
-     * @param $action
-     * @return $this
-     */
-    public function setAction($action)
+    protected function onElementRegistered(FormElement $element)
     {
-        $this->getAttributes()->set('action', $action);
+        if ($element instanceof FormSubmitElement) {
+            $this->submitElements[$element->getName()] = $element;
 
-        return $this;
+            if (! $this->hasSubmitButton()) {
+                $this->setSubmitButton($element);
+            }
+        }
+    }
+
+    protected function registerAttributeCallbacks(Attributes $attributes)
+    {
+        $attributes
+            ->registerAttributeCallback('action', [$this, 'getAction'], [$this, 'setAction'])
+            ->registerAttributeCallback('method', [$this, 'getMethod'], [$this, 'setMethod']);
     }
 }

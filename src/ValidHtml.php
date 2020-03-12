@@ -11,7 +11,7 @@ interface ValidHtml
     /**
      * Render to HTML
      *
-     * @return  string  UTF-8 encoded HTML5 with special characters converted to HTML entities
+     * @return string UTF-8 encoded HTML5 with special characters converted to HTML entities
      */
     public function render();
 }

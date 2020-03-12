@@ -3,52 +3,79 @@
 namespace ipl\Html;
 
 use Exception;
+use InvalidArgumentException;
 
+use function ipl\Stdlib\get_php_type;
+
+/**
+ * {@link sprintf()}-like formatted HTML string supporting lazy rendering of {@link ValidHtml} element arguments
+ *
+ * # Example Usage
+ * ```
+ * $info = new FormattedString(
+ *     'Follow the %s for more information on %s',
+ *     [
+ *         new Link('doc/html', 'HTML documentation'),
+ *         Html::tag('strong', 'HTML elements')
+ *     ]
+ * );
+ * ```
+ */
 class FormattedString implements ValidHtml
 {
-    protected $escaped = true;
-
     /** @var ValidHtml[] */
-    protected $arguments = [];
+    protected $args = [];
 
     /** @var ValidHtml */
-    protected $string;
+    protected $format;
 
     /**
-     * FormattedString constructor.
-     * @param $string
-     * @param array $arguments
+     * Create a new {@link sprintf()}-like formatted HTML string
+     *
+     * @param string   $format
+     * @param iterable $args
+     *
+     * @throws InvalidArgumentException If arguments given but not iterable
      */
-    public function __construct($string, array $arguments = [])
+    public function __construct($format, $args = null)
     {
-        $this->string = Html::wantHtml($string);
+        $this->format = Html::wantHtml($format);
 
-        foreach ($arguments as $key => $val) {
-            $this->arguments[$key] = Html::wantHtml($val);
+        if ($args !== null) {
+            if (! is_iterable($args)) {
+                throw new InvalidArgumentException(sprintf(
+                    '%s expects parameter two to be iterable, got %s instead',
+                    __METHOD__,
+                    get_php_type($args)
+                ));
+            }
+
+            foreach ($args as $key => $val) {
+                $this->args[$key] = Html::wantHtml($val);
+            }
         }
     }
 
+
     /**
-     * @param $string
+     * Create a new {@link sprintf()}-like formatted HTML string
+     *
+     * @param string $format
+     * @param mixed  ...$args
+     *
      * @return static
      */
-    public static function create($string)
+    public static function create($format, ...$args)
     {
-        $args = func_get_args();
-        array_shift($args);
-
-        return new static($string, $args);
-    }
-
-    public function render()
-    {
-        return vsprintf(
-            $this->string->render(),
-            $this->arguments
-        );
+        return new static($format, $args);
     }
 
     /**
+     * Render text to HTML when treated like a string
+     *
+     * Calls {@link render()} internally in order to render the text to HTML.
+     * Exceptions will be automatically caught and returned as HTML string as well using {@link Error::render()}.
+     *
      * @return string
      */
     public function __toString()
@@ -58,5 +85,13 @@ class FormattedString implements ValidHtml
         } catch (Exception $e) {
             return Error::render($e);
         }
+    }
+
+    public function render()
+    {
+        return vsprintf(
+            $this->format->render(),
+            $this->args
+        );
     }
 }

@@ -12,9 +12,9 @@ class HtmlElement extends BaseHtmlElement
     /**
      * Create a new HTML element from the given tag, attributes and content
      *
-     * @param   string                  $tag        The tag for the element
-     * @param   Attributes|array        $attributes The HTML attributes for the element
-     * @param   ValidHtml|string|array  $content    The content of the element
+     * @param string                 $tag        The tag for the element
+     * @param Attributes|array       $attributes The HTML attributes for the element
+     * @param ValidHtml|string|array $content    The content of the element
      */
     public function __construct($tag, $attributes = null, $content = null)
     {
@@ -30,11 +30,11 @@ class HtmlElement extends BaseHtmlElement
     }
 
     /**
-     * Container constructor.
+     * Create a new HTML element from the given tag, attributes and content
      *
-     * @param string $tag
-     * @param Attributes|array $attributes
-     * @param ValidHtml|array|string $content
+     * @param string                 $tag        The tag for the element
+     * @param Attributes|array       $attributes The HTML attributes for the element
+     * @param ValidHtml|string|array $content    The content of the element
      *
      * @return static
      */
