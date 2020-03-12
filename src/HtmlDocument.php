@@ -322,6 +322,13 @@ class HtmlDocument implements Countable, Wrappable
         }
     }
 
+    private function addIndexedContent(ValidHtml $html)
+    {
+        $pos = count($this->content);
+        $this->content[$pos] = $html;
+        $this->addObjectPosition($html, $pos);
+    }
+
     private function reIndexContent()
     {
         $this->contentIndex = [];
@@ -338,13 +345,6 @@ class HtmlDocument implements Countable, Wrappable
         } else {
             $this->contentIndex[$key] = [$pos];
         }
-    }
-
-    private function addIndexedContent(ValidHtml $html)
-    {
-        $pos = count($this->content);
-        $this->content[$pos] = $html;
-        $this->addObjectPosition($html, $pos);
     }
 
     private function incrementIndexKeys()
