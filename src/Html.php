@@ -72,16 +72,14 @@ abstract class Html
      * echo Html::sprintf('Hello %s!', Html::tag('strong', $name));
      * ```
      *
-     * @param string $string
+     * @param string $format
+     * @param mixed  ...$args
      *
      * @return FormattedString
      */
-    public static function sprintf($string)
+    public static function sprintf($format, ...$args)
     {
-        $args = func_get_args();
-        array_shift($args);
-
-        return new FormattedString($string, $args);
+        return new FormattedString($format, $args);
     }
 
     /**
