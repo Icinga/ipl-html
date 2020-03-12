@@ -201,6 +201,18 @@ class HtmlDocument implements Countable, Wrappable
         $this->reIndexContent();
     }
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        try {
+            return $this->render();
+        } catch (Exception $e) {
+            return Error::render($e);
+        }
+    }
+
     protected function assemble()
     {
     }
@@ -308,18 +320,6 @@ class HtmlDocument implements Countable, Wrappable
         }
 
         return $wrapper->render();
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        try {
-            return $this->render();
-        } catch (Exception $e) {
-            return Error::render($e);
-        }
     }
 
     private function reIndexContent()
