@@ -209,6 +209,8 @@ class HtmlDocument implements Countable, Wrappable
      */
     public function isEmpty()
     {
+        $this->ensureAssembled();
+
         return empty($this->content);
     }
 
