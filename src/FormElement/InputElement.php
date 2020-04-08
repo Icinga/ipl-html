@@ -36,23 +36,13 @@ class InputElement extends BaseFormElement
         return $this;
     }
 
-    /**
-     * Callback for the type attribute
-     *
-     * @return Attribute|string
-     */
-    public function getTypeAttribute()
-    {
-        return new Attribute('type', $this->getType());
-    }
-
     protected function registerAttributeCallbacks(Attributes $attributes)
     {
         parent::registerAttributeCallbacks($attributes);
 
         $attributes->registerAttributeCallback(
             'type',
-            [$this, 'getTypeAttribute'],
+            [$this, 'getType'],
             [$this, 'setType']
         );
     }
