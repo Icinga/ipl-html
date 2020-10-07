@@ -5,6 +5,7 @@ namespace ipl\Tests\Html;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Html as h;
 use ipl\Html\HtmlDocument;
+use ipl\Tests\Html\TestDummy\AddsContentDuringAssemble;
 use ipl\Tests\Html\TestDummy\AddsWrapperDuringAssemble;
 use ipl\Tests\Html\TestDummy\IterableElement;
 use ipl\Tests\Html\TestDummy\ObjectThatCanBeCastedToString;
@@ -204,5 +205,10 @@ class HtmlDocumentTest extends TestCase
             ->prepend(new IterableElement());
 
         $this->assertHtml('<b>foo</b><b>bar</b><b>baz</b>', $html);
+    }
+
+    public function testIsEmptyRespectsContentAddedInAssemble()
+    {
+        $this->assertFalse((new AddsContentDuringAssemble())->isEmpty());
     }
 }
