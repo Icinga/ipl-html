@@ -20,6 +20,7 @@ class Form extends BaseHtmlElement
     const ON_ERROR = 'error';
     const ON_REQUEST = 'request';
     const ON_SUCCESS = 'success';
+    const ON_SENT = 'sent';
 
     /** @var string Form submission URL */
     protected $action;
@@ -220,6 +221,7 @@ class Form extends BaseHtmlElement
         if (! $this->hasSubmitButton() || $this->getSubmitButton()->hasBeenPressed()) {
             if ($this->isValid()) {
                 try {
+                    $this->emit(Form::ON_SENT, [$this]);
                     $this->onSuccess();
                     $this->emitOnce(Form::ON_SUCCESS, [$this]);
                 } catch (Exception $e) {
@@ -232,6 +234,7 @@ class Form extends BaseHtmlElement
             }
         } else {
             $this->validatePartial();
+            $this->emit(Form::ON_SENT, [$this]);
         }
 
         return $this;

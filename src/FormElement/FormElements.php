@@ -431,6 +431,7 @@ trait FormElements
     {
         return in_array($event, [
             Form::ON_SUCCESS,
+            Form::ON_SENT,
             Form::ON_ERROR,
             Form::ON_REQUEST,
             Form::ON_ELEMENT_REGISTERED,
