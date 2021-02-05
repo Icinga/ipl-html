@@ -2,7 +2,7 @@
 
 namespace ipl\Html\Contract;
 
-use ArrayAccess;
+use ipl\Html\Attributes;
 
 /**
  * Representation of form elements
@@ -12,7 +12,7 @@ interface FormElement extends Wrappable
     /**
      * Get the attributes or options of the element
      *
-     * @return array|ArrayAccess
+     * @return Attributes
      */
     public function getAttributes();
 
