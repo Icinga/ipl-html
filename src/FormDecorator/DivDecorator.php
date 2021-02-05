@@ -8,6 +8,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Html;
+use ipl\Html\HtmlElement;
 
 /**
  * Form element decorator based on div elements
@@ -24,7 +25,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
     const DESCRIPTION_CLASS = 'form-element-description';
 
     /** @var string CSS class to use for form errors */
-    const ERROR_CLASS = 'form-element-error';
+    const ERROR_CLASS = 'form-element-errors';
 
     /** @var string CSS class to set on the decorator if the element has errors */
     const ERROR_HINT_CLASS = 'has-error';
@@ -81,13 +82,13 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
     protected function assembleErrors()
     {
-        $errors = [];
+        $errors = new HtmlElement('ul', ['class' => static::ERROR_CLASS]);
 
         foreach ($this->formElement->getMessages() as $message) {
-            $errors[] = Html::tag('p', ['class' => static::ERROR_CLASS], $message);
+            $errors->add(new HtmlElement('li', ['class' => static::ERROR_CLASS], $message));
         }
 
-        if (! empty($errors)) {
+        if (! $errors->isEmpty()) {
             return $errors;
         }
 

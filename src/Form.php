@@ -342,15 +342,18 @@ class Form extends BaseHtmlElement
 
     protected function onError()
     {
-        $error = Html::tag('p', ['class' => 'error']);
+        $errors = Html::tag('ul', ['class' => 'errors']);
         foreach ($this->getMessages() as $message) {
             if ($message instanceof Exception) {
-                $error->add($message->getMessage());
-            } else {
-                $error->add($message);
+                $message = $message->getMessage();
             }
+
+            $errors->add(Html::tag('li', $message));
         }
-        $this->prepend($error);
+
+        if (! $errors->isEmpty()) {
+            $this->prepend($errors);
+        }
     }
 
     protected function onSuccess()
