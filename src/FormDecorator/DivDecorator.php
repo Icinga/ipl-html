@@ -58,10 +58,25 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         $description = $this->formElement->getDescription();
 
         if ($description !== null) {
-            return Html::tag('p', ['class' => static::DESCRIPTION_CLASS], $description);
+            $descriptionId = null;
+            if ($this->formElement->getAttributes()->has('id')) {
+                $descriptionId = 'desc_' . $this->formElement->getAttributes()->get('id')->getValue();
+                $this->formElement->getAttributes()->set('aria-describedby', $descriptionId);
+            }
+
+            return Html::tag('p', ['id' => $descriptionId, 'class' => static::DESCRIPTION_CLASS], $description);
         }
 
         return null;
+    }
+
+    protected function assembleElement()
+    {
+        if ($this->formElement->isRequired()) {
+            $this->formElement->getAttributes()->set('aria-required', 'true');
+        }
+
+        return $this->formElement;
     }
 
     protected function assembleErrors()
@@ -119,7 +134,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
         $this->add(array_filter([
             $this->assembleLabel(),
-            $this->formElement,
+            $this->assembleElement(),
             $this->assembleDescription(),
             $this->assembleErrors()
         ]));
