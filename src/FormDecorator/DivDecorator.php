@@ -85,10 +85,8 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
         if ($label !== null) {
             $attributes = null;
-            $elementAttributes = $this->formElement->getAttributes();
-
-            if (isset($elementAttributes['id'])) {
-                $attributes = new Attributes(['for' => $elementAttributes['id']]);
+            if ($this->formElement->getAttributes()->has('id')) {
+                $attributes = new Attributes(['for' => $this->formElement->getAttributes()->get('id')->getValue()]);
             }
 
             return Html::tag('label', $attributes, $label);
