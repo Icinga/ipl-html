@@ -35,13 +35,13 @@ class Form extends BaseHtmlElement
     protected $submitElements = [];
 
     /** @var bool Whether the form is valid */
-    private $isValid;
+    protected $isValid;
 
     /** @var ServerRequestInterface The server request being processed */
-    private $request;
+    protected $request;
 
     /** @var string */
-    private $redirectUrl;
+    protected $redirectUrl;
 
     protected $tag = 'form';
 
