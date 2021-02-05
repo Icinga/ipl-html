@@ -14,6 +14,21 @@ use ipl\Html\Html;
  */
 class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 {
+    /** @var string CSS class to use for submit elements */
+    const SUBMIT_ELEMENT_CLASS = 'form-control';
+
+    /** @var string CSS class to use for all input elements */
+    const INPUT_ELEMENT_CLASS = 'form-element';
+
+    /** @var string CSS class to use for form descriptions */
+    const DESCRIPTION_CLASS = 'form-element-description';
+
+    /** @var string CSS class to use for form errors */
+    const ERROR_CLASS = 'form-element-error';
+
+    /** @var string CSS class to set on the decorator if the element has errors */
+    const ERROR_HINT_CLASS = 'has-error';
+
     /** @var FormElement The decorated form element */
     protected $formElement;
 
@@ -28,13 +43,12 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
         $decorator->formElement = $formElement;
 
+        $classes = [static::INPUT_ELEMENT_CLASS];
         if ($formElement instanceof FormSubmitElement) {
-            $class = 'form-control';
-        } else {
-            $class = 'form-element';
+            $classes[] = static::SUBMIT_ELEMENT_CLASS;
         }
 
-        $decorator->getAttributes()->add('class', $class);
+        $decorator->getAttributes()->add('class', $classes);
 
         $formElement->prependWrapper($decorator);
     }
@@ -44,7 +58,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         $description = $this->formElement->getDescription();
 
         if ($description !== null) {
-            return Html::tag('p', ['class' => 'form-element-description'], $description);
+            return Html::tag('p', ['class' => static::DESCRIPTION_CLASS], $description);
         }
 
         return null;
@@ -55,7 +69,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         $errors = [];
 
         foreach ($this->formElement->getMessages() as $message) {
-            $errors[] = Html::tag('p', ['class' => 'form-element-error'], $message);
+            $errors[] = Html::tag('p', ['class' => static::ERROR_CLASS], $message);
         }
 
         if (! empty($errors)) {
@@ -102,7 +116,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
     protected function assemble()
     {
         if ($this->formElement->hasBeenValidated() && ! $this->formElement->isValid()) {
-            $this->getAttributes()->add('class', 'has-error');
+            $this->getAttributes()->add('class', static::ERROR_HINT_CLASS);
         }
 
         $this->add(array_filter([
