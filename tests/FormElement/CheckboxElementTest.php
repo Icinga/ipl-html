@@ -6,11 +6,31 @@ use ipl\Html\FormElement\CheckboxElement;
 
 class CheckboxElementTest extends TestCase
 {
-    public function testRendersCheckedValueAsValueAttribute()
+    public function testRendersCheckValuesAsValueAttribute()
     {
         $checkbox = new CheckboxElement('test');
 
-        $this->assertHtml('<input type="checkbox" name="test" value="y">', $checkbox);
+        $this->assertHtml(
+            '<input type="hidden" name="test" value="n">'
+            . '<input type="checkbox" name="test" value="y">',
+            $checkbox
+        );
+    }
+
+    public function testElementValueBehavesCoherentlyWithNonCheckboxes()
+    {
+        $checkbox = new CheckboxElement('test');
+
+        // A non submitted checkbox has no value
+        $this->assertNull($checkbox->getValue());
+
+        // A checked checkbox submit populates the checked value as value
+        $checkbox->setValue($checkbox->getCheckedValue());
+        $this->assertEquals($checkbox->getCheckedValue(), $checkbox->getValue());
+
+        // An unchecked checkbox submit populates the unchecked value as value
+        $checkbox->setValue($checkbox->getUnCheckedValue());
+        $this->assertEquals($checkbox->getUnCheckedValue(), $checkbox->getValue());
     }
 
     public function testIsCheckedReturnsFalseByDefault()
@@ -36,26 +56,54 @@ class CheckboxElementTest extends TestCase
         $this->assertTrue($checkbox->isChecked());
     }
 
+    public function testSetValueAcceptsBooleans()
+    {
+        $checkbox = new CheckboxElement('test');
+
+        $checkbox->setValue(true);
+        $this->assertTrue($checkbox->isChecked());
+        $this->assertEquals($checkbox->getCheckedValue(), $checkbox->getValue());
+
+        $checkbox->setValue(false);
+        $this->assertFalse($checkbox->isChecked());
+        $this->assertEquals($checkbox->getUnCheckedValue(), $checkbox->getValue());
+    }
+
     public function testRendersCheckedAttributeIfIsChecked()
     {
         $checkbox = new CheckboxElement('test');
 
         $checkbox->setChecked(true);
-        $this->assertHtml('<input checked="checked" type="checkbox" name="test" value="y">', $checkbox);
+        $this->assertHtml(
+            '<input type="hidden" name="test" value="n">'
+            . '<input checked="checked" type="checkbox" name="test" value="y">',
+            $checkbox
+        );
     }
 
-    public function testSetCheckedValue()
+    public function testSetCheckValues()
     {
         $checkbox = new CheckboxElement('test');
         $checkedValue = 'checked';
+        $unCheckedValue = 'unchecked';
 
         $checkbox->setCheckedValue($checkedValue);
+        $checkbox->setUnCheckedValue($unCheckedValue);
         $this->assertSame($checkedValue, $checkbox->getCheckedValue());
-        $this->assertHtml('<input type="checkbox" name="test" value="checked">', $checkbox);
+        $this->assertSame($unCheckedValue, $checkbox->getUnCheckedValue());
+        $this->assertHtml(
+            '<input type="hidden" name="test" value="unchecked">'
+            . '<input type="checkbox" name="test" value="checked">',
+            $checkbox
+        );
 
         $this->assertFalse($checkbox->isChecked());
         $checkbox->setValue($checkedValue);
         $this->assertTrue($checkbox->isChecked());
-        $this->assertHtml('<input checked="checked" type="checkbox" name="test" value="checked">', $checkbox);
+        $this->assertHtml(
+            '<input type="hidden" name="test" value="unchecked">'
+            . '<input checked="checked" type="checkbox" name="test" value="checked">',
+            $checkbox
+        );
     }
 }
