@@ -7,6 +7,7 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\FormElement\HiddenElement;
 use ipl\Html\Html;
 use ipl\Html\HtmlElement;
 
@@ -40,6 +41,10 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
     public function decorate(FormElement $formElement)
     {
+        if ($formElement instanceof HiddenElement) {
+            return;
+        }
+
         $decorator = clone $this;
 
         $decorator->formElement = $formElement;
