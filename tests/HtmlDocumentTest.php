@@ -9,6 +9,7 @@ use ipl\Tests\Html\TestDummy\AddsContentDuringAssemble;
 use ipl\Tests\Html\TestDummy\AddsWrapperDuringAssemble;
 use ipl\Tests\Html\TestDummy\IterableElement;
 use ipl\Tests\Html\TestDummy\ObjectThatCanBeCastedToString;
+use RuntimeException;
 
 class HtmlDocumentTest extends TestCase
 {
@@ -79,6 +80,76 @@ class HtmlDocumentTest extends TestCase
         $c->prependWrapper($b);
         $this->assertRendersHtml(
             '<a><b>Just some content</b></a>',
+            $c
+        );
+    }
+
+    public function testTopLevelWrappersReferencedFromBelowAgain()
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = h::tag('c');
+        $d = (new HtmlDocument())->add('Just some');
+
+        $d->addWrapper($a);     // a -> d
+        $d->prependWrapper($c); // a -> c -> d
+        $c->prependWrapper($b); // a -> b -> c -> d
+
+        // This might also be done during assembly of $a (Think of a form element decorator here)
+        $a->add(h::tag('e', 'content'));
+        $a->prepend($d);
+
+        // a -> b -> c
+        // \         |
+        //  \-> d <-/
+        //   \-> e
+
+        $this->assertHtml(
+            '<a><b><c>Just some</c></b><e>content</e></a>',
+            $d
+        );
+    }
+
+    public function testWrapperLoopsAreDetected()
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = h::tag('c');
+        $d = h::tag('d');
+        $e = h::tag('e');
+        $f = h::tag('f');
+
+        $f->addWrapper($e); // e -> f
+        $f->addWrapper($d); // d -> e -> f
+        $f->addWrapper($c); // c -> d -> e -> f
+        $f->addWrapper($b); // b -> c -> d -> e -> f
+        $f->addWrapper($a); // a -> b -> c -> d -> e -> f
+        $a->addWrapper($f); // ~
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Wrapper loop detected');
+
+        $f->render();
+    }
+
+    public function testWrapperReuseWorks()
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = h::tag('c');
+        $d = h::tag('d');
+
+        $c->addWrapper($b); // b -> c
+        $b->addWrapper($a); // a -> b -> c
+
+        $d->addWrapper($a); // a -> d
+        $c->add($d);
+
+        // a -> b -> c
+        // \-------->\-> d
+
+        $this->assertHtml(
+            '<a><b><c><a><d></d></a></c></b></a>',
             $c
         );
     }
