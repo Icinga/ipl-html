@@ -69,11 +69,9 @@ class BaseHtmlElementTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testExceptionThrownForVoidElementsWithContent()
     {
+        $this->expectException(\RuntimeException::class);
         (new VoidElementWithContent())->render();
     }
 
@@ -101,27 +99,21 @@ class BaseHtmlElementTest extends TestCase
         $this->assertFalse($element->wantsClosingTag());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testAssertTagInRender()
     {
+        $this->expectException(\RuntimeException::class);
         (new NoTag())->render();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testAssertTagInIsVoid()
     {
+        $this->expectException(\RuntimeException::class);
         (new NoTag())->isVoid();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testAssertTagInGetTag()
     {
+        $this->expectException(\RuntimeException::class);
         (new NoTag())->getTag();
     }
 

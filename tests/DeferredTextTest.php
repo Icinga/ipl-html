@@ -35,11 +35,9 @@ class DeferredTextTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testPassesEventualExceptionWhenRendered()
     {
+        $this->expectException(\Exception::class);
         $text = new DeferredText(function () {
             throw new Exception('Boom');
         });
@@ -53,6 +51,7 @@ class DeferredTextTest extends TestCase
             throw new Exception('Boom');
         });
 
+        // TODO(el): Use assertMatchesRegularExpression instead
         $this->assertRegExp('/Boom.*/', (string) $text);
         $this->assertRegExp('/error/', (string) $text);
     }
