@@ -218,7 +218,7 @@ class Form extends BaseHtmlElement
         // Assemble after populate in order to conditionally provide form elements
         $this->ensureAssembled();
 
-        if (! $this->hasSubmitButton() || $this->getSubmitButton()->hasBeenPressed()) {
+        if ($this->hasBeenSubmitted()) {
             if ($this->isValid()) {
                 try {
                     $this->emit(Form::ON_SENT, [$this]);
