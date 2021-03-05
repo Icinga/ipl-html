@@ -34,9 +34,6 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
     /** @var FormElement The decorated form element */
     protected $formElement;
 
-    /** @var bool Whether the form element has been added already */
-    protected $formElementAdded = false;
-
     protected $tag = 'div';
 
     public function decorate(FormElement $formElement)
@@ -114,22 +111,6 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         }
 
         return null;
-    }
-
-    public function add($content)
-    {
-        if ($content === $this->formElement) {
-            // Our wrapper implementation automatically adds the wrapped element but we already did this in assemble
-            if ($this->formElementAdded) {
-                return $this;
-            }
-
-            $this->formElementAdded = true;
-        }
-
-        parent::add($content);
-
-        return $this;
     }
 
     protected function assemble()
