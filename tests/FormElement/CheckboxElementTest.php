@@ -29,8 +29,8 @@ class CheckboxElementTest extends TestCase
         $this->assertEquals($checkbox->getCheckedValue(), $checkbox->getValue());
 
         // An unchecked checkbox submit populates the unchecked value as value
-        $checkbox->setValue($checkbox->getUnCheckedValue());
-        $this->assertEquals($checkbox->getUnCheckedValue(), $checkbox->getValue());
+        $checkbox->setValue($checkbox->getUncheckedValue());
+        $this->assertEquals($checkbox->getUncheckedValue(), $checkbox->getValue());
     }
 
     public function testIsCheckedReturnsFalseByDefault()
@@ -66,7 +66,7 @@ class CheckboxElementTest extends TestCase
 
         $checkbox->setValue(false);
         $this->assertFalse($checkbox->isChecked());
-        $this->assertEquals($checkbox->getUnCheckedValue(), $checkbox->getValue());
+        $this->assertEquals($checkbox->getUncheckedValue(), $checkbox->getValue());
     }
 
     public function testRendersCheckedAttributeIfIsChecked()
@@ -88,9 +88,9 @@ class CheckboxElementTest extends TestCase
         $unCheckedValue = 'unchecked';
 
         $checkbox->setCheckedValue($checkedValue);
-        $checkbox->setUnCheckedValue($unCheckedValue);
+        $checkbox->setUncheckedValue($unCheckedValue);
         $this->assertSame($checkedValue, $checkbox->getCheckedValue());
-        $this->assertSame($unCheckedValue, $checkbox->getUnCheckedValue());
+        $this->assertSame($unCheckedValue, $checkbox->getUncheckedValue());
         $this->assertHtml(
             '<input type="hidden" name="test" value="unchecked">'
             . '<input type="checkbox" name="test" value="checked">',

@@ -13,7 +13,7 @@ class CheckboxElement extends InputElement
     protected $checkedValue = 'y';
 
     /** @var string Value of the checkbox when it is not checked */
-    protected $unCheckedValue = 'n';
+    protected $uncheckedValue = 'n';
 
     protected $type = 'checkbox';
 
@@ -70,21 +70,21 @@ class CheckboxElement extends InputElement
      *
      * @return string
      */
-    public function getUnCheckedValue()
+    public function getUncheckedValue()
     {
-        return $this->unCheckedValue;
+        return $this->uncheckedValue;
     }
 
     /**
      * Set the value of the checkbox when it is not checked
      *
-     * @param string $unCheckedValue
+     * @param string $uncheckedValue
      *
      * @return $this
      */
-    public function setUnCheckedValue($unCheckedValue)
+    public function setUncheckedValue($uncheckedValue)
     {
-        $this->unCheckedValue = $unCheckedValue;
+        $this->uncheckedValue = $uncheckedValue;
 
         return $this;
     }
@@ -92,7 +92,7 @@ class CheckboxElement extends InputElement
     public function setValue($value)
     {
         if (is_bool($value)) {
-            $value = $value ? $this->getCheckedValue() : $this->getUnCheckedValue();
+            $value = $value ? $this->getCheckedValue() : $this->getUncheckedValue();
         }
 
         $this->setChecked($value === $this->getCheckedValue());
@@ -120,6 +120,6 @@ class CheckboxElement extends InputElement
     {
         $html = parent::renderUnwrapped();
 
-        return (new HiddenElement($this->getName(), ['value' => $this->getUnCheckedValue()])) . $html;
+        return (new HiddenElement($this->getName(), ['value' => $this->getUncheckedValue()])) . $html;
     }
 }
