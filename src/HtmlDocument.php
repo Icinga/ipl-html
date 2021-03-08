@@ -55,7 +55,7 @@ class HtmlDocument implements Countable, Wrappable
      *
      * @return Wrappable
      */
-    private function getWrapped()
+    private function consumeWrapped()
     {
         $wrapped = $this->wrapped;
         $this->wrapped = null;
@@ -289,7 +289,7 @@ class HtmlDocument implements Countable, Wrappable
         // If the document consumes it during assembly, nothing happens. If the document is used as
         // wrapper for another element, consuming it asap prevents a left-over reference and avoids
         // the element from getting rendered multiple times.
-        $wrapped = $this->getWrapped();
+        $wrapped = $this->consumeWrapped();
 
         $content = $this->getContent();
         if ($wrapped !== null && ! $this->contains($wrapped)) {
