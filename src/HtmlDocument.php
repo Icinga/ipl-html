@@ -6,6 +6,7 @@ use Countable;
 use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Wrappable;
+use RuntimeException;
 
 /**
  * HTML document
@@ -23,11 +24,44 @@ class HtmlDocument implements Countable, Wrappable
     /** @var Wrappable Wrapper */
     protected $wrapper;
 
+    /** @var Wrappable Wrapped element */
+    private $wrapped;
+
+    /** @var HtmlDocument The currently responsible wrapper */
+    private $renderedBy;
+
     /** @var ValidHtml[] Content */
     private $content = [];
 
     /** @var array */
     private $contentIndex = [];
+
+    /**
+     * Set the element to wrap
+     *
+     * @param Wrappable $element
+     *
+     * @return $this
+     */
+    private function setWrapped(Wrappable $element)
+    {
+        $this->wrapped = $element;
+
+        return $this;
+    }
+
+    /**
+     * Consume the wrapped element
+     *
+     * @return Wrappable
+     */
+    private function consumeWrapped()
+    {
+        $wrapped = $this->wrapped;
+        $this->wrapped = null;
+
+        return $wrapped;
+    }
 
     /**
      * Get the content
@@ -142,6 +176,33 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Check whether the given element is a direct or indirect child of this document
+     *
+     * A direct child is one that is part of this document's content. An indirect child
+     * is one that is either part of a direct child's content (recursively) or a wrapper
+     * of such (recursively).
+     *
+     * @param ValidHtml $element
+     *
+     * @return bool
+     */
+    public function contains(ValidHtml $element)
+    {
+        $key = spl_object_hash($element);
+        if (array_key_exists($key, $this->contentIndex)) {
+            return true;
+        }
+
+        foreach ($this->content as $child) {
+            if ($child instanceof self && ($child->contains($element) || $child->wrappedBy($element))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Prepend content
      *
      * @param mixed $content
@@ -224,8 +285,27 @@ class HtmlDocument implements Countable, Wrappable
         $this->ensureAssembled();
         $html = [];
 
-        foreach ($this->content as $element) {
+        // This **must** be consumed after the document's assembly but before rendering the content.
+        // If the document consumes it during assembly, nothing happens. If the document is used as
+        // wrapper for another element, consuming it asap prevents a left-over reference and avoids
+        // the element from getting rendered multiple times.
+        $wrapped = $this->consumeWrapped();
+
+        $content = $this->getContent();
+        if ($wrapped !== null && ! $this->contains($wrapped)) {
+            $content[] = $wrapped;
+        }
+
+        foreach ($content as $element) {
+            if ($element instanceof self) {
+                $element->renderedBy = $this;
+            }
+
             $html[] = $element->render();
+
+            if ($element instanceof self) {
+                unset($element->renderedBy);
+            }
         }
 
         return implode($this->contentSeparator, $html);
@@ -273,14 +353,35 @@ class HtmlDocument implements Countable, Wrappable
      */
     protected function renderWrapped()
     {
-        // TODO: we don't like this, but have no better solution right now.
-        //       However, it works as expected, tests are green
         $wrapper = $this->wrapper;
-        $this->wrapper = null;
-        $result = $wrapper->renderWrappedDocument($this);
-        $this->wrapper = $wrapper;
 
-        return $result;
+        if (isset($this->renderedBy)) {
+            if ($wrapper === $this->renderedBy) {
+                // $this might be an intermediate wrapper that's already about to be rendered.
+                // In case of an element (referencing $this as a wrapper) that is a child of an
+                // outer wrapper, it is required to ignore $wrapper as otherwise it's a loop.
+                // ($wrapper then is in the render path of the outer wrapper and sideways "stolen")
+                return $this->renderUnwrapped();
+            }
+
+            $wrapper->renderedBy = $this->renderedBy;
+        } elseif (isset($wrapper->renderedBy)) {
+            throw new RuntimeException('Wrapper loop detected');
+        } else {
+            $this->renderedBy = $wrapper;
+        }
+
+        $html = $wrapper->renderWrappedDocument($this);
+
+        if (isset($this->renderedBy)) {
+            if ($this->renderedBy === $wrapper) {
+                unset($this->renderedBy);
+            } elseif ($wrapper->renderedBy === $this->renderedBy) {
+                unset($wrapper->renderedBy);
+            }
+        }
+
+        return $html;
     }
 
     /**
@@ -292,17 +393,7 @@ class HtmlDocument implements Countable, Wrappable
      */
     protected function renderWrappedDocument(HtmlDocument $document)
     {
-        $wrapper = clone $this;
-
-        $wrapper->ensureAssembled();
-
-        $key = spl_object_hash($document);
-
-        if (! array_key_exists($key, $wrapper->contentIndex)) {
-            $wrapper->add($document);
-        }
-
-        return $wrapper->render();
+        return $this->setWrapped($document)->render();
     }
 
     public function count()
@@ -343,6 +434,26 @@ class HtmlDocument implements Countable, Wrappable
         }
 
         return $this;
+    }
+
+    /**
+     * Check whether the given element wraps this document (recursively)
+     *
+     * @param ValidHtml $element
+     *
+     * @return bool
+     */
+    protected function wrappedBy(ValidHtml $element)
+    {
+        if ($this->wrapper === null) {
+            return false;
+        }
+
+        if ($this->wrapper === $element || $this->wrapper->wrappedBy($element)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function render()

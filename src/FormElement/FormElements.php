@@ -316,6 +316,23 @@ trait FormElements
     }
 
     /**
+     * Get the populated value of the element specified by name
+     *
+     * Returns $default if there is no populated value for this element.
+     *
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getPopulatedValue($name, $default = null)
+    {
+        return isset($this->populatedValues[$name])
+            ? $this->populatedValues[$name]
+            : $default;
+    }
+
+    /**
      * Add all elements from the given element collection
      *
      * @param Form|SubFormElement $form

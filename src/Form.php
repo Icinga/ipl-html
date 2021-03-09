@@ -35,13 +35,13 @@ class Form extends BaseHtmlElement
     protected $submitElements = [];
 
     /** @var bool Whether the form is valid */
-    private $isValid;
+    protected $isValid;
 
     /** @var ServerRequestInterface The server request being processed */
-    private $request;
+    protected $request;
 
     /** @var string */
-    private $redirectUrl;
+    protected $redirectUrl;
 
     protected $tag = 'form';
 
@@ -218,7 +218,7 @@ class Form extends BaseHtmlElement
         // Assemble after populate in order to conditionally provide form elements
         $this->ensureAssembled();
 
-        if (! $this->hasSubmitButton() || $this->getSubmitButton()->hasBeenPressed()) {
+        if ($this->hasBeenSubmitted()) {
             if ($this->isValid()) {
                 try {
                     $this->emit(Form::ON_SENT, [$this]);
@@ -342,15 +342,18 @@ class Form extends BaseHtmlElement
 
     protected function onError()
     {
-        $error = Html::tag('p', ['class' => 'error']);
+        $errors = Html::tag('ul', ['class' => 'errors']);
         foreach ($this->getMessages() as $message) {
             if ($message instanceof Exception) {
-                $error->add($message->getMessage());
-            } else {
-                $error->add($message);
+                $message = $message->getMessage();
             }
+
+            $errors->add(Html::tag('li', $message));
         }
-        $this->prepend($error);
+
+        if (! $errors->isEmpty()) {
+            $this->prepend($errors);
+        }
     }
 
     protected function onSuccess()
