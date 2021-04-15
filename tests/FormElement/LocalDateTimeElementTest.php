@@ -12,7 +12,10 @@ class LocalDateTimeElementTest extends TestCase
         $element = new LocalDateTimeElement('test');
         $element->setValue(DateTime::createFromFormat(LocalDateTimeElement::FORMAT, '2021-02-10T16:00:00'));
 
-        $this->assertHtml('<input type="datetime-local" name="test" value="2021-02-10T16:00:00">', $element);
+        $this->assertHtml(
+            '<input data-use-datetime-picker="" type="datetime-local" name="test" value="2021-02-10T16:00:00">',
+            $element
+        );
     }
 
     public function testReturnsADatTimeObjectOnGetValue()

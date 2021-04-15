@@ -8,6 +8,8 @@ class LocalDateTimeElement extends InputElement
 {
     const FORMAT = 'Y-m-d\TH:i:s';
 
+    protected $defaultAttributes = ['data-use-datetime-picker' => true];
+
     protected $type = 'datetime-local';
 
     /** @var DateTime */
