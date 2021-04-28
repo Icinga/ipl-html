@@ -13,7 +13,7 @@ class DocumentationFormsTest extends TestCase
         $form = new Form();
         $form->setAction('/your/url');
         $form->addElement('text', 'name', ['label' => 'Your name']);
-        $this->assertRendersHtml(
+        $this->assertHtml(
             '<form action="/your/url" method="POST"><input name="name" type="text" /></form>',
             $form
         );
@@ -36,16 +36,16 @@ class DocumentationFormsTest extends TestCase
             ->addAttributes([
                 'class' => ['important', 'customer'],
                 'id'    => 'customer-field'
-            ])->setSeparator("\n");
+            ]);
 
-        $this->assertEquals(
-            '<select name="customer" class="important customer" id="customer-field">' . "\n"
-            . '<option value="">Please choose</option>' . "\n"
-            . '<option value="1">The one</option>' . "\n"
-            . '<option value="4">Four</option>' . "\n"
-            . '<option value="5">Hi five</option>' . "\n"
+        $this->assertHtml(
+            '<select name="customer" class="important customer" id="customer-field">'
+            . '<option value="">Please choose</option>'
+            . '<option value="1">The one</option>'
+            . '<option value="4">Four</option>'
+            . '<option value="5">Hi five</option>'
             . '</select>',
-            $form->getElement('customer')->render()
+            $form->getElement('customer')
         );
     }
 
@@ -82,7 +82,7 @@ class DocumentationFormsTest extends TestCase
         $nameElement = new TextElement('name', ['class' => 'important']);
         $form->addElement($nameElement);
 
-        $this->assertRendersHtml(
+        $this->assertHtml(
             '<form method="POST"><input type="text" name="name" class="important" />'
             . '</form>',
             $form
@@ -93,7 +93,7 @@ class DocumentationFormsTest extends TestCase
     {
         $form = new Form();
 
-        $this->assertRendersHtml(
+        $this->assertHtml(
             '<form method="POST"><div><input name="first_name" type="text" /><br />'
             . '<input name="last_name" type="text" /></div></form>',
             $form
@@ -103,7 +103,7 @@ class DocumentationFormsTest extends TestCase
                 $form->getElement('first_name'),
                 Html::tag('br'),
                 $form->getElement('last_name'),
-            ])->setSeparator("\n"))
+            ]))
         );
     }
 }
