@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Attributes;
+use ipl\Html\BaseHtmlElement;
 
 class AttributesTest extends TestCase
 {
@@ -37,5 +38,36 @@ class AttributesTest extends TestCase
 
             next($attrs);
         }
+    }
+
+    public function testNativeAttributesAndCallbacks()
+    {
+        $objectOne = new class extends BaseHtmlElement {
+            protected $defaultAttributes = ['class' => 'foo'];
+
+            protected $attr;
+
+            public function getAttr()
+            {
+                return $this->attr;
+            }
+
+            public function setAttr($val)
+            {
+                $this->attr = $val;
+            }
+        };
+
+        $objectOne->getAttributes()->registerAttributeCallback(
+            'class',
+            [$objectOne, 'getAttr'],
+            [$objectOne, 'setAttr']
+        );
+
+        $objectOne->getAttributes()->set('class', 'bar');
+
+        $this->assertEquals('bar', $objectOne->getAttr());
+        $this->assertEquals(' class="foo bar"', $objectOne->getAttributes()->render());
+        $this->assertEquals('foo', $objectOne->getAttributes()->getAttributes()['class']->getValue());
     }
 }
