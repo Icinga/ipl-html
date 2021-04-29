@@ -65,24 +65,4 @@ class FormattedStringTest extends TestCase
             )
         );
     }
-
-    public function testSupportsMustache()
-    {
-        $test = FormattedString::create(
-            '{{#total}}{{#first}}First{{/first}}{{/total}} %d or {{#second}}Second{{/second}} %d',
-            1,
-            2
-        );
-        $test->getMustaches(
-            ['total' => Html::tag('h1'),
-                'first' => Html::tag('span'),
-                'second' => Html::tag('span')
-            ]
-        );
-
-        $this->assertHtml(
-            '<h1><span>First</span></h1> 1 or <span>Second</span> 2',
-            $test
-        );
-    }
 }

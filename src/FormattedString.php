@@ -29,10 +29,6 @@ class FormattedString implements ValidHtml
     /** @var ValidHtml */
     protected $format;
 
-    protected $pattern = '/\{\{(#[^\{]+)\}\}((?:[^{}]|(?R))*)\{\{\/(.*?)\}\}/';
-
-    protected $numMustaches;
-
     /**
      * Create a new {@link sprintf()}-like formatted HTML string
      *
@@ -100,59 +96,5 @@ class FormattedString implements ValidHtml
             $this->format->render(),
             $this->args
         );
-    }
-
-    public function getMustaches($args = [])
-    {
-        $format = $this->render();
-        if (preg_match_all($this->pattern, $format, $matches, PREG_SET_ORDER)) {
-            $this->numMustaches = count($matches);
-
-            $mustaches = [];
-
-            for ($i = 0; $i < $this->numMustaches; $i++) {
-                $format = str_replace($matches[$i][0], '%s', $format);
-                $mustaches[$matches[$i][3]] = $matches[$i][2];
-            }
-
-            $this->format = Html::wantHtml($format);
-
-            if (empty($args)) {
-                throw new Exception(sprintf(
-                    'Empty parameter passed to %s',
-                    __METHOD__
-                ));
-            }
-
-            $this->args = [];
-            $ms = $this->mustacheReplace($args, $mustaches);
-
-            foreach ($ms as $key => $val) {
-                $val = Html::wantHtml($val);
-                $this->args[$key] = $val;
-            }
-        }
-    }
-
-    public function mustacheReplace($tags, $mustaches)
-    {
-        foreach ($tags as $tag => $content) {
-            if (array_key_exists($tag, $mustaches)) {
-                if (preg_match_all($this->pattern, $mustaches[$tag], $nestedmatches, PREG_SET_ORDER)) {
-                    $nMustaches = [];
-                    $subtags = [];
-                    for ($i = 0; $i < count($nestedmatches); $i++) {
-                        $nMustaches[$nestedmatches[$i][3]] = $nestedmatches[$i][2];
-                        $subtags[$nestedmatches[$i][3]] = $tags[$nestedmatches[$i][3]];
-                        unset($tags[$nestedmatches[$i][3]]);
-                    }
-                    $subtags = $this->mustacheReplace($subtags, $nMustaches);
-                    $content->setContent(Html::wantHtml($subtags));
-                } else {
-                    $content->setContent($mustaches[$tag]);
-                }
-            }
-        }
-        return $tags;
     }
 }
