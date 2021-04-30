@@ -384,27 +384,36 @@ class Attributes implements ArrayAccess, IteratorAggregate
      */
     public function render()
     {
-        $parts = [];
+        $attributes = $this->attributes;
         foreach ($this->callbacks as $name => $callback) {
             $attribute = call_user_func($callback);
             if ($attribute instanceof Attribute) {
-                if (! $attribute->isEmpty()) {
-                    $parts[] = $attribute->render();
+                if ($attribute->isEmpty()) {
+                    continue;
                 }
             } elseif ($attribute === null) {
                 continue;
             } elseif (is_scalar($attribute)) {
-                $parts[] = Attribute::create($name, $attribute)->render();
+                $attribute = Attribute::create($name, $attribute);
             } else {
                 throw new InvalidArgumentException(sprintf(
-                    'A registered attribute callback must return string, null'
+                    'A registered attribute callback must return a scalar, null'
                     . ' or an Attribute, got a %s',
                     get_php_type($attribute)
                 ));
             }
+
+            $name = $attribute->getName();
+            if (isset($attributes[$name])) {
+                $attributes[$name] = clone $attributes[$name];
+                $attributes[$name]->addValue($attribute->getValue());
+            } else {
+                $attributes[$name] = $attribute;
+            }
         }
 
-        foreach ($this->attributes as $attribute) {
+        $parts = [];
+        foreach ($attributes as $attribute) {
             if ($attribute->isEmpty()) {
                 continue;
             }
