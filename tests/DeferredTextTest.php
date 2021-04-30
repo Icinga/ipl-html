@@ -35,15 +35,13 @@ class DeferredTextTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testPassesEventualExceptionWhenRendered()
     {
         $text = new DeferredText(function () {
             throw new Exception('Boom');
         });
 
+        $this->expectException(\Exception::class);
         $text->render();
     }
 
