@@ -22,7 +22,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function assertHtml($expectedHtml, ValidHtml $actual)
     {
-        $this->assertEquals(Xml::load($expectedHtml, true), Xml::load($actual->render(), true));
+        if (method_exists(Xml::class, 'load')) {
+            $expectedHtml = Xml::load($expectedHtml, true);
+            $actualHtml = Xml::load($actual->render(), true);
+        } else {
+            $expectedHtml = (new Xml\Loader())->load($expectedHtml, true);
+            $actualHtml = (new Xml\Loader())->load($actual->render(), true);
+        }
+
+        $this->assertEquals($expectedHtml, $actualHtml);
     }
 
     /**
