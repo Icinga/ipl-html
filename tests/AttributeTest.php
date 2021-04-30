@@ -196,11 +196,9 @@ class AttributeTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testSpecialCharactersInAttributeNamesAreNotYetSupported()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Attribute::create('a_a', 'sa');
     }
 
