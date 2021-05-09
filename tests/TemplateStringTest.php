@@ -119,7 +119,7 @@ class TemplateStringTest extends TestCase
     public function testProcessesTemplatesDeferred()
     {
         $title = Html::tag('h1');
-        $template = TemplateString::create('{{#title}}Foo Bar{{/total}}', ['title' => $title]);
+        $template = TemplateString::create('{{#title}}Foo Bar{{/title}}', ['title' => $title]);
 
         $title->addAttributes(['class' => 'main']);
         $title->add('Main: ');

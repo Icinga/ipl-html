@@ -120,18 +120,36 @@ class TemplateString extends FormattedString
             if (array_key_exists($tag, $mustaches)) {
                 if (preg_match_all($this->pattern, $mustaches[$tag], $nestedmatches, PREG_SET_ORDER)) {
                     $nMustaches = [];
-                    $subtags = [];
+
+                    $pos = strpos($mustaches[$tag], $nestedmatches[0][0]);
+                    $mustStr = substr($mustaches[$tag], 0, $pos);
+
+                    $content->add($mustStr);
+
+                    $nextStr = substr($mustaches[$tag], $pos);
 
                     for ($i = 0; $i < count($nestedmatches); $i++) {
                         $nMustaches[$nestedmatches[$i][3]] = $nestedmatches[$i][2];
-                        $subtags[$nestedmatches[$i][3]] = $tags[$nestedmatches[$i][3]];
+
+                        $subtags = $this->getMustaches($tags, $nMustaches);
+
+                        $content->add($subtags[$nestedmatches[$i][3]]);
+
+                        $nextStr = substr($nextStr, strlen($nestedmatches[$i][3]));
+
+                        if ($nextStr !== null) {
+                            $pos = strpos($nextStr, $nestedmatches[$i][0]);
+                            $mustStr = substr($mustaches[$tag], 0, $pos);
+
+                            $content->add($mustStr);
+
+                            $nextStr = substr($mustaches[$tag], $pos);
+                        }
+
                         unset($tags[$nestedmatches[$i][3]]);
                     }
-
-                    $subtags = $this->getMustaches($subtags, $nMustaches);
-                    $content->setContent(Html::wantHtml($subtags));
                 } else {
-                    $content->setContent($mustaches[$tag]);
+                    $content->add($mustaches[$tag]);
                 }
             }
         }
