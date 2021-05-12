@@ -117,6 +117,8 @@ class TemplateString extends FormattedString
     protected function getMustaches($tags, $mustaches)
     {
         foreach ($tags as $tag => $content) {
+            $htmlDoc = new HtmlDocument();
+
             if (array_key_exists($tag, $mustaches)) {
                 if (preg_match_all($this->pattern, $mustaches[$tag], $nestedmatches, PREG_SET_ORDER)) {
                     $nMustaches = [];
@@ -124,32 +126,42 @@ class TemplateString extends FormattedString
                     $pos = strpos($mustaches[$tag], $nestedmatches[0][0]);
                     $mustStr = substr($mustaches[$tag], 0, $pos);
 
-                    $content->add($mustStr);
-
+                    $htmlDoc->add($mustStr);
                     $nextStr = substr($mustaches[$tag], $pos);
 
-                    for ($i = 0; $i < count($nestedmatches); $i++) {
+                    $nMatches = count($nestedmatches);
+
+                    for ($i = 0; $i < $nMatches; $i++) {
                         $nMustaches[$nestedmatches[$i][3]] = $nestedmatches[$i][2];
 
                         $subtags = $this->getMustaches($tags, $nMustaches);
 
-                        $content->add($subtags[$nestedmatches[$i][3]]);
+                        $htmlDoc->add($subtags[$nestedmatches[$i][3]]);
 
-                        $nextStr = substr($nextStr, strlen($nestedmatches[$i][3]));
+                        $nextStr = substr($nextStr, strlen($nestedmatches[$i][0]));
 
-                        if ($nextStr !== null) {
-                            $pos = strpos($nextStr, $nestedmatches[$i][0]);
-                            $mustStr = substr($mustaches[$tag], 0, $pos);
+                        if ($i < $nMatches - 1) {
+                            $pos = strpos($nextStr, $nestedmatches[$i + 1][0]);
+                            $substr = substr($nextStr, 0, $pos);
+                            $htmlDoc->add($substr);
 
-                            $content->add($mustStr);
+                            $nextStr = substr($nextStr, $pos);
+                        }
 
-                            $nextStr = substr($mustaches[$tag], $pos);
+                        if (($i === $nMatches - 1) && $nextStr !== null) {
+                            $htmlDoc->add($nextStr);
                         }
 
                         unset($tags[$nestedmatches[$i][3]]);
                     }
+
+                    $htmlDoc->setWrapper($content);
+                    $tags[$tag] = $htmlDoc;
                 } else {
-                    $content->add($mustaches[$tag]);
+                    $htmlDoc->add($mustaches[$tag]);
+                    $htmlDoc->setWrapper($content);
+
+                    $tags[$tag] = $htmlDoc;
                 }
             }
         }
