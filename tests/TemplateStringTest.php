@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html;
 
+use Exception;
 use ipl\Html\TemplateString;
 use ipl\Html\Html;
 
@@ -112,10 +113,6 @@ class TemplateStringTest extends TestCase
         );
     }
 
-    /**
-     * @depends testSupportsFlatTemplates
-     * @depends testRendersAdditionalContentCorrectly
-     */
     public function testProcessesTemplatesDeferred()
     {
         $title = Html::tag('h1');
@@ -128,5 +125,53 @@ class TemplateStringTest extends TestCase
             '<h1 class="main">Main: Foo Bar</h1>',
             $template
         );
+    }
+
+    /**
+     * @depends testSupportsFlatTemplates
+     * @depends testRendersAdditionalContentCorrectly
+     */
+    public function testProcessesTemplatesRepeat()
+    {
+        $this->assertHtml(
+            '<b>bla</b> <b>blubb</b>',
+            TemplateString::create(
+                '{{#foo}}bla{{/foo}} {{#foo}}blubb{{/foo}}',
+                ['foo' => Html::tag('b')]
+            )
+        );
+    }
+
+    public function testMissingTemplate()
+    {
+        $template = TemplateString::create(
+            '{{#foo}}bla{{/foo}} {{#foo}}blubb{{/foo}} {{#ok}}test{{/ok}}',
+            ['foo' => Html::tag('b')]
+        );
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Missing template argument: ok');
+        $template->render();
+    }
+
+    public function testUnboundedOpenTemplate()
+    {
+        $template = TemplateString::create(
+            '{{#foo}}bla{{/foo}} {{#foo}}blubb{{/foo}} {{#foo}}',
+            ['foo' => Html::tag('b')]
+        );
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Unbound opening of template: foo');
+        $template->render();
+    }
+
+    public function testUnboundedCloseTemplate()
+    {
+        $template = TemplateString::create(
+            '{{#foo}}bla{{/foo}} {{#foo}}blubb{{/foo}} {{/foo}}',
+            ['foo' => Html::tag('b')]
+        );
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Unbound closing of template: foo');
+        $template->render();
     }
 }

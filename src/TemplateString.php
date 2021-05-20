@@ -9,203 +9,167 @@ use Exception;
  *
  * # Example Usage
  * ```
- * $info = new TemplateString(
- *     'Follow the %s for more information on %s {{#mustache}}Mustache{{/mustache}}',
- *     [
- *         new Link('doc/html', 'HTML documentation'),
- *         Html::tag('strong', 'HTML elements'),
- *        [
- *        'mustache' => Html::tag('span')
- *        ]
- *     ]
+ * $info = TemplateString::create(
+ *      'Follow the {{#doc}}HTML documentation{{/doc}} for more information on {{#strong}}HTML elements{{/strong}}',
+ *      [
+ *          'doc'    => new Link(null, 'doc/html'),
+ *          'strong' => Html::tag('strong')
+ *      ]
  * );
  * ```
  */
 class TemplateString extends FormattedString
 {
-    protected $pattern = '/\{\{(#[^\{]+)\}\}((?:[^{}]|(?R))*)\{\{\/(.*?)\}\}/';
+    /** @var array */
+    protected $templateArgs = [];
 
-    protected $numMustaches;
+    /** @var int  */
+    protected $pos = 0;
 
-    protected $mustaches = [];
+    /** @var string  */
+    protected $string;
 
-    protected $mkeys = [];
+    /** @var int */
+    protected $length;
 
     public function __construct($format, $args = null)
     {
-        $parentArgs = $this->getFormattedStringArgs($args);
-        $parentArgs = array_values($parentArgs);
-
-        $format = str_replace('%s', '{{#fstr}}str{{/fstr}}', $format);
-        parent::__construct($format, $parentArgs);
-        $format = $this->render();
-
-        $tempArgs = array_filter($args, function ($arg) use ($parentArgs) {
-            return !in_array($arg, $parentArgs, true);
-        });
-
-        $tempArgs = array_values($tempArgs);
-
-        if (preg_match_all($this->pattern, $format, $matches, PREG_SET_ORDER)) {
-            $this->numMustaches = count($matches);
-
-            $this->mustaches = [];
-
-            $this->mkeys = [];
-            $j = 0;
-            for ($i = 0; $i < $this->numMustaches; $i++) {
-                $format = str_replace($matches[$i][0], '%s', $format);
-                if ($matches[$i][3] == 'fstr') {
-                    $this->mkeys[$i] = $j;
-                    $j++;
-                } else {
-                    $this->mkeys[$i] = $matches[$i][3];
-                    $this->mustaches[$matches[$i][3]] = $matches[$i][2];
-                }
+        $parentArgs = [];
+        foreach ($args ?: [] as $val) {
+            if (is_array($val) && is_string(key($val))) {
+                $this->templateArgs += $val;
+            } else {
+                $parentArgs[] = $val;
             }
-
-            $this->format = Html::wantHtml($format);
-            $this->templateString($tempArgs);
         }
+
+        parent::__construct($format, $parentArgs);
     }
 
     /**
-     *  render string with mustache template and formatted HTML string elements
+     * Parse template strings
      *
-     * @param ValidHtml[]  $args
-     *
-     * @return string
+     * @param null $for template name
+     * @return HtmlDocument
+     * @throws Exception in case of missing template argument or unbounded open or close templates
      */
-    protected function templateString($args = [])
+    protected function parseTemplates($for = null)
     {
-        if (empty($args)) {
+        $buffer = '';
+
+        while (($char = $this->readChar()) !== false) {
+            if ($char !== '{') {
+                $buffer .= $char;
+                continue;
+            }
+
+            $nextChar = $this->readChar();
+            if ($nextChar !== '{') {
+                $buffer .= $char . $nextChar;
+                continue;
+            }
+
+            $templateHandle = $this->readChar();
+            $start = $templateHandle === '#';
+            $end = $templateHandle === '/';
+
+            $templateKey = $this->readUntil('}');
+            // if the string following '{{#' is read up to the last character or (length - 1)th character
+            // then it is not a template
+            if ($this->pos >= $this->length - 1) {
+                $buffer .= $char . $nextChar . $templateHandle . $templateKey;
+                continue;
+            }
+
+            $this->pos++;
+            $closeChar = $this->readChar();
+
+            if ($closeChar !== '}') {
+                $buffer .= $char . $nextChar . $templateHandle . $templateKey . '}' . $closeChar;
+                continue;
+            }
+
+            if ($start) {
+                if (isset($this->templateArgs[$templateKey])) {
+                    $wrapper = $this->templateArgs[$templateKey];
+
+                    $buffer .= $this->parseTemplates($templateKey)->prependWrapper($wrapper);
+                } else {
+                    throw new Exception(sprintf(
+                        'Missing template argument: %s ',
+                        $templateKey
+                    ));
+                }
+            } elseif ($for === $templateKey && $end) {
+                // close the template
+                $for = null;
+                break;
+            } else {
+                // throw exception for unbounded closing of templates
+                throw new Exception(sprintf(
+                    'Unbound closing of template: %s',
+                    $templateKey
+                ));
+            }
+        }
+
+        if ($this->pos === $this->length && $for !== null) {
             throw new Exception(sprintf(
-                'Empty parameter passed to %s',
-                __METHOD__
+                'Unbound opening of template: %s',
+                $for
             ));
         }
 
-        $this->args = [];
-        foreach ($args as $key => $arg) {
-            if (is_array($arg) && array_keys($arg) !== range(0, count($arg) - 1)) {
-                $arg = $this->getMustaches($arg, $this->mustaches);
-                $args[$key] = $arg;
-            }
-
-            if (!is_array($arg) || !$this->isAssoc($arg)) {
-                $args[$key] = array($arg);
-            }
-        }
-
-        $args = call_user_func_array('array_merge', $args);
-        $args = $this->reorderArgs($args, $this->mkeys);
-
-        foreach ($args as $key => $val) {
-            $val = Html::wantHtml($val);
-            $this->args[$key] = $val;
-        }
-
-        return $this;
+        return (new HtmlDocument())->add(HtmlString::create($buffer));
     }
 
     /**
-     * map mustache template elements to their corresponding HTML elements
-     * @param $tags
-     * @param $mustaches
-     * @return mixed
+     * Read until any of the given chars appears
+     *
+     * @param string ...$chars
+     *
+     * @return string
      */
-    protected function getMustaches($tags, $mustaches)
+    protected function readUntil(...$chars)
     {
-        foreach ($tags as $tag => $content) {
-            $htmlDoc = new HtmlDocument();
-
-            if (array_key_exists($tag, $mustaches)) {
-                if (preg_match_all($this->pattern, $mustaches[$tag], $nestedmatches, PREG_SET_ORDER)) {
-                    $nMustaches = [];
-
-                    $pos = strpos($mustaches[$tag], $nestedmatches[0][0]);
-                    $mustStr = substr($mustaches[$tag], 0, $pos);
-
-                    $htmlDoc->add($mustStr);
-                    $nextStr = substr($mustaches[$tag], $pos);
-
-                    $nMatches = count($nestedmatches);
-
-                    for ($i = 0; $i < $nMatches; $i++) {
-                        $nMustaches[$nestedmatches[$i][3]] = $nestedmatches[$i][2];
-
-                        $subtags = $this->getMustaches($tags, $nMustaches);
-
-                        $htmlDoc->add($subtags[$nestedmatches[$i][3]]);
-
-                        $nextStr = substr($nextStr, strlen($nestedmatches[$i][0]));
-
-                        if ($i < $nMatches - 1) {
-                            $pos = strpos($nextStr, $nestedmatches[$i + 1][0]);
-                            $substr = substr($nextStr, 0, $pos);
-                            $htmlDoc->add($substr);
-
-                            $nextStr = substr($nextStr, $pos);
-                        }
-
-                        if (($i === $nMatches - 1) && $nextStr !== null) {
-                            $htmlDoc->add($nextStr);
-                        }
-
-                        unset($tags[$nestedmatches[$i][3]]);
-                    }
-
-                    $htmlDoc->setWrapper($content);
-                    $tags[$tag] = $htmlDoc;
-                } else {
-                    $htmlDoc->add($mustaches[$tag]);
-                    $htmlDoc->setWrapper($content);
-
-                    $tags[$tag] = $htmlDoc;
-                }
+        $buffer = '';
+        while (($c = $this->readChar()) !== false) {
+            if (in_array($c, $chars, true)) {
+                $this->pos--;
+                break;
             }
+
+            $buffer .= $c;
         }
-        return $tags;
+
+        return $buffer;
     }
 
     /**
-     * Filter arguments which are not of type string or array
-     * @param null $args
-     * @return mixed|null
+     * Read a single character
+     *
+     * @return false|string false if there is no character left
      */
-    protected function getFormattedStringArgs($args = null)
+    protected function readChar()
     {
-        foreach ($args as $key => $val) {
-            if (! is_scalar($val) || is_string($val)) {
-                unset($args[$key]);
-            }
-        }
-        return $args;
-    }
-
-    /**
-     * check if an array is associative
-     * @param array $arr
-     * @return bool
-     */
-    protected function isAssoc($arr = [])
-    {
-        if (array() === $arr) {
-            return false;
+        if ($this->length > $this->pos) {
+            return $this->string[$this->pos++];
         }
 
-        return array_keys($arr) !== range(0, count($arr) - 1);
+        return false;
     }
 
-    /**
-     * reorder arguments into correct order
-     * @param array $args
-     * @param array $arr
-     * @return array|null
-     */
-    protected function reorderArgs($args = [], $arr = [])
+    public function render()
     {
-        $reorderedArgs = array_replace_recursive(array_flip($arr), $args);
-        return $reorderedArgs;
+        $formattedstring = parent::render();
+        if (empty($this->templateArgs)) {
+            return $formattedstring;
+        }
+
+        $this->string = $formattedstring;
+
+        $this->length = strlen($formattedstring);
+
+        return $this->parseTemplates()->render();
     }
 }
