@@ -191,16 +191,14 @@ class Form extends BaseHtmlElement
     {
         $this->setRequest($request);
 
-        $method = $request->getMethod();
-
-        if ($method !== $this->getMethod()) {
+        if (! $this->hasBeenSent()) {
             // Always assemble
             $this->ensureAssembled();
 
             return $this;
         }
 
-        switch ($method) {
+        switch ($request->getMethod()) {
             case 'POST':
                 $params = $request->getParsedBody();
 
