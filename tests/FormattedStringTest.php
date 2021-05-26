@@ -65,4 +65,17 @@ class FormattedStringTest extends TestCase
             )
         );
     }
+
+    public function testBehavesLikeSprintfForNumericStrings()
+    {
+        $this->assertHtml(
+            'ff 1 2.33',
+            FormattedString::create(
+                '%3$x %d %.2f',
+                '1',
+                '2.3333334',
+                '255'
+            )
+        );
+    }
 }
