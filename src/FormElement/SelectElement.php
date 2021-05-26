@@ -27,12 +27,6 @@ class SelectElement extends BaseFormElement
             [$this, 'setOptions']
         );
 
-        // Make sure we set value last, options must be set before
-        if (isset($attributes['value'])) {
-            $value = $attributes['value'];
-            unset($attributes['value']);
-            $attributes['value'] = $value;
-        }
         parent::__construct($name, $attributes);
     }
 
@@ -41,47 +35,24 @@ class SelectElement extends BaseFormElement
         return isset($this->options[$value]);
     }
 
-    public function setValue($value)
+    public function validate()
     {
-        if (! $this->hasOption($value)) {
+        $value = $this->getValue();
+        if (! ($option = $this->getOption($value)) || $option->getAttributes()->has('disabled')) {
             $this->valid = false;
             $this->addMessage("'$value' is not allowed here");
-
-            return $this;
-        }
-
-        if ($value === '') {
-            $value = null;
-        }
-
-        if ($option = $this->getOption($value)) {
-            if ($option->getAttributes()->has('disabled')) {
-                $this->valid = false;
-                $this->addMessage("'$value' is not allowed here");
-
-                return $this;
-            }
-        }
-        $this->deselect();
-        $option->getAttributes()->add('selected', true);
-
-        return parent::setValue($value);
-    }
-
-    public function isValid()
-    {
-        if ($this->isRequired() && strlen($this->getValue()) === 0) {
-            return false;
+        } elseif ($this->isRequired() && strlen($value) === 0) {
+            $this->valid = false;
         } else {
-            return parent::isValid();
+            parent::validate();
         }
+
+        return $this;
     }
 
     public function deselect()
     {
-        if ($option = $this->getOption($this->getValue())) {
-            $option->getAttributes()->remove('selected');
-        }
+        $this->setValue(null);
 
         return $this;
     }
@@ -145,7 +116,17 @@ class SelectElement extends BaseFormElement
 
             return $grp;
         } else {
-            $this->options[$value] = new SelectOption($value, $label);
+            $option = new SelectOption($value, $label);
+            $option->getAttributes()->registerAttributeCallback('selected', function () use ($option) {
+                $optionValue = $option->getValue();
+
+                return is_int($optionValue)
+                    // The loose comparison is required because PHP casts
+                    // numeric strings to integers if used as array keys
+                    ? $this->getValue() == $optionValue
+                    : $this->getValue() === $optionValue;
+            });
+            $this->options[$value] = $option;
 
             return $this->options[$value];
         }
