@@ -18,8 +18,10 @@ class SelectOption extends BaseHtmlElement
      */
     public function __construct($value = null, $label = null)
     {
+        $this->value = $value;
         $this->add($label);
-        $this->getAttributes()->add('value', $value);
+
+        $this->getAttributes()->registerAttributeCallback('value', [$this, 'getValue']);
     }
 
     /**
