@@ -51,9 +51,10 @@ class FormattedString implements ValidHtml
             }
 
             foreach ($args as $key => $val) {
-                if (! is_scalar($val) || is_string($val)) {
+                if (! is_scalar($val) || (is_string($val) && ! is_numeric($val))) {
                     $val = Html::wantHtml($val);
                 }
+
                 $this->args[$key] = $val;
             }
         }
