@@ -19,7 +19,7 @@ class SelectElementTest extends TestCase
             ],
         ]);
 
-        $this->assertRendersHtml(
+        $this->assertHtml(
             '<select name="elname">'
             . '<option value="">Please choose</option>'
             . '<option value="1">The one</option>'
@@ -95,7 +95,7 @@ class SelectElementTest extends TestCase
             ],
         ]);
 
-        $this->assertRendersHtml(
+        $this->assertHtml(
             '<select name="elname">'
             . '<option value="">Please choose</option>'
             . '<optgroup label="Some Options">'
@@ -128,7 +128,7 @@ class SelectElementTest extends TestCase
 
         $select->disableOptions([4, '5']);
 
-        $this->assertEquals(
+        $this->assertHtml(
             '<select name="elname">'
             . '<option value="">Please choose</option>'
             . '<optgroup label="Some options">'
@@ -139,7 +139,7 @@ class SelectElementTest extends TestCase
             . '<option value="5" disabled>Hi five</option>'
             . '</optgroup>'
             . '</select>',
-            $select->render()
+            $select
         );
     }
 
@@ -165,7 +165,7 @@ class SelectElementTest extends TestCase
 
         $select->disableOptions([4, '5']);
 
-        $this->assertEquals(
+        $this->assertHtml(
             '<select name="elname">'
             . '<option value="">Please choose</option>'
             . '<optgroup label="Some options">'
@@ -180,7 +180,80 @@ class SelectElementTest extends TestCase
               . '<option value="5" disabled>Hi five</option>'
             . '</optgroup>'
             . '</select>',
-            $select->render()
+            $select
+        );
+    }
+
+    public function testDefaultValueIsSelected()
+    {
+        $select = new SelectElement('elname', [
+            'label'   => 'Customer',
+            'value'   => '1',
+            'options' => [
+                null => 'Please choose',
+                '1'  => 'The one',
+                '4'  => 'Four',
+                '5'  => 'Hi five',
+            ]
+        ]);
+
+        $this->assertHtml(
+            '<select name="elname" value="1">'
+            . '<option value="">Please choose</option>'
+            . '<option selected value="1">The one</option>'
+            . '<option value="4">Four</option>'
+            . '<option value="5">Hi five</option>'
+            . '</select>',
+            $select
+        );
+    }
+
+    public function testSetValueSelectsAnOption()
+    {
+        $select = new SelectElement('elname', [
+            'label'   => 'Customer',
+            'options' => [
+                null => 'Please choose',
+                '1'  => 'The one',
+                '4'  => 'Four',
+                '5'  => 'Hi five',
+            ]
+        ]);
+
+        $select->setValue('1');
+
+        $this->assertHtml(
+            '<select name="elname" value="1">'
+            . '<option value="">Please choose</option>'
+            . '<option selected value="1">The one</option>'
+            . '<option value="4">Four</option>'
+            . '<option value="5">Hi five</option>'
+            . '</select>',
+            $select
+        );
+
+        $select->setValue('5');
+
+        $this->assertHtml(
+            '<select name="elname" value="5">'
+            . '<option value="">Please choose</option>'
+            . '<option value="1">The one</option>'
+            . '<option value="4">Four</option>'
+            . '<option selected value="5">Hi five</option>'
+            . '</select>',
+            $select
+        );
+
+        $select->setValue(null);
+
+        $this->assertHtml(
+            '<select name="elname">'
+            . '<option value="">Please choose</option>'
+            . '<option value="1">The one</option>'
+            . '<option value="4">Four</option>'
+            . '<option value="5">Hi five</option>'
+            . '</select>',
+            $select
         );
     }
 }
