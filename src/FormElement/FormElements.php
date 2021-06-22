@@ -124,7 +124,7 @@ trait FormElements
         $this
             ->registerElement($element) // registerElement() must be called first because of the name check
             ->decorate($element)
-            ->add($element);
+            ->addHtml($element);
 
         return $this;
     }

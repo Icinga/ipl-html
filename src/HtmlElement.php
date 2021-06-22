@@ -12,34 +12,32 @@ class HtmlElement extends BaseHtmlElement
     /**
      * Create a new HTML element from the given tag, attributes and content
      *
-     * @param string                 $tag        The tag for the element
-     * @param Attributes|array       $attributes The HTML attributes for the element
-     * @param ValidHtml|string|array $content    The content of the element
+     * @param string     $tag        The tag for the element
+     * @param Attributes $attributes The HTML attributes for the element
+     * @param ValidHtml  ...$content The content of the element
      */
-    public function __construct($tag, $attributes = null, $content = null)
+    public function __construct($tag, Attributes $attributes = null, ValidHtml ...$content)
     {
         $this->tag = $tag;
 
         if ($attributes !== null) {
-            $this->getAttributes()->add($attributes);
+            $this->getAttributes()->merge($attributes);
         }
 
-        if ($content !== null) {
-            $this->setContent($content);
-        }
+        $this->setHtmlContent(...$content);
     }
 
     /**
      * Create a new HTML element from the given tag, attributes and content
      *
-     * @param string                 $tag        The tag for the element
-     * @param Attributes|array       $attributes The HTML attributes for the element
-     * @param ValidHtml|string|array $content    The content of the element
+     * @param string $tag        The tag for the element
+     * @param mixed  $attributes The HTML attributes for the element
+     * @param mixed  $content    The content of the element
      *
      * @return static
      */
     public static function create($tag, $attributes = null, $content = null)
     {
-        return new static($tag, $attributes, $content);
+        return new static($tag, Attributes::wantAttributes($attributes), ...Html::wantHtmlList($content));
     }
 }

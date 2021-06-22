@@ -301,26 +301,11 @@ abstract class BaseHtmlElement extends HtmlDocument
     {
     }
 
-    public function add($content)
+    public function addHtml(ValidHtml ...$content)
     {
         $this->ensureAssembled();
 
-        parent::add($content);
-
-        return $this;
-    }
-
-    public function setContent($content)
-    {
-        // setContent() calls $this->add() which would assemble the element and that does not make any sense here
-        // Plus, this allows subclasses of BaseHtmlElement to add content before assemble() --
-        // in the constructor for example
-
-        $this->hasBeenAssembled = true;
-
-        parent::setContent($content);
-
-        $this->hasBeenAssembled = false;
+        parent::addHtml(...$content);
 
         return $this;
     }

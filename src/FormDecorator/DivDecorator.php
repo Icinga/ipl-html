@@ -10,6 +10,7 @@ use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\HiddenElement;
 use ipl\Html\Html;
 use ipl\Html\HtmlElement;
+use ipl\Html\Text;
 
 /**
  * Form element decorator based on div elements
@@ -84,10 +85,12 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
     protected function assembleErrors()
     {
-        $errors = new HtmlElement('ul', ['class' => static::ERROR_CLASS]);
+        $errors = new HtmlElement('ul', Attributes::create(['class' => static::ERROR_CLASS]));
 
         foreach ($this->formElement->getMessages() as $message) {
-            $errors->add(new HtmlElement('li', ['class' => static::ERROR_CLASS], $message));
+            $errors->addHtml(
+                new HtmlElement('li', Attributes::create(['class' => static::ERROR_CLASS]), Text::create($message))
+            );
         }
 
         if (! $errors->isEmpty()) {
@@ -119,7 +122,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
             $this->getAttributes()->add('class', static::ERROR_HINT_CLASS);
         }
 
-        $this->add(array_filter([
+        $this->addHtml(...Html::wantHtmlList([
             $this->assembleLabel(),
             $this->assembleElement(),
             $this->assembleDescription(),

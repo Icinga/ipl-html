@@ -83,7 +83,24 @@ class HtmlDocument implements Countable, Wrappable
     public function setContent($content)
     {
         $this->content = [];
-        $this->add($content);
+        $this->setHtmlContent(...Html::wantHtmlList($content));
+
+        return $this;
+    }
+
+    /**
+     * Set content
+     *
+     * @param ValidHtml ...$content
+     *
+     * @return $this
+     */
+    public function setHtmlContent(ValidHtml ...$content)
+    {
+        $this->content = [];
+        foreach ($content as $element) {
+            $this->addIndexedContent($element);
+        }
 
         return $this;
     }
@@ -144,12 +161,22 @@ class HtmlDocument implements Countable, Wrappable
      */
     public function add($content)
     {
-        if (is_iterable($content) && ! $content instanceof ValidHtml) {
-            foreach ($content as $c) {
-                $this->add($c);
-            }
-        } elseif ($content !== null) {
-            $this->addIndexedContent(Html::wantHtml($content));
+        $this->addHtml(...Html::wantHtmlList($content));
+
+        return $this;
+    }
+
+    /**
+     * Add content
+     *
+     * @param ValidHtml ...$content
+     *
+     * @return $this
+     */
+    public function addHtml(ValidHtml ...$content)
+    {
+        foreach ($content as $element) {
+            $this->addIndexedContent($element);
         }
 
         return $this;
@@ -211,16 +238,24 @@ class HtmlDocument implements Countable, Wrappable
      */
     public function prepend($content)
     {
-        if (is_iterable($content) && ! $content instanceof ValidHtml) {
-            foreach (array_reverse(is_array($content) ? $content : iterator_to_array($content)) as $c) {
-                $this->prepend($c);
-            }
-        } elseif ($content !== null) {
-            $pos = 0;
-            $html = Html::wantHtml($content);
+        $this->prependHtml(...Html::wantHtmlList($content));
+
+        return $this;
+    }
+
+    /**
+     * Prepend content
+     *
+     * @param ValidHtml ...$content
+     *
+     * @return $this
+     */
+    public function prependHtml(ValidHtml ...$content)
+    {
+        foreach (array_reverse($content) as $html) {
             array_unshift($this->content, $html);
             $this->incrementIndexKeys();
-            $this->addObjectPosition($html, $pos);
+            $this->addObjectPosition($html, 0);
         }
 
         return $this;

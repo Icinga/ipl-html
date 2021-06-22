@@ -346,11 +346,11 @@ class Form extends BaseHtmlElement
                 $message = $message->getMessage();
             }
 
-            $errors->add(Html::tag('li', $message));
+            $errors->addHtml(Html::tag('li', $message));
         }
 
         if (! $errors->isEmpty()) {
-            $this->prepend($errors);
+            $this->prependHtml($errors);
         }
     }
 
