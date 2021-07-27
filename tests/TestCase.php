@@ -10,6 +10,7 @@ if (class_exists('PHPUnit_Util_XML')) {
     // Support older PHPUnit versions
     class_alias('PHPUnit_Util_XML', 'PHPUnit\\Util\\Xml');
 }
+
 // phpcs:enable
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
@@ -22,6 +23,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function assertHtml($expectedHtml, ValidHtml $actual)
     {
+        $expectedHtml = str_replace(
+            "\n",
+            '',
+            preg_replace('/^\s+/m', '', trim($expectedHtml))
+        );
+
         if (method_exists(Xml::class, 'load')) {
             $expectedHtml = Xml::load($expectedHtml, true);
             $actualHtml = Xml::load($actual->render(), true);

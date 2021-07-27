@@ -154,6 +154,28 @@ class HtmlDocumentTest extends TestCase
         );
     }
 
+    public function testWrapperCanPositionWrappedElement()
+    {
+        $a = h::tag('tag', 'content');
+        $a->addWrapper(h::tag('div', ['class' => 'wrapper'], $a));
+
+        $this->assertHtml(
+            '<div class="wrapper"><tag>content</tag></div>',
+            $a
+        );
+    }
+
+    public function testWrapperCanPositionWrappedElementInAnExtraContainer()
+    {
+        $a = h::tag('tag', 'content');
+        $a->addWrapper(h::tag('div', ['class' => 'outer'], h::tag('div', ['class' => 'inner'], $a)));
+
+        $this->assertHtml(
+            '<div class="outer"><div class="inner"><tag>content</tag></div></div>',
+            $a
+        );
+    }
+
     public function testAcceptsObjectsWhichCanBeCastedToString()
     {
         $object = new ObjectThatCanBeCastedToString();
