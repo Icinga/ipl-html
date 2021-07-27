@@ -391,7 +391,7 @@ class HtmlDocument implements Countable, Wrappable
         $wrapper = $this->wrapper;
 
         if (isset($this->renderedBy)) {
-            if ($wrapper === $this->renderedBy) {
+            if ($wrapper === $this->renderedBy || $wrapper->contains($this->renderedBy)) {
                 // $this might be an intermediate wrapper that's already about to be rendered.
                 // In case of an element (referencing $this as a wrapper) that is a child of an
                 // outer wrapper, it is required to ignore $wrapper as otherwise it's a loop.
