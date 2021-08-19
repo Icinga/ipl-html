@@ -320,8 +320,8 @@ abstract class BaseHtmlElement extends HtmlDocument
         $this->ensureAssembled();
 
         $tag = $this->getTag();
-        $attributes = $this->getAttributes()->render();
         $content = $this->renderContent();
+        $attributes = $this->getAttributes()->render();
 
         if (strlen($this->contentSeparator)) {
             $length = strlen($content);
