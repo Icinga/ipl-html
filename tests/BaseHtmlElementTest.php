@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\HtmlString;
 
 // @codingStandardsIgnoreStart
 class DefaultAttributesAsProperty extends BaseHtmlElement
@@ -48,6 +49,35 @@ class Div extends BaseHtmlElement
 class NoTag extends BaseHtmlElement
 {
 
+}
+
+class SpecialHtmlString extends HtmlString
+{
+    public $state;
+
+    public function render()
+    {
+        $html = parent::render();
+
+        $this->state = 42;
+
+        return $html;
+    }
+}
+
+class AttributeValueDependingOnContent extends BaseHtmlElement
+{
+    protected $tag = 'div';
+
+    protected function assemble()
+    {
+        $specialHtmlString = new SpecialHtmlString('<hr>');
+        $this->addHtml($specialHtmlString);
+
+        $this->getAttributes()->registerAttributeCallback('state', function () use ($specialHtmlString) {
+            return $specialHtmlString->state;
+        });
+    }
 }
 
 class BaseHtmlElementTest extends TestCase
@@ -134,5 +164,15 @@ class BaseHtmlElementTest extends TestCase
         $element->setVoid(null);
         $this->assertFalse($element->wantsClosingTag());
         $this->assertEquals('<img />', $element->render());
+    }
+
+    public function testAttributeValueDependingOnContent()
+    {
+        $element = new AttributeValueDependingOnContent();
+
+        $this->assertHtml(
+            '<div state="42"><hr></div>',
+            $element
+        );
     }
 }
