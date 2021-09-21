@@ -10,6 +10,8 @@ class LocalDateTimeElement extends InputElement
 
     protected $type = 'datetime-local';
 
+    protected $defaultAttributes = ['step' => '1'];
+
     /** @var DateTime */
     protected $value;
 
