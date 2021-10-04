@@ -176,9 +176,17 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
     {
         if ($this->validators === null) {
             $this->validators = new ValidatorChain();
+            $this->addDefaultValidators();
         }
 
         return $this->validators;
+    }
+
+    /**
+     * Add default validators
+     */
+    public function addDefaultValidators()
+    {
     }
 
     /**
