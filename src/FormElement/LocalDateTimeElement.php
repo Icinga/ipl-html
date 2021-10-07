@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use DateTime;
+use ipl\Validator\DateTimeValidator;
 
 class LocalDateTimeElement extends InputElement
 {
@@ -27,5 +28,10 @@ class LocalDateTimeElement extends InputElement
     public function getValueAttribute()
     {
         return $this->value->format(static::FORMAT);
+    }
+
+    public function addDefaultValidators()
+    {
+        $this->getValidators()->add(new DateTimeValidator());
     }
 }
