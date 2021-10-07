@@ -243,17 +243,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement
      */
     public function validate()
     {
-        $valid = true;
-
-        foreach ($this->getValidators() as $validator) {
-            if (! $validator->isValid($this->getValue())) {
-                $valid = false;
-
-                $this->addMessages($validator->getMessages());
-            }
-        }
-
-        $this->valid = $valid;
+        $this->valid = $this->getValidators()->isValid($this->getValue());
+        $this->addMessages($this->getValidators()->getMessages());
 
         return $this;
     }
