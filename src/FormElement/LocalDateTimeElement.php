@@ -27,6 +27,10 @@ class LocalDateTimeElement extends InputElement
                 $format = substr(static::FORMAT, 0, strrpos(static::FORMAT, ':'));
                 $value = DateTime::createFromFormat($format, $originalVal);
             }
+
+            if ($value === false) {
+                $value = $originalVal;
+            }
         }
 
         return parent::setValue($value);
@@ -34,6 +38,10 @@ class LocalDateTimeElement extends InputElement
 
     public function getValueAttribute()
     {
+        if (! $this->value instanceof DateTime) {
+            return $this->value;
+        }
+
         return $this->value->format(static::FORMAT);
     }
 
