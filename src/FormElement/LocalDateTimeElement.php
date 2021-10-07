@@ -19,7 +19,14 @@ class LocalDateTimeElement extends InputElement
     public function setValue($value)
     {
         if (is_string($value)) {
+            $originalVal = $value;
             $value = DateTime::createFromFormat(static::FORMAT, $value);
+            // In Chrome, if the seconds are set to 00, DateTime::createFromFormat() returns false.
+            // Create DateTime without seconds in format
+            if ($value === false) {
+                $format = substr(static::FORMAT, 0, strrpos(static::FORMAT, ':'));
+                $value = DateTime::createFromFormat($format, $originalVal);
+            }
         }
 
         return parent::setValue($value);
