@@ -453,6 +453,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($name)
     {
         return $this->has($name);
@@ -469,6 +470,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($name)
     {
         return $this->get($name);
@@ -484,6 +486,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException If the attribute name contains special characters
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($name, $value)
     {
         $this->set($name, $value);
@@ -494,6 +497,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @param string $name Name of the attribute
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($name)
     {
         $this->remove($name);
@@ -504,6 +508,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return Attribute[]|ArrayIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->attributes);

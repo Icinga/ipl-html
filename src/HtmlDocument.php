@@ -431,6 +431,7 @@ class HtmlDocument implements Countable, Wrappable
         return $this->setWrapped($document)->render();
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->content);
