@@ -7,6 +7,7 @@ use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\ValueCandidates;
+use ipl\Html\Form;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
 
@@ -258,6 +259,10 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         $this->valueCandidates = $values;
 
         return $this;
+    }
+
+    public function onRegistered(Form $form)
+    {
     }
 
     /**

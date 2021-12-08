@@ -371,6 +371,8 @@ class Form extends BaseHtmlElement
                 $this->setSubmitButton($element);
             }
         }
+
+        $element->onRegistered($this);
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes)
