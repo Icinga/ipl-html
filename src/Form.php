@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Form extends BaseHtmlElement
 {
     use FormElements {
-        remove as private removeElement;
+        FormElements::remove as private removeElement;
     }
     use Messages;
 
@@ -21,6 +21,7 @@ class Form extends BaseHtmlElement
     const ON_REQUEST = 'request';
     const ON_SUCCESS = 'success';
     const ON_SENT = 'sent';
+    const ON_VALIDATE = 'validate';
 
     /** @var string Form submission URL */
     protected $action;
@@ -286,6 +287,8 @@ class Form extends BaseHtmlElement
     {
         if ($this->isValid === null) {
             $this->validate();
+
+            $this->emit(self::ON_VALIDATE, [$this]);
         }
 
         return $this->isValid;
@@ -368,6 +371,8 @@ class Form extends BaseHtmlElement
                 $this->setSubmitButton($element);
             }
         }
+
+        $element->onRegistered($this);
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes)

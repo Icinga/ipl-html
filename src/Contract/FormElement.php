@@ -3,6 +3,7 @@
 namespace ipl\Html\Contract;
 
 use ipl\Html\Attributes;
+use ipl\Html\Form;
 
 /**
  * Representation of form elements
@@ -112,4 +113,13 @@ interface FormElement extends Wrappable
      * @return bool
      */
     public function isValid();
+
+    /**
+     * Handler which is called after this element has been registered
+     *
+     * @param Form $form
+     *
+     * @return void
+     */
+    public function onRegistered(Form $form);
 }
