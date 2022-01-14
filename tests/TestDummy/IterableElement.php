@@ -6,12 +6,13 @@ use ArrayIterator;
 use ipl\Html\Html;
 use ipl\Html\ValidHtml;
 use IteratorAggregate;
+use Traversable;
 
 class IterableElement implements IteratorAggregate, ValidHtml
 {
     protected $content = ['foo', 'bar'];
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->content);
     }

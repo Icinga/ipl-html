@@ -6,6 +6,7 @@ use ArrayAccess;
 use ArrayIterator;
 use InvalidArgumentException;
 use IteratorAggregate;
+use Traversable;
 
 use function ipl\Stdlib\get_php_type;
 
@@ -453,7 +454,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return bool
      */
-    public function offsetExists($name)
+    public function offsetExists($name): bool
     {
         return $this->has($name);
     }
@@ -469,7 +470,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
-    public function offsetGet($name)
+    public function offsetGet($name): Attribute
     {
         return $this->get($name);
     }
@@ -484,7 +485,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException If the attribute name contains special characters
      */
-    public function offsetSet($name, $value)
+    public function offsetSet($name, $value): void
     {
         $this->set($name, $value);
     }
@@ -494,7 +495,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @param string $name Name of the attribute
      */
-    public function offsetUnset($name)
+    public function offsetUnset($name): void
     {
         $this->remove($name);
     }
@@ -504,7 +505,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return Attribute[]|ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->attributes);
     }
