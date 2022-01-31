@@ -40,7 +40,7 @@ class SubmitElement extends InputElement implements FormSubmitElement
 
     public function hasBeenPressed()
     {
-        return $this->getButtonLabel() === $this->getValue();
+        return (bool) $this->getValue();
     }
 
     public function isIgnored()
