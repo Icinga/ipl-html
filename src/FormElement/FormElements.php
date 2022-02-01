@@ -338,6 +338,22 @@ trait FormElements
     }
 
     /**
+     * Clear populated value of the given element
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function clearPopulatedValue($name)
+    {
+        if (! $this->hasBeenSubmitted() && isset($this->populatedValues[$name])) {
+            unset($this->populatedValues[$name]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Add all elements from the given element collection
      *
      * @param Form|SubFormElement $form
