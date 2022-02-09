@@ -38,10 +38,15 @@ class SelectElement extends BaseFormElement
     public function validate()
     {
         $value = $this->getValue();
-        if (! ($option = $this->getOption($value)) || $option->getAttributes()->has('disabled')) {
+        if (
+            $value !== null && (
+                ! ($option = $this->getOption($value))
+                || $option->getAttributes()->has('disabled')
+            )
+        ) {
             $this->valid = false;
             $this->addMessage("'$value' is not allowed here");
-        } elseif ($this->isRequired() && strlen($value) === 0) {
+        } elseif ($this->isRequired() && $value === null) {
             $this->valid = false;
         } else {
             parent::validate();
