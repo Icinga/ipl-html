@@ -38,7 +38,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
     {
         if ($this->wrappedElement instanceof BaseFormElement) {
             $label = $this->wrappedElement->getLabel();
-            if (strlen($label)) {
+            if ($label) {
                 return Html::tag('label', null, $label);
             }
         }
@@ -69,7 +69,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
     {
         if ($this->wrappedElement instanceof BaseFormElement) {
             $description = $this->wrappedElement->getDescription();
-            if (strlen($description)) {
+            if ($description) {
                 return Html::tag('p', ['class' => 'description'], $description);
             }
         }

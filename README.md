@@ -1,6 +1,6 @@
 # Icinga PHP Library - Html abstraction layer
 
-[![PHP Support](https://img.shields.io/badge/php-%3E%3D%205.6-777BB4?logo=PHP)](https://php.net/)
+[![PHP Support](https://img.shields.io/badge/php-%3E%3D%207.2-777BB4?logo=PHP)](https://php.net/)
 ![Build Status](https://github.com/Icinga/ipl-html/workflows/PHP%20Tests/badge.svg?branch=master)
 
 This is a prototype of the HTML abstraction layer for the new Icinga PHP library.
