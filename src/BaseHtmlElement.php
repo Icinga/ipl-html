@@ -167,7 +167,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     {
         $tag = $this->tag();
 
-        if (! strlen($tag)) {
+        if (! $tag) {
             throw new RuntimeException('Element must have a tag');
         }
 
