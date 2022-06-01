@@ -70,4 +70,47 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="foo bar"', $objectOne->getAttributes()->render());
         $this->assertEquals('foo', $objectOne->getAttributes()->getAttributes()['class']->getValue());
     }
+
+    public function testAttributesMerge()
+    {
+        $emptyAttributes = new Attributes();
+        $filledAttributes = Attributes::create([
+            'foo' => 'bar',
+            'bar' => 'foo'
+        ]);
+
+        $emptyAttributes->merge($filledAttributes);
+
+        $this->assertEquals(' foo="bar" bar="foo"', $emptyAttributes->render());
+
+        $moreAttributes = Attributes::create(['foo' => 'rab']);
+
+        $moreAttributes->merge($filledAttributes);
+
+        $this->assertEquals(' foo="rab bar" bar="foo"', $moreAttributes->render());
+    }
+
+    public function testAttributesMergeWithCallbacks()
+    {
+        $attributes = Attributes::create(['foo' => 'bar']);
+        $callbacks = (new Attributes())
+            ->registerAttributeCallback('foo', function () {
+                return 'rab';
+            })
+            ->registerAttributeCallback(
+                'bar',
+                function () use (&$value) {
+                    return $value;
+                },
+                function ($v) use (&$value) {
+                    $value = $v;
+                }
+            );
+
+        $attributes->merge($callbacks);
+
+        $attributes->set('bar', 'foo');
+
+        $this->assertEquals(' foo="bar rab" bar="foo"', $attributes->render());
+    }
 }
