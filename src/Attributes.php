@@ -125,6 +125,15 @@ class Attributes implements ArrayAccess, IteratorAggregate
             $this->addAttribute($attribute);
         }
 
+        foreach ($attributes->callbacks as $name => $getter) {
+            $setter = null;
+            if (isset($attributes->setterCallbacks[$name])) {
+                $setter = $attributes->setterCallbacks[$name];
+            }
+
+            $this->registerAttributeCallback($name, $getter, $setter);
+        }
+
         return $this;
     }
 
