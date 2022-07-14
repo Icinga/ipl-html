@@ -82,6 +82,23 @@ class MultiselectElement extends SelectElement
         return $this->valid;
     }
 
+    public function validate()
+    {
+        foreach ($this->getValue() as $value) {
+            $option = $this->getOption($value);
+            if (! $option || $option->getAttributes()->has('disabled')) {
+                $this->valid = false;
+                $this->addMessage("'$value' is not allowed here");
+
+                return $this;
+            }
+        }
+
+        BaseFormElement::validate();
+
+        return $this;
+    }
+
     public function updateSelection()
     {
         foreach ($this->options as $value => $option) {
