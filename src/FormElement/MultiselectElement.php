@@ -4,7 +4,7 @@ namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
 
-class MultiSelect extends SelectElement
+class MultiselectElement extends SelectElement
 {
     protected $value = [];
 
