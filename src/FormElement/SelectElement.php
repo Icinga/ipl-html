@@ -67,7 +67,8 @@ class SelectElement extends BaseFormElement
         if ($option = $this->getOption($value)) {
             $option->getAttributes()->add('disabled', true);
         }
-        if ($this->getValue() == $value) {
+
+        if ($this->isSelectedOption($value)) {
             $this->valid = false;
             $this->addMessage("'$value' is not allowed here");
         }
@@ -124,18 +125,28 @@ class SelectElement extends BaseFormElement
         } else {
             $option = new SelectOption($value, $label);
             $option->getAttributes()->registerAttributeCallback('selected', function () use ($option) {
-                $optionValue = $option->getValue();
-
-                return is_int($optionValue)
-                    // The loose comparison is required because PHP casts
-                    // numeric strings to integers if used as array keys
-                    ? $this->getValue() == $optionValue
-                    : $this->getValue() === $optionValue;
+                return $this->isSelectedOption($option->getValue());
             });
             $this->options[$value] = $option;
 
             return $this->options[$value];
         }
+    }
+
+    /**
+     * Whether the given option is a selected option
+     *
+     * @param $optionValue
+     *
+     * @return bool
+     */
+    protected function isSelectedOption($optionValue)
+    {
+        return is_int($optionValue)
+            // The loose comparison is required because PHP casts
+            // numeric strings to integers if used as array keys
+            ? $this->getValue() == $optionValue
+            : $this->getValue() === $optionValue;
     }
 
     protected function assemble()
