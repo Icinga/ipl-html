@@ -39,7 +39,7 @@ class MultiselectElement extends SelectElement
             $option = $this->getOption($value);
             if (! $option || $option->getAttributes()->has('disabled')) {
                 $this->valid = false;
-                $this->addMessage("'$value' is not allowed here");
+                $this->addMessage(sprintf($this->translate("'%s' is not allowed here"), $value));
 
                 return $this;
             }

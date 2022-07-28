@@ -3,9 +3,12 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Html;
+use ipl\I18n\Translation;
 
 class SelectElement extends BaseFormElement
 {
+    use Translation;
+
     protected $tag = 'select';
 
     /** @var SelectOption[] */
@@ -45,7 +48,7 @@ class SelectElement extends BaseFormElement
             )
         ) {
             $this->valid = false;
-            $this->addMessage("'$value' is not allowed here");
+            $this->addMessage(sprintf($this->translate("'%s' is not allowed here"), $value));
         } elseif ($this->isRequired() && $value === null) {
             $this->valid = false;
         } else {
@@ -70,7 +73,7 @@ class SelectElement extends BaseFormElement
 
         if ($this->isSelectedOption($value)) {
             $this->valid = false;
-            $this->addMessage("'$value' is not allowed here");
+            $this->addMessage(sprintf($this->translate("'%s' is not allowed here"), $value));
         }
 
         return $this;
