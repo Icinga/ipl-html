@@ -49,4 +49,9 @@ class MultiselectElement extends SelectElement
 
         return $this;
     }
+
+    protected function isSelectedOption($optionValue)
+    {
+        return in_array($optionValue, $this->getValue(), ! is_int($optionValue));
+    }
 }
