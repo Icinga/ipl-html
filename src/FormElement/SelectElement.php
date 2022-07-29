@@ -49,11 +49,11 @@ class SelectElement extends BaseFormElement
         ) {
             $this->valid = false;
             $this->addMessage(sprintf($this->translate("'%s' is not allowed here"), $value));
-        } elseif ($this->isRequired() && $value === null) {
-            $this->valid = false;
-        } else {
-            parent::validate();
+
+            return $this;
         }
+
+        parent::validate();
 
         return $this;
     }
