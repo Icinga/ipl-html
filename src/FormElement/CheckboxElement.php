@@ -109,11 +109,10 @@ class CheckboxElement extends InputElement
     {
         parent::registerAttributeCallbacks($attributes);
 
-        $attributes->registerAttributeCallback(
-            'checked',
-            [$this, 'isChecked'],
-            [$this, 'setChecked']
-        );
+        $attributes
+            ->registerAttributeCallback('checked', [$this, 'isChecked'], [$this, 'setChecked'])
+            ->registerAttributeCallback('checkedValue', null, [$this, 'setCheckedValue'])
+            ->registerAttributeCallback('uncheckedValue', null, [$this, 'setUncheckedValue']);
     }
 
     public function renderUnwrapped()
