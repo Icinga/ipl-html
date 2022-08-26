@@ -7,7 +7,7 @@ use ipl\Validator\DateTimeValidator;
 
 class LocalDateTimeElement extends InputElement
 {
-    const FORMAT = 'Y-m-d\TH:i:s';
+    public const FORMAT = 'Y-m-d\TH:i:s';
 
     protected $type = 'datetime-local';
 

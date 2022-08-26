@@ -8,7 +8,7 @@ use ipl\Html\Form;
 class PasswordElement extends InputElement
 {
     /** @var string Dummy passwd of this element to be rendered */
-    const DUMMYPASSWORD = '_ipl_form_5847ed1b5b8ca';
+    public const DUMMYPASSWORD = '_ipl_form_5847ed1b5b8ca';
 
     protected $type = 'password';
 

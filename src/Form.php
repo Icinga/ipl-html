@@ -16,12 +16,12 @@ class Form extends BaseHtmlElement
     }
     use Messages;
 
-    const ON_ELEMENT_REGISTERED = 'elementRegistered';
-    const ON_ERROR = 'error';
-    const ON_REQUEST = 'request';
-    const ON_SUCCESS = 'success';
-    const ON_SENT = 'sent';
-    const ON_VALIDATE = 'validate';
+    public const ON_ELEMENT_REGISTERED = 'elementRegistered';
+    public const ON_ERROR = 'error';
+    public const ON_REQUEST = 'request';
+    public const ON_SUCCESS = 'success';
+    public const ON_SENT = 'sent';
+    public const ON_VALIDATE = 'validate';
 
     /** @var string Form submission URL */
     protected $action;
@@ -186,6 +186,7 @@ class Form extends BaseHtmlElement
 
     /**
      * @param ServerRequestInterface $request
+     *
      * @return $this
      */
     public function handleRequest(ServerRequestInterface $request)
