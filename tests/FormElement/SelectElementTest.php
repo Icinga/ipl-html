@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html\FormElement;
 
 use ipl\Html\FormElement\SelectElement;
+use ipl\Html\FormElement\SelectOption;
 use ipl\Tests\Html\TestCase;
 
 class SelectElementTest extends TestCase
@@ -255,5 +256,12 @@ class SelectElementTest extends TestCase
             . '</select>',
             $select
         );
+    }
+
+    public function testLabelCanBeChanged()
+    {
+        $option = new SelectOption('value', 'Original label');
+        $option->setLabel('New label');
+        $this->assertHtml('<option value="value">New label</option>', $option);
     }
 }
