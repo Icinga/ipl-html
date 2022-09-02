@@ -18,19 +18,19 @@ use ipl\Html\Text;
 class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 {
     /** @var string CSS class to use for submit elements */
-    const SUBMIT_ELEMENT_CLASS = 'form-control';
+    public const SUBMIT_ELEMENT_CLASS = 'form-control';
 
     /** @var string CSS class to use for all input elements */
-    const INPUT_ELEMENT_CLASS = 'form-element';
+    public const INPUT_ELEMENT_CLASS = 'form-element';
 
     /** @var string CSS class to use for form descriptions */
-    const DESCRIPTION_CLASS = 'form-element-description';
+    public const DESCRIPTION_CLASS = 'form-element-description';
 
     /** @var string CSS class to use for form errors */
-    const ERROR_CLASS = 'form-element-errors';
+    public const ERROR_CLASS = 'form-element-errors';
 
     /** @var string CSS class to set on the decorator if the element has errors */
-    const ERROR_HINT_CLASS = 'has-error';
+    public const ERROR_HINT_CLASS = 'has-error';
 
     /** @var FormElement The decorated form element */
     protected $formElement;
