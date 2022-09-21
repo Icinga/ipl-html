@@ -332,9 +332,14 @@ trait FormElements
      */
     public function getPopulatedValue($name, $default = null)
     {
-        return isset($this->populatedValues[$name])
-            ? $this->populatedValues[$name][count($this->populatedValues[$name]) - 1]
-            : $default;
+        if (isset($this->populatedValues[$name])) {
+            $value = $this->populatedValues[$name][count($this->populatedValues[$name]) - 1];
+            if (! empty($value)) {
+                return $value;
+            }
+        }
+
+        return $default;
     }
 
     /**
