@@ -358,6 +358,19 @@ class Form extends BaseHtmlElement
         }
     }
 
+    protected function prependSubmitButton(): void
+    {
+        if ($this->submitButton === null) {
+            return;
+        }
+
+        $attr = clone $this->submitButton->getAttributes();
+        $attr->setAttribute(Attribute::create('style', 'display: none'));
+
+        $submit = $this->createElement('submit', 'submit_pre', $attr);
+        $this->prependHtml($submit);
+    }
+
     protected function onSuccess()
     {
         // $this->redirectOnSuccess();
@@ -374,6 +387,14 @@ class Form extends BaseHtmlElement
         }
 
         $element->onRegistered($this);
+    }
+
+    public function render(): string
+    {
+        // Refactor into `ON_ASSEMBLE` once available
+        $this->prependSubmitButton();
+
+        return parent::render();
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes)
