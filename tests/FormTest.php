@@ -1,0 +1,53 @@
+<?php
+
+namespace ipl\Tests\Html;
+
+use ipl\Html\Form;
+
+class FormTest extends TestCase
+{
+    /** @var Form */
+    private $form;
+
+    protected function setUp(): void
+    {
+        $this->form = new Form();
+    }
+
+    public function testSubmitButtonPrefixApplied(): void
+    {
+        $submitButton = $this->form->createElement('submit', 'submitCreate');
+
+        $this->form->addHtml($this->form->createElement('submit', 'submitDelete'));
+        $this->form->addHtml($submitButton);
+
+        $this->form->setSubmitButton($submitButton);
+
+        $expected = <<<'HTML'
+    <form method="POST">
+      <input name="submit_pre" style="display: none" type="submit" value="submit_pre"/>
+      <input name="submitDelete" type="submit" value="submitDelete"/>
+      <input name="submitCreate" type="submit" value="submitCreate"/>
+    </form>
+HTML;
+
+        $this->assertHtml($expected, $this->form);
+    }
+
+    public function testSubmitButtonPrefixOmitted(): void
+    {
+        $submitButton = $this->form->createElement('submit', 'submitCreate');
+
+        $this->form->addHtml($this->form->createElement('submit', 'submitDelete'));
+        $this->form->addHtml($submitButton);
+
+        $expected = <<<'HTML'
+    <form method="POST">
+      <input name="submitDelete" type="submit" value="submitDelete"/>
+      <input name="submitCreate" type="submit" value="submitCreate"/>
+    </form>
+HTML;
+
+        $this->assertHtml($expected, $this->form);
+    }
+}
