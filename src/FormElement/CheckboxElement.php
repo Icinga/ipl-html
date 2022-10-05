@@ -95,6 +95,8 @@ class CheckboxElement extends InputElement
             $value = $value ? $this->getCheckedValue() : $this->getUncheckedValue();
         }
 
+        $isChecked = is_numeric($value) ? $value == $this->getCheckedValue() : $value === $this->getCheckedValue();
+        $this->setChecked($isChecked);
         $this->setChecked($value === $this->getCheckedValue());
 
         return parent::setValue($value);
