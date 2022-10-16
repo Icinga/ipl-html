@@ -5,6 +5,7 @@ namespace ipl\Tests\Html\FormElement;
 use ipl\Html\Form;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Tests\Html\TestCase;
+use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
 use LogicException;
 
 class FieldsetElementTest extends TestCase
@@ -127,5 +128,27 @@ HTML;
             'test_select',
             $outer->getElement('inner')->getElement('test_select')->getName()
         );
+    }
+
+    public function testDecoratorPropagation(): void
+    {
+        // Order is important because addElement() calls decorate(). Could be fixed.
+        $fieldset = (new FieldsetElement('test_fieldset'));
+        (new Form())
+            ->setDefaultElementDecorator(new SimpleFormElementDecorator())
+            ->addElement($fieldset);
+        $fieldset->addElement('select', 'test_select');
+
+        $expected = <<<'HTML'
+<div class="simple-decorator">
+  <fieldset name="test_fieldset">
+    <div class="simple-decorator">
+      <select name="test_fieldset[test_select]"></select>
+    </div>
+  </fieldset>
+</div>
+HTML;
+
+        $this->assertHtml($expected, $fieldset);
     }
 }
