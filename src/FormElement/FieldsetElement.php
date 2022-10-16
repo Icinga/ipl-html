@@ -56,6 +56,19 @@ class FieldsetElement extends BaseFormElement
         return parent::setWrapper($wrapper);
     }
 
+    public function setWrapper(Wrappable $wrapper)
+    {
+        // TODO(lippserd): Revise decorator implementation to properly implement decorator propagation
+        if (
+            ! $this->hasDefaultElementDecorator()
+            && $wrapper instanceof FormElementDecorator
+        ) {
+            $this->setDefaultElementDecorator($wrapper);
+        }
+
+        return parent::setWrapper($wrapper);
+    }
+
     protected function onElementRegistered(FormElement $element)
     {
         $element->getAttributes()->registerAttributeCallback('name', function () use ($element) {
