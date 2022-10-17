@@ -104,6 +104,7 @@ class SelectElement extends BaseFormElement
     public function setOptions(array $options)
     {
         $this->options = [];
+        $this->optionContent = [];
         foreach ($options as $value => $label) {
             $this->optionContent[$value] = $this->makeOption($value, $label);
         }
