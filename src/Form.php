@@ -341,8 +341,15 @@ class Form extends BaseHtmlElement
 
     public function remove(ValidHtml $elementOrHtml)
     {
-        if ($this->submitButton === $elementOrHtml) {
-            $this->submitButton = null;
+        if ($elementOrHtml instanceof FormSubmitElement) {
+            if ($this->submitButton === $elementOrHtml) {
+                $this->submitButton = null;
+            }
+
+            $key = array_search($elementOrHtml, $this->submitElements, true);
+            if ($key !== false) {
+                unset($this->submitElements[$key]);
+            }
         }
 
         $this->removeElement($elementOrHtml);
