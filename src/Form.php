@@ -232,22 +232,26 @@ class Form extends BaseHtmlElement
 
         // From here, the form is considered submitted because either one of the submit elements has been pressed
         // or the form has been sent without a submit element being registered.
-        if ($this->isValid()) {
-            try {
-                if ($submitElement === $this->getSubmitButton()) {
-                    $this->onSuccess();
-                    $this->emitOnce(Form::ON_SUCCESS, [$this]);
-                } else {
-                    $this->onSubmit($submitElement);
-                    $this->emit(static::ON_SUBMIT, [$submitElement]);
-                }
-            } catch (Exception $e) {
-                $this->addMessage($e);
-                $this->onError();
-                $this->emit(Form::ON_ERROR, [$e, $this]);
-            }
-        } else {
+        if (
+            $submitElement->getAttributes()->get('formnovalidate')->getValue() !== true
+            && ! $this->isValid()
+        ) {
             $this->onError();
+
+            return $this;
+        }
+        try {
+            if ($submitElement === $this->getSubmitButton()) {
+                $this->onSuccess();
+                $this->emitOnce(Form::ON_SUCCESS, [$this]);
+            } else {
+                $this->onSubmit($submitElement);
+                $this->emit(static::ON_SUBMIT, [$submitElement]);
+            }
+        } catch (Exception $e) {
+            $this->addMessage($e);
+            $this->onError();
+            $this->emit(Form::ON_ERROR, [$e, $this]);
         }
 
         return $this;
