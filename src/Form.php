@@ -151,13 +151,6 @@ class Form extends BaseHtmlElement
         return $this->request;
     }
 
-    public function setRequest($request)
-    {
-        $this->request = $request;
-
-        return $this;
-    }
-
     /**
      * Get the url to redirect to on success
      *
@@ -189,7 +182,7 @@ class Form extends BaseHtmlElement
      */
     public function handleRequest(ServerRequestInterface $request)
     {
-        $this->setRequest($request);
+        $this->request = $request;
 
         if (! $this->hasBeenSent()) {
             return $this;
