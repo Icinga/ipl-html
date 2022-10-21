@@ -194,9 +194,6 @@ class Form extends BaseHtmlElement
         $this->setRequest($request);
 
         if (! $this->hasBeenSent()) {
-            // Always assemble
-            $this->ensureAssembled();
-
             return $this;
         }
 
