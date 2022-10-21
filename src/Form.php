@@ -18,7 +18,6 @@ class Form extends BaseHtmlElement
 
     public const ON_ELEMENT_REGISTERED = 'elementRegistered';
     public const ON_ERROR = 'error';
-    public const ON_REQUEST = 'request';
     public const ON_SUBMIT = 'submit';
     public const ON_SUCCESS = 'success';
     public const ON_VALIDATE = 'validate';
@@ -155,7 +154,6 @@ class Form extends BaseHtmlElement
     public function setRequest($request)
     {
         $this->request = $request;
-        $this->emit(Form::ON_REQUEST, [$request]);
 
         return $this;
     }
