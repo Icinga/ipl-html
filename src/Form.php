@@ -40,9 +40,6 @@ class Form extends BaseHtmlElement
     /** @var ServerRequestInterface The server request being processed */
     protected $request;
 
-    /** @var string */
-    protected $redirectUrl;
-
     protected $tag = 'form';
 
     /**
@@ -149,30 +146,6 @@ class Form extends BaseHtmlElement
     public function getRequest()
     {
         return $this->request;
-    }
-
-    /**
-     * Get the url to redirect to on success
-     *
-     * @return string
-     */
-    public function getRedirectUrl()
-    {
-        return $this->redirectUrl;
-    }
-
-    /**
-     * Set the url to redirect to on success
-     *
-     * @param string $url
-     *
-     * @return $this
-     */
-    public function setRedirectUrl($url)
-    {
-        $this->redirectUrl = $url;
-
-        return $this;
     }
 
     /**
@@ -377,7 +350,6 @@ class Form extends BaseHtmlElement
 
     protected function onSuccess()
     {
-        // $this->redirectOnSuccess();
     }
 
     protected function onElementRegistered(FormElement $element)
