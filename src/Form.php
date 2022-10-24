@@ -19,6 +19,7 @@ class Form extends BaseHtmlElement
     public const ON_ELEMENT_REGISTERED = 'elementRegistered';
     public const ON_ERROR = 'error';
     public const ON_SUBMIT = 'submit';
+    /** @deprecated Use {@link ON_SUBMIT} instead. */
     public const ON_SUCCESS = 'success';
     public const ON_VALIDATE = 'validate';
 
@@ -348,6 +349,7 @@ class Form extends BaseHtmlElement
     {
     }
 
+    /** @deprecated Use {@link onSubmit()} instead. */
     protected function onSuccess()
     {
     }
