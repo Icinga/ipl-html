@@ -8,6 +8,6 @@ class ObscurePassword extends PasswordElement
 {
     public static function get(): string
     {
-        return static::DUMMYPASSWORD;
+        return static::OBSCURE_PASSWORD;
     }
 }
