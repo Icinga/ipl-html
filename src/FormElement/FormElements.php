@@ -481,8 +481,6 @@ trait FormElements
     {
         if ($this->isValid === null) {
             $this->validate();
-
-            $this->emit(Form::ON_VALIDATE, [$this]);
         }
 
         return $this->isValid;
@@ -539,7 +537,6 @@ trait FormElements
             Form::ON_SENT,
             Form::ON_ERROR,
             Form::ON_REQUEST,
-            Form::ON_VALIDATE,
             Form::ON_ELEMENT_REGISTERED,
         ]);
     }
