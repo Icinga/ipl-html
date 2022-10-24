@@ -5,7 +5,6 @@ namespace ipl\Html\FormElement;
 use InvalidArgumentException;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
-use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
@@ -194,11 +193,7 @@ trait FormElements
         $this->elements[$name] = $element;
 
         if (array_key_exists($name, $this->populatedValues)) {
-            $element->setValue($this->populatedValues[$name][count($this->populatedValues[$name]) - 1]);
-
-            if ($element instanceof ValueCandidates) {
-                $element->setValueCandidates($this->populatedValues[$name]);
-            }
+            $element->setValue($this->populatedValues[$name]);
         }
 
         $this->onElementRegistered($element);
@@ -316,7 +311,7 @@ trait FormElements
     public function populate($values)
     {
         foreach ($values as $name => $value) {
-            $this->populatedValues[$name][] = $value;
+            $this->populatedValues[$name] = $value;
             if ($this->hasElement($name)) {
                 $this->getElement($name)->setValue($value);
             }
@@ -338,7 +333,7 @@ trait FormElements
     public function getPopulatedValue($name, $default = null)
     {
         return isset($this->populatedValues[$name])
-            ? $this->populatedValues[$name][count($this->populatedValues[$name]) - 1]
+            ? $this->populatedValues[$name]
             : $default;
     }
 
