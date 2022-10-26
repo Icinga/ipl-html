@@ -210,6 +210,7 @@ class Form extends BaseHtmlElement
                 $params = [];
         }
 
+        $params = array_merge_recursive($params, $request->getUploadedFiles());
         $this->populate($params);
 
         // Assemble after populate in order to conditionally provide form elements
