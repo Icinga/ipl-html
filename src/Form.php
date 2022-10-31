@@ -308,7 +308,10 @@ class Form extends BaseHtmlElement
                 $element->addMessage('This field is required');
                 $valid = false;
                 continue;
+            } elseif (! $element->hasValue()) {
+                continue;
             }
+
             if (! $element->isValid()) {
                 $valid = false;
             }
@@ -327,7 +330,9 @@ class Form extends BaseHtmlElement
     public function validatePartial()
     {
         foreach ($this->getElements() as $element) {
-            $element->validate();
+            if ($element->hasValue()) {
+                $element->validate();
+            }
         }
 
         return $this;
