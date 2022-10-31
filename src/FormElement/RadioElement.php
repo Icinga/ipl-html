@@ -34,12 +34,6 @@ class RadioElement extends InputElement
             [$this, 'disabledOptions']
         );
 
-        $this->getAttributes()->registerAttributeCallback(
-            'disabled',
-            null,
-            [$this, 'disableAllOptions']
-        );
-
         parent::__construct($name, $attributes);
     }
 
@@ -75,28 +69,6 @@ class RadioElement extends InputElement
     {
         foreach ($values as $value) {
             $this->disabledOption($value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Disable all radio buttons
-     *
-     * @return $this
-     */
-    public function disableAllOptions(): RadioElement
-    {
-        $this->valid = null;
-        $this->validators = null; // required to add validator with new possibleValues
-
-        $values = $this->possibleValues;
-        $this->possibleValues = $this->getValue(); // to valid default selected value
-
-        foreach ($values as $value) {
-            if ($option = $this->getOption($value)) {
-                $option->setAttribute('disabled', true);
-            }
         }
 
         return $this;
@@ -148,7 +120,9 @@ class RadioElement extends InputElement
             $input = (new InputElement($this->getName()))
                 ->setType($this->type)
                 ->setValue($value)
-                ->setLabel($label);
+                ->setLabel($label)
+                ->setRequired($this->isRequired())
+                ->setAttributes(clone $this->getAttributes());
 
             $this->options[$value] = $input;
         }

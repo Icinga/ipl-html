@@ -99,7 +99,7 @@ HTML;
 HTML;
         $this->assertHtml($html, $radio);
 
-        $radio->disableAllOptions();
+        $radio->disabledOptions(['yes', 'no', 'foo', 'bar']);
 
         $html = <<<HTML
 <label class="radio-label"><input value="foo" name="test" type="radio" disabled>Foo</label>
