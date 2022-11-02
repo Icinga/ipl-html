@@ -11,6 +11,9 @@ class SelectOption extends BaseHtmlElement
     /** @var mixed */
     protected $value;
 
+    /** @var string Label of the option */
+    protected $label;
+
     /**
      * SelectOption constructor.
      * @param string|null $value
@@ -19,20 +22,33 @@ class SelectOption extends BaseHtmlElement
     public function __construct($value = null, $label = null)
     {
         $this->value = $value;
-        $this->add($label);
+        $this->label = $label;
 
         $this->getAttributes()->registerAttributeCallback('value', [$this, 'getValue']);
     }
 
     /**
-     * @param $label
+     * Set the label of the option
+     *
+     * @param string $label
+     *
      * @return $this
      */
     public function setLabel($label)
     {
-        $this->setContent($label);
+        $this->label = $label;
 
         return $this;
+    }
+
+    /**
+     * Get the label of the option
+     *
+     * @return string|null
+     */
+    public function getLabel(): ?string
+    {
+        return $this->label;
     }
 
     /**
@@ -41,5 +57,10 @@ class SelectOption extends BaseHtmlElement
     public function getValue()
     {
         return $this->value;
+    }
+
+    protected function assemble()
+    {
+        $this->setContent($this->getLabel());
     }
 }

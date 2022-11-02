@@ -261,11 +261,4 @@ class SelectElementTest extends TestCase
             $select
         );
     }
-
-    public function testLabelCanBeChanged()
-    {
-        $option = new SelectOption('value', 'Original label');
-        $option->setLabel('New label');
-        $this->assertHtml('<option value="value">New label</option>', $option);
-    }
 }
