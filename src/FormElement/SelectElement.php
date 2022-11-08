@@ -32,6 +32,12 @@ class SelectElement extends BaseFormElement
         parent::__construct($name, $attributes);
     }
 
+    public function getValueAttribute()
+    {
+        // select elements don't have a value attribute
+        return null;
+    }
+
     public function hasOption($value)
     {
         return isset($this->options[$value]);

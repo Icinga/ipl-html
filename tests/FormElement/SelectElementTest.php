@@ -203,7 +203,7 @@ class SelectElementTest extends TestCase
         ]);
 
         $this->assertHtml(
-            '<select name="elname" value="1">'
+            '<select name="elname">'
             . '<option value="">Please choose</option>'
             . '<option selected value="1">The one</option>'
             . '<option value="4">Four</option>'
@@ -228,7 +228,7 @@ class SelectElementTest extends TestCase
         $select->setValue('1');
 
         $this->assertHtml(
-            '<select name="elname" value="1">'
+            '<select name="elname">'
             . '<option value="">Please choose</option>'
             . '<option selected value="1">The one</option>'
             . '<option value="4">Four</option>'
@@ -240,7 +240,7 @@ class SelectElementTest extends TestCase
         $select->setValue('5');
 
         $this->assertHtml(
-            '<select name="elname" value="5">'
+            '<select name="elname">'
             . '<option value="">Please choose</option>'
             . '<option value="1">The one</option>'
             . '<option value="4">Four</option>'
