@@ -2,8 +2,10 @@
 
 namespace ipl\Html\FormElement;
 
+use Closure;
 use ipl\Html\Html;
 use ipl\I18n\Translation;
+use ipl\Validator\DeferredInArrayValidator;
 
 class SelectElement extends BaseFormElement
 {
@@ -15,6 +17,12 @@ class SelectElement extends BaseFormElement
     protected $options = [];
 
     protected $optionContent = [];
+
+    /** @var Closure */
+    protected $getPossibleValues;
+
+    /** @var array Disabled values */
+    protected $disabledOptions = [];
 
     public function __construct($name, $attributes = null)
     {
@@ -38,26 +46,6 @@ class SelectElement extends BaseFormElement
         return isset($this->options[$value]);
     }
 
-    public function validate()
-    {
-        $value = $this->getValue();
-        if (
-            $value !== null && (
-                ! ($option = $this->getOption($value))
-                || $option->getAttributes()->has('disabled')
-            )
-        ) {
-            $this->valid = false;
-            $this->addMessage(sprintf($this->translate("'%s' is not allowed here"), $value));
-
-            return $this;
-        }
-
-        parent::validate();
-
-        return $this;
-    }
-
     public function deselect()
     {
         $this->setValue(null);
@@ -67,13 +55,11 @@ class SelectElement extends BaseFormElement
 
     public function disableOption($value)
     {
+        $this->valid = null;
+        $this->disabledOptions[] = $value;
+
         if ($option = $this->getOption($value)) {
             $option->getAttributes()->add('disabled', true);
-        }
-
-        if ($this->isSelectedOption($value)) {
-            $this->valid = false;
-            $this->addMessage(sprintf($this->translate("'%s' is not allowed here"), $value));
         }
 
         return $this;
@@ -114,6 +100,15 @@ class SelectElement extends BaseFormElement
         }
 
         return $this;
+    }
+
+    public function addDefaultValidators()
+    {
+        $this->getPossibleValues = Closure::fromCallable(function (): array {
+            return array_diff(array_keys($this->options), $this->disabledOptions);
+        });
+
+        $this->getValidators()->add(new DeferredInArrayValidator($this->getPossibleValues));
     }
 
     protected function makeOption($value, $label)

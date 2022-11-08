@@ -26,23 +26,6 @@ class MultiselectElement extends SelectElement
         return $this;
     }
 
-    public function validate()
-    {
-        foreach ($this->getValue() as $value) {
-            $option = $this->getOption($value);
-            if (! $option || $option->getAttributes()->has('disabled')) {
-                $this->valid = false;
-                $this->addMessage(sprintf($this->translate("'%s' is not allowed here"), $value));
-
-                return $this;
-            }
-        }
-
-        BaseFormElement::validate();
-
-        return $this;
-    }
-
     protected function isSelectedOption($optionValue)
     {
         return in_array($optionValue, $this->getValue(), ! is_int($optionValue));
