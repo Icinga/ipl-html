@@ -4,6 +4,8 @@ namespace ipl\Tests\Html\FormElement;
 
 use ipl\Html\FormElement\SelectElement;
 use ipl\Html\FormElement\SelectOption;
+use ipl\I18n\NoopTranslator;
+use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
 
 class SelectElementTest extends TestCase
@@ -33,6 +35,7 @@ class SelectElementTest extends TestCase
 
     public function testOptionValidity()
     {
+        StaticTranslator::$instance = new NoopTranslator();
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'value'   => '3',
@@ -61,6 +64,7 @@ class SelectElementTest extends TestCase
 
     public function testSelectingDisabledOptionIsNotPossible()
     {
+        StaticTranslator::$instance = new NoopTranslator();
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'value'   => '4',

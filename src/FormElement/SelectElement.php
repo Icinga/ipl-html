@@ -3,6 +3,8 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Html;
+use ipl\Validator\DeferredInArrayValidator;
+use ipl\Validator\ValidatorChain;
 
 class SelectElement extends BaseFormElement
 {
@@ -35,25 +37,6 @@ class SelectElement extends BaseFormElement
         return isset($this->options[$value]);
     }
 
-    public function validate()
-    {
-        $value = $this->getValue();
-        if (
-            $value !== null && (
-                ! ($option = $this->getOption($value))
-                || $option->getAttributes()->has('disabled')
-            )
-        ) {
-            $this->addMessage("'$value' is not allowed here");
-        } elseif ($this->isRequired() && $value === null) {
-            $this->addMessage('This field is required');
-        } else {
-            return parent::validate();
-        }
-
-        return false;
-    }
-
     public function deselect()
     {
         $this->setValue(null);
@@ -65,10 +48,6 @@ class SelectElement extends BaseFormElement
     {
         if ($option = $this->getOption($value)) {
             $option->getAttributes()->add('disabled', true);
-        }
-
-        if ($this->isSelectedOption($value)) {
-            $this->addMessage("'$value' is not allowed here");
         }
 
         return $this;
@@ -145,6 +124,25 @@ class SelectElement extends BaseFormElement
             // numeric strings to integers if used as array keys
             ? $this->getValue() == $optionValue
             : $this->getValue() === $optionValue;
+    }
+
+    protected function addDefaultValidators(ValidatorChain $chain): void
+    {
+        $chain->add(
+            new DeferredInArrayValidator(function (): array {
+                $possibleValues = [];
+
+                foreach ($this->options as $option) {
+                    if ($option->getAttributes()->get('disabled')->getValue()) {
+                        continue;
+                    }
+
+                    $possibleValues[] = $option->getValue();
+                }
+
+                return $possibleValues;
+            })
+        );
     }
 
     protected function assemble()
