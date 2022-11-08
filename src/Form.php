@@ -365,9 +365,14 @@ class Form extends BaseHtmlElement
         }
 
         $attr = clone $this->submitButton->getAttributes();
-        $attr->setAttribute(Attribute::create('style', 'display: none'));
+        $attr->setAttribute(
+            Attribute::create(
+                'style',
+                'border: 0;height: 0;margin: 0;padding: 0;visibility: hidden;width: 0;position: absolute;'
+            )
+        );
 
-        $submit = $this->createElement('submit', 'submit_pre', $attr);
+        $submit = $this->createElement('submit', $this->submitButton->getName(), $attr);
         $this->prependHtml($submit);
     }
 
