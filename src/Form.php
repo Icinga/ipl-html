@@ -395,7 +395,8 @@ class Form extends BaseHtmlElement
     public function renderContent(): string
     {
         if (count($this->submitElements) > 1) {
-            return (new HtmlDocument())->setHtmlContent($this->createSubmitButton(), new HtmlString(parent::renderContent()));
+            return (new HtmlDocument())
+                ->setHtmlContent($this->createSubmitButton(), new HtmlString(parent::renderContent()));
         }
 
         return parent::renderContent();

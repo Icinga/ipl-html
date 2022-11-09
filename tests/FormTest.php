@@ -26,7 +26,10 @@ class FormTest extends TestCase
 
         $expected = <<<'HTML'
     <form method="POST">
-      <input name="submitCreate" style="border: 0;height: 0;margin: 0;padding: 0;visibility: hidden;width: 0;position: absolute;" type="submit" value="submitCreate"/>
+      <input name="submitCreate"
+          style="border: 0;height: 0;margin: 0;padding: 0;visibility: hidden;width: 0;position: absolute;"
+          type="submit"
+          value="submitCreate"/>
       <input name="submitDelete" type="submit" value="submitDelete"/>
       <input name="submitCreate" type="submit" value="submitCreate"/>
     </form>
@@ -60,7 +63,10 @@ HTML;
 
         $expected = <<<'HTML'
     <form method="POST">
-      <input name="submitCreate" style="border: 0;height: 0;margin: 0;padding: 0;visibility: hidden;width: 0;position: absolute;" type="submit" value="submitCreate"/>
+      <input name="submitCreate"
+          style="border: 0;height: 0;margin: 0;padding: 0;visibility: hidden;width: 0;position: absolute;"
+          type="submit"
+          value="submitCreate"/>
       <input name="submitDelete" type="submit" value="submitDelete"/>
       <input name="submitCreate" type="submit" value="submitCreate"/>
     </form>
