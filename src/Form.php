@@ -392,12 +392,13 @@ class Form extends BaseHtmlElement
         $element->onRegistered($this);
     }
 
-    public function render(): string
+    public function renderContent(): string
     {
-        // Refactor into `ON_ASSEMBLE` once available
-        $this->prependSubmitButton();
+        if (count($this->submitElements) > 1) {
+            return (new HtmlDocument())->setHtmlContent($this->createSubmitButton(), new HtmlString(parent::renderContent()));
+        }
 
-        return parent::render();
+        return parent::renderContent();
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes)
