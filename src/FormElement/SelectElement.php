@@ -5,6 +5,7 @@ namespace ipl\Html\FormElement;
 use ipl\Html\Attributes;
 use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Html;
+use ipl\Html\HtmlElement;
 use ipl\Validator\DeferredInArrayValidator;
 use ipl\Validator\ValidatorChain;
 use UnexpectedValueException;
@@ -18,6 +19,7 @@ class SelectElement extends BaseFormElement
     /** @var SelectOption[] */
     protected $options = [];
 
+    /** @var array of SelectOption|HtmlElement */
     protected $optionContent = [];
 
     /** @var array|string */
@@ -36,6 +38,11 @@ class SelectElement extends BaseFormElement
         return $this->isMultiple() ? ($name . '[]') : $name;
     }
 
+    /**
+     * Get the value of the element
+     *
+     * Returns `array` when the attribute `multiple` is set to `true`, `string` otherwise
+     */
     public function getValue()
     {
         if ($this->isMultiple()) {
@@ -45,19 +52,38 @@ class SelectElement extends BaseFormElement
         return parent::getValue();
     }
 
-    public function hasOption($value)
+    /**
+     * Whether an option with the specified value exists
+     *
+     * @param string|int $value
+     *
+     * @return bool
+     */
+    public function hasOption($value): bool
     {
         return isset($this->options[$value]);
     }
 
-    public function deselect()
+    /**
+     * Deselect all values
+     *
+     * @return $this
+     */
+    public function deselect(): self
     {
         $this->setValue(null);
 
         return $this;
     }
 
-    public function disableOption($value)
+    /**
+     * Disable the option with specified value
+     *
+     * @param string|int $value
+     *
+     * @return $this
+     */
+    public function disableOption($value): self
     {
         if ($option = $this->getOption($value)) {
             $option->getAttributes()->add('disabled', true);
@@ -66,7 +92,14 @@ class SelectElement extends BaseFormElement
         return $this;
     }
 
-    public function disableOptions($values)
+    /**
+     * Disable the options with specified values
+     *
+     * @param array $values
+     *
+     * @return $this
+     */
+    public function disableOptions(array $values): self
     {
         foreach ($values as $value) {
             $this->disableOption($value);
@@ -76,23 +109,25 @@ class SelectElement extends BaseFormElement
     }
 
     /**
-     * @param $value
+     * Get the option with specified value
+     *
+     * @param string|int $value
+     *
      * @return SelectOption|null
      */
-    public function getOption($value)
+    public function getOption($value): ?SelectOption
     {
-        if ($this->hasOption($value)) {
-            return $this->options[$value];
-        } else {
-            return null;
-        }
+        return $this->options[$value] ?? null;
     }
 
     /**
+     * Set the options from specified values
+     *
      * @param array $options
+     *
      * @return $this
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): self
     {
         $this->options = [];
         $this->optionContent = [];
@@ -103,6 +138,14 @@ class SelectElement extends BaseFormElement
         return $this;
     }
 
+    /**
+     * Make the selectOption for the specified value and the label
+     *
+     * @param string|int $value Value of the option
+     * @param string|array $label Label of the option
+     *
+     * @return SelectOption|HtmlElement
+     */
     protected function makeOption($value, $label)
     {
         if (is_array($label)) {
@@ -112,15 +155,16 @@ class SelectElement extends BaseFormElement
             }
 
             return $grp;
-        } else {
-            $option = new SelectOption($value, $label);
-            $option->getAttributes()->registerAttributeCallback('selected', function () use ($option) {
-                return $this->isSelectedOption($option->getValue());
-            });
-            $this->options[$value] = $option;
-
-            return $this->options[$value];
         }
+
+        $option = new SelectOption($value, $label);
+        $option->getAttributes()->registerAttributeCallback('selected', function () use ($option) {
+            return $this->isSelectedOption($option->getValue());
+        });
+
+        $this->options[$value] = $option;
+
+        return $this->options[$value];
     }
 
     /**
@@ -130,7 +174,7 @@ class SelectElement extends BaseFormElement
      *
      * @return bool
      */
-    protected function isSelectedOption($optionValue)
+    protected function isSelectedOption($optionValue): bool
     {
         $value = $this->getValue();
 
