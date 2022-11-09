@@ -23,15 +23,16 @@ class SelectElementTest extends TestCase
             ],
         ]);
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<option value="1">The one</option>'
-            . '<option value="4">Four</option>'
-            . '<option value="5">Hi five</option>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <option value="1">The one</option>
+    <option value="4">Four</option>
+    <option value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
     }
 
     public function testOptionValidity()
@@ -101,19 +102,20 @@ class SelectElementTest extends TestCase
             ],
         ]);
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<optgroup label="Some Options">'
-            . '<option value="1">The one</option>'
-            . '<option value="4">Four</option>'
-            . '</optgroup>'
-            . '<optgroup label="More options">'
-            . '<option value="5">Hi five</option>'
-            . '</optgroup>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <optgroup label="Some Options">
+        <option value="1">The one</option>
+        <option value="4">Four</option>
+    </optgroup>
+    <optgroup label="More options">
+        <option value="5">Hi five</option>
+    </optgroup>
+ </select>
+HTML;
+
+        $this->assertHtml($html, $select);
     }
 
     public function testDisabledNestedOptions()
@@ -134,19 +136,20 @@ class SelectElementTest extends TestCase
 
         $select->disableOptions([4, '5']);
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<optgroup label="Some options">'
-            . '<option value="1">The one</option>'
-            . '<option value="4" disabled>Four</option>'
-            . '</optgroup>'
-            . '<optgroup label="More options">'
-            . '<option value="5" disabled>Hi five</option>'
-            . '</optgroup>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <optgroup label="Some options">
+        <option value="1">The one</option>
+        <option value="4" disabled>Four</option>
+    </optgroup>
+    <optgroup label="More options">
+        <option value="5" disabled>Hi five</option>
+    </optgroup>
+ </select>
+HTML;
+
+        $this->assertHtml($html, $select);
     }
 
     public function testDeeplyDisabledNestedOptions()
@@ -171,23 +174,24 @@ class SelectElementTest extends TestCase
 
         $select->disableOptions([4, '5']);
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<optgroup label="Some options">'
-              . '<option value="1">The one</option>'
-              . '<optgroup label="4">'
-                . '<optgroup label="Deeper">'
-                  . '<option value="4x4">Fourfour</option>'
-                . '</optgroup>'
-              . '</optgroup>'
-            . '</optgroup>'
-            . '<optgroup label="More options">'
-              . '<option value="5" disabled>Hi five</option>'
-            . '</optgroup>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <optgroup label="Some options">
+        <option value="1">The one</option>
+        <optgroup label="4">
+            <optgroup label="Deeper">
+                <option value="4x4">Fourfour</option>
+            </optgroup>
+        </optgroup>
+    </optgroup>
+    <optgroup label="More options">
+        <option value="5" disabled>Hi five</option>
+    </optgroup>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
     }
 
     public function testDefaultValueIsSelected()
@@ -203,15 +207,16 @@ class SelectElementTest extends TestCase
             ]
         ]);
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<option selected value="1">The one</option>'
-            . '<option value="4">Four</option>'
-            . '<option value="5">Hi five</option>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <option selected value="1">The one</option>
+    <option value="4">Four</option>
+    <option value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
     }
 
     public function testSetValueSelectsAnOption()
@@ -228,39 +233,42 @@ class SelectElementTest extends TestCase
 
         $select->setValue('1');
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<option selected value="1">The one</option>'
-            . '<option value="4">Four</option>'
-            . '<option value="5">Hi five</option>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <option selected value="1">The one</option>
+    <option value="4">Four</option>
+    <option value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
 
         $select->setValue('5');
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<option value="1">The one</option>'
-            . '<option value="4">Four</option>'
-            . '<option selected value="5">Hi five</option>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <option value="1">The one</option>
+    <option value="4">Four</option>
+    <option selected value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
 
         $select->setValue(null);
 
-        $this->assertHtml(
-            '<select name="elname">'
-            . '<option value="">Please choose</option>'
-            . '<option value="1">The one</option>'
-            . '<option value="4">Four</option>'
-            . '<option value="5">Hi five</option>'
-            . '</select>',
-            $select
-        );
+        $html = <<<'HTML'
+<select name="elname">
+    <option value="">Please choose</option>
+    <option value="1">The one</option>
+    <option value="4">Four</option>
+    <option value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
     }
 
     public function testSetArrayAsValueWithoutMultipleAttributeThrowsException()
