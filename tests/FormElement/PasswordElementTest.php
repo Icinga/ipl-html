@@ -11,8 +11,8 @@ class PasswordElementTest extends TestCase
     public function testPasswordValueRenderedObscured()
     {
         $form = (new Form())
-            ->addElement('password', 'password')
-            ->populate(['password' => 'secret']);
+            ->populate(['password' => 'secret'])
+            ->addElement('password', 'password');
 
         $html = <<<'HTML'
 <form method="POST">
@@ -32,8 +32,8 @@ HTML;
     public function testGetValueReturnsPassword()
     {
         $form = (new Form())
-            ->addElement('password', 'password')
-            ->populate(['password' => 'secret']);
+            ->populate(['password' => 'secret'])
+            ->addElement('password', 'password');
 
         $password = $form->getElement('password');
         $this->assertEquals($password->getValue(), 'secret');
@@ -43,9 +43,9 @@ HTML;
     public function testGetValueReturnsNewPassword()
     {
         $form = (new Form())
-            ->addElement('password', 'password')
             ->populate(['password' => 'secret'])
-            ->populate(['password' => 'topsecret']);
+            ->populate(['password' => 'topsecret'])
+            ->addElement('password', 'password');
 
         $password = $form->getElement('password');
         $this->assertEquals($password->getValue(), 'topsecret');
@@ -55,12 +55,72 @@ HTML;
     public function testGetValueReturnsNullIfPasswordReset()
     {
         $form = (new Form())
-            ->addElement('password', 'password')
             ->populate(['password' => 'secret'])
-            ->populate(['password' => '']);
+            ->populate(['password' => ''])
+            ->addElement('password', 'password');
 
         $password = $form->getElement('password');
         $this->assertNull($password->getValue());
         $this->assertFalse($password->hasValue());
+    }
+
+    public function testGetValueReturnsNullIfNotChanged()
+    {
+        $form = (new Form())
+            ->populate(['password' => ObscurePassword::get()])
+            ->addElement('password', 'password');
+
+        $password = $form->getElement('password');
+        $this->assertNull($password->getValue());
+    }
+
+    /**
+     * Represents a form that requires a password to be set as confirmation.
+     * If another element is invalid, the password element should have no
+     * value, as otherwise the user thinks the password is still set, although
+     * it's the obscured password.
+     *
+     * @return void
+     */
+    public function testObscuredValueNotVisibleAfterFormValidationFailed()
+    {
+        $form = (new Form())
+            ->populate(['password' => 'secret'])
+            ->addElement('password', 'password')
+            ->addElement('text', 'username', ['required' => true]);
+
+        $this->assertFalse($form->isValid());
+
+        $html = <<<'HTML'
+<form method="POST">
+  <input type="password" name="password">
+  <input name="username" required type="text"/>
+</form>
+HTML;
+        $this->assertHtml($html, $form);
+    }
+
+    /**
+     * Represents a controller action that populates saved data and
+     * allows the user to change it. If the password isn't changed,
+     * the saved password must be preserved.
+     *
+     * @return void
+     */
+    public function testOriginalPasswordMustBePreserved()
+    {
+        $form = (new Form());
+
+        // The action populates always first
+        $form->populate(['password' => 'secret']);
+
+        // handleRequest() then another time
+        $form->populate(['password' => ObscurePassword::get()]);
+
+        // assemble() then registers the element
+        $form->addElement('password', 'password');
+
+        $password = $form->getElement('password');
+        $this->assertEquals('secret', $password->getValue());
     }
 }
