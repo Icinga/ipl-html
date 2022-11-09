@@ -7,6 +7,7 @@ use ipl\Html\FormElement\SelectOption;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
+use UnexpectedValueException;
 
 class SelectElementTest extends TestCase
 {
@@ -260,5 +261,157 @@ class SelectElementTest extends TestCase
             . '</select>',
             $select
         );
+    }
+
+    public function testSetArrayAsValueWithoutMultipleAttributeThrowsException()
+    {
+        $select = new SelectElement('elname', [
+            'label'     => 'Customer',
+            'options'   => [
+                null => 'Please choose',
+                '1'  => 'The one',
+                '4'  => 'Four',
+                '5'  => 'Hi five',
+            ]
+        ]);
+
+        $select->setValue(['1', 5]);
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Value cannot be an array without setting the `multiple` attribute to `true`');
+
+        $select->render();
+    }
+
+    public function testSetNonArrayAsValueWithMultipleAttributeThrowsException()
+    {
+        $select = new SelectElement('elname', [
+            'label'     => 'Customer',
+            'multiple'  => true,
+            'options'   => [
+                null => 'Please choose',
+                '1'  => 'The one',
+                '4'  => 'Four',
+                '5'  => 'Hi five',
+            ]
+        ]);
+
+        $select->setValue(1);
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage(
+            'Value must be an array when the `multiple` attribute is set to `true`'
+        );
+
+        $select->render();
+    }
+
+    public function testSetArrayAsValueWithMultipleAttributeSetTheOptions()
+    {
+
+        $select = new SelectElement('elname', [
+            'label'   => 'Customer',
+            'options' => [
+                null => 'Please choose',
+                '1'  => 'The one',
+                '4'  => 'Four',
+                '5'  => 'Hi five',
+            ]
+        ]);
+
+        $select->setAttribute('multiple', true);
+
+        $select->setValue(['1']);
+
+        $html = <<<'HTML'
+<select name="elname[]" multiple>
+    <option value="">Please choose</option>
+    <option selected value="1">The one</option>
+    <option value="4">Four</option>
+    <option value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+
+        $select->setValue(['5', 4, 6]);
+
+        $html = <<<'HTML'
+<select name="elname[]" multiple>
+    <option value="">Please choose</option>
+    <option value="1">The one</option>
+    <option selected value="4">Four</option>
+    <option selected value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+
+        $select->setValue(null);
+
+        $html = <<<'HTML'
+<select name="elname[]" multiple>
+    <option value="">Please choose</option>
+    <option value="1">The one</option>
+    <option value="4">Four</option>
+    <option value="5">Hi five</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+    }
+
+    public function testLabelCanBeChanged()
+    {
+        $option = new SelectOption('value', 'Original label');
+        $option->setLabel('New label');
+        $this->assertHtml('<option value="value">New label</option>', $option);
+    }
+
+    public function testRendersCheckMultipleAttribute()
+    {
+        $select = new SelectElement('test', ['multiple' => true]);
+
+        $html = <<<'HTML'
+<select name="test[]" multiple="multiple">
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+    }
+
+    public function testSetMultipleAttribute()
+    {
+        $select = new SelectElement('test');
+
+        $select->setAttribute('multiple', true);
+
+        $html = <<<'HTML'
+<select name="test[]" multiple="multiple">
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+        $this->assertTrue($select->isMultiple());
+
+        $select->setAttribute('multiple', false);
+
+        $html = <<<'HTML'
+<select name="test">
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+        $this->assertFalse($select->isMultiple());
+    }
+
+    public function testGetValueReturnsAnArrayWhenMultipleAttributeIsSet()
+    {
+        $select = new SelectElement('test');
+
+        $this->assertNull($select->getValue());
+
+        $select->setAttribute('multiple', true);
+        $this->assertSame([], $select->getValue());
     }
 }

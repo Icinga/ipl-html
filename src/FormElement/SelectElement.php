@@ -2,12 +2,17 @@
 
 namespace ipl\Html\FormElement;
 
+use ipl\Html\Attributes;
+use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Html;
 use ipl\Validator\DeferredInArrayValidator;
 use ipl\Validator\ValidatorChain;
+use UnexpectedValueException;
 
 class SelectElement extends BaseFormElement
 {
+    use MultipleAttribute;
+
     protected $tag = 'select';
 
     /** @var SelectOption[] */
@@ -15,27 +20,29 @@ class SelectElement extends BaseFormElement
 
     protected $optionContent = [];
 
-    public function __construct($name, $attributes = null)
-    {
-        $this->getAttributes()->registerAttributeCallback(
-            'options',
-            null,
-            [$this, 'setOptions']
-        );
-        // ZF1 compatibility:
-        $this->getAttributes()->registerAttributeCallback(
-            'multiOptions',
-            null,
-            [$this, 'setOptions']
-        );
-
-        parent::__construct($name, $attributes);
-    }
+    /** @var array|string */
+    protected $value;
 
     public function getValueAttribute()
     {
         // select elements don't have a value attribute
         return null;
+    }
+
+    public function getNameAttribute()
+    {
+        $name = $this->getName();
+
+        return $this->isMultiple() ? ($name . '[]') : $name;
+    }
+
+    public function getValue()
+    {
+        if ($this->isMultiple()) {
+            return parent::getValue() ?? [];
+        }
+
+        return parent::getValue();
     }
 
     public function hasOption($value)
@@ -125,11 +132,29 @@ class SelectElement extends BaseFormElement
      */
     protected function isSelectedOption($optionValue)
     {
+        $value = $this->getValue();
+
+        if ($this->isMultiple()) {
+            if (! is_array($value)) {
+                throw new UnexpectedValueException(
+                    'Value must be an array when the `multiple` attribute is set to `true`'
+                );
+            }
+
+            return in_array($optionValue, $value, ! is_int($optionValue));
+        }
+
+        if (is_array($value)) {
+            throw new UnexpectedValueException(
+                'Value cannot be an array without setting the `multiple` attribute to `true`'
+            );
+        }
+
         return is_int($optionValue)
             // The loose comparison is required because PHP casts
             // numeric strings to integers if used as array keys
-            ? $this->getValue() == $optionValue
-            : $this->getValue() === $optionValue;
+            ? $value == $optionValue
+            : $value === $optionValue;
     }
 
     protected function addDefaultValidators(ValidatorChain $chain): void
@@ -154,5 +179,25 @@ class SelectElement extends BaseFormElement
     protected function assemble()
     {
         $this->addHtml(...array_values($this->optionContent));
+    }
+
+    protected function registerAttributeCallbacks(Attributes $attributes)
+    {
+        parent::registerAttributeCallbacks($attributes);
+
+        $attributes->registerAttributeCallback(
+            'options',
+            null,
+            [$this, 'setOptions']
+        );
+
+        // ZF1 compatibility:
+        $this->getAttributes()->registerAttributeCallback(
+            'multiOptions',
+            null,
+            [$this, 'setOptions']
+        );
+
+        $this->registerMultipleAttributeCallback($attributes);
     }
 }
