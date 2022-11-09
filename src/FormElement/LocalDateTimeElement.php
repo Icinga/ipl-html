@@ -4,6 +4,7 @@ namespace ipl\Html\FormElement;
 
 use DateTime;
 use ipl\Validator\DateTimeValidator;
+use ipl\Validator\ValidatorChain;
 
 class LocalDateTimeElement extends InputElement
 {
@@ -45,8 +46,8 @@ class LocalDateTimeElement extends InputElement
         return $this->value->format(static::FORMAT);
     }
 
-    public function addDefaultValidators()
+    protected function addDefaultValidators(ValidatorChain $chain): void
     {
-        $this->getValidators()->add(new DateTimeValidator());
+        $chain->add(new DateTimeValidator());
     }
 }

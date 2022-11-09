@@ -180,18 +180,12 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function getValidators()
     {
         if ($this->validators === null) {
-            $this->validators = new ValidatorChain();
-            $this->addDefaultValidators();
+            $chain = new ValidatorChain();
+            $this->addDefaultValidators($chain);
+            $this->validators = $chain;
         }
 
         return $this->validators;
-    }
-
-    /**
-     * Add default validators
-     */
-    public function addDefaultValidators()
-    {
     }
 
     /**
@@ -315,6 +309,13 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function getValueAttribute()
     {
         return $this->getValue();
+    }
+
+    /**
+     * Add default validators
+     */
+    protected function addDefaultValidators(ValidatorChain $chain): void
+    {
     }
 
     protected function registerValueCallback(Attributes $attributes)

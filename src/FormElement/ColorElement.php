@@ -3,13 +3,14 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Validator\HexColorValidator;
+use ipl\Validator\ValidatorChain;
 
 class ColorElement extends InputElement
 {
     protected $type = 'color';
 
-    public function addDefaultValidators(): void
+    protected function addDefaultValidators(ValidatorChain $chain): void
     {
-        $this->getValidators()->add(new HexColorValidator());
+        $chain->add(new HexColorValidator());
     }
 }
