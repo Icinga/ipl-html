@@ -358,12 +358,8 @@ class Form extends BaseHtmlElement
         }
     }
 
-    protected function prependSubmitButton(): void
+    protected function createSubmitButton(): FormElement
     {
-        if ($this->submitButton === null) {
-            return;
-        }
-
         $attr = clone $this->submitButton->getAttributes();
         $attr->setAttribute(
             Attribute::create(
@@ -373,7 +369,9 @@ class Form extends BaseHtmlElement
         );
 
         $submit = $this->createElement('submit', $this->submitButton->getName(), $attr);
-        $this->prependHtml($submit);
+        $submit->setValue($this->submitButton->getValue());
+
+        return $submit;
     }
 
     protected function onSuccess()
