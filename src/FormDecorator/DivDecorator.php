@@ -45,6 +45,14 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
         $decorator = clone $this;
 
+        /**
+         * Wrapper logic can be overridden to propagate the decorator.
+         * So here we make sure that a yet unbound decorator is passed.
+         *
+         * {@see FieldsetElement::setWrapper()}
+         */
+        $formElement->prependWrapper($decorator);
+
         $decorator->formElement = $formElement;
 
         $classes = [static::INPUT_ELEMENT_CLASS];
@@ -53,8 +61,6 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         }
 
         $decorator->getAttributes()->add('class', $classes);
-
-        $formElement->prependWrapper($decorator);
     }
 
     protected function assembleDescription()

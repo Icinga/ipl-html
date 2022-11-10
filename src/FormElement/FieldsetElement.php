@@ -53,7 +53,7 @@ class FieldsetElement extends BaseFormElement
             ! $this->hasDefaultElementDecorator()
             && $wrapper instanceof FormElementDecorator
         ) {
-            $this->setDefaultElementDecorator($wrapper);
+            $this->setDefaultElementDecorator(clone $wrapper);
         }
 
         return parent::setWrapper($wrapper);

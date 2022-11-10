@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html\FormElement;
 
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DivDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Tests\Html\TestCase;
 use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
@@ -150,5 +151,44 @@ HTML;
 HTML;
 
         $this->assertHtml($expected, $fieldset);
+    }
+
+    public function testDecoratorPropagationWithDivDecorator(): void
+    {
+        // Order is important because addElement() calls decorate(). Could be fixed.
+        $fieldset = (new FieldsetElement('test_fieldset'));
+        $form = (new Form())
+            ->setDefaultElementDecorator(new DivDecorator())
+            // The div decorator adds attributes to itself during `decorate()`,
+            // so we add an element before the fieldset for that to be called
+            // and we can test if the propagation works with unbound clones of the decorator.
+            ->addElement('input', 'before_fieldset')
+            ->addElement($fieldset)
+            ->addElement('input', 'after_fieldset');
+        $fieldset->addElement('select', 'test_select');
+        $fieldset->addElement('input', 'test_input');
+
+        $expected = <<<'HTML'
+<form method="POST">
+  <div class="form-element">
+    <input name="before_fieldset">
+  </div>
+  <div class="form-element">
+    <fieldset name="test_fieldset">
+      <div class="form-element">
+        <select name="test_fieldset[test_select]"></select>
+      </div>
+      <div class="form-element">
+        <input name="test_fieldset[test_input]"/>
+      </div>
+    </fieldset>
+  </div>
+  <div class="form-element">
+    <input name="after_fieldset">
+  </div>
+</form>
+HTML;
+
+        $this->assertHtml($expected, $form);
     }
 }
