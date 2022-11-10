@@ -518,4 +518,11 @@ class Attributes implements ArrayAccess, IteratorAggregate
     {
         return new ArrayIterator($this->attributes);
     }
+
+    public function __clone()
+    {
+        foreach ($this->attributes as &$attribute) {
+            $attribute = clone $attribute;
+        }
+    }
 }
