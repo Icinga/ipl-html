@@ -352,4 +352,13 @@ abstract class BaseHtmlElement extends HtmlDocument
             $tag
         );
     }
+
+    public function __clone()
+    {
+        parent::__clone();
+
+        if ($this->attributes !== null) {
+            $this->attributes = clone $this->attributes;
+        }
+    }
 }
