@@ -29,33 +29,6 @@ class SelectElement extends BaseFormElement
     /** @var array|string */
     protected $value;
 
-    public function getValueAttribute()
-    {
-        // select elements don't have a value attribute
-        return null;
-    }
-
-    public function getNameAttribute()
-    {
-        $name = $this->getName();
-
-        return $this->isMultiple() ? ($name . '[]') : $name;
-    }
-
-    /**
-     * Get the value of the element
-     *
-     * Returns `array` when the attribute `multiple` is set to `true`, `string` otherwise
-     */
-    public function getValue()
-    {
-        if ($this->isMultiple()) {
-            return parent::getValue() ?? [];
-        }
-
-        return parent::getValue();
-    }
-
     /**
      * Get the option with specified value
      *
@@ -112,6 +85,33 @@ class SelectElement extends BaseFormElement
         }
 
         return $this;
+    }
+
+    /**
+     * Get the value of the element
+     *
+     * Returns `array` when the attribute `multiple` is set to `true`, `string` otherwise
+     */
+    public function getValue()
+    {
+        if ($this->isMultiple()) {
+            return parent::getValue() ?? [];
+        }
+
+        return parent::getValue();
+    }
+
+    public function getValueAttribute()
+    {
+        // select elements don't have a value attribute
+        return null;
+    }
+
+    public function getNameAttribute()
+    {
+        $name = $this->getName();
+
+        return $this->isMultiple() ? ($name . '[]') : $name;
     }
 
     /**
