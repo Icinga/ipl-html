@@ -2,6 +2,7 @@
 
 namespace ipl\Html\FormElement;
 
+use InvalidArgumentException;
 use ipl\Html\Attributes;
 use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Html;
@@ -19,8 +20,11 @@ class SelectElement extends BaseFormElement
     /** @var SelectOption[] */
     protected $options = [];
 
-    /** @var array of SelectOption|HtmlElement */
+    /** @var SelectOption[]|HtmlElement[] */
     protected $optionContent = [];
+
+    /** @var array Disabled select options */
+    protected $disabledOptions = [];
 
     /** @var array|string */
     protected $value;
@@ -77,43 +81,11 @@ class SelectElement extends BaseFormElement
     }
 
     /**
-     * Disable the option with specified value
-     *
-     * @param string|int $value
-     *
-     * @return $this
-     */
-    public function disableOption($value): self
-    {
-        if ($option = $this->getOption($value)) {
-            $option->getAttributes()->add('disabled', true);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Disable the options with specified values
-     *
-     * @param array $values
-     *
-     * @return $this
-     */
-    public function disableOptions(array $values): self
-    {
-        foreach ($values as $value) {
-            $this->disableOption($value);
-        }
-
-        return $this;
-    }
-
-    /**
      * Get the option with specified value
      *
      * @param string|int $value
      *
-     * @return SelectOption|null
+     * @return ?SelectOption
      */
     public function getOption($value): ?SelectOption
     {
@@ -139,6 +111,34 @@ class SelectElement extends BaseFormElement
     }
 
     /**
+     * Set the specified options as disable
+     *
+     * @param array $disabledOptions
+     *
+     * @return $this
+     */
+    public function setDisabledOptions(array $disabledOptions): self
+    {
+        if (! empty($this->options)) {
+            foreach ($this->options as $option) {
+                $optionValue = $option->getValue();
+
+                $option->setAttribute(
+                    'disabled',
+                    in_array($optionValue, $disabledOptions, ! is_int($optionValue))
+                    || ($optionValue === null && in_array('', $disabledOptions, true))
+                );
+            }
+
+            $this->disabledOptions = [];
+        } else {
+            $this->disabledOptions = $disabledOptions;
+        }
+
+        return $this;
+    }
+
+    /**
      * Make the selectOption for the specified value and the label
      *
      * @param string|int $value Value of the option
@@ -157,7 +157,9 @@ class SelectElement extends BaseFormElement
             return $grp;
         }
 
-        $option = new SelectOption($value, $label);
+        $option = (new SelectOption($value, $label))
+            ->setAttribute('disabled', in_array($value, $this->disabledOptions, ! is_int($value)));
+
         $option->getAttributes()->registerAttributeCallback('selected', function () use ($option) {
             return $this->isSelectedOption($option->getValue());
         });
@@ -238,6 +240,12 @@ class SelectElement extends BaseFormElement
             'options',
             null,
             [$this, 'setOptions']
+        );
+
+        $attributes->registerAttributeCallback(
+            'disabledOptions',
+            null,
+            [$this, 'setDisabledOptions']
         );
 
         // ZF1 compatibility:

@@ -83,7 +83,7 @@ HTML;
         ]);
 
         $this->assertTrue($select->isValid());
-        $select->disableOption(4);
+        $select->getOption(4)->setAttribute('disabled', true);
         $this->assertFalse($select->isValid());
     }
 
@@ -135,7 +135,8 @@ HTML;
             ],
         ]);
 
-        $select->disableOptions([4, '5']);
+        $select->getOption(4)->setAttribute('disabled', true);
+        $select->getOption('5')->setAttribute('disabled', true);
 
         $html = <<<'HTML'
 <select name="elname">
@@ -173,7 +174,8 @@ HTML;
             ],
         ]);
 
-        $select->disableOptions([4, '5']);
+        $select->getOption('4x4')->setAttribute('disabled', true);
+        $select->getOption(5)->setAttribute('disabled', true);
 
         $html = <<<'HTML'
 <select name="elname">
@@ -182,7 +184,7 @@ HTML;
         <option value="1">The one</option>
         <optgroup label="4">
             <optgroup label="Deeper">
-                <option value="4x4">Fourfour</option>
+                <option value="4x4" disabled>Fourfour</option>
             </optgroup>
         </optgroup>
     </optgroup>
@@ -501,5 +503,86 @@ HTML;
 
         $this->assertNull($select->getValue());
         $this->assertNull($select->getOption(null)->getValue());
+    }
+
+    /**
+     * @depends testNullAndTheEmptyStringAreEquallyHandled
+     */
+    public function testDisablingOptionsIsWorking()
+    {
+        $form = new Form();
+        $form->addElement('select', 'select', [
+            'options'           => ['' => 'Please choose', 'foo' => 'FOO', 'bar' => 'BAR'],
+            'disabledOptions'   => [''],
+            'required'          => true,
+            'value'             => ''
+        ]);
+
+        $html = <<<'HTML'
+<select name="select" required>
+  <option selected disabled>Please choose</option>
+  <option value="foo">FOO</option>
+  <option value="bar">BAR</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $form->getElement('select'));
+    }
+
+    public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
+    {
+        $select = new SelectElement('select');
+        $select->setOptions([null => 'Foo', 'bar' => 'Bar']);
+        $select->setDisabledOptions([null]);
+
+        $this->assertTrue($select->getOption(null)->getAttributes()->get('disabled')->getValue());
+
+        $select = new SelectElement('select');
+        $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
+        $select->setDisabledOptions(['']);
+
+        $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
+
+        $select = new SelectElement('select');
+        $select->setOptions([null => 'Foo', 'bar' => 'Bar']);
+        $select->setDisabledOptions(['']);
+
+        $this->assertTrue($select->getOption(null)->getAttributes()->get('disabled')->getValue());
+        $select = new SelectElement('select');
+        $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
+        $select->setDisabledOptions([null]);
+
+        $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
+    }
+
+    public function testOrderOfOptionsAndDisabledOptionsDoesNotMatter()
+    {
+        $select = new SelectElement('test', [
+            'label'             => 'Test',
+            'options'           => [
+                'foo' => 'Foo',
+                'bar' => 'Bar'
+            ],
+            'disabledOptions'   => ['foo', 'bar']
+        ]);
+
+        $html = <<<'HTML'
+<select name="test">
+    <option value="foo" disabled>Foo</option>
+    <option value="bar" disabled>Bar</option>
+</select>
+HTML;
+        $this->assertHtml($html, $select);
+
+        $select = new SelectElement('test', [
+            'disabledOptions'   => ['foo', 'bar'],
+            'label'             => 'Test',
+            'options'           => [
+                'foo' => 'Foo',
+                'bar' => 'Bar'
+            ]
+        ]);
+
+        $this->assertHtml($html, $select);
     }
 }
