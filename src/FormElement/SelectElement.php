@@ -57,30 +57,6 @@ class SelectElement extends BaseFormElement
     }
 
     /**
-     * Whether an option with the specified value exists
-     *
-     * @param string|int $value
-     *
-     * @return bool
-     */
-    public function hasOption($value): bool
-    {
-        return isset($this->options[$value]);
-    }
-
-    /**
-     * Deselect all values
-     *
-     * @return $this
-     */
-    public function deselect(): self
-    {
-        $this->setValue(null);
-
-        return $this;
-    }
-
-    /**
      * Get the option with specified value
      *
      * @param string|int $value
