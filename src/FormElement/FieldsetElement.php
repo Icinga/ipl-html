@@ -2,13 +2,10 @@
 
 namespace ipl\Html\FormElement;
 
-use ipl\Html\Attribute;
-use ipl\Html\Attributes;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
 use LogicException;
-use ReflectionProperty;
 
 class FieldsetElement extends BaseFormElement
 {
@@ -73,32 +70,5 @@ class FieldsetElement extends BaseFormElement
                 $element->getName()
             );
         });
-    }
-
-    /**
-     * @deprecated
-     *
-     * {@see Attributes::get()} does not respect callbacks,
-     * but we need the value of the callback to nest attribute names.
-     */
-    private function getValueOfNameAttribute()
-    {
-        $attributes = $this->getAttributes();
-
-        $callbacksProperty = new ReflectionProperty(get_class($attributes), 'callbacks');
-        $callbacksProperty->setAccessible(true);
-        $callbacks = $callbacksProperty->getValue($attributes);
-
-        if (isset($callbacks['name'])) {
-            $name = $callbacks['name']();
-
-            if ($name instanceof Attribute) {
-                return $name->getValue();
-            }
-
-            return $name;
-        }
-
-        return $this->getName();
     }
 }
