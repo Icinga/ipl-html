@@ -119,6 +119,6 @@ class CheckboxElement extends InputElement
     {
         $html = parent::renderUnwrapped();
 
-        return (new HiddenElement($this->getName(), ['value' => $this->getUncheckedValue()])) . $html;
+        return (new HiddenElement($this->getValueOfNameAttribute(), ['value' => $this->getUncheckedValue()])) . $html;
     }
 }
