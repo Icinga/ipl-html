@@ -17,7 +17,10 @@ class CloneTest extends TestCase
         $clonesButton = clone $originalButton;
         $clonesButton->getAttributes()->setAttribute(Attribute::create('class', 'class02'));
 
-        $this->assertNotSame($originalButton->getAttributes()->get('class')->getValue(), $clonesButton->getAttributes()->get('class')->getValue());
+        $this->assertNotSame(
+            $originalButton->getAttributes()->get('class')->getValue(),
+            $clonesButton->getAttributes()->get('class')->getValue()
+        );
         $this->assertNotSame($originalButton->render(), $clonesButton->render());
     }
 
