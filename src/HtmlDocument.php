@@ -206,8 +206,7 @@ class HtmlDocument implements Countable, Wrappable
      * Check whether the given element is a direct or indirect child of this document
      *
      * A direct child is one that is part of this document's content. An indirect child
-     * is one that is either part of a direct child's content (recursively) or a wrapper
-     * of such (recursively).
+     * is one that is part of a direct child's content (recursively).
      *
      * @param ValidHtml $element
      *
@@ -221,7 +220,7 @@ class HtmlDocument implements Countable, Wrappable
         }
 
         foreach ($this->content as $child) {
-            if ($child instanceof self && ($child->contains($element) || $child->wrappedBy($element))) {
+            if ($child instanceof self && $child->contains($element)) {
                 return true;
             }
         }
@@ -327,7 +326,7 @@ class HtmlDocument implements Countable, Wrappable
         $wrapped = $this->consumeWrapped();
 
         $content = $this->getContent();
-        if ($wrapped !== null && ! $this->contains($wrapped)) {
+        if ($wrapped !== null && ! $this->contains($wrapped) && ! $this->isIntermediateWrapper($wrapped)) {
             $content[] = $wrapped;
         }
 
@@ -487,6 +486,24 @@ class HtmlDocument implements Countable, Wrappable
 
         if ($this->wrapper === $element || $this->wrapper->wrappedBy($element)) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get whether the given element is an intermediate wrapper
+     *
+     * @param ValidHtml $element
+     *
+     * @return bool
+     */
+    protected function isIntermediateWrapper(ValidHtml $element): bool
+    {
+        foreach ($this->content as $child) {
+            if ($child instanceof self && $child->wrappedBy($element)) {
+                return true;
+            }
         }
 
         return false;
