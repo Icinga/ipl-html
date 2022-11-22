@@ -132,6 +132,27 @@ class HtmlDocumentTest extends TestCase
         $f->render();
     }
 
+    public function testWrapperLoopsAreDetectedAsLateAsPossible()
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = h::tag('c');
+
+        $a->addWrapper($c); // c -> a
+        $a->prependWrapper($b); // c -> b -> a
+
+        $c->addHtml($a);
+        $b->addHtml($a);
+
+        // c -> b -> a
+        // \--->\-->/
+
+        $this->assertHtml(
+            '<c><b><a></a></b></c>',
+            $a
+        );
+    }
+
     public function testWrapperReuseWorks()
     {
         $a = h::tag('a');
