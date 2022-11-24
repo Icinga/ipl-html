@@ -495,6 +495,8 @@ trait FormElements
      */
     public function validate()
     {
+        $this->ensureAssembled();
+
         $valid = true;
         foreach ($this->getElements() as $element) {
             if ($element->isRequired() && ! $element->hasValue()) {
@@ -521,6 +523,8 @@ trait FormElements
      */
     public function validatePartial()
     {
+        $this->ensureAssembled();
+
         foreach ($this->getElements() as $element) {
             $element->validate();
         }
