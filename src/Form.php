@@ -7,10 +7,13 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
+use ipl\Web\Common\PrefixSubmitButton;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends BaseHtmlElement
 {
+    use PrefixSubmitButton;
+
     use FormElements {
         FormElements::remove as private removeElement;
     }
@@ -358,22 +361,6 @@ class Form extends BaseHtmlElement
         }
     }
 
-    protected function createSubmitButton(): FormElement
-    {
-        $attr = clone $this->submitButton->getAttributes();
-        $attr->setAttribute(
-            Attribute::create(
-                'style',
-                'border: 0;height: 0;margin: 0;padding: 0;visibility: hidden;width: 0;position: absolute;'
-            )
-        );
-
-        $submit = $this->createElement('submit', $this->submitButton->getName(), $attr);
-        $submit->setValue($this->submitButton->getValue());
-
-        return $submit;
-    }
-
     protected function onSuccess()
     {
         // $this->redirectOnSuccess();
@@ -396,7 +383,7 @@ class Form extends BaseHtmlElement
     {
         if (count($this->submitElements) > 1) {
             return (new HtmlDocument())
-                ->setHtmlContent($this->createSubmitButton(), new HtmlString(parent::renderContent()));
+                ->setHtmlContent($this->createSubmitButton($this->submitButton), new HtmlString(parent::renderContent()));
         }
 
         return parent::renderContent();
