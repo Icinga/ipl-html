@@ -54,6 +54,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             $this->addAttributes($attributes);
         }
         $this->setName($name);
+
+        $this->init();
     }
 
     public function getDescription()
@@ -309,6 +311,15 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function getValueAttribute()
     {
         return $this->getValue();
+    }
+
+    /**
+     * Initialize this form element
+     *
+     * If you want to initialize this element after construction, override this method
+     */
+    protected function init(): void
+    {
     }
 
     /**
