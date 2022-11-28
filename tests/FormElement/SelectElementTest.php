@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html\FormElement;
 
+use ipl\Html\Form;
 use ipl\Html\FormElement\SelectElement;
 use ipl\Html\FormElement\SelectOption;
 use ipl\I18n\NoopTranslator;
@@ -25,7 +26,7 @@ class SelectElementTest extends TestCase
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option selected>Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -104,7 +105,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option selected>Please choose</option>
     <optgroup label="Some Options">
         <option value="1">The one</option>
         <option value="4">Four</option>
@@ -138,7 +139,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option selected>Please choose</option>
     <optgroup label="Some options">
         <option value="1">The one</option>
         <option value="4" disabled>Four</option>
@@ -176,7 +177,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option selected>Please choose</option>
     <optgroup label="Some options">
         <option value="1">The one</option>
         <optgroup label="4">
@@ -209,7 +210,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option>Please choose</option>
     <option selected value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -235,7 +236,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option>Please choose</option>
     <option selected value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -248,7 +249,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option>Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option selected value="5">Hi five</option>
@@ -261,7 +262,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option value="">Please choose</option>
+    <option selected>Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -316,7 +317,6 @@ HTML;
 
     public function testSetArrayAsValueWithMultipleAttributeSetTheOptions()
     {
-
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
@@ -333,7 +333,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname[]" multiple>
-    <option value="">Please choose</option>
+    <option>Please choose</option>
     <option selected value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -346,7 +346,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname[]" multiple>
-    <option value="">Please choose</option>
+    <option>Please choose</option>
     <option value="1">The one</option>
     <option selected value="4">Four</option>
     <option selected value="5">Hi five</option>
@@ -359,13 +359,28 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname[]" multiple>
-    <option value="">Please choose</option>
+    <option>Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
 </select>
 HTML;
 
+        $this->assertHtml($html, $select);
+
+        $select->setValue([null]);
+
+        $html = <<<'HTML'
+<select name="elname[]" multiple>
+    <option selected>Please choose</option>
+    <option value="1">The one</option>
+    <option value="4">Four</option>
+    <option value="5">Hi five</option>
+</select>
+HTML;
+        $this->assertHtml($html, $select);
+
+        $select->setValue(['']);
         $this->assertHtml($html, $select);
     }
 
@@ -421,5 +436,70 @@ HTML;
 
         $select->setAttribute('multiple', true);
         $this->assertSame([], $select->getValue());
+    }
+
+    public function testNullAndTheEmptyStringAreEquallyHandled()
+    {
+        $form = new Form();
+        $form->addElement('select', 'select', [
+            'options' => ['' => 'Please choose'],
+            'value' => ''
+        ]);
+        $form->addElement('select', 'select2', [
+            'options' => [null => 'Please choose'],
+            'value' => null
+        ]);
+
+        /** @var SelectElement $select */
+        $select = $form->getElement('select');
+        /** @var SelectElement $select2 */
+        $select2 = $form->getElement('select2');
+
+        $this->assertNull($select->getValue());
+        $this->assertNull($select2->getValue());
+
+        $this->assertInstanceOf(SelectOption::class, $select->getOption(''));
+        $this->assertInstanceOf(SelectOption::class, $select2->getOption(null));
+        $this->assertInstanceOf(SelectOption::class, $select->getOption(null));
+        $this->assertInstanceOf(SelectOption::class, $select2->getOption(''));
+
+        $this->assertTrue($select->isValid());
+        $this->assertTrue($select2->isValid());
+
+        $select->setValue(null);
+        $this->assertTrue($select->isValid());
+        $select2->setValue('');
+        $this->assertTrue($select2->isValid());
+
+        $html = <<<'HTML'
+<select name="select">
+  <option selected>Please choose</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+
+        $html = <<<'HTML'
+<select name="select2">
+  <option selected>Please choose</option>
+</select>
+HTML;
+        $this->assertHtml($html, $select2);
+    }
+
+    public function testGetOptionGetValueAndElementGetValueHandleNullAndTheEmptyStringEqually()
+    {
+        $select = new SelectElement('select');
+        $select->setOptions(['' => 'Foo']);
+        $select->setValue('');
+
+        $this->assertNull($select->getValue());
+        $this->assertNull($select->getOption('')->getValue());
+
+        $select = new SelectElement('select');
+        $select->setOptions([null => 'Foo']);
+
+        $this->assertNull($select->getValue());
+        $this->assertNull($select->getOption(null)->getValue());
     }
 }

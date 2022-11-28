@@ -178,6 +178,10 @@ class SelectElement extends BaseFormElement
     {
         $value = $this->getValue();
 
+        if ($optionValue === '') {
+            $optionValue = null;
+        }
+
         if ($this->isMultiple()) {
             if (! is_array($value)) {
                 throw new UnexpectedValueException(
@@ -185,7 +189,8 @@ class SelectElement extends BaseFormElement
                 );
             }
 
-            return in_array($optionValue, $value, ! is_int($optionValue));
+            return in_array($optionValue, $this->getValue(), ! is_int($optionValue))
+                || ($optionValue === null && in_array('', $this->getValue(), true));
         }
 
         if (is_array($value)) {
