@@ -585,4 +585,34 @@ HTML;
 
         $this->assertHtml($html, $select);
     }
+
+    public function testSetOptionsResetsOptions()
+    {
+        $select = new SelectElement('select');
+        $select->setOptions(['foo' => 'Foo', 'bar' => 'Bar']);
+
+        $this->assertInstanceOf(SelectOption::class, $select->getOption('foo'));
+        $this->assertInstanceOf(SelectOption::class, $select->getOption('bar'));
+
+        $select->setOptions(['car' => 'Car', 'train' => 'Train']);
+
+        $this->assertInstanceOf(SelectOption::class, $select->getOption('car'));
+        $this->assertInstanceOf(SelectOption::class, $select->getOption('train'));
+
+        $this->assertNull($select->getOption('foo'));
+    }
+
+    public function testGetOptionReturnsPreviouslySetOption()
+    {
+        $select = new SelectElement('select');
+        $select->setOptions(['' => 'Empty String', 'foo' => 'Foo', 'bar' => 'Bar']);
+
+        $this->assertNull($select->getOption('')->getValue());
+        $this->assertSame('foo', $select->getOption('foo')->getValue());
+
+        $select->setOptions(['' => 'Please Choose', 'car' => 'Car', 'train' => 'Train']);
+
+        $this->assertNull($select->getOption('')->getValue());
+        $this->assertSame('car', $select->getOption('car')->getValue());
+    }
 }
