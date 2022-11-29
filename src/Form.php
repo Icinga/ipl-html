@@ -35,9 +35,6 @@ class Form extends BaseHtmlElement
     /** @var FormSubmitElement[] Other elements that may submit the form */
     protected $submitElements = [];
 
-    /** @var bool Whether the form is valid */
-    protected $isValid;
-
     /** @var ServerRequestInterface The server request being processed */
     protected $request;
 
@@ -275,62 +272,6 @@ class Form extends BaseHtmlElement
         }
 
         return true;
-    }
-
-    /**
-     * Get whether the form is valid
-     *
-     * {@link validate()} is called automatically if the form has not been validated before.
-     *
-     * @return bool
-     */
-    public function isValid()
-    {
-        if ($this->isValid === null) {
-            $this->validate();
-
-            $this->emit(self::ON_VALIDATE, [$this]);
-        }
-
-        return $this->isValid;
-    }
-
-    /**
-     * Validate all elements
-     *
-     * @return $this
-     */
-    public function validate()
-    {
-        $valid = true;
-        foreach ($this->elements as $element) {
-            if ($element->isRequired() && ! $element->hasValue()) {
-                $element->addMessage('This field is required');
-                $valid = false;
-                continue;
-            }
-            if (! $element->isValid()) {
-                $valid = false;
-            }
-        }
-
-        $this->isValid = $valid;
-
-        return $this;
-    }
-
-    /**
-     * Validate all elements that have a value
-     *
-     * @return $this
-     */
-    public function validatePartial()
-    {
-        foreach ($this->getElements() as $element) {
-            $element->validate();
-        }
-
-        return $this;
     }
 
     public function remove(ValidHtml $elementOrHtml)
