@@ -30,9 +30,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** @var bool Whether the element is required */
     protected $required = false;
 
-    /** @var null|bool Whether the element is valid; null if the element has not been validated yet, bool otherwise */
-    protected $valid;
-
     /** @var ValidatorChain Registered validators */
     protected $validators;
 
@@ -41,6 +38,13 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
 
     /** @var array Value candidates of the element */
     protected $valueCandidates = [];
+
+    /**
+     * @deprecated STOP: Do not use this property!!
+     *
+     * @var bool
+     */
+    protected $valid;
 
     /**
      * Create a new form element
@@ -153,8 +157,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
 
     public function isValid()
     {
-        if ($this->valid === null) {
-            $this->validate();
+        if ($this->valid !== null) {
+            return $this->valid;
+        }
+
+        $valid = $this->validate();
+        // validate() may return `$this` in child classes
+        if (is_bool($valid)) {
+            return $valid;
         }
 
         return $this->valid;
@@ -165,11 +175,11 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return bool
      *
-     * @deprecated Use {@link hasBeenValidated()} in combination with {@link isValid()} instead
+     * @deprecated Use {@see self::hasMessages()} instead
      */
     public function hasBeenValidatedAndIsNotValid()
     {
-        return $this->valid !== null && ! $this->valid;
+        return $this->hasBeenValidated() && ! $this->valid;
     }
 
     /**
@@ -238,7 +248,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         } else {
             $this->value = $value;
         }
-        $this->valid = null;
 
         return $this;
     }
@@ -262,16 +271,19 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /**
      * Validate the element using all registered validators
      *
-     * @return $this
+     * @return bool
      */
     public function validate()
     {
-        $this->valid = $this->getValidators()->isValid($this->getValue());
+        $valid = $this->getValidators()->isValid($this->getValue());
         $this->addMessages($this->getValidators()->getMessages());
 
-        return $this;
+        return $valid;
     }
 
+    /**
+     * @deprecated Do not use this method
+     */
     public function hasBeenValidated()
     {
         return $this->valid !== null;
