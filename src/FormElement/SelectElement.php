@@ -44,15 +44,14 @@ class SelectElement extends BaseFormElement
                 || $option->getAttributes()->has('disabled')
             )
         ) {
-            $this->valid = false;
             $this->addMessage("'$value' is not allowed here");
         } elseif ($this->isRequired() && $value === null) {
-            $this->valid = false;
+            $this->addMessage('This field is required');
         } else {
-            parent::validate();
+            return parent::validate();
         }
 
-        return $this;
+        return false;
     }
 
     public function deselect()
@@ -68,7 +67,6 @@ class SelectElement extends BaseFormElement
             $option->getAttributes()->add('disabled', true);
         }
         if ($this->getValue() == $value) {
-            $this->valid = false;
             $this->addMessage("'$value' is not allowed here");
         }
 
