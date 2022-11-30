@@ -8,38 +8,62 @@ class SelectOption extends BaseHtmlElement
 {
     protected $tag = 'option';
 
-    /** @var mixed */
+    /** @var string|int|null Value of the option */
     protected $value;
+
+    /** @var string Label of the option */
+    protected $label;
 
     /**
      * SelectOption constructor.
-     * @param string|null $value
-     * @param string|null $label
+     *
+     * @param string|int|null $value
+     * @param string $label
      */
-    public function __construct($value = null, $label = null)
+    public function __construct($value, string $label)
     {
         $this->value = $value;
-        $this->add($label);
+        $this->label = $label;
 
         $this->getAttributes()->registerAttributeCallback('value', [$this, 'getValue']);
     }
 
     /**
-     * @param $label
+     * Set the label of the option
+     *
+     * @param string $label
+     *
      * @return $this
      */
-    public function setLabel($label)
+    public function setLabel(string $label): self
     {
-        $this->setContent($label);
+        $this->label = $label;
 
         return $this;
     }
 
     /**
+     * Get the label of the option
+     *
      * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    /**
+     * Get the value of the option
+     *
+     * @return string|int|null
      */
     public function getValue()
     {
         return $this->value;
+    }
+
+    protected function assemble()
+    {
+        $this->setContent($this->getLabel());
     }
 }
