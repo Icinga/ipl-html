@@ -26,13 +26,13 @@ class SelectElement extends BaseFormElement
     /** @var array Disabled select options */
     protected $disabledOptions = [];
 
-    /** @var array|string */
+    /** @var array|string|null */
     protected $value;
 
     /**
      * Get the option with specified value
      *
-     * @param string|int $value
+     * @param string|int|null $value
      *
      * @return ?SelectOption
      */
@@ -90,7 +90,9 @@ class SelectElement extends BaseFormElement
     /**
      * Get the value of the element
      *
-     * Returns `array` when the attribute `multiple` is set to `true`, `string` otherwise
+     * Returns `array` when the attribute `multiple` is set to `true`, `string` or `null` otherwise
+     *
+     * @return array|string|null
      */
     public function getValue()
     {
@@ -117,7 +119,7 @@ class SelectElement extends BaseFormElement
     /**
      * Make the selectOption for the specified value and the label
      *
-     * @param string|int $value Value of the option
+     * @param string|int|null $value Value of the option
      * @param string|array $label Label of the option
      *
      * @return SelectOption|HtmlElement
@@ -146,9 +148,9 @@ class SelectElement extends BaseFormElement
     }
 
     /**
-     * Whether the given option is a selected option
+     * Get whether the given option is selected
      *
-     * @param int|string $optionValue
+     * @param int|string|null $optionValue
      *
      * @return bool
      */
