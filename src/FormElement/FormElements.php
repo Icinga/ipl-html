@@ -351,7 +351,7 @@ trait FormElements
      */
     public function clearPopulatedValue($name)
     {
-        if (! $this->hasBeenSubmitted() && isset($this->populatedValues[$name])) {
+        if (isset($this->populatedValues[$name])) {
             unset($this->populatedValues[$name]);
         }
 
