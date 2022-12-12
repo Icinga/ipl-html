@@ -175,6 +175,38 @@ class HtmlDocumentTest extends TestCase
         );
     }
 
+    public function testRenderedByIsCorrectlyReset()
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = h::tag('c');
+        $d = h::tag('d');
+        $e = h::tag('e');
+
+        $a->setWrapper($b); // b -> a
+        $c->setWrapper($d); // d -> c
+
+        // b -> a
+        // \-->/
+        $b->addHtml($a);
+
+        // d -> c
+        // \-->/
+        $d->addHtml($c);
+
+        $a->prependWrapper(clone $e); // b -> e -> a
+        $c->prependWrapper($e); // d -> e -> c
+
+        $this->assertHtml(
+            '<b><e><a></a></e></b>',
+            $a
+        );
+        $this->assertHtml(
+            '<d><e><c></c></e></d>',
+            $c
+        );
+    }
+
     public function testWrapperCanPositionWrappedElement()
     {
         $a = h::tag('tag', 'content');

@@ -338,7 +338,7 @@ class HtmlDocument implements Countable, Wrappable
             $html[] = $element->render();
 
             if ($element instanceof self) {
-                unset($element->renderedBy);
+                $element->renderedBy = null;
             }
         }
 
@@ -409,9 +409,9 @@ class HtmlDocument implements Countable, Wrappable
 
         if (isset($this->renderedBy)) {
             if ($this->renderedBy === $wrapper) {
-                unset($this->renderedBy);
+                $this->renderedBy = null;
             } elseif ($wrapper->renderedBy === $this->renderedBy) {
-                unset($wrapper->renderedBy);
+                $wrapper->renderedBy = null;
             }
         }
 
