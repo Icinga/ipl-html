@@ -11,7 +11,7 @@
   "require": {
     "php": ">=7.2",
     "ipl/stdlib": ">=0.12.0",
-    "ipl/validator": ">=0.4.0",
+    "ipl/validator": "dev-master",
     "psr/http-message": "~1.0"
   },
   "autoload": {
