@@ -18,9 +18,9 @@ class Form extends BaseHtmlElement
 
     public const ON_ELEMENT_REGISTERED = 'elementRegistered';
     public const ON_ERROR = 'error';
-    public const ON_REQUEST = 'request';
+    public const ON_SUBMIT = 'submit';
+    /** @deprecated Use {@link ON_SUBMIT} instead. */
     public const ON_SUCCESS = 'success';
-    public const ON_SENT = 'sent';
     public const ON_VALIDATE = 'validate';
 
     /** @var string Form submission URL */
@@ -37,9 +37,6 @@ class Form extends BaseHtmlElement
 
     /** @var ServerRequestInterface The server request being processed */
     protected $request;
-
-    /** @var string */
-    protected $redirectUrl;
 
     protected $tag = 'form';
 
@@ -149,38 +146,6 @@ class Form extends BaseHtmlElement
         return $this->request;
     }
 
-    public function setRequest($request)
-    {
-        $this->request = $request;
-        $this->emit(Form::ON_REQUEST, [$request]);
-
-        return $this;
-    }
-
-    /**
-     * Get the url to redirect to on success
-     *
-     * @return string
-     */
-    public function getRedirectUrl()
-    {
-        return $this->redirectUrl;
-    }
-
-    /**
-     * Set the url to redirect to on success
-     *
-     * @param string $url
-     *
-     * @return $this
-     */
-    public function setRedirectUrl($url)
-    {
-        $this->redirectUrl = $url;
-
-        return $this;
-    }
-
     /**
      * @param ServerRequestInterface $request
      *
@@ -188,12 +153,9 @@ class Form extends BaseHtmlElement
      */
     public function handleRequest(ServerRequestInterface $request)
     {
-        $this->setRequest($request);
+        $this->request = $request;
 
         if (! $this->hasBeenSent()) {
-            // Always assemble
-            $this->ensureAssembled();
-
             return $this;
         }
 
@@ -209,29 +171,46 @@ class Form extends BaseHtmlElement
             default:
                 $params = [];
         }
-
         $this->populate($params);
 
         // Assemble after populate in order to conditionally provide form elements
         $this->ensureAssembled();
 
-        if ($this->hasBeenSubmitted()) {
-            if ($this->isValid()) {
-                try {
-                    $this->emit(Form::ON_SENT, [$this]);
-                    $this->onSuccess();
-                    $this->emitOnce(Form::ON_SUCCESS, [$this]);
-                } catch (Exception $e) {
-                    $this->addMessage($e);
-                    $this->onError();
-                    $this->emit(Form::ON_ERROR, [$e, $this]);
-                }
-            } else {
-                $this->onError();
-            }
-        } else {
+        $submitElement = $this->getPressedSubmitElement();
+        if (
+            ! empty($this->submitElements)
+            && $submitElement === null
+        ) {
+            // If elements are registered for submission, but none have been pressed,
+            // the form was most likely submitted via auto-submit. In this case,
+            // we validate all elements that have a value, but do nothing else.
             $this->validatePartial();
-            $this->emit(Form::ON_SENT, [$this]);
+
+            return $this;
+        }
+
+        // From here, the form is considered submitted because either one of the submit elements has been pressed
+        // or the form has been sent without a submit element being registered.
+        if (
+            $submitElement->getAttributes()->get('formnovalidate')->getValue() !== true
+            && ! $this->isValid()
+        ) {
+            $this->onError();
+
+            return $this;
+        }
+        try {
+            if ($submitElement === $this->getSubmitButton()) {
+                $this->onSuccess();
+                $this->emitOnce(Form::ON_SUCCESS, [$this]);
+            } else {
+                $this->onSubmit($submitElement);
+                $this->emit(static::ON_SUBMIT, [$submitElement]);
+            }
+        } catch (Exception $e) {
+            $this->addMessage($e);
+            $this->onError();
+            $this->emit(Form::ON_ERROR, [$e, $this]);
         }
 
         return $this;
@@ -256,7 +235,8 @@ class Form extends BaseHtmlElement
     /**
      * Get whether the form has been submitted
      *
-     * A form is submitted when it has been sent and when the primary submit button, if set, has been pressed.
+     * A form is considered submitted because either it has been sent by pressing one of the registered submit elements
+     * or the form has been sent without a submit element being registered.
      * This method calls {@link hasBeenSent()} in order to detect whether the form has been sent.
      *
      * @return bool
@@ -267,17 +247,24 @@ class Form extends BaseHtmlElement
             return false;
         }
 
-        if ($this->hasSubmitButton()) {
-            return $this->getSubmitButton()->hasBeenPressed();
+        if (empty($this->submitElements)) {
+            return true;
         }
 
-        return true;
+        return $this->getPressedSubmitElement() !== null;
     }
 
     public function remove(ValidHtml $elementOrHtml)
     {
-        if ($this->submitButton === $elementOrHtml) {
-            $this->submitButton = null;
+        if ($elementOrHtml instanceof FormSubmitElement) {
+            if ($this->submitButton === $elementOrHtml) {
+                $this->submitButton = null;
+            }
+
+            $key = array_search($elementOrHtml, $this->submitElements, true);
+            if ($key !== false) {
+                unset($this->submitElements[$key]);
+            }
         }
 
         $this->removeElement($elementOrHtml);
@@ -299,9 +286,13 @@ class Form extends BaseHtmlElement
         }
     }
 
+    protected function onSubmit(FormSubmitElement $submitElement)
+    {
+    }
+
+    /** @deprecated Use {@link onSubmit()} instead. */
     protected function onSuccess()
     {
-        // $this->redirectOnSuccess();
     }
 
     protected function onElementRegistered(FormElement $element)
