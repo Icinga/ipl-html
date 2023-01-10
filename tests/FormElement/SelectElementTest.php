@@ -26,7 +26,7 @@ class SelectElementTest extends TestCase
 
         $html = <<<'HTML'
 <select name="elname">
-    <option selected>Please choose</option>
+    <option value="" selected>Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -105,7 +105,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option selected>Please choose</option>
+    <option value="" selected>Please choose</option>
     <optgroup label="Some Options">
         <option value="1">The one</option>
         <option value="4">Four</option>
@@ -140,7 +140,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option selected>Please choose</option>
+    <option value="" selected>Please choose</option>
     <optgroup label="Some options">
         <option value="1">The one</option>
         <option value="4" disabled>Four</option>
@@ -179,7 +179,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option selected>Please choose</option>
+    <option value="" selected>Please choose</option>
     <optgroup label="Some options">
         <option value="1">The one</option>
         <optgroup label="4">
@@ -212,7 +212,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option>Please choose</option>
+    <option value="">Please choose</option>
     <option selected value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -238,7 +238,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option>Please choose</option>
+    <option value="">Please choose</option>
     <option selected value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -251,7 +251,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option>Please choose</option>
+    <option value="">Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option selected value="5">Hi five</option>
@@ -264,7 +264,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname">
-    <option selected>Please choose</option>
+    <option value="" selected>Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -335,7 +335,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname[]" multiple>
-    <option>Please choose</option>
+    <option value="">Please choose</option>
     <option selected value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -348,7 +348,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname[]" multiple>
-    <option>Please choose</option>
+    <option value="">Please choose</option>
     <option value="1">The one</option>
     <option selected value="4">Four</option>
     <option selected value="5">Hi five</option>
@@ -361,7 +361,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname[]" multiple>
-    <option>Please choose</option>
+    <option value="">Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -374,7 +374,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="elname[]" multiple>
-    <option selected>Please choose</option>
+    <option value="" selected>Please choose</option>
     <option value="1">The one</option>
     <option value="4">Four</option>
     <option value="5">Hi five</option>
@@ -475,7 +475,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="select">
-  <option selected>Please choose</option>
+  <option value="" selected>Please choose</option>
 </select>
 HTML;
 
@@ -483,7 +483,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="select2">
-  <option selected>Please choose</option>
+  <option value="" selected>Please choose</option>
 </select>
 HTML;
         $this->assertHtml($html, $select2);
@@ -520,7 +520,7 @@ HTML;
 
         $html = <<<'HTML'
 <select name="select" required>
-  <option selected disabled>Please choose</option>
+  <option value="" selected disabled>Please choose</option>
   <option value="foo">FOO</option>
   <option value="bar">BAR</option>
 </select>
