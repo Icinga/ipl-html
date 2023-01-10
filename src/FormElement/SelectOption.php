@@ -25,7 +25,7 @@ class SelectOption extends BaseHtmlElement
         $this->value = $value === '' ? null : $value;
         $this->label = $label;
 
-        $this->getAttributes()->registerAttributeCallback('value', [$this, 'getValue']);
+        $this->getAttributes()->registerAttributeCallback('value', [$this, 'getValueAttribute']);
     }
 
     /**
@@ -60,6 +60,16 @@ class SelectOption extends BaseHtmlElement
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * Callback for the value attribute
+     *
+     * @return mixed
+     */
+    public function getValueAttribute()
+    {
+        return (string) $this->getValue();
     }
 
     protected function assemble()
