@@ -22,7 +22,7 @@ class SelectOption extends BaseHtmlElement
      */
     public function __construct($value, string $label)
     {
-        $this->value = $value;
+        $this->value = $value === '' ? null : $value;
         $this->label = $label;
 
         $this->getAttributes()->registerAttributeCallback('value', [$this, 'getValue']);
