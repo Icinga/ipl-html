@@ -40,7 +40,7 @@ class DocumentationFormsTest extends TestCase
 
         $this->assertHtml(
             '<select name="customer" class="important customer" id="customer-field">'
-            . '<option selected="selected">Please choose</option>'
+            . '<option value="" selected="selected">Please choose</option>'
             . '<option value="1">The one</option>'
             . '<option value="4">Four</option>'
             . '<option value="5">Hi five</option>'
