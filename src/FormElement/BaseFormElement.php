@@ -10,6 +10,7 @@ use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
+use ReflectionProperty;
 
 abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
 {
@@ -368,5 +369,32 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** @deprecated Use {@link registerAttributeCallbacks()} instead */
     protected function registerCallbacks()
     {
+    }
+
+    /**
+     * @deprecated
+     *
+     * {@see Attributes::get()} does not respect callbacks,
+     * but we need the value of the callback to nest attribute names.
+     */
+    protected function getValueOfNameAttribute()
+    {
+        $attributes = $this->getAttributes();
+
+        $callbacksProperty = new ReflectionProperty(get_class($attributes), 'callbacks');
+        $callbacksProperty->setAccessible(true);
+        $callbacks = $callbacksProperty->getValue($attributes);
+
+        if (isset($callbacks['name'])) {
+            $name = $callbacks['name']();
+
+            if ($name instanceof Attribute) {
+                return $name->getValue();
+            }
+
+            return $name;
+        }
+
+        return $this->getName();
     }
 }

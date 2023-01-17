@@ -7,6 +7,7 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\HiddenElement;
 use ipl\Html\Html;
 use ipl\Html\HtmlElement;
@@ -45,6 +46,14 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
         $decorator = clone $this;
 
+        /**
+         * Wrapper logic can be overridden to propagate the decorator.
+         * So here we make sure that a yet unbound decorator is passed.
+         *
+         * {@see FieldsetElement::setWrapper()}
+         */
+        $formElement->prependWrapper($decorator);
+
         $decorator->formElement = $formElement;
 
         $classes = [static::INPUT_ELEMENT_CLASS];
@@ -53,8 +62,6 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         }
 
         $decorator->getAttributes()->add('class', $classes);
-
-        $formElement->prependWrapper($decorator);
     }
 
     protected function assembleDescription()
@@ -80,7 +87,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
             $this->formElement->getAttributes()->set('aria-required', 'true');
         }
 
-        return $this->formElement;
+        return $this->formElement->ensureAssembled();
     }
 
     protected function assembleErrors()
@@ -105,12 +112,16 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         $label = $this->formElement->getLabel();
 
         if ($label !== null) {
-            $attributes = null;
-            if ($this->formElement->getAttributes()->has('id')) {
-                $attributes = new Attributes(['for' => $this->formElement->getAttributes()->get('id')->getValue()]);
-            }
+            if ($this->formElement instanceof FieldsetElement) {
+                return new HtmlElement('legend', null, Text::create($label));
+            } else {
+                $attributes = null;
+                if ($this->formElement->getAttributes()->has('id')) {
+                    $attributes = new Attributes(['for' => $this->formElement->getAttributes()->get('id')->getValue()]);
+                }
 
-            return Html::tag('label', $attributes, $label);
+                return Html::tag('label', $attributes, $label);
+            }
         }
 
         return null;
@@ -122,11 +133,24 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
             $this->getAttributes()->add('class', static::ERROR_HINT_CLASS);
         }
 
-        $this->addHtml(...Html::wantHtmlList([
-            $this->assembleLabel(),
-            $this->assembleElement(),
-            $this->assembleDescription(),
-            $this->assembleErrors()
-        ]));
+        if ($this->formElement instanceof FieldsetElement) {
+            $element = $this->assembleElement();
+            $element->prependHtml(...Html::wantHtmlList([
+                $this->assembleLabel(),
+                $this->assembleDescription()
+            ]));
+
+            $this->addHtml(...Html::wantHtmlList([
+                $element,
+                $this->assembleErrors()
+            ]));
+        } else {
+            $this->addHtml(...Html::wantHtmlList([
+                $this->assembleLabel(),
+                $this->assembleElement(),
+                $this->assembleDescription(),
+                $this->assembleErrors()
+            ]));
+        }
     }
 }

@@ -102,7 +102,7 @@ class RadioElement extends BaseFormElement
     protected function assemble()
     {
         foreach ($this->options as $option) {
-            $radio = (new InputElement($this->getName()))
+            $radio = (new InputElement($this->getValueOfNameAttribute()))
                 ->setType($this->type)
                 ->setValue($option->getValue());
 
