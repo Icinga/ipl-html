@@ -18,6 +18,9 @@ class Attribute
     /** @var string */
     protected $name;
 
+    /** @var string The separator used if value is an array */
+    protected $separator = ' ';
+
     /** @var string|array|bool|null */
     protected $value;
 
@@ -150,6 +153,30 @@ class Attribute
         }
 
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get the separator by which multiple values are concatenated with
+     *
+     * @return string
+     */
+    public function getSeparator(): string
+    {
+        return $this->separator;
+    }
+
+    /**
+     * Set the separator to concatenate multiple values with
+     *
+     * @param string $separator
+     *
+     * @return $this
+     */
+    public function setSeparator(string $separator): self
+    {
+        $this->separator = $separator;
 
         return $this;
     }
@@ -296,6 +323,6 @@ class Attribute
      */
     public function renderValue()
     {
-        return static::escapeValue($this->value);
+        return static::escapeValue($this->value, $this->separator);
     }
 }

@@ -22,6 +22,16 @@ class AttributeTest extends TestCase
         );
     }
 
+    public function testCustomSeparatorIsUsed()
+    {
+        $this->assertSame(
+            'accept="image/png, image/jpg"',
+            (new Attribute('accept', ['image/png', 'image/jpg']))
+                ->setSeparator(', ')
+                ->render()
+        );
+    }
+
     public function testAttributeNameCanBeRetrieved()
     {
         $this->assertEquals(
