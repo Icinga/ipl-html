@@ -3,6 +3,8 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
+use ipl\Validator\FileValidator;
+use ipl\Validator\ValidatorChain;
 use Psr\Http\Message\UploadedFileInterface;
 use ipl\Html\Common\MultipleAttribute;
 
@@ -14,6 +16,9 @@ class FileElement extends InputElement
 
     /** @var UploadedFileInterface|UploadedFileInterface[] */
     protected $value;
+
+    /** @var int The default maximum file size */
+    protected static $defaultMaxFileSize;
 
     public function __construct($name, $attributes = null)
     {
@@ -55,9 +60,103 @@ class FileElement extends InputElement
         return $this->hasValue() ? $this->value : null;
     }
 
+    protected function addDefaultValidators(ValidatorChain $chain): void
+    {
+        $chain->add(new FileValidator([
+            'maxSize' => $this->getDefaultMaxFileSize(),
+            'mimeType' => array_filter(
+                (array) $this->getAttributes()->get('accept')->getValue(),
+                function ($type) {
+                    // file inputs also allow file extensions in the accept attribute. These
+                    // must not be passed as they don't resemble valid mime type definitions.
+                    return is_string($type) && ltrim($type)[0] !== '.';
+                }
+            )
+        ]));
+    }
+
     protected function registerAttributeCallbacks(Attributes $attributes)
     {
         parent::registerAttributeCallbacks($attributes);
         $this->registerMultipleAttributeCallback($attributes);
+    }
+
+    /**
+     * Get the system's default maximum file upload size
+     *
+     * @return int
+     */
+    public function getDefaultMaxFileSize(): int
+    {
+        if (static::$defaultMaxFileSize === null) {
+            $ini = $this->convertIniToInteger(trim(static::getPostMaxSize()));
+            $max = $this->convertIniToInteger(trim(static::getUploadMaxFilesize()));
+            $min = max($ini, $max);
+            if ($ini > 0) {
+                $min = min($min, $ini);
+            }
+
+            if ($max > 0) {
+                $min = min($min, $max);
+            }
+
+            static::$defaultMaxFileSize = $min;
+        }
+
+        return static::$defaultMaxFileSize;
+    }
+
+    /**
+     * Converts a ini setting to a integer value
+     *
+     * @param string $setting
+     *
+     * @return int
+     */
+    private function convertIniToInteger(string $setting): int
+    {
+        if (! is_numeric($setting)) {
+            $type = strtoupper(substr($setting, -1));
+            $setting = (int) substr($setting, 0, -1);
+
+            switch ($type) {
+                case 'K':
+                    $setting *= 1024;
+                    break;
+
+                case 'M':
+                    $setting *= 1024 * 1024;
+                    break;
+
+                case 'G':
+                    $setting *= 1024 * 1024 * 1024;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return (int) $setting;
+    }
+
+    /**
+     * Get the `post_max_size` INI setting
+     *
+     * @return string
+     */
+    protected static function getPostMaxSize(): string
+    {
+        return ini_get('post_max_size') ?: '8M';
+    }
+
+    /**
+     * Get the `upload_max_filesize` INI setting
+     *
+     * @return string
+     */
+    protected static function getUploadMaxFilesize(): string
+    {
+        return ini_get('upload_max_filesize') ?: '2M';
     }
 }
