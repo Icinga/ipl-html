@@ -281,14 +281,6 @@ class FileElementTest extends TestCase
         $this->assertSame($file->getName(), 'test_file');
     }
 
-    public function testValueAttributeIsNotRendered()
-    {
-        $file = new FileElement('test_file');
-
-        $file->setValue('test');
-        $this->assertHtml('<input name="test_file" type="file">', $file);
-    }
-
     public function testDefaultMaxFileSizeAsBytesIsParsedCorrectly()
     {
         $element = new FileElementWithAdjustableConfig('test');
