@@ -15,6 +15,13 @@ class FileElement extends InputElement
     /** @var UploadedFileInterface|UploadedFileInterface[] */
     protected $value;
 
+    public function __construct($name, $attributes = null)
+    {
+        $this->getAttributes()->get('accept')->setSeparator(', ');
+
+        parent::__construct($name, $attributes);
+    }
+
     public function getValueAttribute()
     {
         // Value attributes of file inputs are set only client-side.

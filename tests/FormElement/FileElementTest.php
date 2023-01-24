@@ -20,9 +20,9 @@ class FileElementTest extends TestCase
 
     public function testRendering()
     {
-        $file = new FileElement('test_file');
+        $file = new FileElement('test_file', ['accept' => ['image/png', 'image/jpeg']]);
 
-        $this->assertHtml('<input name="test_file" type="file">', $file);
+        $this->assertHtml('<input name="test_file" type="file" accept="image/png, image/jpeg">', $file);
     }
 
     public function testUploadedFiles()
