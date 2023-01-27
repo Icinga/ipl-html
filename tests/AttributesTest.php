@@ -113,4 +113,28 @@ class AttributesTest extends TestCase
 
         $this->assertEquals(' foo="bar rab" bar="foo"', $attributes->render());
     }
+
+    public function testAttributesAreDeepCloned()
+    {
+        $attributes = Attributes::create(['class' => 'one']);
+
+        $clone = clone $attributes;
+        $clone->add('class', 'two');
+
+        $this->assertNotSame(
+            $attributes->get('class'),
+            $clone->get('class'),
+            'Attribute instances are not cloned'
+        );
+        $this->assertSame(
+            'one',
+            $attributes->get('class')->getValue(),
+            'Attribute instances are not cloned correctly'
+        );
+        $this->assertSame(
+            ['one', 'two'],
+            $clone->get('class')->getValue(),
+            'Attribute instances are not cloned correctly'
+        );
+    }
 }
