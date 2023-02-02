@@ -4,8 +4,10 @@ namespace ipl\Html;
 
 use ArrayAccess;
 use ArrayIterator;
+use Closure;
 use InvalidArgumentException;
 use IteratorAggregate;
+use ReflectionFunction;
 use Traversable;
 
 use function ipl\Stdlib\get_php_type;
@@ -507,6 +509,53 @@ class Attributes implements ArrayAccess, IteratorAggregate
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->attributes);
+    }
+
+    /**
+     * Rebind all callbacks that point to `$oldThisId` to `$newThis`
+     *
+     * @param int    $oldThisId
+     * @param object $newThis
+     */
+    public function rebind(int $oldThisId, object $newThis): void
+    {
+        $this->rebindCallbacks($this->callbacks, $oldThisId, $newThis);
+        $this->rebindCallbacks($this->setterCallbacks, $oldThisId, $newThis);
+    }
+
+    /**
+     * Loops over all `$callbacks`, binds them to `$newThis` only where `$oldThisId` matches. The callbacks are
+     * modified directly on the `$callbacks` reference.
+     *
+     * @param callable[] $callbacks
+     * @param int        $oldThisId
+     * @param object     $newThis
+     */
+    private function rebindCallbacks(array &$callbacks, int $oldThisId, object $newThis): void
+    {
+        foreach ($callbacks as &$callback) {
+            if (! $callback instanceof Closure) {
+                if (is_array($callback) && ! is_string($callback[0])) {
+                    if (spl_object_id($callback[0]) === $oldThisId) {
+                        $callback[0] = $newThis;
+                    }
+                }
+
+                continue;
+            }
+
+            $closureThis = (new ReflectionFunction($callback))
+                ->getClosureThis();
+
+            // Closure is most likely static
+            if ($closureThis === null) {
+                continue;
+            }
+
+            if (spl_object_id($closureThis) === $oldThisId) {
+                $callback = $callback->bindTo($newThis);
+            }
+        }
     }
 
     public function __clone()
