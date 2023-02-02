@@ -2,20 +2,40 @@
 
 namespace ipl\Html\FormElement;
 
+use GuzzleHttp\Psr7\UploadedFile;
+use InvalidArgumentException;
 use ipl\Html\Attributes;
+use ipl\Html\Form;
+use ipl\Html\HtmlDocument;
+use ipl\Html\HtmlElement;
+use ipl\Html\Text;
+use ipl\I18n\Translation;
 use ipl\Validator\FileValidator;
 use ipl\Validator\ValidatorChain;
+use ipl\Web\Widget\Icon;
 use Psr\Http\Message\UploadedFileInterface;
 use ipl\Html\Common\MultipleAttribute;
+
+use function ipl\Stdlib\get_php_type;
 
 class FileElement extends InputElement
 {
     use MultipleAttribute;
+    use Translation;
 
     protected $type = 'file';
 
     /** @var UploadedFileInterface|UploadedFileInterface[] */
     protected $value;
+
+    /** @var UploadedFileInterface[] Files that are stored on disk */
+    protected $files = [];
+
+    /** @var string[] Files to be removed from disk */
+    protected $filesToRemove = [];
+
+    /** @var ?string The path where to store the file contents */
+    protected $destination;
 
     /** @var int The default maximum file size */
     protected static $defaultMaxFileSize;
@@ -25,6 +45,30 @@ class FileElement extends InputElement
         $this->getAttributes()->get('accept')->setSeparator(', ');
 
         parent::__construct($name, $attributes);
+    }
+
+    /**
+     * Set the path where to store the file contents
+     *
+     * @param string $path
+     *
+     * @return $this
+     */
+    public function setDestination(string $path): self
+    {
+        $this->destination = $path;
+
+        return $this;
+    }
+
+    /**
+     * Get the path where file contents are stored
+     *
+     * @return ?string
+     */
+    public function getDestination(): ?string
+    {
+        return $this->destination;
     }
 
     public function getValueAttribute()
@@ -43,21 +87,166 @@ class FileElement extends InputElement
     public function hasValue()
     {
         if ($this->value === null) {
-            return false;
+            $files = $this->loadFiles();
+            if (empty($files)) {
+                return false;
+            }
+
+            if (! $this->isMultiple()) {
+                $files = $files[0];
+            }
+
+            $this->value = $files;
         }
 
-        $file = $this->value;
-
-        if ($this->isMultiple()) {
-            return $file[0]->getError() !== UPLOAD_ERR_NO_FILE;
-        }
-
-        return $file->getError() !== UPLOAD_ERR_NO_FILE;
+        return $this->value !== null;
     }
 
     public function getValue()
     {
-        return $this->hasValue() ? $this->value : null;
+        if (! $this->hasValue()) {
+            return null;
+        }
+
+        if (! $this->hasFiles()) {
+            $files = $this->value;
+            if (! $this->isMultiple()) {
+                $files = [$files];
+            }
+
+            $storedFiles = $this->storeFiles(...$files);
+            if (! $this->isMultiple()) {
+                $storedFiles = $storedFiles[0];
+            }
+
+            $this->value = $storedFiles;
+        }
+
+        return $this->value;
+    }
+
+    public function setValue($value)
+    {
+        if (! empty($value)) {
+            $fileToTest = $value;
+            if ($this->isMultiple()) {
+                $fileToTest = $value[0];
+            }
+
+            if (! $fileToTest instanceof UploadedFileInterface) {
+                throw new InvalidArgumentException(
+                    sprintf('%s is not an uploaded file', get_php_type($fileToTest))
+                );
+            }
+
+            if ($fileToTest->getError() === UPLOAD_ERR_NO_FILE && ! $fileToTest->getClientFilename()) {
+                $value = null;
+            }
+        } else {
+            $value = null;
+        }
+
+        return parent::setValue($value);
+    }
+
+    /**
+     * Get whether there are any files stored on disk
+     *
+     * @return bool
+     */
+    protected function hasFiles(): bool
+    {
+        return $this->destination !== null && reset($this->files);
+    }
+
+    /**
+     * Load and return all files stored on disk
+     *
+     * @return UploadedFileInterface[]
+     */
+    protected function loadFiles(): array
+    {
+        if (empty($this->files) || $this->destination === null) {
+            return [];
+        }
+
+        foreach ($this->files as $name => $_) {
+            $filePath = $this->getFilePath($name);
+            if (! is_readable($filePath) || ! is_file($filePath)) {
+                // If one file isn't accessible, none is
+                return [];
+            }
+
+            if (in_array($name, $this->filesToRemove, true)) {
+                @unlink($filePath);
+            } else {
+                $this->files[$name] = new UploadedFile(
+                    $filePath,
+                    filesize($filePath),
+                    0,
+                    $name,
+                    mime_content_type($filePath)
+                );
+            }
+        }
+
+        $this->files = array_diff_key($this->files, array_flip($this->filesToRemove));
+
+        return array_values($this->files);
+    }
+
+    /**
+     * Store the given files on disk
+     *
+     * @param UploadedFileInterface ...$files
+     *
+     * @return UploadedFileInterface[]
+     */
+    protected function storeFiles(UploadedFileInterface ...$files): array
+    {
+        if ($this->destination === null || ! is_writable($this->destination)) {
+            return $files;
+        }
+
+        foreach ($files as $file) {
+            $name = $file->getClientFilename();
+            $path = $this->getFilePath($name);
+
+            $file->moveTo($path);
+
+            // Re-created to ensure moveTo() still works if called externally
+            $this->files[$name] = new UploadedFile(
+                $path,
+                $file->getSize(),
+                0,
+                $name,
+                $file->getClientMediaType()
+            );
+        }
+
+        return array_values($this->files);
+    }
+
+    /**
+     * Get the file path on disk of the given file
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getFilePath(string $name): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [$this->destination, sha1($name)]);
+    }
+
+    public function onRegistered(Form $form)
+    {
+        $chosenFiles = (array) $form->getPopulatedValue('chosen_file_' . $this->getName(), []);
+        foreach ($chosenFiles as $chosenFile) {
+            $this->files[$chosenFile] = null;
+        }
+
+        $this->filesToRemove = (array) $form->getPopulatedValue('remove_file_' . $this->getName(), []);
     }
 
     protected function addDefaultValidators(ValidatorChain $chain): void
@@ -79,6 +268,7 @@ class FileElement extends InputElement
     {
         parent::registerAttributeCallbacks($attributes);
         $this->registerMultipleAttributeCallback($attributes);
+        $this->getAttributes()->registerAttributeCallback('destination', null, [$this, 'setDestination']);
     }
 
     /**
@@ -158,5 +348,48 @@ class FileElement extends InputElement
     protected static function getUploadMaxFilesize(): string
     {
         return ini_get('upload_max_filesize') ?: '2M';
+    }
+
+    protected function assemble()
+    {
+        $doc = new HtmlDocument();
+        if ($this->hasFiles()) {
+            foreach ($this->files as $file) {
+                $doc->addHtml(new HiddenElement('chosen_file_' . $this->getNameAttribute(), [
+                    'value' => $file->getClientFilename()
+                ]));
+            }
+
+            $this->prependWrapper($doc);
+        }
+    }
+
+    public function renderUnwrapped()
+    {
+        if (! $this->hasValue() || ! $this->hasFiles()) {
+            return parent::renderUnwrapped();
+        }
+
+        $uploadedFiles = new HtmlElement('ul', Attributes::create(['class' => 'uploaded-files']));
+        foreach ($this->files as $file) {
+            $uploadedFiles->addHtml(new HtmlElement(
+                'li',
+                null,
+                (new ButtonElement('remove_file_' . $this->getNameAttribute(), Attributes::create([
+                    'type' => 'submit',
+                    'formnovalidate' => true,
+                    'class' => 'remove-uploaded-file',
+                    'value' => $file->getClientFilename(),
+                    'title' => sprintf($this->translate('Remove file "%s"'), $file->getClientFilename())
+                ])))->addHtml(new HtmlElement(
+                    'span',
+                    null,
+                    new Icon('remove'),
+                    Text::create($file->getClientFilename())
+                ))
+            ));
+        }
+
+        return $uploadedFiles->render();
     }
 }

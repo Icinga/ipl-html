@@ -4,12 +4,15 @@ namespace ipl\Tests\Html\FormElement;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\UploadedFile;
+use GuzzleHttp\Psr7\Utils;
+use InvalidArgumentException;
 use ipl\Html\Form;
 use ipl\Html\FormElement\FileElement;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\Lib\FileElementWithAdjustableConfig;
 use ipl\Tests\Html\TestCase;
+use Psr\Http\Message\StreamInterface;
 
 class FileElementTest extends TestCase
 {
@@ -33,6 +36,27 @@ class FileElementTest extends TestCase
         $this->assertHtml('<input name="test_file" type="file" accept="image/png, image/jpeg">', $file);
     }
 
+    public function testSetValueAcceptsEmptyValues()
+    {
+        $file = new FileElement('test_file');
+        $file->setValue(null);
+
+        $this->assertNull($file->getValue());
+
+        $file->setValue([]);
+
+        $this->assertNull($file->getValue());
+    }
+
+    public function testValuePopulationOnlyWorksWithUploadedFiles()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('string is not an uploaded file');
+
+        $file = new FileElement('test_file');
+        $file->setValue('lorem ipsum dolorem');
+    }
+
     public function testUploadedFiles()
     {
         $fileToUpload = new UploadedFile(
@@ -54,20 +78,207 @@ class FileElementTest extends TestCase
         $this->assertSame($form->getValue('test_file'), $fileToUpload);
     }
 
+    public function testUploadedFileIsPreservedAcrossRequests()
+    {
+        $createForm = function () {
+            return new class extends Form {
+                protected function assemble()
+                {
+                    $this->addElement('file', 'test', [
+                        'destination' => sys_get_temp_dir()
+                    ]);
+                }
+            };
+        };
+
+        // User submits a form after choosing a file
+
+        $firstFile = new UploadedFile(
+            Utils::streamFor('lorem ipsum dolorem'),
+            19,
+            0,
+            'test.txt',
+            'text/plain'
+        );
+
+        $firstRequest = (new ServerRequest('POST', ServerRequest::getUriFromGlobals()))
+            ->withUploadedFiles(['test' => $firstFile])
+            ->withParsedBody([]);
+
+        $firstForm = $createForm();
+        $firstForm->handleRequest($firstRequest);
+
+        $this->assertSame(
+            'test.txt',
+            $firstForm->getElement('test')->getValue()->getClientFilename()
+        );
+
+        // User interacts with an autosubmit element and did not choose the file again
+
+        // In this case, the browser sends an empty form part
+        $secondFile = new UploadedFile(null, 0, UPLOAD_ERR_NO_FILE);
+
+        $secondRequest = (new ServerRequest('POST', ServerRequest::getUriFromGlobals()))
+            // But since the file element injects a hidden input, the file name is preserved
+            ->withUploadedFiles(['test' => $secondFile, 'chosen_file_test' => 'test.txt'])
+            ->withParsedBody([]);
+
+        $secondForm = $createForm();
+        $secondForm->handleRequest($secondRequest);
+
+        $this->assertSame(
+            'lorem ipsum dolorem',
+            $secondForm->getElement('test')->getValue()->getStream()->getContents()
+        );
+
+        // The user may also remove a file after choosing it
+
+        $thirdRequest = (new ServerRequest('POST', ServerRequest::getUriFromGlobals()))
+            ->withUploadedFiles(['chosen_file_test' => 'test.txt', 'remove_file_test' => 'test.txt'])
+            ->withParsedBody([]);
+
+        $thirdForm = $createForm();
+        $thirdForm->handleRequest($thirdRequest);
+
+        $this->assertNull($thirdForm->getValue('test'));
+    }
+
+    public function testUploadedFileCanBeMoved()
+    {
+        $form = new class extends Form {
+            protected function assemble()
+            {
+                $this->addElement('file', 'test');
+            }
+        };
+
+        $firstFile = new UploadedFile(
+            Utils::streamFor('lorem ipsum dolorem'),
+            19,
+            0,
+            'test.txt',
+            'text/plain'
+        );
+
+        $firstRequest = (new ServerRequest('POST', ServerRequest::getUriFromGlobals()))
+            ->withUploadedFiles(['test' => $firstFile])
+            ->withParsedBody([]);
+
+        $form->handleRequest($firstRequest);
+
+        $filePath = implode(DIRECTORY_SEPARATOR, [sys_get_temp_dir(), 'test.txt']);
+
+        $form->getValue('test')->moveTo($filePath);
+
+        $this->assertFileExists($filePath);
+    }
+
+    public function testUploadedFileCanBeStreamed()
+    {
+        $form = new class extends Form {
+            protected function assemble()
+            {
+                $this->addElement('file', 'test');
+            }
+        };
+
+        $firstFile = new UploadedFile(
+            Utils::streamFor('lorem ipsum dolorem'),
+            19,
+            0,
+            'test.txt',
+            'text/plain'
+        );
+
+        $firstRequest = (new ServerRequest('POST', ServerRequest::getUriFromGlobals()))
+            ->withUploadedFiles(['test' => $firstFile])
+            ->withParsedBody([]);
+
+        $form->handleRequest($firstRequest);
+
+        $stream = $form->getValue('test')->getStream();
+
+        $this->assertInstanceOf(StreamInterface::class, $stream);
+
+        $this->assertSame(
+            'lorem ipsum dolorem',
+            $stream->getContents()
+        );
+    }
+
+    public function testPreservedFileCanBeMoved()
+    {
+        $form = new class extends Form {
+            protected function assemble()
+            {
+                $this->addElement('file', 'test', [
+                    'destination' => sys_get_temp_dir()
+                ]);
+            }
+        };
+
+        $firstFile = new UploadedFile(
+            Utils::streamFor('lorem ipsum dolorem'),
+            19,
+            0,
+            'test.txt',
+            'text/plain'
+        );
+
+        $firstRequest = (new ServerRequest('POST', ServerRequest::getUriFromGlobals()))
+            ->withUploadedFiles(['test' => $firstFile])
+            ->withParsedBody([]);
+
+        $form->handleRequest($firstRequest);
+
+        $filePath = implode(DIRECTORY_SEPARATOR, [sys_get_temp_dir(), 'test.txt']);
+
+        $form->getValue('test')->moveTo($filePath);
+
+        $this->assertFileExists($filePath);
+    }
+
+    public function testPreservedFileCanBeStreamed()
+    {
+        $form = new class extends Form {
+            protected function assemble()
+            {
+                $this->addElement('file', 'test', [
+                    'destination' => sys_get_temp_dir()
+                ]);
+            }
+        };
+
+        $firstFile = new UploadedFile(
+            Utils::streamFor('lorem ipsum dolorem'),
+            19,
+            0,
+            'test.txt',
+            'text/plain'
+        );
+
+        $firstRequest = (new ServerRequest('POST', ServerRequest::getUriFromGlobals()))
+            ->withUploadedFiles(['test' => $firstFile])
+            ->withParsedBody([]);
+
+        $form->handleRequest($firstRequest);
+
+        $stream = $form->getValue('test')->getStream();
+
+        $this->assertInstanceOf(StreamInterface::class, $stream);
+
+        $this->assertSame(
+            'lorem ipsum dolorem',
+            $stream->getContents()
+        );
+    }
+
     public function testMutipleAttributeAlsoChangesNameAttribute()
     {
         $file = new FileElement('test_file', ['multiple' => true]);
 
         $this->assertHtml('<input multiple name="test_file[]" type="file">', $file);
         $this->assertSame($file->getName(), 'test_file');
-    }
-
-    public function testValueAttributeIsNotRendered()
-    {
-        $file = new FileElement('test_file');
-
-        $file->setValue('test');
-        $this->assertHtml('<input name="test_file" type="file">', $file);
     }
 
     public function testDefaultMaxFileSizeAsBytesIsParsedCorrectly()
