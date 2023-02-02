@@ -4,8 +4,10 @@ namespace ipl\Html;
 
 use ArrayAccess;
 use ArrayIterator;
+use Closure;
 use InvalidArgumentException;
 use IteratorAggregate;
+use ReflectionFunction;
 use Traversable;
 
 use function ipl\Stdlib\get_php_type;
@@ -509,10 +511,43 @@ class Attributes implements ArrayAccess, IteratorAggregate
         return new ArrayIterator($this->attributes);
     }
 
+    public function rebindAttributeCallbacks(int $thisObjectId, object $newThis): void
+    {
+        $this->rebindCallbacksInPlace($this->callbacks, $thisObjectId, $newThis);
+        $this->rebindCallbacksInPlace($this->setterCallbacks, $thisObjectId, $newThis);
+    }
+
     public function __clone()
     {
         foreach ($this->attributes as &$attribute) {
             $attribute = clone $attribute;
+        }
+    }
+
+    private function rebindCallbacksInPlace(array &$callbacks, int $thisObjectId, object $newThis): void
+    {
+        foreach ($callbacks as &$callback) {
+            if (! $callback instanceof Closure) {
+                if (is_array($callback) && ! is_string($callback[0])) {
+                    if (spl_object_id($callback[0]) === $thisObjectId) {
+                        $callback[0] = $newThis;
+                    }
+                }
+
+                continue;
+            }
+
+            $closureThis = (new ReflectionFunction($callback))
+                ->getClosureThis();
+
+            // Closure is most likely static
+            if ($closureThis === null) {
+                continue;
+            }
+
+            if (spl_object_id($closureThis) === $thisObjectId) {
+                $callback = $callback->bindTo($newThis);
+            }
         }
     }
 }
