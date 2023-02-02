@@ -75,6 +75,9 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
 
+    /** @var int Holds an ID to identify itself, used to get the ID of the Object for comparison when cloning */
+    private $thisRefId;
+
     /**
      * Get the attributes of the element
      *
@@ -83,6 +86,8 @@ abstract class BaseHtmlElement extends HtmlDocument
     public function getAttributes()
     {
         if ($this->attributes === null) {
+            $this->thisRefId = spl_object_id($this);
+
             $default = $this->getDefaultAttributes();
             if (empty($default)) {
                 $this->attributes = new Attributes();
@@ -105,6 +110,8 @@ abstract class BaseHtmlElement extends HtmlDocument
      */
     public function setAttributes($attributes)
     {
+        $this->thisRefId = spl_object_id($this);
+
         $this->attributes = Attributes::wantAttributes($attributes);
 
         $this->attributeCallbacksRegistered = false;
@@ -351,5 +358,19 @@ abstract class BaseHtmlElement extends HtmlDocument
             $content,
             $tag
         );
+    }
+
+    public function __clone()
+    {
+        parent::__clone();
+
+        if ($this->attributes !== null) {
+            $this->attributes = clone $this->attributes;
+
+            // `$this->thisRefId` is the ID to this Object prior of cloning, `$this` is the newly cloned Object
+            $this->attributes->rebind($this->thisRefId, $this);
+
+            $this->thisRefId = spl_object_id($this);
+        }
     }
 }
