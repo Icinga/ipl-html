@@ -55,12 +55,12 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      */
     public function __construct($name, $attributes = null)
     {
+        $this->setName($name);
+        $this->init();
+
         if ($attributes !== null) {
             $this->addAttributes($attributes);
         }
-        $this->setName($name);
-
-        $this->init();
     }
 
     public function getDescription()
