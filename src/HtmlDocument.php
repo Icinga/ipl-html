@@ -291,6 +291,7 @@ class HtmlDocument implements Countable, Wrappable
     {
         if (! $this->hasBeenAssembled) {
             $this->hasBeenAssembled = true;
+            $this->initAssemble();
             $this->assemble();
         }
 
@@ -377,6 +378,13 @@ class HtmlDocument implements Countable, Wrappable
      * Override this method in order to provide content in concrete classes.
      */
     protected function assemble()
+    {
+    }
+
+    /**
+     * Method called before the element is {@link assemble() assembled} via {@link ensureAssembled()}
+     */
+    protected function initAssemble(): void
     {
     }
 
