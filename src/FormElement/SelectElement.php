@@ -2,7 +2,6 @@
 
 namespace ipl\Html\FormElement;
 
-use InvalidArgumentException;
 use ipl\Html\Attributes;
 use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Html;
@@ -234,5 +233,22 @@ class SelectElement extends BaseFormElement
         );
 
         $this->registerMultipleAttributeCallback($attributes);
+    }
+
+    public function __clone()
+    {
+        foreach ($this->options as &$option) {
+            $option = clone $option;
+            $option->attributes = clone $option->attributes;
+            $option->getAttributes()->rebind($this->thisRefId, $this);
+        }
+
+        foreach ($this->optionContent as &$option) {
+            $option = clone $option;
+            $option->attributes = clone $option->attributes;
+            $option->getAttributes()->rebind($this->thisRefId, $this);
+        }
+
+        parent::__clone();
     }
 }
