@@ -76,7 +76,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     protected $tag;
 
     /** @var int Holds an ID to identify itself, used to get the ID of the Object for comparison when cloning */
-    private $thisRefId;
+    protected $thisRefId;
 
     /**
      * Get the attributes of the element
