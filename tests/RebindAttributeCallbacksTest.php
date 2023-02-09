@@ -6,6 +6,7 @@ use Closure;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Tests\Html\Lib\ElementWithAttributeCallbacks;
+use ipl\Tests\Html\Lib\FormProvidingAttributeCallbacks;
 use ReflectionFunction;
 use ReflectionProperty;
 
@@ -111,6 +112,34 @@ HTML;
 
         $this->assertCallbacksFor($element);
         $this->assertCallbacksFor($clone);
+    }
+
+    public function testDeepRebinding(): void
+    {
+        $form = (new FormProvidingAttributeCallbacks())
+            ->ensureAssembled();
+
+        $clone = (clone $form)
+            ->setAction('action')
+            ->setMethod('GET');
+
+        $originalHtml = <<<'HTML'
+<form method="POST">
+  <fieldset name="fieldset">
+    <input name="fieldset[submit]" type="submit" value="submit" formmethod="POST">
+  </fieldset>
+</form>
+HTML;
+        $this->assertHtml($originalHtml, $form);
+
+        $cloneHtml = <<<'HTML'
+<form action="action" method="GET">
+  <fieldset name="fieldset">
+    <input name="fieldset[submit]" type="submit" value="submit" formaction="action" formmethod="GET">
+  </fieldset>
+</form>
+HTML;
+        $this->assertHtml($cloneHtml, $clone);
     }
 
     protected function getCallbackThis(callable $callback): ?object
