@@ -7,6 +7,7 @@ use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Wrappable;
 use RuntimeException;
+use SplObjectStorage;
 
 /**
  * HTML document
@@ -35,6 +36,9 @@ class HtmlDocument implements Countable, Wrappable
 
     /** @var array */
     private $contentIndex = [];
+
+    /** @var bool Whether {@link static::__clone() clone} has been called internally for this element */
+    private $implicitlyCopied = false;
 
     /**
      * Set the element to wrap
@@ -350,9 +354,39 @@ class HtmlDocument implements Countable, Wrappable
 
     public function __clone()
     {
-        foreach ($this->content as $key => $element) {
-            $this->content[$key] = clone $element;
+        if ($this->implicitlyCopied) {
+            // Reset bool so that the clone can be cloned explicitly.
+            $this->implicitlyCopied = false;
+
+            return;
         }
+
+        // Instead of each content element cloning their content one by one, the entire content is cloned once.
+        $copies = new SplObjectStorage();
+        $deepCopy = function (array &$content) use (&$deepCopy, $copies): void {
+            foreach ($content as $key => $element) {
+                if (isset($copies[$element])) {
+                    // Preserve object graph.
+                    $copy = $copies[$element];
+                } else {
+                    if ($element instanceof self) {
+                        $element->implicitlyCopied = true;
+                        $copy = clone $element;
+                        $deepCopy($copy->content);
+                        // Reset bool so that the element can be cloned explicitly.
+                        $element->implicitlyCopied = false;
+                        $copy->reIndexContent();
+                    } else {
+                        $copy = clone $element;
+                    }
+
+                    $copies[$element] = $copy;
+                }
+
+                $content[$key] = $copy;
+            }
+        };
+        $deepCopy($this->content);
 
         $this->reIndexContent();
     }
