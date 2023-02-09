@@ -2,13 +2,17 @@
 
 namespace ipl\Tests\Html;
 
+use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Html as h;
 use ipl\Html\HtmlDocument;
+use ipl\Html\HtmlElement;
+use ipl\Html\Text;
 use ipl\Tests\Html\TestDummy\AddsContentDuringAssemble;
 use ipl\Tests\Html\TestDummy\AddsWrapperDuringAssemble;
 use ipl\Tests\Html\TestDummy\IterableElement;
 use ipl\Tests\Html\TestDummy\ObjectThatCanBeCastedToString;
+use ReflectionProperty;
 use RuntimeException;
 
 class HtmlDocumentTest extends TestCase
@@ -420,5 +424,52 @@ class HtmlDocumentTest extends TestCase
     public function testIsEmptyRespectsContentAddedInAssemble()
     {
         $this->assertFalse((new AddsContentDuringAssemble())->isEmpty());
+    }
+
+    public function testDeepCopy()
+    {
+        $content = new Text('content');
+        $li1 = new HtmlElement('li', Attributes::create(['class' => 'li1']), $content);
+        $li2 = new HtmlElement('li', Attributes::create(['class' => 'li2']), $content);
+        $ul = new HtmlElement('ul', Attributes::create(['class' => 'ul']), $li1, $li2);
+        $div = new HtmlElement('div', Attributes::create(['class' => 'div']), $ul);
+
+        $divClone = clone $div;
+        /** @var HtmlElement $ulClone */
+        list($ulClone) = $divClone->getContent();
+        /** @var HtmlElement $li1Clone */
+        /** @var HtmlElement $li2Clone */
+        list($li1Clone, $li2Clone) = $ulClone->getContent();
+        /** @var $li1CloneContent Text */
+        list($li1CloneContent) = $li1Clone->getContent();
+        /** @var $li2CloneContent Text */
+        list($li2CloneContent) = $li2Clone->getContent();
+
+        // Object graph must be preserved.
+        $this->assertSame($li1CloneContent, $li2CloneContent);
+        // It is sufficient to test $li1CloneContent as it is the same as $li2CloneContent.
+        $this->assertNotSame($li1CloneContent, $content);
+        $this->assertNotSame($li1Clone, $li1);
+        $this->assertNotSame($li2Clone, $li2);
+        $this->assertNotSame($ulClone, $ul);
+        $this->assertNotSame($divClone, $div);
+
+        $resetPropertiesExpectedToBeNotEqual = function (BaseHtmlElement ...$elements): void {
+            $contentIndex = new ReflectionProperty(HtmlDocument::class, 'contentIndex');
+            $contentIndex->setAccessible(true);
+            $refId = new ReflectionProperty(BaseHtmlElement::class, 'objectId');
+            $refId->setAccessible(true);
+            foreach ($elements as $element) {
+                $contentIndex->setValue($element, null);
+                $refId->setValue($element, null);
+            }
+        };
+        $resetPropertiesExpectedToBeNotEqual($li1, $li1Clone, $li2, $li2Clone, $ul, $ulClone, $div, $divClone);
+
+        $this->assertEquals($divClone, $div);
+        $this->assertEquals($ulClone, $ul);
+        $this->assertEquals($li2Clone, $li2);
+        $this->assertEquals($li1Clone, $li1);
+        $this->assertEquals($li1CloneContent, $content);
     }
 }
