@@ -4,8 +4,10 @@ namespace ipl\Html;
 
 use ArrayAccess;
 use ArrayIterator;
+use Closure;
 use InvalidArgumentException;
 use IteratorAggregate;
+use ReflectionFunction;
 use Traversable;
 
 use function ipl\Stdlib\get_php_type;
@@ -365,29 +367,19 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Register callback for an attribute
      *
-     * @param string   $name            Name of the attribute to register the callback for
-     * @param callable $callback        Callback to call when retrieving the attribute
-     * @param callable $setterCallback  Callback to call when setting the attribute
+     * @param string    $name           Name of the attribute to register the callback for
+     * @param ?callable $callback       Callback to call when retrieving the attribute
+     * @param ?callable $setterCallback Callback to call when setting the attribute
      *
      * @return $this
-     *
-     * @throws InvalidArgumentException If $callback is not callable or if $setterCallback is set and not callable
      */
-    public function registerAttributeCallback($name, $callback, $setterCallback = null)
+    public function registerAttributeCallback(string $name, ?callable $callback, ?callable $setterCallback = null): self
     {
         if ($callback !== null) {
-            if (! is_callable($callback)) {
-                throw new InvalidArgumentException(__METHOD__ . ' expects a callable callback');
-            }
-
             $this->callbacks[$name] = $callback;
         }
 
         if ($setterCallback !== null) {
-            if (! is_callable($setterCallback)) {
-                throw new InvalidArgumentException(__METHOD__ . ' expects a callable setterCallback');
-            }
-
             $this->setterCallbacks[$name] = $setterCallback;
         }
 
@@ -517,5 +509,59 @@ class Attributes implements ArrayAccess, IteratorAggregate
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->attributes);
+    }
+
+    /**
+     * Rebind all callbacks that point to `$oldThisId` to `$newThis`
+     *
+     * @param int    $oldThisId
+     * @param object $newThis
+     */
+    public function rebind(int $oldThisId, object $newThis): void
+    {
+        $this->rebindCallbacks($this->callbacks, $oldThisId, $newThis);
+        $this->rebindCallbacks($this->setterCallbacks, $oldThisId, $newThis);
+    }
+
+    /**
+     * Loops over all `$callbacks`, binds them to `$newThis` only where `$oldThisId` matches. The callbacks are
+     * modified directly on the `$callbacks` reference.
+     *
+     * @param callable[] $callbacks
+     * @param int        $oldThisId
+     * @param object     $newThis
+     */
+    private function rebindCallbacks(array &$callbacks, int $oldThisId, object $newThis): void
+    {
+        foreach ($callbacks as &$callback) {
+            if (! $callback instanceof Closure) {
+                if (is_array($callback) && ! is_string($callback[0])) {
+                    if (spl_object_id($callback[0]) === $oldThisId) {
+                        $callback[0] = $newThis;
+                    }
+                }
+
+                continue;
+            }
+
+            $closureThis = (new ReflectionFunction($callback))
+                ->getClosureThis();
+
+            // Closure is most likely static
+            if ($closureThis === null) {
+                continue;
+            }
+
+            if (spl_object_id($closureThis) === $oldThisId) {
+                $callback = $callback->bindTo($newThis);
+            }
+        }
+    }
+
+    public function __clone()
+    {
+        foreach ($this->attributes as &$attribute) {
+            $attribute = clone $attribute;
+        }
     }
 }
