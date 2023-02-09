@@ -395,15 +395,29 @@ abstract class BaseHtmlElement extends HtmlDocument
 
     public function __clone()
     {
-        parent::__clone();
+        $this->copy()->then(function (SplObjectStorage $copies): void {
+            foreach ($copies as $ignored) {
+                // SplObjectMap always iterates over the attached objects that
+                // are the elements before they have been cloned.
+                // But we want to work with the cloned element.
+                $copy = $copies->getInfo();
+                if ($copy instanceof self) {
+                    if ($copy->attributes !== null) {
+                        $copy->attributes->rebindAttributeCallbacks($this->objectId(), $this);
+                    }
+                }
+            }
 
-        if ($this->attributes !== null) {
-            $this->attributes = clone $this->attributes;
+            if ($this->attributes !== null) {
+                $this->attributes = clone $this->attributes;
 
-            // $this->objectId() returns the ID of the object before cloning, $this is the newly cloned object.
-            $this->attributes->rebindAttributeCallbacks($this->objectId(), $this);
+                // $this->objectId() returns the ID of the object before cloning, $this is the newly cloned object.
+                $this->attributes->rebindAttributeCallbacks($this->objectId(), $this);
+            }
 
             $this->ensureObjectId(true);
-        }
+        });
+
+        parent::__clone();
     }
 }
