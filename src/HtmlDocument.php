@@ -6,6 +6,8 @@ use Countable;
 use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Wrappable;
+use React\Promise\Deferred;
+use React\Promise\PromiseInterface;
 use RuntimeException;
 use SplObjectStorage;
 
@@ -36,6 +38,9 @@ class HtmlDocument implements Countable, Wrappable
 
     /** @var array */
     private $contentIndex = [];
+
+    /** @var Deferred {@link static::copy() Unit of work} that is completed after this content has been cloned */
+    private $copy;
 
     /** @var bool Whether {@link static::__clone() clone} has been called internally for this element */
     private $implicitlyCopied = false;
@@ -363,7 +368,7 @@ class HtmlDocument implements Countable, Wrappable
 
         // Instead of each content element cloning their content one by one, the entire content is cloned once.
         $copies = new SplObjectStorage();
-        $deepCopy = function (array &$content) use (&$deepCopy, $copies): void {
+        $deepCopy = function (array &$content, SplObjectStorage $pass) use (&$deepCopy, $copies): SplObjectStorage {
             foreach ($content as $key => $element) {
                 if (isset($copies[$element])) {
                     // Preserve object graph.
@@ -372,21 +377,35 @@ class HtmlDocument implements Countable, Wrappable
                     if ($element instanceof self) {
                         $element->implicitlyCopied = true;
                         $copy = clone $element;
-                        $deepCopy($copy->content);
+                        $pass->addAll($deepCopy($copy->content, new SplObjectStorage()));
                         // Reset bool so that the element can be cloned explicitly.
                         $element->implicitlyCopied = false;
                         $copy->reIndexContent();
+                        if ($copy->copy !== null) {
+                            /** copy can be null if {@link copy()} was not called. */
+                            $copy->copy->resolve($pass);
+                            $copy->copy = null;
+                        }
                     } else {
                         $copy = clone $element;
                     }
 
+                    $pass[$element] = $copy;
                     $copies[$element] = $copy;
                 }
 
                 $content[$key] = $copy;
             }
+
+            return $pass;
         };
-        $deepCopy($this->content);
+        $deepCopy($this->content, new SplObjectStorage());
+
+        if ($this->copy !== null) {
+            /** copy can be null if {@link copy()} was not called. */
+            $this->copy->resolve($copies);
+            $this->copy = null;
+        }
 
         $this->reIndexContent();
     }
@@ -422,6 +441,50 @@ class HtmlDocument implements Countable, Wrappable
      */
     protected function initAssemble(): void
     {
+    }
+
+    /**
+     * Get the promise that is resolved after cloning the content
+     *
+     * The promise is to be used in subclasses that override `__clone()` and
+     * need to process the cloned content, for example to rebind callbacks or to update references.
+     * The promise is resolved with an {@link SplObjectStorage} that provides each original and its cloned element.
+     * Please note that the promise must be used before calling `parent::__clone()`.
+     * Otherwise, the promise remains unresolved.
+     *
+     * **Example usage:**
+     *
+     * ```php
+     * namespace ipl\Html\Example;
+     *
+     * use ipl\Html\HtmlDocument;
+     *
+     * // Can also be a subclass of BaseHtmlElement or any other class that extends HtmlDocument
+     * class ExampleDocument extends HtmlDocument
+     * {
+     *     public function __clone()
+     *     {
+     *         $copy = $this->copy()->then(function (SplObjectStorage $copies): void {
+     *             foreach ($copies as $original) {
+     *                 $copy = $copies->getInfo();
+     *                 // ...
+     *             }
+     *         });
+     *
+     *         parent::__clone();
+     *     }
+     * }
+     * ```
+     *
+     * @return PromiseInterface
+     */
+    protected function copy(): PromiseInterface
+    {
+        if ($this->copy === null) {
+            $this->copy = new Deferred();
+        }
+
+        return $this->copy->promise();
     }
 
     /**
