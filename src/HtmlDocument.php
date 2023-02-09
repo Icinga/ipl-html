@@ -283,7 +283,9 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * Ensure that the document has been assembled
+     * Ensure that the document is assembled
+     *
+     * Does nothing if the document is already assembled.
      *
      * @return $this
      */
