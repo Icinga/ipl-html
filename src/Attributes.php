@@ -511,6 +511,16 @@ class Attributes implements ArrayAccess, IteratorAggregate
         return new ArrayIterator($this->attributes);
     }
 
+    /**
+     * Rebind all attribute callbacks whose `$this` object IDs match the given ID to the object specified in `$newThis`
+     *
+     * If both this attributes and objects that registered attribute callbacks are cloned either
+     * explicitly or implicitly, the callbacks must be rebound if the clones are to continue to work together.
+     * This method is called automatically for classes extending {@link BaseHtmlElement}.
+     *
+     * @param int $thisObjectId {@link spl_object_id() Object ID} for matching the callbacks currently bound objects
+     * @param object $newThis The object to which the matching callbacks should be bound
+     */
     public function rebindAttributeCallbacks(int $thisObjectId, object $newThis): void
     {
         $this->rebindCallbacksInPlace($this->callbacks, $thisObjectId, $newThis);
@@ -524,6 +534,15 @@ class Attributes implements ArrayAccess, IteratorAggregate
         }
     }
 
+    /**
+     * Loops over all `$callbacks` and binds them to `$newThis` if
+     * `$oldThisId` matches the {@link spl_object_id() object ID} of the currently bound object.
+     * The callbacks are modified directly at the `$callbacks` reference.
+     *
+     * @param callable[] $callbacks
+     * @param int $thisObjectId {@link spl_object_id() Object ID} for matching the callbacks currently bound objects
+     * @param object $newThis The object to which the matching callbacks should be bound
+     */
     private function rebindCallbacksInPlace(array &$callbacks, int $thisObjectId, object $newThis): void
     {
         foreach ($callbacks as &$callback) {

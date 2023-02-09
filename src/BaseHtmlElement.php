@@ -3,6 +3,7 @@
 namespace ipl\Html;
 
 use RuntimeException;
+use SplObjectStorage;
 
 /**
  * Base class for HTML elements
@@ -75,6 +76,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
 
+    /** @var int This {@link spl_object_id() object ID} which is used after cloning to find and rebind own callbacks */
     private $objectId;
 
     /**
@@ -366,6 +368,7 @@ abstract class BaseHtmlElement extends HtmlDocument
         if ($this->attributes !== null) {
             $this->attributes = clone $this->attributes;
 
+            // $this->objectId is the ID of the object before cloning, $this is the newly cloned object.
             $this->attributes->rebindAttributeCallbacks($this->objectId, $this);
 
             $this->objectId = spl_object_id($this);
