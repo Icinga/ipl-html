@@ -191,4 +191,25 @@ HTML;
 
         $this->assertHtml($expected, $form);
     }
+
+    public function testLegendDecoration(): void
+    {
+        $fieldset = (new FieldsetElement('test_fieldset'))->setLabel('fieldset_label');
+
+        $form = (new Form())
+            ->setDefaultElementDecorator(new DivDecorator())
+            ->addElement($fieldset);
+
+        $expected = <<< 'HTML'
+<form method="POST">
+  <div class="form-element">
+    <fieldset name="test_fieldset">
+      <legend>fieldset_label</legend>
+    </fieldset>
+  </div>
+</form>
+HTML;
+
+        $this->assertHtml($expected, $form);
+    }
 }
