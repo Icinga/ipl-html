@@ -2,6 +2,7 @@
 
 namespace ipl\Html;
 
+use LogicException;
 use RuntimeException;
 use SplObjectStorage;
 
@@ -87,8 +88,6 @@ abstract class BaseHtmlElement extends HtmlDocument
     public function getAttributes()
     {
         if ($this->attributes === null) {
-            $this->objectId = spl_object_id($this);
-
             $default = $this->getDefaultAttributes();
             if (empty($default)) {
                 $this->attributes = new Attributes();
@@ -111,8 +110,6 @@ abstract class BaseHtmlElement extends HtmlDocument
      */
     public function setAttributes($attributes)
     {
-        $this->objectId = spl_object_id($this);
-
         $this->attributes = Attributes::wantAttributes($attributes);
 
         $this->attributeCallbacksRegistered = false;
@@ -248,6 +245,8 @@ abstract class BaseHtmlElement extends HtmlDocument
         if (! $this->attributeCallbacksRegistered) {
             $this->attributeCallbacksRegistered = true;
             $this->registerAttributeCallbacks($this->attributes);
+
+            $this->ensureObjectId();
         }
 
         return $this;
@@ -286,6 +285,39 @@ abstract class BaseHtmlElement extends HtmlDocument
         $document->addWrapper($this);
 
         return $this;
+    }
+
+    /**
+     * Ensure that $this {@link spl_object_id() object ID} is set
+     *
+     * @param bool $override Whether the currently set object ID should be overridden
+     */
+    protected function ensureObjectId(bool $override = false): void
+    {
+        if ($this->objectId === null || $override) {
+            $this->objectId = spl_object_id($this);
+        }
+    }
+
+    protected function initAssemble(): void
+    {
+        $this->ensureObjectId();
+    }
+
+    /**
+     * Get the currently set {@link spl_object_id() object ID}
+     *
+     * @return int
+     *
+     * @throws LogicException If the object ID has not been set yet
+     */
+    protected function objectId(): int
+    {
+        if ($this->objectId === null) {
+            throw new LogicException('Cannot access object ID because it has not been set yet');
+        }
+
+        return $this->objectId;
     }
 
     /**
@@ -368,10 +400,10 @@ abstract class BaseHtmlElement extends HtmlDocument
         if ($this->attributes !== null) {
             $this->attributes = clone $this->attributes;
 
-            // $this->objectId is the ID of the object before cloning, $this is the newly cloned object.
-            $this->attributes->rebindAttributeCallbacks($this->objectId, $this);
+            // $this->objectId() returns the ID of the object before cloning, $this is the newly cloned object.
+            $this->attributes->rebindAttributeCallbacks($this->objectId(), $this);
 
-            $this->objectId = spl_object_id($this);
+            $this->ensureObjectId(true);
         }
     }
 }
