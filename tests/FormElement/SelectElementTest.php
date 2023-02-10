@@ -621,38 +621,61 @@ HTML;
         $form = new Form();
 
         $select = new SelectElement('select', [
-            'options' => [
-                'key1' => 'value1',
-                'key2' => 'value2'
+            'multiple' => true,
+            'options'  => [
+                'first'  => [
+                    'key1' => 'value1',
+                    'key2' => 'value2',
+                    'key3' => 'value3'
+                ],
+                'second' => [
+                    'key4' => 'value4',
+                    'key5' => 'value5'
+                ]
             ]
         ]);
+        $select->setDisabledOptions(['key2']);
 
-        $clone = clone $select;
-        $clone->setName('clone');
-        $clone->setOptions([
-            'key3' => 'value3',
-            'key4' => 'value4'
-        ]);
+        $clone = (clone $select)
+            ->setName('clone')
+            ->setDisabledOptions([]);
+
+        $clone->getAttributes()->set('multiple', false);
+        $clone->getOption('key4')->setLabel('label4');
 
         $form
             ->addElement($select)
             ->addElement($clone)
             ->populate([
-                'select' => 'key1',
+                'select' => ['key2', 'key4'],
                 'clone'  => 'key3'
             ]);
 
         $expected = <<<'HTML'
-<form method="POST">
-  <select name="select">
-    <option value="key1" selected="selected">value1</option>
-    <option value="key2">value2</option>
-  </select>
-  <select name="clone">
-    <option value="key3" selected="selected">value3</option>
-    <option value="key4">value4</option>
-  </select>
-</form>
+    <form method="POST">
+      <select multiple="multiple" name="select[]">
+        <optgroup label="first">
+          <option value="key1">value1</option>
+          <option value="key2" disabled="disabled" selected="selected">value2</option>
+          <option value="key3">value3</option>
+        </optgroup>
+        <optgroup label="second">
+          <option selected="selected" value="key4">value4</option>
+          <option value="key5">value5</option>
+        </optgroup>
+      </select>
+      <select name="clone">
+        <optgroup label="first">
+          <option value="key1">value1</option>
+          <option value="key2">value2</option>
+          <option value="key3" selected="selected">value3</option>
+        </optgroup>
+        <optgroup label="second">
+          <option value="key4">value4</option>
+          <option value="key5">value5</option>
+        </optgroup>
+      </select>
+    </form>
 HTML;
 
         $this->assertHtml($expected, $form);
