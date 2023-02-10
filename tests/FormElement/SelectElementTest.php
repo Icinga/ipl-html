@@ -43,10 +43,10 @@ HTML;
             'label'   => 'Customer',
             'value'   => '3',
             'options' => [
-                null => 'Please choose',
-                '1'  => 'The one',
-                '4'  => 'Four',
-                '5'  => 'Hi five',
+                null  => 'Please choose',
+                '1'   => 'The one',
+                '4'   => 'Four',
+                '5'   => 'Hi five',
                 'sub' => [
                     'Down' => 'Here'
                 ]
@@ -72,10 +72,10 @@ HTML;
             'label'   => 'Customer',
             'value'   => '4',
             'options' => [
-                null => 'Please choose',
-                '1'  => 'The one',
-                '4'  => 'Four',
-                '5'  => 'Hi five',
+                null  => 'Please choose',
+                '1'   => 'The one',
+                '4'   => 'Four',
+                '5'   => 'Hi five',
                 'sub' => [
                     'Down' => 'Here'
                 ]
@@ -92,13 +92,13 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                null           => 'Please choose',
                 'Some Options' => [
-                    '1'  => 'The one',
-                    '4'  => 'Four',
+                    '1' => 'The one',
+                    '4' => 'Four',
                 ],
                 'More options' => [
-                    '5'  => 'Hi five',
+                    '5' => 'Hi five',
                 ]
             ],
         ]);
@@ -124,13 +124,13 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                null           => 'Please choose',
                 'Some options' => [
-                    '1'  => 'The one',
-                    '4'  => 'Four',
+                    '1' => 'The one',
+                    '4' => 'Four',
                 ],
                 'More options' => [
-                    '5'  => 'Hi five',
+                    '5' => 'Hi five',
                 ]
             ],
         ]);
@@ -159,17 +159,17 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                null           => 'Please choose',
                 'Some options' => [
-                    '1'  => 'The one',
-                    '4'  => [
+                    '1' => 'The one',
+                    '4' => [
                         'Deeper' => [
                             '4x4' => 'Fourfour',
                         ],
                     ],
                 ],
                 'More options' => [
-                    '5'  => 'Hi five',
+                    '5' => 'Hi five',
                 ]
             ],
         ]);
@@ -277,8 +277,8 @@ HTML;
     public function testSetArrayAsValueWithoutMultipleAttributeThrowsException()
     {
         $select = new SelectElement('elname', [
-            'label'     => 'Customer',
-            'options'   => [
+            'label'   => 'Customer',
+            'options' => [
                 null => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
@@ -297,9 +297,9 @@ HTML;
     public function testSetNonArrayAsValueWithMultipleAttributeThrowsException()
     {
         $select = new SelectElement('elname', [
-            'label'     => 'Customer',
-            'multiple'  => true,
-            'options'   => [
+            'label'    => 'Customer',
+            'multiple' => true,
+            'options'  => [
                 null => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
@@ -445,11 +445,11 @@ HTML;
         $form = new Form();
         $form->addElement('select', 'select', [
             'options' => ['' => 'Please choose'],
-            'value' => ''
+            'value'   => ''
         ]);
         $form->addElement('select', 'select2', [
             'options' => [null => 'Please choose'],
-            'value' => null
+            'value'   => null
         ]);
 
         /** @var SelectElement $select */
@@ -512,10 +512,10 @@ HTML;
     {
         $form = new Form();
         $form->addElement('select', 'select', [
-            'options'           => ['' => 'Please choose', 'foo' => 'FOO', 'bar' => 'BAR'],
-            'disabledOptions'   => [''],
-            'required'          => true,
-            'value'             => ''
+            'options'         => ['' => 'Please choose', 'foo' => 'FOO', 'bar' => 'BAR'],
+            'disabledOptions' => [''],
+            'required'        => true,
+            'value'           => ''
         ]);
 
         $html = <<<'HTML'
@@ -558,12 +558,12 @@ HTML;
     public function testOrderOfOptionsAndDisabledOptionsDoesNotMatter()
     {
         $select = new SelectElement('test', [
-            'label'             => 'Test',
-            'options'           => [
+            'label'           => 'Test',
+            'options'         => [
                 'foo' => 'Foo',
                 'bar' => 'Bar'
             ],
-            'disabledOptions'   => ['foo', 'bar']
+            'disabledOptions' => ['foo', 'bar']
         ]);
 
         $html = <<<'HTML'
@@ -575,9 +575,9 @@ HTML;
         $this->assertHtml($html, $select);
 
         $select = new SelectElement('test', [
-            'disabledOptions'   => ['foo', 'bar'],
-            'label'             => 'Test',
-            'options'           => [
+            'disabledOptions' => ['foo', 'bar'],
+            'label'           => 'Test',
+            'options'         => [
                 'foo' => 'Foo',
                 'bar' => 'Bar'
             ]
@@ -614,5 +614,47 @@ HTML;
 
         $this->assertNull($select->getOption('')->getValue());
         $this->assertSame('car', $select->getOption('car')->getValue());
+    }
+
+    public function testCloning(): void
+    {
+        $form = new Form();
+
+        $select = new SelectElement('select', [
+            'options' => [
+                'key1' => 'value1',
+                'key2' => 'value2'
+            ]
+        ]);
+
+        $clone = clone $select;
+        $clone->setName('clone');
+        $clone->setOptions([
+            'key3' => 'value3',
+            'key4' => 'value4'
+        ]);
+
+        $form
+            ->addElement($select)
+            ->addElement($clone)
+            ->populate([
+                'select' => 'key1',
+                'clone'  => 'key3'
+            ]);
+
+        $expected = <<<'HTML'
+<form method="POST">
+  <select name="select">
+    <option value="key1" selected="selected">value1</option>
+    <option value="key2">value2</option>
+  </select>
+  <select name="clone">
+    <option value="key3" selected="selected">value3</option>
+    <option value="key4">value4</option>
+  </select>
+</form>
+HTML;
+
+        $this->assertHtml($expected, $form);
     }
 }
