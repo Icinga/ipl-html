@@ -249,6 +249,12 @@ class SelectElement extends BaseFormElement
             $option->getAttributes()->rebind($this->thisRefId, $this);
         }
 
+        foreach ($this->disabledOptions as &$option) {
+            $option = clone $option;
+            $option->attributes = clone $option->attributes;
+            $option->getAttributes()->rebind($this->thisRefId, $this);
+        }
+
         parent::__clone();
     }
 }
