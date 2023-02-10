@@ -239,19 +239,11 @@ class SelectElement extends BaseFormElement
     {
         foreach ($this->options as &$option) {
             $option = clone $option;
-            $option->attributes = clone $option->attributes;
             $option->getAttributes()->rebind($this->thisRefId, $this);
         }
 
         foreach ($this->optionContent as &$option) {
             $option = clone $option;
-            $option->attributes = clone $option->attributes;
-            $option->getAttributes()->rebind($this->thisRefId, $this);
-        }
-
-        foreach ($this->disabledOptions as &$option) {
-            $option = clone $option;
-            $option->attributes = clone $option->attributes;
             $option->getAttributes()->rebind($this->thisRefId, $this);
         }
 
