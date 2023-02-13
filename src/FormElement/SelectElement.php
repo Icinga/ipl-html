@@ -235,17 +235,44 @@ class SelectElement extends BaseFormElement
         $this->registerMultipleAttributeCallback($attributes);
     }
 
+    private function parseOptionFromContent($content): array
+    {
+        $result = [];
+
+        if ($content->getTag() === 'optgroup') {
+            $label = $content->getAttributes()->get('label')->getValue();
+
+            foreach ($content->getContent() as $item) {
+                $result[$label][$item->getValue()] = $item->getLabel();
+            }
+
+            return $result;
+        }
+
+        /** @var SelectOption $content */
+        $result[$content->getValue()] = $content->getLabel();
+
+        return $result;
+    }
+
     public function __clone()
     {
         foreach ($this->options as &$option) {
             $option = clone $option;
-            $option->getAttributes()->rebind($this->thisRefId, $this);
         }
 
-        foreach ($this->optionContent as &$option) {
-            $option = clone $option;
-            $option->getAttributes()->rebind($this->thisRefId, $this);
+        $rawOptions = [];
+        foreach ($this->optionContent as $content) {
+            if (is_array($content)) {
+                foreach ($content as $contentEntry) {
+                    $rawOptions += $this->parseOptionFromContent($contentEntry);
+                }
+            }
+
+            $rawOptions += $this->parseOptionFromContent($content);
         }
+
+        $this->setOptions($rawOptions);
 
         parent::__clone();
     }
