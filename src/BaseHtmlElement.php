@@ -2,7 +2,9 @@
 
 namespace ipl\Html;
 
+use LogicException;
 use RuntimeException;
+use SplObjectStorage;
 
 /**
  * Base class for HTML elements
@@ -74,6 +76,9 @@ abstract class BaseHtmlElement extends HtmlDocument
 
     /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
+
+    /** @var int This {@link spl_object_id() object ID} which is used after cloning to find and rebind own callbacks */
+    private $objectId;
 
     /**
      * Get the attributes of the element
@@ -240,6 +245,8 @@ abstract class BaseHtmlElement extends HtmlDocument
         if (! $this->attributeCallbacksRegistered) {
             $this->attributeCallbacksRegistered = true;
             $this->registerAttributeCallbacks($this->attributes);
+
+            $this->ensureObjectId();
         }
 
         return $this;
@@ -278,6 +285,39 @@ abstract class BaseHtmlElement extends HtmlDocument
         $document->addWrapper($this);
 
         return $this;
+    }
+
+    /**
+     * Ensure that $this {@link spl_object_id() object ID} is set
+     *
+     * @param bool $override Whether the currently set object ID should be overridden
+     */
+    protected function ensureObjectId(bool $override = false): void
+    {
+        if ($this->objectId === null || $override) {
+            $this->objectId = spl_object_id($this);
+        }
+    }
+
+    protected function initAssemble(): void
+    {
+        $this->ensureObjectId();
+    }
+
+    /**
+     * Get the currently set {@link spl_object_id() object ID}
+     *
+     * @return int
+     *
+     * @throws LogicException If the object ID has not been set yet
+     */
+    protected function objectId(): int
+    {
+        if ($this->objectId === null) {
+            throw new LogicException('Cannot access object ID because it has not been set yet');
+        }
+
+        return $this->objectId;
     }
 
     /**
@@ -351,5 +391,33 @@ abstract class BaseHtmlElement extends HtmlDocument
             $content,
             $tag
         );
+    }
+
+    public function __clone()
+    {
+        $this->copy()->then(function (SplObjectStorage $copies): void {
+            foreach ($copies as $ignored) {
+                // SplObjectMap always iterates over the attached objects that
+                // are the elements before they have been cloned.
+                // But we want to work with the cloned element.
+                $copy = $copies->getInfo();
+                if ($copy instanceof self) {
+                    if ($copy->attributes !== null) {
+                        $copy->attributes->rebindAttributeCallbacks($this->objectId(), $this);
+                    }
+                }
+            }
+
+            if ($this->attributes !== null) {
+                $this->attributes = clone $this->attributes;
+
+                // $this->objectId() returns the ID of the object before cloning, $this is the newly cloned object.
+                $this->attributes->rebindAttributeCallbacks($this->objectId(), $this);
+            }
+
+            $this->ensureObjectId(true);
+        });
+
+        parent::__clone();
     }
 }

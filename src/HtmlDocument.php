@@ -6,7 +6,10 @@ use Countable;
 use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Wrappable;
+use React\Promise\Deferred;
+use React\Promise\PromiseInterface;
 use RuntimeException;
+use SplObjectStorage;
 
 /**
  * HTML document
@@ -35,6 +38,12 @@ class HtmlDocument implements Countable, Wrappable
 
     /** @var array */
     private $contentIndex = [];
+
+    /** @var Deferred {@link static::copy() Unit of work} that is completed after this content has been cloned */
+    private $copy;
+
+    /** @var bool Whether {@link static::__clone() clone} has been called internally for this element */
+    private $implicitlyCopied = false;
 
     /**
      * Set the element to wrap
@@ -283,7 +292,9 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
-     * Ensure that the document has been assembled
+     * Ensure that the document is assembled
+     *
+     * Does nothing if the document is already assembled.
      *
      * @return $this
      */
@@ -291,6 +302,7 @@ class HtmlDocument implements Countable, Wrappable
     {
         if (! $this->hasBeenAssembled) {
             $this->hasBeenAssembled = true;
+            $this->initAssemble();
             $this->assemble();
         }
 
@@ -347,8 +359,52 @@ class HtmlDocument implements Countable, Wrappable
 
     public function __clone()
     {
-        foreach ($this->content as $key => $element) {
-            $this->content[$key] = clone $element;
+        if ($this->implicitlyCopied) {
+            // Reset bool so that the clone can be cloned explicitly.
+            $this->implicitlyCopied = false;
+
+            return;
+        }
+
+        // Instead of each content element cloning their content one by one, the entire content is cloned once.
+        $copies = new SplObjectStorage();
+        $deepCopy = function (array &$content, SplObjectStorage $pass) use (&$deepCopy, $copies): SplObjectStorage {
+            foreach ($content as $key => $element) {
+                if (isset($copies[$element])) {
+                    // Preserve object graph.
+                    $copy = $copies[$element];
+                } else {
+                    if ($element instanceof self) {
+                        $element->implicitlyCopied = true;
+                        $copy = clone $element;
+                        $pass->addAll($deepCopy($copy->content, new SplObjectStorage()));
+                        // Reset bool so that the element can be cloned explicitly.
+                        $element->implicitlyCopied = false;
+                        $copy->reIndexContent();
+                        if ($copy->copy !== null) {
+                            /** copy can be null if {@link copy()} was not called. */
+                            $copy->copy->resolve($pass);
+                            $copy->copy = null;
+                        }
+                    } else {
+                        $copy = clone $element;
+                    }
+
+                    $pass[$element] = $copy;
+                    $copies[$element] = $copy;
+                }
+
+                $content[$key] = $copy;
+            }
+
+            return $pass;
+        };
+        $deepCopy($this->content, new SplObjectStorage());
+
+        if ($this->copy !== null) {
+            /** copy can be null if {@link copy()} was not called. */
+            $this->copy->resolve($copies);
+            $this->copy = null;
         }
 
         $this->reIndexContent();
@@ -378,6 +434,57 @@ class HtmlDocument implements Countable, Wrappable
      */
     protected function assemble()
     {
+    }
+
+    /**
+     * Method called before the element is {@link assemble() assembled} via {@link ensureAssembled()}
+     */
+    protected function initAssemble(): void
+    {
+    }
+
+    /**
+     * Get the promise that is resolved after cloning the content
+     *
+     * The promise is to be used in subclasses that override `__clone()` and
+     * need to process the cloned content, for example to rebind callbacks or to update references.
+     * The promise is resolved with an {@link SplObjectStorage} that provides each original and its cloned element.
+     * Please note that the promise must be used before calling `parent::__clone()`.
+     * Otherwise, the promise remains unresolved.
+     *
+     * **Example usage:**
+     *
+     * ```php
+     * namespace ipl\Html\Example;
+     *
+     * use ipl\Html\HtmlDocument;
+     *
+     * // Can also be a subclass of BaseHtmlElement or any other class that extends HtmlDocument
+     * class ExampleDocument extends HtmlDocument
+     * {
+     *     public function __clone()
+     *     {
+     *         $copy = $this->copy()->then(function (SplObjectStorage $copies): void {
+     *             foreach ($copies as $original) {
+     *                 $copy = $copies->getInfo();
+     *                 // ...
+     *             }
+     *         });
+     *
+     *         parent::__clone();
+     *     }
+     * }
+     * ```
+     *
+     * @return PromiseInterface
+     */
+    protected function copy(): PromiseInterface
+    {
+        if ($this->copy === null) {
+            $this->copy = new Deferred();
+        }
+
+        return $this->copy->promise();
     }
 
     /**

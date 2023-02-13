@@ -20,8 +20,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @param string    $expectedHtml
      * @param ValidHtml $actual
+     * @oaram string    $message
      */
-    protected function assertHtml($expectedHtml, ValidHtml $actual)
+    protected function assertHtml($expectedHtml, ValidHtml $actual, string $message = '')
     {
         $expectedHtml = str_replace(
             "\n",
@@ -37,7 +38,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $actualHtml = (new Xml\Loader())->load($actual->render(), true);
         }
 
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertEquals($expectedHtml, $actualHtml, $message);
     }
 
     /**

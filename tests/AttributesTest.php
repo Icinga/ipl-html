@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html;
 
+use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 
@@ -112,5 +113,44 @@ class AttributesTest extends TestCase
         $attributes->set('bar', 'foo');
 
         $this->assertEquals(' foo="bar rab" bar="foo"', $attributes->render());
+    }
+
+    public function testCloningAttributes(): void
+    {
+        $original = Attributes::create([Attribute::create('class', 'class01')]);
+
+        $clone = clone $original;
+        foreach ($clone->getAttributes() as $attribute) {
+            if ($attribute->getName() === 'class') {
+                $attribute->setValue('class02');
+            }
+        }
+
+        $this->assertSame($original->get('class')->getValue(), 'class01');
+        $this->assertSame($clone->get('class')->getValue(), 'class02');
+    }
+
+    public function testAttributesAreDeepCloned()
+    {
+        $attributes = Attributes::create(['class' => 'one']);
+
+        $clone = clone $attributes;
+        $clone->add('class', 'two');
+
+        $this->assertNotSame(
+            $attributes->get('class'),
+            $clone->get('class'),
+            'Attribute instances are not cloned'
+        );
+        $this->assertSame(
+            'one',
+            $attributes->get('class')->getValue(),
+            'Attribute instances are not cloned correctly'
+        );
+        $this->assertSame(
+            ['one', 'two'],
+            $clone->get('class')->getValue(),
+            'Attribute instances are not cloned correctly'
+        );
     }
 }

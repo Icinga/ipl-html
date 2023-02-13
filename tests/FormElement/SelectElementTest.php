@@ -8,6 +8,7 @@ use ipl\Html\FormElement\SelectOption;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
+use ReflectionFunction;
 use UnexpectedValueException;
 
 class SelectElementTest extends TestCase
@@ -614,5 +615,115 @@ HTML;
 
         $this->assertNull($select->getOption('')->getValue());
         $this->assertSame('car', $select->getOption('car')->getValue());
+    }
+
+    public function testDirectCloning()
+    {
+        $select = new SelectElement('select', [
+            'options'         => [
+                null      => 'Please choose',
+                'option1' => 'Option 1',
+                'option2' => 'Option 2',
+                'option3' => 'Option 3',
+                'option4' => 'Option 4'
+            ],
+            'disabledOptions' => ['option3', 'option4']
+        ]);
+        $select->setValue('option1');
+
+        $clone = (clone $select)
+            ->setDisabledOptions([])
+            ->setValue('option2');
+
+        $selectHtml = <<<'HTML'
+<select name="select">
+  <option value="">Please choose</option>
+  <option selected value="option1">Option 1</option>
+  <option value="option2">Option 2</option>
+  <option disabled value="option3">Option 3</option>
+  <option disabled value="option4">Option 4</option>
+</select>
+HTML;
+        $this->assertHtml($selectHtml, $select, 'Modifying the cloned element also affects the original element');
+
+        $cloneHtml = <<<'HTML'
+<select name="select">
+  <option value="">Please choose</option>
+  <option value="option1">Option 1</option>
+  <option selected value="option2">Option 2</option>
+  <option value="option3">Option 3</option>
+  <option value="option4">Option 4</option>
+</select>
+HTML;
+        $this->assertHtml($cloneHtml, $clone, 'Modifying the cloned element does not have the expected result');
+
+        $assembledClone = (clone $select)
+            ->setDisabledOptions([])
+            ->setValue('option2');
+        $this->assertHtml(
+            $cloneHtml,
+            $assembledClone,
+            'Modifying the clone of the already assembled element does not have the expected result'
+        );
+    }
+
+    public function testImplicitCloning()
+    {
+        $select = new SelectElement('select', [
+            'options'         => [
+                null      => 'Please choose',
+                'option1' => 'Option 1',
+                'option2' => 'Option 2',
+                'option3' => 'Option 3',
+                'option4' => 'Option 4'
+            ],
+            'disabledOptions' => ['option3', 'option4']
+        ]);
+        $select->setValue('option1');
+        $form = (new Form())
+            ->addElement($select);
+
+        $clone = clone $form;
+        $clone
+            ->getElement('select')
+            ->setDisabledOptions([])
+            ->setValue('option2');
+
+        $formHtml = <<<'HTML'
+<form method="POST">
+  <select name="select">
+    <option value="">Please choose</option>
+    <option selected value="option1">Option 1</option>
+    <option value="option2">Option 2</option>
+    <option disabled value="option3">Option 3</option>
+    <option disabled value="option4">Option 4</option>
+  </select>
+</form>
+HTML;
+        $this->assertHtml($formHtml, $form, 'Modifying the cloned element also affects the original element');
+
+        $cloneHtml = <<<'HTML'
+<form method="POST">
+  <select name="select">
+    <option value="">Please choose</option>
+    <option value="option1">Option 1</option>
+    <option selected value="option2">Option 2</option>
+    <option value="option3">Option 3</option>
+    <option value="option4">Option 4</option>
+  </select>
+</form>
+HTML;
+        $this->assertHtml($cloneHtml, $clone, 'Modifying the cloned element does not have the expected result');
+
+        $assembledClone = clone $form;
+        $assembledClone
+            ->getElement('select')
+            ->setDisabledOptions([])
+            ->setValue('option2');
+        $this->assertHtml(
+            $cloneHtml,
+            $assembledClone,
+            'Modifying the clone of the already assembled element does not have the expected result'
+        );
     }
 }
