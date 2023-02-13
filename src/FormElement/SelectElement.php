@@ -2,13 +2,13 @@
 
 namespace ipl\Html\FormElement;
 
-use InvalidArgumentException;
 use ipl\Html\Attributes;
 use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Html;
 use ipl\Html\HtmlElement;
 use ipl\Validator\DeferredInArrayValidator;
 use ipl\Validator\ValidatorChain;
+use SplObjectStorage;
 use UnexpectedValueException;
 
 class SelectElement extends BaseFormElement
@@ -116,6 +116,64 @@ class SelectElement extends BaseFormElement
         return $this->isMultiple() ? ($name . '[]') : $name;
     }
 
+    public function __clone()
+    {
+        if ($this->hasBeenAssembled) {
+            $contentObjectIds = [];
+            foreach ($this->optionContent as $value => $content) {
+                $contentObjectIds[$value] = spl_object_id($content);
+            }
+            foreach (array_diff_key($this->options, $contentObjectIds) as $value => $option) {
+                $contentObjectIds[$value] = spl_object_id($option);
+            }
+            $this->copy()->then(function (SplObjectStorage $copies) use ($contentObjectIds) {
+                $lookup = array_flip($contentObjectIds);
+                foreach ($copies as $option) {
+                    $objectId = spl_object_id($option);
+                    if (! isset($lookup[$objectId])) {
+                        continue;
+                    }
+                    $value = $lookup[$objectId];
+                    $copy = $copies->getInfo();
+                    if (isset($this->optionContent[$value])) {
+                        $this->optionContent[$value] = $copy;
+                    }
+                    if (isset($this->options[$value])) {
+                        $this->options[$value] = $copy;
+                    }
+                }
+            });
+
+            parent::__clone();
+
+            return;
+        }
+
+        foreach ($this->optionContent as $value => &$content) {
+            if (! $content instanceof SelectOption) {
+                $content->copy()->then(function (SplObjectStorage $copies) use ($value) {
+                    foreach ($copies as $option) {
+                        if (! $option instanceof SelectOption) {
+                            continue;
+                        }
+                        /** @var SelectOption $copy */
+                        $copy = $copies->getInfo();
+                        $copy->getAttributes()->rebindAttributeCallbacks($this->objectId(), $this);
+                        $this->options[$value] = $copy;
+                    }
+                });
+
+                $content = clone $content;
+            } else {
+                $content = clone $content;
+                $content->getAttributes()->rebindAttributeCallbacks($this->objectId(), $this);
+                $this->options[$value] = $content;
+            }
+        }
+
+        parent::__clone();
+    }
+
     /**
      * Make the selectOption for the specified value and the label
      *
@@ -138,8 +196,11 @@ class SelectElement extends BaseFormElement
         $option = (new SelectOption($value, $label))
             ->setAttribute('disabled', in_array($value, $this->disabledOptions, ! is_int($value)));
 
-        $option->getAttributes()->registerAttributeCallback('selected', function () use ($option) {
-            return $this->isSelectedOption($option->getValue());
+        // The value of select options is immutable,
+        // so we use that for the callback instead of the option itself to
+        // make it possible to rebind callbacks after cloning the element.
+        $option->getAttributes()->registerAttributeCallback('selected', function () use ($value) {
+            return $this->isSelectedOption($value);
         });
 
         $this->options[$value] = $option;
