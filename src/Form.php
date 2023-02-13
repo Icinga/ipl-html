@@ -8,6 +8,7 @@ use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
+use SplObjectStorage;
 
 class Form extends BaseHtmlElement
 {
@@ -282,6 +283,34 @@ class Form extends BaseHtmlElement
         }
 
         $this->removeElement($elementOrHtml);
+    }
+
+    public function __clone()
+    {
+        $this->copy()->then(function (SplObjectStorage $copies): void {
+            $cloned = [];
+
+            foreach ($copies as $original) {
+                if (! $original instanceof FormElement) {
+                    continue;
+                }
+
+                if (! $this->hasElement($original)) {
+                    continue;
+                }
+
+                $cloned[$original->getName()] = $copies->getInfo();
+            }
+
+            // Also clone elements that have only been registered.
+            foreach (array_diff_key($this->elements, $cloned) as $name => $element) {
+                $cloned[$name] = clone $element;
+            }
+
+            $this->elements = $cloned;
+        });
+
+        parent::__clone();
     }
 
     protected function onError()
