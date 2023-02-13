@@ -16,8 +16,8 @@ class RadioElementTest extends TestCase
     public function testRendersElementCorrectly()
     {
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'options'   => [
+            'label'   => 'Test',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes'
@@ -35,8 +35,8 @@ HTML;
     public function testNumbersOfTypeIntOrStringAsOptionKeysAreHandledEqually()
     {
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'options'   => [
+            'label'   => 'Test',
+            'options' => [
                 '1' => 'Foo',
                 2   => 'Bar',
                 3   => 'Yes'
@@ -77,13 +77,13 @@ HTML;
     public function testSetValueAddsTheCheckedAttribute()
     {
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'options'   => [
+            'label'   => 'Test',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes'
             ],
-            'value'     => 'bar'
+            'value'   => 'bar'
         ]);
 
         $html = <<<'HTML'
@@ -115,9 +115,9 @@ HTML;
     public function testDisabledRadioOptions()
     {
         $radio = new RadioElement('test', [
-            'label'             => 'Test',
-            'disabledOptions'   => ['foo', 'bar', 'yes'],
-            'options'           => [
+            'label'           => 'Test',
+            'disabledOptions' => ['foo', 'bar', 'yes'],
+            'options'         => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes',
@@ -134,14 +134,14 @@ HTML;
         $this->assertHtml($html, $radio);
 
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'options'   => [
+            'label'   => 'Test',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes',
                 'no'  => 'No'
             ],
-            'value'     => 'bar'
+            'value'   => 'bar'
         ]);
 
         $radio->getOption('yes')->setDisabled();
@@ -168,9 +168,9 @@ HTML;
     public function testNonCallbackAttributesOfTheElementAreAppliedToEachOption()
     {
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'class'     => 'blue',
-            'options'   => [
+            'label'   => 'Test',
+            'class'   => 'blue',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes',
@@ -192,8 +192,8 @@ HTML;
     public function testAddCssClassToTheLabelOfASpecificOption()
     {
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'options'   => [
+            'label'   => 'Test',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes',
@@ -219,9 +219,9 @@ HTML;
     public function testAddAttributesToASpecificOption()
     {
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'class'     => 'blue',
-            'options'   => [
+            'label'   => 'Test',
+            'class'   => 'blue',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes',
@@ -245,13 +245,13 @@ HTML;
     {
         StaticTranslator::$instance = new NoopTranslator();
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'options'   => [
+            'label'   => 'Test',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes'
             ],
-            'value'     => 'bar'
+            'value'   => 'bar'
         ]);
 
         $this->assertTrue($radio->isValid());
@@ -267,13 +267,13 @@ HTML;
     {
         StaticTranslator::$instance = new NoopTranslator();
         $radio = new RadioElement('test', [
-            'label'     => 'Test',
-            'options'   => [
+            'label'   => 'Test',
+            'options' => [
                 'foo' => 'Foo',
                 'bar' => 'Bar',
                 'yes' => 'Yes'
             ],
-            'value'     => 'bar'
+            'value'   => 'bar'
         ]);
 
         $radio->setValue('yes');
@@ -287,11 +287,11 @@ HTML;
         $form = new Form();
         $form->addElement('radio', 'radio', [
             'options' => ['' => 'Please choose'],
-            'value' => ''
+            'value'   => ''
         ]);
         $form->addElement('radio', 'radio2', [
             'options' => [null => 'Please choose'],
-            'value' => null
+            'value'   => null
         ]);
 
         /** @var RadioElement $radio */
@@ -364,12 +364,12 @@ HTML;
     public function testOrderOfOptionsAndDisabledOptionsDoesNotMatter()
     {
         $radio = new RadioElement('test', [
-            'label'             => 'Test',
-            'options'           => [
+            'label'           => 'Test',
+            'options'         => [
                 'foo' => 'Foo',
                 'bar' => 'Bar'
             ],
-            'disabledOptions'   => ['foo', 'bar']
+            'disabledOptions' => ['foo', 'bar']
         ]);
 
         $html = <<<'HTML'
@@ -379,9 +379,9 @@ HTML;
         $this->assertHtml($html, $radio);
 
         $radio = new RadioElement('test', [
-            'disabledOptions'   => ['foo', 'bar'],
-            'label'             => 'Test',
-            'options'           => [
+            'disabledOptions' => ['foo', 'bar'],
+            'label'           => 'Test',
+            'options'         => [
                 'foo' => 'Foo',
                 'bar' => 'Bar'
             ]
@@ -450,5 +450,43 @@ HTML;
 
         $this->assertNull($radio->getValue());
         $this->assertNull($radio->getOption(null)->getValue());
+    }
+
+    public function testCloning(): void
+    {
+        $form = new Form();
+
+        $radio = new RadioElement('radio', [
+            'options' => [
+                'key1' => 'value1',
+                'key2' => 'value2'
+            ]
+        ]);
+
+        $clone = clone $radio;
+        $clone->setName('clone');
+        $clone->setOptions([
+            'key3' => 'value3',
+            'key4' => 'value4'
+        ]);
+
+        $form
+            ->addElement($radio)
+            ->addElement($clone)
+            ->populate([
+                'radio' => 'key1',
+                'clone' => 'key4'
+            ]);
+
+        $expected = <<<'HTML'
+<form method="POST">
+  <label class="radio-label"><input checked="checked" name="radio" type="radio" value="key1"/>value1</label>
+  <label class="radio-label"><input name="radio" type="radio" value="key2"/>value2</label>
+  <label class="radio-label"><input  name="clone" type="radio" value="key3"/>value3</label>
+  <label class="radio-label"><input checked="checked" name="clone" type="radio" value="key4"/>value4</label>
+</form>
+HTML;
+
+        $this->assertHtml($expected, $form);
     }
 }
