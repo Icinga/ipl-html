@@ -641,7 +641,7 @@ HTML;
             ->setDisabledOptions([]);
 
         $clone->getAttributes()->set('multiple', false);
-        $clone->getOption('key4')->setLabel('label4');
+        $clone->getOption('key4')->getAttributes()->set('class', 'test_class');
 
         $form
             ->addElement($select)
@@ -671,7 +671,7 @@ HTML;
           <option value="key3" selected="selected">value3</option>
         </optgroup>
         <optgroup label="second">
-          <option value="key4">value4</option>
+          <option value="key4" class="test_class">value4</option>
           <option value="key5">value5</option>
         </optgroup>
       </select>
