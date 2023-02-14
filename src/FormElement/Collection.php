@@ -3,7 +3,6 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\FormElement;
 
 class Collection extends FieldsetElement
 {
@@ -12,11 +11,19 @@ class Collection extends FieldsetElement
     /** @var callable */
     protected $onAssembleGroup;
 
-    /** @var FormElement */
-    protected $addElement;
+    /** @var array */
+    protected $addElement = [
+        'type'    => null,
+        'name'    => null,
+        'options' => null
+    ];
 
-    /** @var FormElement */
-    protected $removeElement;
+    /** @var array */
+    protected $removeElement = [
+        'type'    => null,
+        'name'    => null,
+        'options' => null
+    ];
 
     /** @var string[] */
     protected $defaultAttributes = [
@@ -34,25 +41,29 @@ class Collection extends FieldsetElement
     }
 
     /**
-     * @param FormElement $element
+     * @param string $typeOrElement
+     * @param string|null $name
+     * @param null $options
      *
      * @return $this
      */
-    public function setAddElement(FormELement $element): self
+    public function setAddElement(string $typeOrElement, string $name = null, $options = null): self
     {
-        $this->addElement = clone $element;
+        $this->addElement = ['type' => $typeOrElement, 'name' => $name, 'options' => $options];
 
         return $this;
     }
 
     /**
-     * @param FormElement $element
+     * @param string $typeOrElement
+     * @param string|null $name
+     * @param null $options
      *
      * @return $this
      */
-    public function setRemoveElement(FormElement $element): self
+    public function setRemoveElement(string $typeOrElement, string $name = null, $options = null): self
     {
-        $this->removeElement = clone $element;
+        $this->removeElement = ['type' => $typeOrElement, 'name' => $name, 'options' => $options];
 
         return $this;
     }
@@ -79,13 +90,13 @@ class Collection extends FieldsetElement
 
         $valid = true;
         foreach ($values as $key => $items) {
-            if ($this->removeElement !== null && isset($items[0][$this->removeElement->getName()])) {
+            if ($this->removeElement !== null && isset($items[0][$this->removeElement['name']])) {
                 continue;
             }
 
             $group = $this->addGroup($key);
 
-            if (empty($group->getValue($this->addElement->getName()))) {
+            if (empty($group->getValue($this->addElement['name']))) {
                 $valid = false;
             }
         }
@@ -107,8 +118,16 @@ class Collection extends FieldsetElement
             ->registerElement($group)
             ->assembleGroup(
                 $group,
-                $this->addElement ? clone $this->addElement : null,
-                $this->removeElement ? clone $this->removeElement : null
+                $this->addElement['type'] ? $this->createElement(
+                    $this->addElement['type'],
+                    $this->addElement['name'],
+                    $this->addElement['options']
+                ) : null,
+                $this->removeElement['type'] ? $this->createElement(
+                    $this->removeElement['type'],
+                    $this->removeElement['name'],
+                    $this->removeElement['options']
+                ) : null
             )
             ->addHtml($group);
 

@@ -81,12 +81,12 @@ HTML;
     {
         $collection = new Collection('testCollection');
         $collection
-            ->setAddElement(new SelectElement('add_element', [
+            ->setAddElement('select', 'add_element', [
                 'required' => false,
                 'label'    => 'Add Trigger',
                 'options'  => [null => 'Please choose', 'first' => 'First Option'],
                 'class'    => 'autosubmit'
-            ]))
+            ])
             ->onAssembleGroup(function ($group, $addElement, $removeElement) {
                 $group
                     ->addElement($addElement)
@@ -118,9 +118,9 @@ HTML;
     {
         $collection = new Collection('testCollection');
         $collection
-            ->setRemoveElement(new SubmitButtonElement('remove_trigger', [
+            ->setRemoveElement('submitButton', 'remove_trigger', [
                 'label' => 'Remove Trigger',
-            ]))
+            ])
             ->onAssembleGroup(function ($group, $addElement, $removeElement) {
                 $group->addElement('input', 'test_input', [
                     'label' => 'Test Input'
@@ -148,16 +148,16 @@ HTML;
     public function testFullCollection()
     {
         $collection = (new Collection('testCollection'))
-            ->setAddElement(new SelectElement('add_element', [
+            ->setAddElement('select', 'add_element', [
                 'required' => false,
                 'label'    => 'Add Trigger',
                 'options'  => [null => 'Please choose', 'first' => 'First Option'],
                 'class'    => 'autosubmit'
-            ]))
-            ->setRemoveElement(new SubmitButtonElement('remove_trigger', [
+            ])
+            ->setRemoveElement('submitButton', 'remove_trigger', [
                 'label' => 'Remove Trigger',
                 'value' => 'Remove Trigger'
-            ]));
+            ]);
 
         $collection->onAssembleGroup(function ($group, $addElement, $removeElement) {
             $group->addElement($addElement);
@@ -196,11 +196,11 @@ HTML;
     public function testMultipleCollections()
     {
         $collection = (new Collection('testCollection'))
-            ->setAddElement(new SelectElement('add_element', [
+            ->setAddElement('select', 'add_element', [
                 'required' => false,
                 'label'    => 'Add Trigger',
                 'options'  => [null => 'Please choose', 'first' => 'First Option']
-            ]));
+            ]);
 
         $collection->onAssembleGroup(function ($group, $addElement, $removeElement) {
             $group->addElement($addElement);
@@ -249,20 +249,15 @@ HTML;
 
     public function testPopulatingCollection(): void
     {
-        $addElement = new SelectElement('test_select1', [
-            'options' => [
-                'key1' => 'value1',
-                'key2' => 'value2'
-            ]
-        ]);
-        $testElement3 = clone $addElement;
-        $testElement3->setName('test_select3');
-        $testElement3->getAttributes()->set('options', ['key5' => 'value5', 'key6' => 'value6']);
-
         $collection = (new Collection('testCollection'))
-            ->setAddElement($addElement);
+            ->setAddElement('select', 'test_select1', [
+                'options' => [
+                    'key1' => 'value1',
+                    'key2' => 'value2'
+                ]
+            ]);
 
-        $collection->onAssembleGroup(function ($group, $addElement) use ($testElement3) {
+        $collection->onAssembleGroup(function ($group, $addElement) {
             $group->addElement(new InputElement('test_input'));
             $group->addElement($addElement);
             $group->addElement(new SelectElement('test_select2', [
@@ -271,7 +266,12 @@ HTML;
                     'key4' => 'value4'
                 ]
             ]));
-            $group->addElement($testElement3);
+            $group->addElement('select', 'test_select3', [
+                'options' => [
+                    'key5' => 'value5',
+                    'key6' => 'value6'
+                ]
+            ]);
         });
 
         $this->form
@@ -315,10 +315,10 @@ HTML;
 
     public function testCollidingElementNames(): void
     {
-        $addElement = new SelectElement('add_element', ['options' => ['key1' => 'value1', 'key2' => 'value2']]);
-
-        $firstCollection = (new Collection('first_collection'))->setAddElement(clone $addElement);
-        $secondCollection = (new Collection('second_collection')) ->setAddElement(clone $addElement);
+        $firstCollection = (new Collection('first_collection'))
+            ->setAddElement('select', 'add_element', ['options' => ['key1' => 'value1', 'key2' => 'value2']]);
+        $secondCollection = (new Collection('second_collection'))
+            ->setAddElement('select', 'add_element', ['options' => ['key1' => 'value1', 'key2' => 'value2']]);
 
         $firstCollection->onAssembleGroup(function ($group, $addElement) {
             $group->addElement($addElement);
@@ -335,7 +335,7 @@ HTML;
             ->addHtml($secondCollection)
             ->addElement(new SubmitButtonElement('add_element'))
             ->populate([
-                'first_collection' => [
+                'first_collection'  => [
                     [
                         'add_element' => 'key1'
                     ]
