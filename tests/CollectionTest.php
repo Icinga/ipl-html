@@ -207,9 +207,9 @@ HTML;
 
             $inner = (new Collection('innerCollection'))
                 ->setLabel('Inner Collection')
-                ->setAddElement(new SubmitButtonElement('inner_add_trigger', [
+                ->setAddElement('submitButton', 'inner_add_trigger', [
                     'label' => 'Inner Add Trigger'
-                ]));
+                ]);
 
             $inner->onAssembleGroup(function ($innerGroup, $innerAddElement, $innerRemoveElement) {
                 $innerGroup->addElement($innerAddElement);
