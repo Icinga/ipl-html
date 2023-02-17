@@ -365,29 +365,19 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Register callback for an attribute
      *
-     * @param string   $name            Name of the attribute to register the callback for
-     * @param callable $callback        Callback to call when retrieving the attribute
-     * @param callable $setterCallback  Callback to call when setting the attribute
+     * @param string    $name           Name of the attribute to register the callback for
+     * @param ?callable $callback       Callback to call when retrieving the attribute
+     * @param ?callable $setterCallback Callback to call when setting the attribute
      *
      * @return $this
-     *
-     * @throws InvalidArgumentException If $callback is not callable or if $setterCallback is set and not callable
      */
-    public function registerAttributeCallback($name, $callback, $setterCallback = null)
+    public function registerAttributeCallback(string $name, ?callable $callback, ?callable $setterCallback = null): self
     {
         if ($callback !== null) {
-            if (! is_callable($callback)) {
-                throw new InvalidArgumentException(__METHOD__ . ' expects a callable callback');
-            }
-
             $this->callbacks[$name] = $callback;
         }
 
         if ($setterCallback !== null) {
-            if (! is_callable($setterCallback)) {
-                throw new InvalidArgumentException(__METHOD__ . ' expects a callable setterCallback');
-            }
-
             $this->setterCallbacks[$name] = $setterCallback;
         }
 
@@ -517,5 +507,12 @@ class Attributes implements ArrayAccess, IteratorAggregate
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->attributes);
+    }
+
+    public function __clone()
+    {
+        foreach ($this->attributes as &$attribute) {
+            $attribute = clone $attribute;
+        }
     }
 }

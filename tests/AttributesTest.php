@@ -2,8 +2,11 @@
 
 namespace ipl\Tests\Html;
 
+use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\HtmlString;
+use ipl\Html\ValidHtml;
 
 class AttributesTest extends TestCase
 {
@@ -112,5 +115,47 @@ class AttributesTest extends TestCase
         $attributes->set('bar', 'foo');
 
         $this->assertEquals(' foo="bar rab" bar="foo"', $attributes->render());
+    }
+
+    public function testClone(): void
+    {
+        $original = Attributes::create([
+            'class' => 'original-class',
+            'value' => 'original-value'
+        ]);
+
+        $clone = clone $original;
+        $clone->get('class')->setValue('clone-class');
+        $clone->get('name')->setValue('clone-name');
+        $clone->remove('value');
+
+        $cloneCone = clone $clone;
+        $cloneCone->get('class')->addValue('clone-clone-class');
+        $cloneCone->get('name')->setValue('clone-clone-name');
+        $cloneCone->get('value')->setValue('clone-clone-value');
+
+        $this->assertSame('original-class', $original->get('class')->getValue());
+        $this->assertSame('original-value', $original->get('value')->getValue());
+        $this->assertNull($original->get('name')->getValue());
+        $this->assertSame(
+            ' class="original-class" value="original-value"',
+            $original->render()
+        );
+
+        $this->assertSame('clone-class', $clone->get('class')->getValue());
+        $this->assertNull($clone->get('value')->getValue());
+        $this->assertSame('clone-name', $clone->get('name')->getValue());
+        $this->assertSame(
+            ' class="clone-class" name="clone-name"',
+            $clone->render()
+        );
+
+        $this->assertSame(['clone-class', 'clone-clone-class'], $cloneCone->get('class')->getValue());
+        $this->assertSame('clone-clone-name', $cloneCone->get('name')->getValue());
+        $this->assertSame('clone-clone-value', $cloneCone->get('value')->getValue());
+        $this->assertSame(
+            ' class="clone-class clone-clone-class" name="clone-clone-name" value="clone-clone-value"',
+            $cloneCone->render()
+        );
     }
 }
