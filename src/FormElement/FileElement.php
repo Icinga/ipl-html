@@ -18,6 +18,12 @@ use ipl\Html\Common\MultipleAttribute;
 
 use function ipl\Stdlib\get_php_type;
 
+/**
+ * File upload element
+ *
+ * Once the file element is added to the form and the form attribute `enctype` is not set,
+ * it is automatically set to `multipart/form-data`.
+ */
 class FileElement extends InputElement
 {
     use MultipleAttribute;
@@ -241,6 +247,10 @@ class FileElement extends InputElement
 
     public function onRegistered(Form $form)
     {
+        if (! $form->hasAttribute('enctype')) {
+            $form->setAttribute('enctype', 'multipart/form-data');
+        }
+
         $chosenFiles = (array) $form->getPopulatedValue('chosen_file_' . $this->getName(), []);
         foreach ($chosenFiles as $chosenFile) {
             $this->files[$chosenFile] = null;
