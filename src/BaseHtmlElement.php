@@ -2,6 +2,7 @@
 
 namespace ipl\Html;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -114,6 +115,34 @@ abstract class BaseHtmlElement extends HtmlDocument
     }
 
     /**
+     * Return true if the attribute with the given name exists, false otherwise
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasAttribute(string $name): bool
+    {
+        return $this->getAttributes()->has($name);
+    }
+
+    /**
+     * Get the attribute with the given name
+     *
+     * If the attribute does not already exist, an empty one is automatically created and added to the attributes.
+     *
+     * @param string $name
+     *
+     * @return Attribute
+     *
+     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
+     */
+    public function getAttribute(string $name): Attribute
+    {
+        return $this->getAttributes()->get($name);
+    }
+
+    /**
      * Set the attribute with the given name and value
      *
      * If the attribute with the given name already exists, it gets overridden.
@@ -128,6 +157,19 @@ abstract class BaseHtmlElement extends HtmlDocument
         $this->getAttributes()->set($name, $value);
 
         return $this;
+    }
+
+    /**
+     * Remove the attribute with the given name or remove the given value from the attribute
+     *
+     * @param string $name  The name of the attribute
+     * @param null|string|array $value The value to remove if specified
+     *
+     * @return ?Attribute The removed or changed attribute, if any, otherwise null
+     */
+    public function removeAttribute(string $name, $value = null): ?Attribute
+    {
+        return $this->getAttributes()->remove($name, $value);
     }
 
     /**
