@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\Form;
 use ipl\Html\FormElement\PasswordElement;
+use ipl\Tests\Html\Lib\ElementWithAutosubmitInFieldsetForm;
 use ipl\Tests\Html\TestDummy\ObscurePassword;
 
 class PasswordElementTest extends TestCase
@@ -122,5 +123,35 @@ HTML;
 
         $password = $form->getElement('password');
         $this->assertEquals('secret', $password->getValue());
+    }
+
+    /**
+     * Represents a controller action that populates saved data and
+     * allows the user to change it. If the password isn't changed,
+     * the password must persist when the value of an element
+     * with autosubmit class is changed.
+     *
+     * @return void
+     */
+    public function testOriginalPasswordMustPersistOnAutoSubmit()
+    {
+        $form = (new ElementWithAutosubmitInFieldsetForm());
+
+        // The action populates always first
+        $form->populate([
+            'foo1' => ['select' => 'option1'],
+            'foo2' => ['password' => 'secret']
+        ]);
+
+        // handleRequest() then another time
+        $form->populate([
+            'foo1' => ['select' => 'option2'],
+            'foo2' => ['password' => ObscurePassword::get()]
+        ]);
+
+        $form->ensureAssembled();
+
+        $password = $form->getElement('foo2')->getValue('password');
+        $this->assertEquals('secret', $password);
     }
 }
