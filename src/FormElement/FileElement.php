@@ -40,7 +40,7 @@ class FileElement extends InputElement
     /** @var string[] Files to be removed from disk */
     protected $filesToRemove = [];
 
-    /** @var ?string The path where to store the file contents */
+    /** @var ?string Path to store files to preserve them across requests */
     protected $destination;
 
     /** @var int The default maximum file size */
@@ -54,7 +54,16 @@ class FileElement extends InputElement
     }
 
     /**
-     * Set the path where to store the file contents
+     * Set the path to store files to preserve them across requests
+     *
+     * Uploaded files are moved to the given directory to
+     * retain the file through automatic form submissions and failed form validations.
+     *
+     * Please note that using file persistence currently has the following drawbacks:
+     *
+     * * Works only if the file element is added to the form during {@link Form::assemble()}.
+     * * Persisted files are not removed automatically.
+     * * Files with the same name override each other.
      *
      * @param string $path
      *
@@ -68,9 +77,9 @@ class FileElement extends InputElement
     }
 
     /**
-     * Get the path where file contents are stored
+     * Get the path to store files to preserve them across requests
      *
-     * @return ?string
+     * @return string
      */
     public function getDestination(): ?string
     {
