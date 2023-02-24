@@ -2,54 +2,34 @@
 
 namespace ipl\Html\FormElement;
 
-use ipl\Html\Attributes;
-use ipl\Html\Form;
-
 class PasswordElement extends InputElement
 {
-    /** @var string Dummy passwd of this element to be rendered */
-    public const DUMMYPASSWORD = '_ipl_form_5847ed1b5b8ca';
+    protected const OBSCURE_PASSWORD = '_ipl_form_5847ed1b5b8ca';
+
+    protected $password;
 
     protected $type = 'password';
 
-    /** @var bool Status of the form */
-    protected $isFormValid = true;
-
-    protected function registerAttributeCallbacks(Attributes $attributes)
-    {
-        parent::registerAttributeCallbacks($attributes);
-
-        $attributes->registerAttributeCallback(
-            'value',
-            function () {
-                if ($this->hasValue() && count($this->getValueCandidates()) === 1 && $this->isFormValid) {
-                    return self::DUMMYPASSWORD;
-                }
-
-                if (parent::getValue() === self::DUMMYPASSWORD) {
-                    return self::DUMMYPASSWORD;
-                }
-
-                return null;
-            }
-        );
-    }
-
-    public function onRegistered(Form $form)
-    {
-        $form->on(Form::ON_VALIDATE, function ($form) {
-            $this->isFormValid = $form->isValid();
-        });
-    }
-
     public function getValue()
     {
+        return $this->password;
+    }
+
+    public function setValue($value)
+    {
+        parent::setValue($value);
+        // Consider any changes to the password made by the parent setValue() call.
         $value = parent::getValue();
-        $candidates = $this->getValueCandidates();
-        while ($value === self::DUMMYPASSWORD) {
-            $value = array_pop($candidates);
+
+        if ($value !== static::OBSCURE_PASSWORD) {
+            $this->password = $value;
         }
 
-        return $value;
+        return $this;
+    }
+
+    public function getValueAttribute()
+    {
+        return $this->hasValue() ? static::OBSCURE_PASSWORD : null;
     }
 }

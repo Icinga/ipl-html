@@ -6,13 +6,12 @@ use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
 
-abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
+abstract class BaseFormElement extends BaseHtmlElement implements FormElement
 {
     use Messages;
 
@@ -36,9 +35,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
 
     /** @var mixed Value of the element */
     protected $value;
-
-    /** @var array Value candidates of the element */
-    protected $valueCandidates = [];
 
     /**
      * @deprecated STOP: Do not use this property!!
@@ -251,18 +247,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         } else {
             $this->value = $value;
         }
-
-        return $this;
-    }
-
-    public function getValueCandidates()
-    {
-        return $this->valueCandidates;
-    }
-
-    public function setValueCandidates(array $values)
-    {
-        $this->valueCandidates = $values;
 
         return $this;
     }

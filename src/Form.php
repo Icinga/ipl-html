@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Form extends BaseHtmlElement
 {
     use FormElements {
-        FormElements::remove as private removeElement;
+        remove as private removeElement;
     }
     use Messages;
 
@@ -21,7 +21,6 @@ class Form extends BaseHtmlElement
     public const ON_REQUEST = 'request';
     public const ON_SUCCESS = 'success';
     public const ON_SENT = 'sent';
-    public const ON_VALIDATE = 'validate';
 
     /** @var string Form submission URL */
     protected $action;
