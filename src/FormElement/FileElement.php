@@ -54,6 +54,16 @@ class FileElement extends InputElement
     }
 
     /**
+     * Get the path to store files to preserve them across requests
+     *
+     * @return string
+     */
+    public function getDestination(): ?string
+    {
+        return $this->destination;
+    }
+
+    /**
      * Set the path to store files to preserve them across requests
      *
      * Uploaded files are moved to the given directory to
@@ -74,16 +84,6 @@ class FileElement extends InputElement
         $this->destination = $path;
 
         return $this;
-    }
-
-    /**
-     * Get the path to store files to preserve them across requests
-     *
-     * @return string
-     */
-    public function getDestination(): ?string
-    {
-        return $this->destination;
     }
 
     public function getValueAttribute()
