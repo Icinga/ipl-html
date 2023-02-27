@@ -4,6 +4,31 @@ namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
 
+/**
+ * Collection can be used for creating dynamic forms or elements by describing a template which
+ * will create as many iteration as provided in `populate()`.
+ *
+ * Example:
+ * ```php
+ *      $collection = new Collection('testCollection');
+ *
+ *      $collection->setAddElement('add_element', [
+ *       'required' => false,
+ *       'label'    => 'Add Trigger',
+ *       'options'  => [null => 'Please choose', 'first' => 'First Option'],
+ *       'class'    => 'autosubmit'
+ *       ]);
+ *
+ *       $collection->onAssembleGroup(function ($group, $addElement, $removeElement) {
+ *           $group->addElement($addElement);
+ *           $group->addElement('input', 'test_input');
+ *       });
+ *
+ *       $form
+ *       ->registerElement($collection)
+ *       ->addHtml($collection)
+ * ```
+ */
 class Collection extends FieldsetElement
 {
     protected const GROUP_CSS_CLASS = 'form-element-collection';
