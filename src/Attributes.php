@@ -282,12 +282,12 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * @param string            $name  The name of the attribute
      * @param null|string|array $value The value to remove if specified
      *
-     * @return Attribute|false
+     * @return ?Attribute The removed or changed attribute, if any, otherwise null
      */
-    public function remove($name, $value = null)
+    public function remove($name, $value = null): ?Attribute
     {
         if (! $this->has($name)) {
-            return false;
+            return null;
         }
 
         $attribute = $this->attributes[$name];
