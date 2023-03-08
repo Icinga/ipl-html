@@ -279,6 +279,10 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function validate()
     {
         $valid = $this->getValidators()->isValid($this->getValue());
+        // Since we do not cache the validators state, we don't need to cache the messages
+        // from previously either.
+        $this->clearMessages();
+
         $this->addMessages($this->getValidators()->getMessages());
 
         return $valid;
