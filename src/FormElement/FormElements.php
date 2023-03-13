@@ -343,6 +343,16 @@ trait FormElements
     }
 
     /**
+     * Get all populated values of the element
+     *
+     * @return array
+     */
+    public function getPopulatedValues(): array
+    {
+        return $this->populatedValues;
+    }
+
+    /**
      * Clear populated value of the given element
      *
      * @param string $name
