@@ -304,7 +304,8 @@ class Form extends BaseHtmlElement
     public function validate()
     {
         $valid = true;
-        foreach ($this->elements as $element) {
+        foreach ($this->getElements() as $element) {
+            $element->validate();
             if (! $element->isValid()) {
                 $valid = false;
             }

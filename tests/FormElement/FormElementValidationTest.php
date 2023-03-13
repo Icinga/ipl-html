@@ -2,11 +2,13 @@
 
 namespace ipl\Tests\Html\FormElement;
 
+use ipl\Html\Form;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\TextElement;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
+use ipl\Validator\CallbackValidator;
 
 class FormElementValidationTest extends TestCase
 {
@@ -30,5 +32,26 @@ class FormElementValidationTest extends TestCase
         ]);
 
         $this->assertFalse($fieldset->isValid(), 'Required fieldset fields are not required');
+    }
+
+    public function testFormIsAbleToInvalidateElementValidationResults()
+    {
+        $form = new Form();
+        $form->addElement('text', 'test', [
+            'validators' => [new CallbackValidator(function ($value) {
+                return $value === 'correct';
+            })]
+        ]);
+
+        $form->populate(['test' => 'incorrect']);
+
+        $this->assertFalse($form->isValid(), 'Broken prerequisite. A form is not invalid although its element is');
+
+        // This cannot happen for standard form requests, but Form::validate() must
+        // invalidate an element's validation state as it does invalidate its own
+        $form->populate(['test' => 'correct']);
+        $form->validate();
+
+        $this->assertTrue($form->isValid(), 'A form is not valid although the error has been corrected');
     }
 }
