@@ -260,6 +260,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      */
     public function validate()
     {
+        $this->ensureAssembled();
+
         if ($this->isRequired() && ! $this->hasValue()) {
             $this->setMessages([$this->translate('This field is required.')]);
             $this->valid = false;

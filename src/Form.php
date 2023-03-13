@@ -303,6 +303,8 @@ class Form extends BaseHtmlElement
      */
     public function validate()
     {
+        $this->ensureAssembled();
+
         $valid = true;
         foreach ($this->getElements() as $element) {
             $element->validate();
@@ -323,6 +325,8 @@ class Form extends BaseHtmlElement
      */
     public function validatePartial()
     {
+        $this->ensureAssembled();
+
         foreach ($this->getElements() as $element) {
             $element->validate();
         }
