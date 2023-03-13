@@ -7,6 +7,7 @@ use ipl\Html\FormDecorator\DivDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Tests\Html\TestCase;
 use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
+use ipl\Validator\CallbackValidator;
 use LogicException;
 
 class FieldsetElementTest extends TestCase
@@ -190,5 +191,21 @@ HTML;
 HTML;
 
         $this->assertHtml($expected, $form);
+    }
+
+    public function testSupportsValidatorsLikeAnyOtherElement()
+    {
+        $fieldset = new FieldsetElement('test_fieldset', [
+            'validators' => [new CallbackValidator(function (array $value) {
+                if (! isset($value['test'])) {
+                    return false;
+                }
+
+                return true;
+            })]
+        ]);
+        $fieldset->addElement('text', 'test');
+
+        $this->assertFalse($fieldset->isValid(), 'Fieldsets cannot validate themselves');
     }
 }
