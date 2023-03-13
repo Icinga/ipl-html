@@ -115,6 +115,13 @@ interface FormElement extends Wrappable
     public function isValid();
 
     /**
+     * Validate the element
+     *
+     * @return $this
+     */
+    public function validate();
+
+    /**
      * Handler which is called after this element has been registered
      *
      * @param Form $form
