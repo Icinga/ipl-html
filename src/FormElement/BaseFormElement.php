@@ -164,18 +164,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     }
 
     /**
-     * Get whether the element has been validated and is not valid
-     *
-     * @return bool
-     *
-     * @deprecated Use {@link hasBeenValidated()} in combination with {@link isValid()} instead
-     */
-    public function hasBeenValidatedAndIsNotValid()
-    {
-        return $this->valid !== null && ! $this->valid;
-    }
-
-    /**
      * Get the validators
      *
      * @return ValidatorChain
