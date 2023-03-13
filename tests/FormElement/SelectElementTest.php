@@ -80,10 +80,11 @@ HTML;
                     'Down' => 'Here'
                 ]
             ],
+            'disabledOptions' => [
+                '4'
+            ]
         ]);
 
-        $this->assertTrue($select->isValid());
-        $select->getOption(4)->setAttribute('disabled', true);
         $this->assertFalse($select->isValid());
     }
 
