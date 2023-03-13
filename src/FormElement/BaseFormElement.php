@@ -8,6 +8,7 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
+use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
@@ -15,6 +16,7 @@ use ReflectionProperty;
 abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
 {
     use Messages;
+    use Translation;
 
     /** @var string Description of the element */
     protected $description;
@@ -258,8 +260,13 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      */
     public function validate()
     {
-        $this->valid = $this->getValidators()->isValid($this->getValue());
-        $this->addMessages($this->getValidators()->getMessages());
+        if ($this->isRequired() && ! $this->hasValue()) {
+            $this->setMessages([$this->translate('This field is required.')]);
+            $this->valid = false;
+        } else {
+            $this->valid = $this->getValidators()->isValid($this->getValue());
+            $this->addMessages($this->getValidators()->getMessages());
+        }
 
         return $this;
     }

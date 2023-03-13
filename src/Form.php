@@ -305,11 +305,6 @@ class Form extends BaseHtmlElement
     {
         $valid = true;
         foreach ($this->elements as $element) {
-            if ($element->isRequired() && ! $element->hasValue()) {
-                $element->addMessage('This field is required');
-                $valid = false;
-                continue;
-            }
             if (! $element->isValid()) {
                 $valid = false;
             }
