@@ -86,4 +86,25 @@ class FormElementValidationTest extends TestCase
 
         $this->assertFalse($form->isValid(), 'A form is not invalid although its element is');
     }
+
+    public function testValidationMessagesAreNotDuplicated()
+    {
+        $element = new TextElement('test_element', [
+            'validators' => [new CallbackValidator(function ($value, $validator) {
+                $validator->addMessage('This message should appear only once');
+                return false;
+            })]
+        ]);
+
+        // Multiple calls to `validate()` don't happen normally, but are technically possible
+        // and the preferred solution to invalidate previous validation results
+        $element->validate();
+        $element->validate();
+
+        $this->assertCount(
+            1,
+            $element->getMessages(),
+            'FormElement validation messages are duplicated'
+        );
+    }
 }

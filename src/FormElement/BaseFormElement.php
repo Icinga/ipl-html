@@ -267,7 +267,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             $this->valid = false;
         } else {
             $this->valid = $this->getValidators()->isValid($this->getValue());
-            $this->addMessages($this->getValidators()->getMessages());
+            $this->setMessages($this->getValidators()->getMessages());
         }
 
         return $this;
