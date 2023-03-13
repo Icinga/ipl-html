@@ -9,7 +9,6 @@ use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
-use ipl\I18n\Translation;
 use ipl\Stdlib\Events;
 use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
@@ -20,7 +19,6 @@ trait FormElements
 {
     use Events;
     use Plugins;
-    use Translation;
 
     /** @var FormElementDecorator|null */
     private $defaultElementDecorator;
@@ -36,9 +34,6 @@ trait FormElements
 
     /** @var array */
     private $populatedValues = [];
-
-    /** @var bool Whether all the elements are valid */
-    protected $isValid;
 
     /**
      * Get all elements
@@ -465,68 +460,6 @@ trait FormElements
             }
 
             $decorator->decorate($element);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get whether all the elements are valid
-     *
-     * {@see self::validate()} is called automatically if the elements have not been validated before.
-     *
-     * @return bool
-     */
-    public function isValid()
-    {
-        if ($this->isValid === null) {
-            $this->validate();
-
-            $this->emit(Form::ON_VALIDATE, [$this]);
-        }
-
-        return $this->isValid;
-    }
-
-    /**
-     * Validate all elements
-     *
-     * @return $this
-     */
-    public function validate()
-    {
-        $this->ensureAssembled();
-
-        $valid = true;
-        foreach ($this->getElements() as $element) {
-            if ($element->isRequired() && ! $element->hasValue()) {
-                $element->addMessage($this->translate('This field is required'));
-                $valid = false;
-
-                continue;
-            }
-
-            if (! $element->isValid()) {
-                $valid = false;
-            }
-        }
-
-        $this->isValid = $valid;
-
-        return $this;
-    }
-
-    /**
-     * Validate all elements that have a value
-     *
-     * @return $this
-     */
-    public function validatePartial()
-    {
-        $this->ensureAssembled();
-
-        foreach ($this->getElements() as $element) {
-            $element->validate();
         }
 
         return $this;
