@@ -2,13 +2,39 @@
 
 namespace ipl\Html\FormElement;
 
+use ipl\Html\Attributes;
 use ipl\Html\Contract\FormSubmitElement;
 
 class SubmitButtonElement extends ButtonElement implements FormSubmitElement
 {
     protected $defaultAttributes = ['type' => 'submit'];
 
-    protected $value = 'y';
+    /** @var string The value that's transmitted once the button is pressed */
+    protected $submitValue = 'y';
+
+    /**
+     * Get the value to transmit once the button is pressed
+     *
+     * @return string
+     */
+    public function getSubmitValue(): string
+    {
+        return $this->submitValue;
+    }
+
+    /**
+     * Set the value to transmit once the button is pressed
+     *
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setSubmitValue(string $value): self
+    {
+        $this->submitValue = $value;
+
+        return $this;
+    }
 
     public function setLabel($label)
     {
@@ -17,11 +43,23 @@ class SubmitButtonElement extends ButtonElement implements FormSubmitElement
 
     public function hasBeenPressed()
     {
-        return (bool) $this->getValue();
+        return $this->getValue() === $this->getSubmitValue();
     }
 
     public function isIgnored()
     {
         return true;
+    }
+
+    protected function registerAttributeCallbacks(Attributes $attributes)
+    {
+        parent::registerAttributeCallbacks($attributes);
+
+        $attributes->registerAttributeCallback('submitValue', null, [$this, 'setSubmitValue']);
+    }
+
+    public function getValueAttribute()
+    {
+        return $this->submitValue;
     }
 }
