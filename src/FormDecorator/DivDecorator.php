@@ -129,7 +129,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 
     protected function assemble()
     {
-        if ($this->formElement->hasMessages()) {
+        if ($this->formElement->hasBeenValidated() && ! $this->formElement->isValid()) {
             $this->getAttributes()->add('class', static::ERROR_HINT_CLASS);
         }
 

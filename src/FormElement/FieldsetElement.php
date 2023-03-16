@@ -37,6 +37,20 @@ class FieldsetElement extends BaseFormElement
         return $this;
     }
 
+    public function validate()
+    {
+        parent::validate();
+
+        foreach ($this->getElements() as $element) {
+            $element->validate();
+            if (! $element->isValid()) {
+                $this->valid = false;
+            }
+        }
+
+        return $this;
+    }
+
     public function getValueAttribute()
     {
         // Fieldsets do not have the value attribute.

@@ -50,8 +50,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
     {
         $attributes = parent::getAttributes();
 
-        // TODO: only when sent?!
-        if ($this->wrappedElement->hasMessages()) {
+        if ($this->wrappedElement->hasBeenValidated() && ! $this->wrappedElement->isValid()) {
             $classes = $attributes->get('class');
             if (
                 empty($classes)
