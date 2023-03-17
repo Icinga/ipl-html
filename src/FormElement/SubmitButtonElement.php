@@ -55,7 +55,7 @@ class SubmitButtonElement extends ButtonElement implements FormSubmitElement
     {
         parent::registerAttributeCallbacks($attributes);
 
-        $attributes->registerAttributeCallback('submitValue', null, [$this, 'setSubmitValue']);
+        $attributes->registerAttributeCallback('value', null, [$this, 'setSubmitValue']);
     }
 
     public function getValueAttribute()
