@@ -198,15 +198,13 @@ HTML;
     public function testSupportsValidatorsLikeAnyOtherElement()
     {
         $fieldset = new FieldsetElement('test_fieldset', [
-            'validators' => [new CallbackValidator(function (array $value) {
-                if (! isset($value['test'])) {
-                    return false;
-                }
-
-                return true;
+            'validators' => [new CallbackValidator(function () {
+                return false;
             })]
         ]);
-        $fieldset->addElement('text', 'test');
+        $fieldset->addElement('text', 'test', [
+            'value' => 'bogus'
+        ]);
 
         $this->assertFalse($fieldset->isValid(), 'Fieldsets cannot validate themselves');
     }

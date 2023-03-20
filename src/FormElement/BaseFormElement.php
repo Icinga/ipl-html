@@ -262,9 +262,13 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     {
         $this->ensureAssembled();
 
-        if ($this->isRequired() && ! $this->hasValue()) {
-            $this->setMessages([$this->translate('This field is required.')]);
-            $this->valid = false;
+        if (! $this->hasValue()) {
+            if ($this->isRequired()) {
+                $this->setMessages([$this->translate('This field is required.')]);
+                $this->valid = false;
+            } else {
+                $this->valid = true;
+            }
         } else {
             $this->valid = $this->getValidators()->isValid($this->getValue());
             $this->setMessages($this->getValidators()->getMessages());
