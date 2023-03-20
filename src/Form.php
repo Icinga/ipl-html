@@ -328,7 +328,9 @@ class Form extends BaseHtmlElement
         $this->ensureAssembled();
 
         foreach ($this->getElements() as $element) {
-            $element->validate();
+            if ($element->hasValue()) {
+                $element->validate();
+            }
         }
 
         return $this;

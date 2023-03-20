@@ -107,4 +107,23 @@ class FormElementValidationTest extends TestCase
             'FormElement validation messages are duplicated'
         );
     }
+
+    public function testElementsAreOnlyValidatedIfTheyHaveAValueIfValidatedPartially()
+    {
+        $form = new class extends Form {
+            protected function assemble()
+            {
+                $this->addElement('text', 'test', [
+                    'required' => true
+                ]);
+            }
+        };
+
+        $form->validatePartial();
+
+        $this->assertEmpty(
+            $form->getElement('test')->getMessages(),
+            'Empty elements are validated during partial validation'
+        );
+    }
 }
