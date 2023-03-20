@@ -5,6 +5,8 @@ namespace ipl\Tests\Html\FormElement;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DivDecorator;
 use ipl\Html\FormElement\FieldsetElement;
+use ipl\I18n\NoopTranslator;
+use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
 use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
 use ipl\Validator\CallbackValidator;
@@ -207,5 +209,38 @@ HTML;
         $fieldset->addElement('text', 'test');
 
         $this->assertFalse($fieldset->isValid(), 'Fieldsets cannot validate themselves');
+    }
+
+    public function testDoesNotValidateItselfBeforeItsElementsAndOnlyIfThoseAreValid()
+    {
+        StaticTranslator::$instance = new NoopTranslator();
+
+        $carry = null;
+        $flag = null;
+
+        $fieldset = new FieldsetElement('test_fieldset', [
+            'validators' => [new CallbackValidator(function () use (&$carry, &$flag) {
+                $flag = 'flag';
+
+                return $carry !== null;
+            })]
+        ]);
+        $fieldset->addElement('text', 'test', [
+            'required'   => true,
+            'validators' => [new CallbackValidator(function () use (&$carry) {
+                $carry = 'carry';
+
+                return true;
+            })]
+        ]);
+
+        $fieldset->validate();
+
+        $this->assertNull($flag, 'Fieldsets are validated even if their elements are invalid');
+
+        $fieldset->populate(['test' => 'bogus'])
+            ->validate();
+
+        $this->assertTrue($fieldset->isValid(), 'Fieldsets are validated before their elements are');
     }
 }

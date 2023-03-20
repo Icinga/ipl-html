@@ -39,13 +39,18 @@ class FieldsetElement extends BaseFormElement
 
     public function validate()
     {
-        parent::validate();
+        $this->ensureAssembled();
 
+        $this->valid = true;
         foreach ($this->getElements() as $element) {
             $element->validate();
             if (! $element->isValid()) {
                 $this->valid = false;
             }
+        }
+
+        if ($this->valid) {
+            parent::validate();
         }
 
         return $this;
