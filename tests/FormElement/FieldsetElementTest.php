@@ -241,23 +241,4 @@ HTML;
 
         $this->assertTrue($fieldset->isValid(), 'Fieldsets are validated before their elements are');
     }
-
-    public function testFieldsetElementHasAValueIfAValueHasBeenSet()
-    {
-        $fieldset = new class ('test_fieldset') extends FieldsetElement {
-            protected function assemble()
-            {
-                $this->addElement('text', 'test');
-            }
-        };
-
-        $fieldset->setValue(['test' => 'foo']);
-
-        $this->assertTrue($fieldset->hasValue(), 'Fieldsets do not have a value if one is set');
-        $this->assertSame(
-            ['test' => 'foo'],
-            $fieldset->getValue(),
-            'Fieldsets do not return the same value as previously set'
-        );
-    }
 }

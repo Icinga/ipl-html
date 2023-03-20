@@ -17,9 +17,6 @@ class FieldsetElement extends BaseFormElement
 
     public function getValue($name = null, $default = null)
     {
-        // Fieldsets don't have a value themselves, their elements have, and without assemble there are none.
-        $this->ensureAssembled();
-
         if ($name === null) {
             if ($default !== null) {
                 throw new LogicException("Can't provide default without a name");
