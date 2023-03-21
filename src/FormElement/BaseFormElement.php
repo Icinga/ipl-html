@@ -216,7 +216,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     {
         $value = $this->getValue();
 
-        return $value !== null && $value !== '' && $value !== [];
+        return ! Form::isEmptyValue($value);
     }
 
     public function getValue()
