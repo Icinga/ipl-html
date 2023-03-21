@@ -241,4 +241,33 @@ HTML;
 
         $this->assertTrue($fieldset->isValid(), 'Fieldsets are validated before their elements are');
     }
+
+    public function testFieldsetsOnlyHaveAValueIfAnyOfItsElementsHaveOne()
+    {
+        $fieldset = (new FieldsetElement('test_fieldset'))
+            ->addElement('text', 'test');
+
+        $this->assertFalse($fieldset->hasValue(), 'Fieldsets with empty elements are not empty themselves');
+
+        $fieldset->setValue(['test' => 'bogus']);
+
+        $this->assertTrue($fieldset->hasValue(), 'Fieldsets with non-empty elements are not non-empty themselves');
+    }
+
+    public function testNestedFieldsetsAlsoOnlyHaveAValueIfOneOfTheirElementsHaveOne()
+    {
+        $fieldset = (new FieldsetElement('test_fieldset'))
+            ->addElement('fieldset', 'nested_set');
+        $fieldset->getElement('nested_set')
+            ->addElement('text', 'test');
+
+        $this->assertFalse($fieldset->hasValue(), 'Nested fieldsets with empty elements are not empty themselves');
+
+        $fieldset->setValue(['nested_set' => ['test' => 'bogus']]);
+
+        $this->assertTrue(
+            $fieldset->hasValue(),
+            'Nested fieldsets with non-empty elements are not non-empty themselves'
+        );
+    }
 }

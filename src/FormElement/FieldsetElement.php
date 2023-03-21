@@ -15,6 +15,22 @@ class FieldsetElement extends BaseFormElement
 
     protected $tag = 'fieldset';
 
+    /**
+     * Get whether any of this set's elements has a value
+     *
+     * @return bool
+     */
+    public function hasValue()
+    {
+        foreach ($this->getElements() as $element) {
+            if ($element->hasValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getValue($name = null, $default = null)
     {
         if ($name === null) {
