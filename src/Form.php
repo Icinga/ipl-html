@@ -47,6 +47,18 @@ class Form extends BaseHtmlElement
     protected $tag = 'form';
 
     /**
+     * Get whether the given value is empty
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public static function isEmptyValue($value): bool
+    {
+        return $value === null || $value === '' || $value === [];
+    }
+
+    /**
      * Get the Form submission URL
      *
      * @return string|null

@@ -198,15 +198,13 @@ HTML;
     public function testSupportsValidatorsLikeAnyOtherElement()
     {
         $fieldset = new FieldsetElement('test_fieldset', [
-            'validators' => [new CallbackValidator(function (array $value) {
-                if (! isset($value['test'])) {
-                    return false;
-                }
-
-                return true;
+            'validators' => [new CallbackValidator(function () {
+                return false;
             })]
         ]);
-        $fieldset->addElement('text', 'test');
+        $fieldset->addElement('text', 'test', [
+            'value' => 'bogus'
+        ]);
 
         $this->assertFalse($fieldset->isValid(), 'Fieldsets cannot validate themselves');
     }
@@ -244,22 +242,32 @@ HTML;
         $this->assertTrue($fieldset->isValid(), 'Fieldsets are validated before their elements are');
     }
 
-    public function testFieldsetElementHasAValueIfAValueHasBeenSet()
+    public function testFieldsetsOnlyHaveAValueIfAnyOfItsElementsHaveOne()
     {
-        $fieldset = new class ('test_fieldset') extends FieldsetElement {
-            protected function assemble()
-            {
-                $this->addElement('text', 'test');
-            }
-        };
+        $fieldset = (new FieldsetElement('test_fieldset'))
+            ->addElement('text', 'test');
 
-        $fieldset->setValue(['test' => 'foo']);
+        $this->assertFalse($fieldset->hasValue(), 'Fieldsets with empty elements are not empty themselves');
 
-        $this->assertTrue($fieldset->hasValue(), 'Fieldsets do not have a value if one is set');
-        $this->assertSame(
-            ['test' => 'foo'],
-            $fieldset->getValue(),
-            'Fieldsets do not return the same value as previously set'
+        $fieldset->setValue(['test' => 'bogus']);
+
+        $this->assertTrue($fieldset->hasValue(), 'Fieldsets with non-empty elements are not non-empty themselves');
+    }
+
+    public function testNestedFieldsetsAlsoOnlyHaveAValueIfOneOfTheirElementsHaveOne()
+    {
+        $fieldset = (new FieldsetElement('test_fieldset'))
+            ->addElement('fieldset', 'nested_set');
+        $fieldset->getElement('nested_set')
+            ->addElement('text', 'test');
+
+        $this->assertFalse($fieldset->hasValue(), 'Nested fieldsets with empty elements are not empty themselves');
+
+        $fieldset->setValue(['nested_set' => ['test' => 'bogus']]);
+
+        $this->assertTrue(
+            $fieldset->hasValue(),
+            'Nested fieldsets with non-empty elements are not non-empty themselves'
         );
     }
 }

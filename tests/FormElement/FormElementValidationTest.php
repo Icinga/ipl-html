@@ -90,6 +90,7 @@ class FormElementValidationTest extends TestCase
     public function testValidationMessagesAreNotDuplicated()
     {
         $element = new TextElement('test_element', [
+            'value' => 'bogus',
             'validators' => [new CallbackValidator(function ($value, $validator) {
                 $validator->addMessage('This message should appear only once');
                 return false;

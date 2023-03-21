@@ -15,11 +15,24 @@ class FieldsetElement extends BaseFormElement
 
     protected $tag = 'fieldset';
 
+    /**
+     * Get whether any of this set's elements has a value
+     *
+     * @return bool
+     */
+    public function hasValue()
+    {
+        foreach ($this->getElements() as $element) {
+            if ($element->hasValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getValue($name = null, $default = null)
     {
-        // Fieldsets don't have a value themselves, their elements have, and without assemble there are none.
-        $this->ensureAssembled();
-
         if ($name === null) {
             if ($default !== null) {
                 throw new LogicException("Can't provide default without a name");
