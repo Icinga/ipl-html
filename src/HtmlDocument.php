@@ -159,6 +159,50 @@ class HtmlDocument implements Countable, Wrappable
     }
 
     /**
+     * Insert Html after an existing Html node
+     *
+     * @param ValidHtml $newNode
+     * @param ValidHtml $existingNode
+     *
+     * @return $this
+     */
+    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): self
+    {
+        $index = array_search($existingNode, $this->content, true);
+        if ($index === false) {
+            throw new InvalidArgumentException('The content does not contain the $existingNode');
+        }
+
+        array_splice($this->content, $index + 1, 0, [$newNode]);
+
+        $this->reIndexContent();
+
+        return $this;
+    }
+
+    /**
+     * Insert Html after an existing Html node
+     *
+     * @param ValidHtml $newNode
+     * @param ValidHtml $existingNode
+     *
+     * @return $this
+     */
+    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): self
+    {
+        $index = array_search($existingNode, $this->content);
+        if ($index === false) {
+            throw new InvalidArgumentException('The content does not contain the $existingNode');
+        }
+
+        array_splice($this->content, $index, 0, [$newNode]);
+
+        $this->reIndexContent();
+
+        return $this;
+    }
+
+    /**
      * Add content
      *
      * @param mixed $content
