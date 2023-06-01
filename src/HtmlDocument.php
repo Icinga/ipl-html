@@ -6,6 +6,7 @@ use Countable;
 use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Wrappable;
+use ipl\Stdlib\Events;
 use RuntimeException;
 
 /**
@@ -15,6 +16,11 @@ use RuntimeException;
  */
 class HtmlDocument implements Countable, Wrappable
 {
+    use Events;
+
+    /** @var string Emitted after the content has been assembled */
+    public const ON_ASSEMBLED = 'assembled';
+
     /** @var string Content separator */
     protected $contentSeparator = '';
 
@@ -292,6 +298,8 @@ class HtmlDocument implements Countable, Wrappable
         if (! $this->hasBeenAssembled) {
             $this->hasBeenAssembled = true;
             $this->assemble();
+
+            $this->emit(static::ON_ASSEMBLED, [$this]);
         }
 
         return $this;
