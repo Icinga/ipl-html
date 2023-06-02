@@ -6,6 +6,7 @@ use Countable;
 use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Wrappable;
+use ipl\Stdlib\Events;
 use RuntimeException;
 
 /**
@@ -15,6 +16,11 @@ use RuntimeException;
  */
 class HtmlDocument implements Countable, Wrappable
 {
+    use Events;
+
+    /** @var string Emitted after the content has been assembled */
+    public const ON_ASSEMBLED = 'assembled';
+
     /** @var string Content separator */
     protected $contentSeparator = '';
 
@@ -150,6 +156,50 @@ class HtmlDocument implements Countable, Wrappable
             'Trying to get first %s, but there is no such',
             $tag
         ));
+    }
+
+    /**
+     * Insert Html after an existing Html node
+     *
+     * @param ValidHtml $newNode
+     * @param ValidHtml $existingNode
+     *
+     * @return $this
+     */
+    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): self
+    {
+        $index = array_search($existingNode, $this->content, true);
+        if ($index === false) {
+            throw new InvalidArgumentException('The content does not contain the $existingNode');
+        }
+
+        array_splice($this->content, $index + 1, 0, [$newNode]);
+
+        $this->reIndexContent();
+
+        return $this;
+    }
+
+    /**
+     * Insert Html after an existing Html node
+     *
+     * @param ValidHtml $newNode
+     * @param ValidHtml $existingNode
+     *
+     * @return $this
+     */
+    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): self
+    {
+        $index = array_search($existingNode, $this->content);
+        if ($index === false) {
+            throw new InvalidArgumentException('The content does not contain the $existingNode');
+        }
+
+        array_splice($this->content, $index, 0, [$newNode]);
+
+        $this->reIndexContent();
+
+        return $this;
     }
 
     /**
@@ -292,6 +342,8 @@ class HtmlDocument implements Countable, Wrappable
         if (! $this->hasBeenAssembled) {
             $this->hasBeenAssembled = true;
             $this->assemble();
+
+            $this->emit(static::ON_ASSEMBLED, [$this]);
         }
 
         return $this;
