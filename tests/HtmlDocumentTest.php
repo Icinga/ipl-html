@@ -421,4 +421,53 @@ class HtmlDocumentTest extends TestCase
     {
         $this->assertFalse((new AddsContentDuringAssemble())->isEmpty());
     }
+
+    public function testOnAssembledDocument()
+    {
+        $a = new HtmlDocument();
+        $s1 = h::tag('span', 'one');
+        $s2 = h::tag('span', 'two');
+        $s3 = h::tag('span', 'three');
+        $a->add([$s1, $s2]);
+
+        $a->on(HtmlDocument::ON_ASSEMBLED, function ($b) use ($s2, $s3) {
+            $b->remove($s2);
+            $b->add($s3);
+        });
+
+        $this->assertEquals(
+            '<span>one</span><span>three</span>',
+            $a->render()
+        );
+    }
+
+    public function testInsertAfter()
+    {
+        $a = new HtmlDocument();
+        $s1 = h::tag('span', 'one');
+        $s2 = h::tag('span', 'two');
+        $s3 = h::tag('span', 'three');
+        $a->add([$s1, $s2]);
+        $a->insertAfter($s3, $s1);
+
+        $this->assertEquals(
+            '<span>one</span><span>three</span><span>two</span>',
+            $a->render()
+        );
+    }
+
+    public function testInsertBefore()
+    {
+        $a = new HtmlDocument();
+        $s1 = h::tag('span', 'one');
+        $s2 = h::tag('span', 'two');
+        $s3 = h::tag('span', 'three');
+        $a->add([$s1, $s2]);
+        $a->insertBefore($s3, $s1);
+
+        $this->assertEquals(
+            '<span>three</span><span>one</span><span>two</span>',
+            $a->render()
+        );
+    }
 }
