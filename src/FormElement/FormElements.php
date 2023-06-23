@@ -244,8 +244,15 @@ trait FormElements
         } else {
             $this->ensureDefaultElementDecoratorLoaderRegistered();
 
-            $d = $this->loadPlugin('decorator', $decorator);
+            $class = $this->loadPlugin('decorator', $decorator);
+            if (! $class) {
+                throw new InvalidArgumentException(sprintf(
+                    "Can't create decorator of unknown type '%s",
+                    $decorator
+                ));
+            }
 
+            $d = new $class();
             if (! $d instanceof FormElementDecorator && ! $d instanceof DecoratorInterface) {
                 throw new InvalidArgumentException(sprintf(
                     "Expected instance of %s for decorator '%s',"
