@@ -24,10 +24,10 @@ trait FormElements
     private $defaultElementDecorator;
 
     /** @var bool Whether the default element decorator loader has been registered */
-    private $defaultElementDecoratorLoaderRegistered = false;
+    protected $defaultElementDecoratorLoaderRegistered = false;
 
     /** @var bool Whether the default element loader has been registered */
-    private $defaultElementLoaderRegistered = false;
+    protected $defaultElementLoaderRegistered = false;
 
     /** @var FormElement[] */
     private $elements = [];
