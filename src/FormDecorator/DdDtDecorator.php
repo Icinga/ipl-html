@@ -51,7 +51,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
         $attributes = parent::getAttributes();
 
         if ($this->wrappedElement->hasBeenValidated() && ! $this->wrappedElement->isValid()) {
-            $classes = $attributes->get('class');
+            $classes = $attributes->get('class')->getValue();
             if (
                 empty($classes)
                 || (is_array($classes) && ! in_array('errors', $classes))
