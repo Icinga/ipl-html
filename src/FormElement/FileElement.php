@@ -197,10 +197,10 @@ class FileElement extends InputElement
             } else {
                 $this->files[$name] = new UploadedFile(
                     $filePath,
-                    filesize($filePath),
+                    filesize($filePath) ?: null,
                     0,
                     $name,
-                    mime_content_type($filePath)
+                    mime_content_type($filePath) ?: null
                 );
             }
         }
