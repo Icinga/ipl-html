@@ -49,7 +49,7 @@ class TemplateString extends FormattedString
     /**
      * Parse template strings
      *
-     * @param null $for template name
+     * @param  ?string $for template name
      * @return HtmlDocument
      * @throws Exception in case of missing template argument or unbounded open or close templates
      */
