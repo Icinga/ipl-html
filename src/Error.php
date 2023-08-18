@@ -81,7 +81,7 @@ abstract class Error
      */
     protected static function createMessageForException($exception)
     {
-        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY);
+        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY) ?: [];
         $file = array_pop($file);
         return sprintf(
             '%s (%s:%d)',
