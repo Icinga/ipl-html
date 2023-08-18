@@ -29,9 +29,6 @@ abstract class Error
         if ($error instanceof Throwable) {
             // PHP 7+
             $msg = static::createMessageForException($error);
-        } elseif ($error instanceof Exception) {
-            // PHP 5.x
-            $msg = static::createMessageForException($error);
         } elseif (is_string($error)) {
             $msg = $error;
         } else {
