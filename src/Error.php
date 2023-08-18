@@ -37,7 +37,7 @@ abstract class Error
         }
 
         $result = static::renderErrorMessage($msg);
-        if (static::showTraces()) {
+        if (static::showTraces() && $error instanceof Throwable) {
             $result->addHtml(Html::tag('pre', $error->getTraceAsString()));
         }
 
