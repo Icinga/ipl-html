@@ -173,7 +173,7 @@ class HtmlDocument implements Countable, Wrappable
             throw new InvalidArgumentException('The content does not contain the $existingNode');
         }
 
-        array_splice($this->content, $index + 1, 0, [$newNode]);
+        array_splice($this->content, (int) $index + 1, 0, [$newNode]);
 
         $this->reIndexContent();
 
@@ -195,7 +195,7 @@ class HtmlDocument implements Countable, Wrappable
             throw new InvalidArgumentException('The content does not contain the $existingNode');
         }
 
-        array_splice($this->content, $index, 0, [$newNode]);
+        array_splice($this->content, (int) $index, 0, [$newNode]);
 
         $this->reIndexContent();
 
