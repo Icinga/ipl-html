@@ -94,7 +94,7 @@ class FileElement extends InputElement
 
     public function getNameAttribute()
     {
-        $name = parent::getNameAttribute();
+        $name = $this->getName();
 
         return $this->isMultiple() ? ($name . '[]') : $name;
     }
@@ -374,7 +374,7 @@ class FileElement extends InputElement
         $doc = new HtmlDocument();
         if ($this->hasFiles()) {
             foreach ($this->files as $file) {
-                $doc->addHtml(new HiddenElement('chosen_file_' . $this->getNameAttribute(), [
+                $doc->addHtml(new HiddenElement('chosen_file_' . $this->getValueOfNameAttribute(), [
                     'value' => $file->getClientFilename()
                 ]));
             }
@@ -394,7 +394,7 @@ class FileElement extends InputElement
             $uploadedFiles->addHtml(new HtmlElement(
                 'li',
                 null,
-                (new ButtonElement('remove_file_' . $this->getNameAttribute(), Attributes::create([
+                (new ButtonElement('remove_file_' . $this->getValueOfNameAttribute(), Attributes::create([
                     'type' => 'submit',
                     'formnovalidate' => true,
                     'class' => 'remove-uploaded-file',
