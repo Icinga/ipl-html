@@ -363,7 +363,7 @@ trait FormElements
     /**
      * Add all elements from the given element collection
      *
-     * @param Form|SubFormElement $form
+     * @param Form $form
      *
      * @return $this
      */
