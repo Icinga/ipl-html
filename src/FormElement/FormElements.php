@@ -495,7 +495,7 @@ trait FormElements
             }
         }
 
-        parent::remove($elementOrHtml);
+        return parent::remove($elementOrHtml);
     }
 
     /**

@@ -355,6 +355,8 @@ class Form extends BaseHtmlElement
         }
 
         $this->removeElement($elementOrHtml);
+
+        return $this;
     }
 
     protected function onError()
