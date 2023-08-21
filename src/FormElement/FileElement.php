@@ -12,7 +12,6 @@ use ipl\Html\Text;
 use ipl\I18n\Translation;
 use ipl\Validator\FileValidator;
 use ipl\Validator\ValidatorChain;
-use ipl\Web\Widget\Icon;
 use Psr\Http\Message\UploadedFileInterface;
 use ipl\Html\Common\MultipleAttribute;
 
@@ -403,7 +402,7 @@ class FileElement extends InputElement
                 ])))->addHtml(new HtmlElement(
                     'span',
                     null,
-                    new Icon('remove'),
+                    new HtmlElement('i', Attributes::create(['class' => ['icon', 'fa', 'fa-xmark']])),
                     Text::create($file->getClientFilename())
                 ))
             ));
