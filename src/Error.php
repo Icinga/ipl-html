@@ -29,9 +29,6 @@ abstract class Error
         if ($error instanceof Throwable) {
             // PHP 7+
             $msg = static::createMessageForException($error);
-        } elseif ($error instanceof Exception) {
-            // PHP 5.x
-            $msg = static::createMessageForException($error);
         } elseif (is_string($error)) {
             $msg = $error;
         } else {
@@ -40,7 +37,7 @@ abstract class Error
         }
 
         $result = static::renderErrorMessage($msg);
-        if (static::showTraces()) {
+        if (static::showTraces() && $error instanceof Throwable) {
             $result->addHtml(Html::tag('pre', $error->getTraceAsString()));
         }
 
@@ -84,7 +81,7 @@ abstract class Error
      */
     protected static function createMessageForException($exception)
     {
-        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY);
+        $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY) ?: [];
         $file = array_pop($file);
         return sprintf(
             '%s (%s:%d)',

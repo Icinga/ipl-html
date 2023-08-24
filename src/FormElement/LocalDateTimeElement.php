@@ -25,7 +25,7 @@ class LocalDateTimeElement extends InputElement
             // In Chrome, if the seconds are set to 00, DateTime::createFromFormat() returns false.
             // Create DateTime without seconds in format
             if ($value === false) {
-                $format = substr(static::FORMAT, 0, strrpos(static::FORMAT, ':'));
+                $format = substr(static::FORMAT, 0, strrpos(static::FORMAT, ':') ?: null);
                 $value = DateTime::createFromFormat($format, $originalVal);
             }
 
