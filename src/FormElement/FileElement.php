@@ -116,29 +116,6 @@ class FileElement extends InputElement
         return $this->value !== null;
     }
 
-    public function getValue()
-    {
-        if (! $this->hasValue()) {
-            return null;
-        }
-
-        if (! $this->hasFiles()) {
-            $files = $this->value;
-            if (! $this->isMultiple()) {
-                $files = [$files];
-            }
-
-            $storedFiles = $this->storeFiles(...$files);
-            if (! $this->isMultiple()) {
-                $storedFiles = $storedFiles[0];
-            }
-
-            $this->value = $storedFiles;
-        }
-
-        return $this->value;
-    }
-
     public function setValue($value)
     {
         if (! empty($value)) {
@@ -154,7 +131,21 @@ class FileElement extends InputElement
             }
 
             if ($fileToTest->getError() === UPLOAD_ERR_NO_FILE && ! $fileToTest->getClientFilename()) {
+                // This is checked here as it's only about file elements for which no value has been chosen
                 $value = null;
+            } else {
+                $files = $value;
+                if (! $this->isMultiple()) {
+                    $files = [$files];
+                }
+
+                /** @var UploadedFileInterface[] $files */
+                $storedFiles = $this->storeFiles(...$files);
+                if (! $this->isMultiple()) {
+                    $storedFiles = $storedFiles[0] ?? null;
+                }
+
+                $value = $storedFiles;
             }
         } else {
             $value = null;
@@ -222,23 +213,33 @@ class FileElement extends InputElement
             return $files;
         }
 
+        $storedFiles = [];
         foreach ($files as $file) {
             $name = $file->getClientFilename();
             $path = $this->getFilePath($name);
 
+            if ($file->getError() !== UPLOAD_ERR_OK) {
+                // The file is still returned as otherwise it won't be validated
+                $storedFiles[] = $file;
+                continue;
+            }
+
             $file->moveTo($path);
 
             // Re-created to ensure moveTo() still works if called externally
-            $this->files[$name] = new UploadedFile(
+            $file = new UploadedFile(
                 $path,
                 $file->getSize(),
                 0,
                 $name,
                 $file->getClientMediaType()
             );
+
+            $this->files[$name] = $file;
+            $storedFiles[] = $file;
         }
 
-        return array_values($this->files);
+        return $storedFiles;
     }
 
     /**
