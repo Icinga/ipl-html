@@ -32,7 +32,7 @@ trait FormElements
     /** @var FormElement[] */
     private $elements = [];
 
-    /** @var array */
+    /** @var array<string, array<int, mixed>> */
     private $populatedValues = [];
 
     /**
@@ -311,7 +311,7 @@ trait FormElements
     /**
      * Populate values of registered elements
      *
-     * @param iterable $values Values as name-value pairs
+     * @param iterable<string, mixed> $values Values as name-value pairs
      *
      * @return $this
      */

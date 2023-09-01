@@ -2,10 +2,13 @@
 
 namespace ipl\Html\FormElement;
 
+use InvalidArgumentException;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
 use LogicException;
+
+use function ipl\Stdlib\get_php_type;
 
 class FieldsetElement extends BaseFormElement
 {
@@ -46,6 +49,16 @@ class FieldsetElement extends BaseFormElement
 
     public function setValue($value)
     {
+        if (! is_iterable($value)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    '%s expects parameter $value to be an array|iterable, got %s instead',
+                    __METHOD__,
+                    get_php_type($value)
+                )
+            );
+        }
+
         // We expect an array/iterable here,
         // so call populate to loop through it and apply values to the child elements of the fieldset.
         $this->populate($value);

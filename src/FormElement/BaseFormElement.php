@@ -42,7 +42,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** @var mixed Value of the element */
     protected $value;
 
-    /** @var array Value candidates of the element */
+    /** @var array<int, mixed> Value candidates of the element */
     protected $valueCandidates = [];
 
     /**
