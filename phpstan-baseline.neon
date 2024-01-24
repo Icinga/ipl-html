@@ -362,7 +362,7 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'name' on mixed\\.$#"
-			count: 2
+			count: 1
 			path: src/FormElement/BaseFormElement.php
 
 		-
