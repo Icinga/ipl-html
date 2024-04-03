@@ -5,6 +5,7 @@ namespace ipl\Html\FormElement;
 use ipl\Html\Attributes;
 use ipl\Html\Form;
 
+/** @extends InputElement<string> */
 class PasswordElement extends InputElement
 {
     /** @var string Dummy passwd of this element to be rendered */

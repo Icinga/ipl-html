@@ -2,6 +2,7 @@
 
 namespace ipl\Html\Contract;
 
+/** @extends FormElement<string> */
 interface FormSubmitElement extends FormElement
 {
     /**

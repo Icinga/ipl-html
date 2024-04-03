@@ -7,6 +7,8 @@ use ipl\Html\Form;
 
 /**
  * Representation of form elements
+ *
+ * @template TValue of mixed
  */
 interface FormElement extends Wrappable
 {
@@ -67,20 +69,22 @@ interface FormElement extends Wrappable
      * Get whether the element has a value
      *
      * @return bool False if the element's value is null, the empty string or the empty array; true otherwise
+     *
+     * @phpstan-assert-if-false null|''|array{} $this->getValue()
      */
     public function hasValue();
 
     /**
      * Get the value of the element
      *
-     * @return mixed
+     * @return ?TValue
      */
     public function getValue();
 
     /**
      * Set the value of the element
      *
-     * @param mixed $value
+     * @param ?TValue $value
      *
      * @return $this
      */
@@ -124,7 +128,7 @@ interface FormElement extends Wrappable
     /**
      * Handler which is called after this element has been registered
      *
-     * @param Form $form
+     * @param Form<array<string, FormElement<mixed>>> $form
      *
      * @return void
      */

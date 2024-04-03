@@ -11,7 +11,7 @@ interface DecoratorInterface
     /**
      * Set the form element to decorate
      *
-     * @param BaseFormElement $formElement
+     * @param BaseFormElement<mixed> $formElement
      *
      * @return static
      */
