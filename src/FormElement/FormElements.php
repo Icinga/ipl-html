@@ -51,21 +51,16 @@ trait FormElements
     /**
      * Get whether the given element exists
      *
-     * @param key-of<TElements>|value-of<TElements> $element
+     * @param string $element
      *
      * @return bool
+     *
+     * @phpstan-assert-if-true key-of<TElements> $element
+     * @phpstan-assert-if-true !null $this->getElement()
      */
     public function hasElement($element)
     {
-        if (is_string($element)) {
-            return array_key_exists($element, $this->elements);
-        }
-
-        if ($element instanceof FormElement) {
-            return in_array($element, $this->elements, true);
-        }
-
-        return false;
+        return array_key_exists($element, $this->elements);
     }
 
     /**
@@ -75,8 +70,10 @@ trait FormElements
      *
      * @return TElements[K]
      *
-     * @template K of key-of<TElements>
      * @throws InvalidArgumentException If no element with the given name exists
+     *
+     * @template K of key-of<TElements>
+     * @phpstan-assert K $name
      */
     public function getElement($name)
     {
@@ -493,11 +490,9 @@ trait FormElements
     public function remove(ValidHtml $elementOrHtml)
     {
         if ($elementOrHtml instanceof FormElement) {
-            if ($this->hasElement($elementOrHtml)) {
-                $name = array_search($elementOrHtml, $this->elements, true);
-                if ($name !== false) {
-                    unset($this->elements[$name]);
-                }
+            $name = array_search($elementOrHtml, $this->elements, true);
+            if ($name !== false) {
+                unset($this->elements[$name]);
             }
         }
 
