@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
+use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
@@ -107,15 +108,21 @@ class FieldsetElement extends BaseFormElement
     protected function onElementRegistered(FormElement $element)
     {
         $element->getAttributes()->registerAttributeCallback('name', function () use ($element) {
+            $multiple = false;
+            if (in_array(MultipleAttribute::class, class_uses($element), true)) {
+                $multiple = $element->isMultiple();
+            }
+
             /**
              * We don't change the {@see BaseFormElement::$name} property of the element,
              * otherwise methods like {@see FormElements::populate() and {@see FormElements::getElement()} would fail,
              * but only change the name attribute to nest the names.
              */
             return sprintf(
-                '%s[%s]',
+                '%s[%s]%s',
                 $this->getValueOfNameAttribute(),
-                $element->getName()
+                $element->getName(),
+                $multiple ? '[]' : ''
             );
         });
     }

@@ -270,4 +270,54 @@ HTML;
             'Nested fieldsets with non-empty elements are not non-empty themselves'
         );
     }
+
+    public function testMultiSelectionFieldInFieldset(): void
+    {
+        $fieldset = (new FieldsetElement('test_fieldset'))
+            ->addElement('select', 'test_select', [
+                'multiple' => true,
+                'options' => [
+                    'one' => 'One',
+                    'two' => 'Two'
+                ]
+            ]);
+
+        $expected = <<<'HTML'
+<fieldset name="test_fieldset">
+    <select multiple="multiple" name="test_fieldset[test_select][]">
+        <option value="one">One</option>
+        <option value="two">Two</option>
+    </select>
+</fieldset>
+HTML;
+
+            $this->assertHtml($expected, $fieldset);
+    }
+
+    public function testMultiSelectionFieldInNestedFieldset(): void
+    {
+        $inner = (new FieldsetElement('inner'))
+            ->addElement('select', 'test_select', [
+                'multiple' => true,
+                'options' => [
+                    'one' => 'One',
+                    'two' => 'Two'
+                ]
+            ]);
+        $outer = (new FieldsetElement('outer'))
+            ->addElement($inner);
+
+        $expected = <<<'HTML'
+<fieldset name="outer">
+    <fieldset name="outer[inner]">
+        <select multiple="multiple" name="outer[inner][test_select][]">
+            <option value="one">One</option>
+            <option value="two">Two</option>
+        </select>
+    </fieldset>
+</fieldset>
+HTML;
+
+        $this->assertHtml($expected, $outer);
+    }
 }
