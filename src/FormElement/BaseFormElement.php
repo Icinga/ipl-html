@@ -12,6 +12,7 @@ use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
+use Traversable;
 
 abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
 {
@@ -184,7 +185,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /**
      * Set the validators
      *
-     * @param iterable $validators
+     * @param Traversable<int|string, mixed> $validators
      *
      * @return $this
      */
@@ -201,7 +202,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /**
      * Add validators
      *
-     * @param iterable $validators
+     * @param Traversable<int|string, mixed> $validators
      *
      * @return $this
      */
