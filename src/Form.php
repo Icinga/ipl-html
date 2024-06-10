@@ -2,12 +2,12 @@
 
 namespace ipl\Html;
 
-use Exception;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 class Form extends BaseHtmlElement
 {
@@ -237,7 +237,7 @@ class Form extends BaseHtmlElement
                     $this->emit(Form::ON_SENT, [$this]);
                     $this->onSuccess();
                     $this->emitOnce(Form::ON_SUCCESS, [$this]);
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
                     $this->addMessage($e);
                     $this->onError();
                     $this->emit(Form::ON_ERROR, [$e, $this]);
@@ -363,7 +363,7 @@ class Form extends BaseHtmlElement
     {
         $errors = Html::tag('ul', ['class' => 'errors']);
         foreach ($this->getMessages() as $message) {
-            if ($message instanceof Exception) {
+            if ($message instanceof Throwable) {
                 $message = $message->getMessage();
             }
 

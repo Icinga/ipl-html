@@ -3,11 +3,11 @@
 namespace ipl\Html;
 
 use Countable;
-use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Wrappable;
 use ipl\Stdlib\Events;
 use RuntimeException;
+use Throwable;
 
 /**
  * HTML document
@@ -418,7 +418,7 @@ class HtmlDocument implements Countable, Wrappable
     {
         try {
             return $this->render();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return Error::render($e);
         }
     }
