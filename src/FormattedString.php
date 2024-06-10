@@ -2,8 +2,8 @@
 
 namespace ipl\Html;
 
-use Exception;
 use InvalidArgumentException;
+use Throwable;
 
 use function ipl\Stdlib\get_php_type;
 
@@ -86,7 +86,7 @@ class FormattedString implements ValidHtml
     {
         try {
             return $this->render();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return Error::render($e);
         }
     }

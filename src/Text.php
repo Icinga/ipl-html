@@ -2,7 +2,7 @@
 
 namespace ipl\Html;
 
-use Exception;
+use Throwable;
 
 /**
  * A text node
@@ -100,7 +100,7 @@ class Text implements ValidHtml
     {
         try {
             return $this->render();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return Error::render($e);
         }
     }

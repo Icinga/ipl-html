@@ -2,7 +2,7 @@
 
 namespace ipl\Html;
 
-use Exception;
+use Throwable;
 
 /**
  * Text node where content creation is deferred until rendering
@@ -96,7 +96,7 @@ class DeferredText implements ValidHtml
     {
         try {
             return $this->render();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return Error::render($e);
         }
     }
