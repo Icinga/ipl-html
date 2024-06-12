@@ -246,11 +246,6 @@ parameters:
 			path: src/Form.php
 
 		-
-			message: "#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge_recursive expects array, array\\|object\\|null given\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
 			message: "#^Parameter \\#3 \\$postfix of method ipl\\\\Html\\\\Form\\:\\:addPluginLoader\\(\\) expects string, string\\|null given\\.$#"
 			count: 2
 			path: src/Form.php
@@ -362,7 +357,7 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'name' on mixed\\.$#"
-			count: 2
+			count: 1
 			path: src/FormElement/BaseFormElement.php
 
 		-
@@ -587,11 +582,6 @@ parameters:
 
 		-
 			message: "#^Method ipl\\\\Html\\\\FormattedString\\:\\:__construct\\(\\) has parameter \\$args with no value type specified in iterable type iterable\\.$#"
-			count: 1
-			path: src/FormattedString.php
-
-		-
-			message: "#^Parameter \\#2 \\$values of function vsprintf expects array\\<bool\\|float\\|int\\|string\\|null\\>, array\\<ipl\\\\Html\\\\ValidHtml\\> given\\.$#"
 			count: 1
 			path: src/FormattedString.php
 
