@@ -22,6 +22,8 @@ use function ipl\Stdlib\get_php_type;
  *
  * Once the file element is added to the form and the form attribute `enctype` is not set,
  * it is automatically set to `multipart/form-data`.
+ *
+ * @extends InputElement<UploadedFileInterface|array<UploadedFileInterface>>
  */
 class FileElement extends InputElement
 {
@@ -29,9 +31,6 @@ class FileElement extends InputElement
     use Translation;
 
     protected $type = 'file';
-
-    /** @var UploadedFileInterface|UploadedFileInterface[] */
-    protected $value;
 
     /** @var UploadedFileInterface[] Files that are stored on disk */
     protected $files = [];
@@ -120,7 +119,7 @@ class FileElement extends InputElement
     {
         if (! empty($value)) {
             $fileToTest = $value;
-            if ($this->isMultiple()) {
+            if ($this->isMultiple() && is_array($value)) {
                 $fileToTest = $value[0];
             }
 
@@ -135,7 +134,7 @@ class FileElement extends InputElement
                 $value = null;
             } else {
                 $files = $value;
-                if (! $this->isMultiple()) {
+                if (! $this->isMultiple() || ! is_array($files)) {
                     $files = [$files];
                 }
 

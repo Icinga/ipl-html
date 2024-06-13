@@ -12,7 +12,7 @@ class CallbackDecorator extends HtmlDocument implements FormElementDecorator
     /** @var Closure The decorating callback */
     protected $callback;
 
-    /** @var FormElement The decorated form element */
+    /** @var FormElement<mixed> The decorated form element */
     protected $formElement;
 
     /**
