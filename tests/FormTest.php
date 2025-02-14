@@ -11,6 +11,7 @@ class FormTest extends TestCase
         $this->assertTrue(Form::isEmptyValue(''), "`''` is not empty");
         $this->assertTrue(Form::isEmptyValue(null), '`null` is not empty');
         $this->assertTrue(Form::isEmptyValue([]), '`[]` is not empty');
+        $this->assertTrue(Form::isEmptyValue('  '), '`  ` is not empty');
 
         $this->assertFalse(Form::isEmptyValue(0), '`0` is empty');
         $this->assertFalse(Form::isEmptyValue('0'), "`'0'` is empty");
