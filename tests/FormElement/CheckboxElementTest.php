@@ -3,9 +3,16 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\FormElement\CheckboxElement;
+use ipl\I18n\NoopTranslator;
+use ipl\I18n\StaticTranslator;
 
 class CheckboxElementTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        StaticTranslator::$instance = new NoopTranslator();
+    }
+
     public function testRendersCheckValuesAsValueAttribute()
     {
         $checkbox = new CheckboxElement('test');
@@ -105,5 +112,14 @@ class CheckboxElementTest extends TestCase
             . '<input checked="checked" type="checkbox" name="test" value="checked">',
             $checkbox
         );
+    }
+
+    public function testCheckboxNotValidIfRequiredAndUnchecked()
+    {
+        $checkbox = new CheckboxElement('test');
+        $checkbox->setRequired();
+        $checkbox->setChecked(false);
+
+        $this->assertFalse($checkbox->isValid());
     }
 }
