@@ -1,0 +1,11 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge_recursive expects array, array\\|object\\|null given\\.$#"
+			count: 1
+			path: src/Form.php
+
+		-
+			message: "#^Parameter \\#2 \\$values of function vsprintf expects array\\<bool\\|float\\|int\\|string\\|null\\>, array\\<ipl\\\\Html\\\\ValidHtml\\> given\\.$#"
+			count: 1
+			path: src/FormattedString.php
