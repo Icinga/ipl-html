@@ -2,9 +2,12 @@
 
 namespace ipl\Html\FormElement;
 
-use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 
+/**
+ * @template TValue of mixed
+ * @extends BaseFormElement<TValue>
+ */
 class InputElement extends BaseFormElement
 {
     /** @var string Type of the input */

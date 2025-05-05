@@ -2,6 +2,7 @@
 
 namespace ipl\Html\FormElement;
 
+/** @extends BaseFormElement<string> */
 class TextareaElement extends BaseFormElement
 {
     protected $tag = 'textarea';

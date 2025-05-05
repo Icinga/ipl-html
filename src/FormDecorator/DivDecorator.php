@@ -33,7 +33,7 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
     /** @var string CSS class to set on the decorator if the element has errors */
     public const ERROR_HINT_CLASS = 'has-error';
 
-    /** @var FormElement The decorated form element */
+    /** @var FormElement<mixed> The decorated form element */
     protected $formElement;
 
     protected $tag = 'div';

@@ -34,7 +34,7 @@ interface FormElementDecorator extends ValidHtml
      * }
      * ```
      *
-     * @param FormElement $formElement
+     * @param FormElement<mixed> $formElement
      */
     public function decorate(FormElement $formElement);
 }

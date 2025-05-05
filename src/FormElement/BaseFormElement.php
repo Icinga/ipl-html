@@ -13,6 +13,11 @@ use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
 
+/**
+ * @template TValue of mixed
+ * @implements FormElement<TValue>
+ * @implements ValueCandidates<TValue>
+ */
 abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
 {
     use Messages;
@@ -39,10 +44,10 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** @var ValidatorChain Registered validators */
     protected $validators;
 
-    /** @var mixed Value of the element */
+    /** @var ?TValue Value of the element */
     protected $value;
 
-    /** @var array<int, mixed> Value candidates of the element */
+    /** @var array<int, TValue> Value candidates of the element */
     protected $valueCandidates = [];
 
     /**
