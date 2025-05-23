@@ -7,6 +7,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DecoratorChain;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
 use ipl\Stdlib\Events;
@@ -131,6 +132,36 @@ trait FormElements
     }
 
     /**
+     * Add a custom decorator loader for the given element
+     *
+     * Override this method if you want to add custom decorator loader
+     *
+     * @param DecoratorChain $chain The decorators
+     * @param FormElement $element The form element
+     *
+     * @return $this
+     */
+    public function addElementDecoratorLoader(DecoratorChain $chain, FormElement $element): self
+    {
+        return $this;
+    }
+
+    /**
+     * Modify default decorators of the element
+     *
+     * Override this method if you want to change the behavior of the default decorators
+     *
+     * @param array $decorators The default decorators
+     * @param FormElement $element The form element
+     *
+     * @return $this
+     */
+    public function modifyDefaultDecorators(array $decorators, FormElement $element): self
+    {
+       return $this;
+    }
+
+    /**
      * Create an element
      *
      * @param string $type    Type of the element
@@ -156,6 +187,21 @@ trait FormElements
 
         /** @var FormElement $element */
         $element = new $class($name);
+
+        $this->addElementDecoratorLoader($element->getDecorators(), $element);
+
+        if ($element instanceof FieldsetElement) {
+            //never run, as no elements are set yet
+            //TODO: fieldset decorater loader cannot be set, this method never receive a fieldset element,
+            // because the fieldset element, as it is created by new Fieldset()...
+
+
+            // if created with createElement(), it calls this method, but at this time, fieldset has not elements
+            // as this method exists in fieldset also, fieldset must be extended to overwrite it, to work :(. find better solution
+            foreach ($element->getElements() as $childElement) {
+                $this->addElementDecoratorLoader($childElement->getDecorators(), $childElement);
+            }
+        }
 
         if ($options !== null) {
             $element->addAttributes($options);
@@ -193,6 +239,21 @@ trait FormElements
 
             if ($element instanceof ValueCandidates) {
                 $element->setValueCandidates($this->populatedValues[$name]);
+            }
+        }
+
+        if ($element->hasDefaultDecorators()) {
+            $this->modifyDefaultDecorators($element->getDefaultDecorators()->getDecorators(), $element);
+        }
+
+        if ($element instanceof FieldsetElement) {
+            foreach ($element->getElements() as $childElement) {
+                if ($childElement->hasDefaultDecorators()) {
+                    $this->modifyDefaultDecorators(
+                        $childElement->getDefaultDecorators()->getDecorators(),
+                        $childElement
+                    );
+                }
             }
         }
 
