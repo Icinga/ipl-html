@@ -50,6 +50,9 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** All registered decorators */
     protected ?DecoratorChain $decorators = null;
 
+    /** Get whether the element has explicit decorators */
+    protected bool $hasExplicitDecorators = false;
+
     /**
      * Create a new form element
      *
@@ -417,6 +420,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      */
     public function setDecorators(iterable $decorators): self
     {
+        $this->hasExplicitDecorators = true;
+
         $this
             ->getDecorators()
             ->clearDecorators()
@@ -435,6 +440,16 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         return $this
             ->getDecorators()
             ->getDecorators()[$name] ?? null;
+    }
+
+    /**
+     * Get whether the element has explicit decorators
+     *
+     * @return bool
+     */
+    public function hasExplicitDecorators(): bool
+    {
+        return $this->hasExplicitDecorators;
     }
 
     /**

@@ -29,11 +29,72 @@ trait FormElements
     /** @var bool Whether the default element loader has been registered */
     protected $defaultElementLoaderRegistered = false;
 
+    /**
+     * Custom Element decorator loader paths
+     *
+     * @var array<int, array<string|int, string> Override this property to add custom decorator loader paths
+     *
+     * Each entry must be an array, where the key is the decorator name postfix (if any) and the value is the path
+     */
+    protected array $elementDecoratorLoaderPaths = [];
+
+    /**
+     * Default element decorators
+     *
+     * Override this property to change the default decorators of the elements.
+     * The default decorators will be applied to all elements that do not have their own decorators.
+     *
+     * The order of the decorators is important, as it determines the rendering order.
+     *
+     * @var ?array<string|int, string|array<string, string>>
+     */
+    protected ?array $defaultElementDecorators = [
+        'Fieldset', //TODO: phpunit test fails because of these default decorators, either remove here or in the tests
+        'Label',
+        'Description',
+        'HtmlTag'
+    ];
+
     /** @var FormElement[] */
     private $elements = [];
 
     /** @var array<string, array<int, mixed>> */
     private $populatedValues = [];
+
+    /**
+     * Get the default element decorators
+     *
+     * @return ?array
+     */
+    public function getDefaultElementDecorators(): ?array
+    {
+        if (empty($this->defaultElementDecorators)) {
+            return null;
+        }
+
+        return $this->defaultElementDecorators;
+    }
+
+    /**
+     * Set the default element decorators
+     *
+     * Call this method before creating any element OR override the {@see self::$defaultElementDecorators} property,
+     * to ensure that the default decorators are applied
+     *
+     * @param ?array $defaultElementDecorators
+     *
+     * @return $this
+     */
+    public function setDefaultElementDecorators(?array $defaultElementDecorators): self
+    {
+        if (empty($defaultElementDecorators)) {
+            $defaultElementDecorators = null;
+        }
+
+        $this->defaultElementDecorators = $defaultElementDecorators;
+
+        return $this;
+    }
 
     /**
      * Get all elements
@@ -131,6 +192,23 @@ trait FormElements
     }
 
     /**
+     * Add custom element decorator loader paths for the elements
+     *
+     * Call this method before creating any element OR override the {@see self::$elementDecoratorLoaderPaths} property,
+     * to ensure that your custom decorator loader paths are applied
+     *
+     * @param array $loaderPaths
+     *
+     * @return $this
+     */
+    public function addElementDecoratorLoaderPaths(array $loaderPaths): self
+    {
+        $this->elementDecoratorLoaderPaths = $loaderPaths;
+
+        return $this;
+    }
+
+    /**
      * Create an element
      *
      * @param string $type    Type of the element
@@ -156,6 +234,24 @@ trait FormElements
 
         /** @var FormElement $element */
         $element = new $class($name);
+
+        $customDecoratorPaths = $this->elementDecoratorLoaderPaths;
+        if (! empty($customDecoratorPaths)) {
+            if ($element instanceof FieldsetElement) {
+                $element->addElementDecoratorLoaderPaths($customDecoratorPaths);
+            }
+
+            $chain = $element->getDecorators();
+            foreach ($customDecoratorPaths as $paths) {
+                foreach ($paths as $postfix => $path) {
+                    if (is_int($postfix)) {
+                        $postfix = '';
+                    }
+
+                    $chain->addDecoratorLoader($path, $postfix);
+                }
+            }
+        }
 
         if ($options !== null) {
             $element->addAttributes($options);
@@ -193,6 +289,17 @@ trait FormElements
 
             if ($element instanceof ValueCandidates) {
                 $element->setValueCandidates($this->populatedValues[$name]);
+            }
+        }
+
+        $defaultDecorators = $this->getDefaultElementDecorators();
+        if ($defaultDecorators !== null && ! $this->hasDefaultElementDecorator()) {
+            if ($element instanceof FieldsetElement) {
+                $element->setDefaultElementDecorators($defaultDecorators);
+            }
+
+            if (! $element->hasExplicitDecorators()) {
+                $element->setDecorators($defaultDecorators);
             }
         }
 
