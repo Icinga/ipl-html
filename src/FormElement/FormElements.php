@@ -521,7 +521,7 @@ trait FormElements
 
     public function renderElement(ValidHtml $element): string
     {
-        if ($element instanceof FormElement && $element->hasDecorators()) {
+        if ($element instanceof FormElement && $element->hasDecorators() && ! $this->hasDefaultElementDecorator()) {
             return $this->renderDecorated($element);
         }
 
