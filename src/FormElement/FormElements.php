@@ -15,12 +15,15 @@ use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
 
+/**
+ * @template TElements of array<string, FormElement<mixed>>
+ */
 trait FormElements
 {
     use Events;
     use Plugins;
 
-    /** @var FormElementDecorator|null */
+    /** @var FormElementDecorator|DecoratorInterface|null */
     private $defaultElementDecorator;
 
     /** @var bool Whether the default element decorator loader has been registered */
@@ -29,7 +32,7 @@ trait FormElements
     /** @var bool Whether the default element loader has been registered */
     protected $defaultElementLoaderRegistered = false;
 
-    /** @var FormElement[] */
+    /** @var TElements */
     private $elements = [];
 
     /** @var array<string, array<int, mixed>> */
@@ -38,7 +41,7 @@ trait FormElements
     /**
      * Get all elements
      *
-     * @return FormElement[]
+     * @return TElements
      */
     public function getElements()
     {
@@ -48,31 +51,29 @@ trait FormElements
     /**
      * Get whether the given element exists
      *
-     * @param string|FormElement $element
+     * @param string $element
      *
      * @return bool
+     *
+     * @phpstan-assert-if-true key-of<TElements> $element
+     * @phpstan-assert-if-true !null $this->getElement()
      */
     public function hasElement($element)
     {
-        if (is_string($element)) {
-            return array_key_exists($element, $this->elements);
-        }
-
-        if ($element instanceof FormElement) {
-            return in_array($element, $this->elements, true);
-        }
-
-        return false;
+        return array_key_exists($element, $this->elements);
     }
 
     /**
      * Get the element by the given name
      *
-     * @param string $name
+     * @param K $name
      *
-     * @return FormElement
+     * @return TElements[K]
      *
      * @throws InvalidArgumentException If no element with the given name exists
+     *
+     * @template K of key-of<TElements>
+     * @phpstan-assert K $name
      */
     public function getElement($name)
     {
@@ -89,12 +90,13 @@ trait FormElements
     /**
      * Add an element
      *
-     * @param string|FormElement $typeOrElement Type of the element as string or an instance of FormElement
-     * @param string             $name          Name of the element
+     * @param TElements[K]|string $typeOrElement Type of the element as string or an instance of FormElement
+     * @param K $name Name of the element
      * @param mixed              $options       Element options as key-value pairs
      *
      * @return $this
      *
+     * @template K of key-of<TElements>
      * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of FormElement
      *                                  or if $typeOrElement is a string and $name is not set
      *                                  or if $typeOrElement is a string but type is unknown
@@ -134,11 +136,12 @@ trait FormElements
      * Create an element
      *
      * @param string $type    Type of the element
-     * @param string $name    Name of the element
+     * @param K $name         Name of the element
      * @param mixed  $options Element options as key-value pairs
      *
-     * @return FormElement
+     * @return TElements[K]
      *
+     * @template K of key-of<TElements>
      * @throws InvalidArgumentException If the type of the element is unknown
      */
     public function createElement($type, $name, $options = null)
@@ -154,7 +157,7 @@ trait FormElements
             ));
         }
 
-        /** @var FormElement $element */
+        /** @var TElements[K] $element */
         $element = new $class($name);
 
         if ($options !== null) {
@@ -169,7 +172,7 @@ trait FormElements
      *
      * Registers the element for value and validation handling but does not add it to the render stack.
      *
-     * @param FormElement $element
+     * @param value-of<TElements> $element
      *
      * @return $this
      *
@@ -215,7 +218,7 @@ trait FormElements
     /**
      * Get the default element decorator, if any
      *
-     * @return FormElementDecorator|null
+     * @return FormElementDecorator|DecoratorInterface|null
      */
     public function getDefaultElementDecorator()
     {
@@ -274,8 +277,8 @@ trait FormElements
      *
      * Returns $default if the element does not exist or has no value.
      *
-     * @param string $name
-     * @param mixed  $default
+     * @param key-of<TElements> $name
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -363,7 +366,7 @@ trait FormElements
     /**
      * Add all elements from the given element collection
      *
-     * @param Form $form
+     * @param Form<TElements> $form
      *
      * @return $this
      */
@@ -384,7 +387,7 @@ trait FormElements
      *
      * @return $this
      */
-    public function addDecoratorLoader($namespace, $postfix = null)
+    public function addDecoratorLoader($namespace, $postfix = '')
     {
         $this->addPluginLoader('decorator', $namespace, $postfix);
 
@@ -399,7 +402,7 @@ trait FormElements
      *
      * @return $this
      */
-    public function addElementLoader($namespace, $postfix = null)
+    public function addElementLoader($namespace, $postfix = '')
     {
         $this->addPluginLoader('element', $namespace, $postfix);
 
@@ -445,7 +448,7 @@ trait FormElements
     /**
      * Decorate the given element
      *
-     * @param FormElement $element
+     * @param value-of<TElements> $element
      *
      * @return $this
      *
@@ -487,11 +490,9 @@ trait FormElements
     public function remove(ValidHtml $elementOrHtml)
     {
         if ($elementOrHtml instanceof FormElement) {
-            if ($this->hasElement($elementOrHtml)) {
-                $name = array_search($elementOrHtml, $this->elements, true);
-                if ($name !== false) {
-                    unset($this->elements[$name]);
-                }
+            $name = array_search($elementOrHtml, $this->elements, true);
+            if ($name !== false) {
+                unset($this->elements[$name]);
             }
         }
 
@@ -501,7 +502,9 @@ trait FormElements
     /**
      * Handler which is called after an element has been registered
      *
-     * @param FormElement $element
+     * @param value-of<TElements> $element
+     *
+     * @return void
      */
     protected function onElementRegistered(FormElement $element)
     {
