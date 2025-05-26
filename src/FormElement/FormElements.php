@@ -29,6 +29,15 @@ trait FormElements
     /** @var bool Whether the default element loader has been registered */
     protected $defaultElementLoaderRegistered = false;
 
+    /**
+     * Custom Element decorator loader paths
+     *
+     * @var array<int, array<string|int, string> Override this property to add custom decorator loader paths
+     *
+     * Each entry must be an array, where the key is the decorator name postfix (if any) and the value is the path
+     */
+    protected array $elementDecoratorLoaderPaths = [];
+
     /** @var FormElement[] */
     private $elements = [];
 
@@ -131,6 +140,38 @@ trait FormElements
     }
 
     /**
+     * Add custom element decorator loader paths for the elements
+     *
+     * @param array $loaderPaths
+     *
+     * @internal This method is only used to pass the form element loader to the fieldset element. To add custom
+     * decorator loader paths, override the class property {@see self::$elementDecoratorLoaderPaths} instead.
+     *
+     * @return $this
+     */
+    public function addElementDecoratorLoaderPaths(array $loaderPaths): self
+    {
+        $this->elementDecoratorLoaderPaths = $loaderPaths;
+
+        return $this;
+    }
+
+    /**
+     * Modify default decorators of the element
+     *
+     * Override this method if you want to change the behavior of the default decorators
+     *
+     * @param array $decorators The default decorators
+     * @param FormElement $element The form element
+     *
+     * @return $this
+     */
+    public function modifyDefaultDecorators(array $decorators, FormElement $element): self
+    {
+       return $this;
+    }
+
+    /**
      * Create an element
      *
      * @param string $type    Type of the element
@@ -156,6 +197,24 @@ trait FormElements
 
         /** @var FormElement $element */
         $element = new $class($name);
+
+        $customDecoratorPaths = $this->elementDecoratorLoaderPaths;
+        if (! empty($customDecoratorPaths)) {
+            if ($element instanceof FieldsetElement) {
+                $element->addElementDecoratorLoaderPaths($customDecoratorPaths);
+            }
+
+            $chain = $element->getDecorators();
+            foreach ($customDecoratorPaths as $paths) {
+                foreach ($paths as $postfix => $path) {
+                    if (! is_string($postfix)) {
+                        $postfix = 'Decorator';
+                    }
+
+                    $chain->addDecoratorLoader($path, $postfix);
+                }
+            }
+        }
 
         if ($options !== null) {
             $element->addAttributes($options);
@@ -193,6 +252,21 @@ trait FormElements
 
             if ($element instanceof ValueCandidates) {
                 $element->setValueCandidates($this->populatedValues[$name]);
+            }
+        }
+
+        if ($element->hasDefaultDecorators()) {
+            $this->modifyDefaultDecorators($element->getDefaultDecorators()->getDecorators(), $element);
+        }
+
+        if ($element instanceof FieldsetElement) {
+            foreach ($element->getElements() as $childElement) {
+                if ($childElement->hasDefaultDecorators()) {
+                    $this->modifyDefaultDecorators(
+                        $childElement->getDefaultDecorators()->getDecorators(),
+                        $childElement
+                    );
+                }
             }
         }
 
@@ -505,5 +579,26 @@ trait FormElements
      */
     protected function onElementRegistered(FormElement $element)
     {
+    }
+
+    /**
+     * Render the element with decorators
+     *
+     * @param FormElement $element
+     *
+     * @return string Decorated element
+     */
+    public function renderDecorated(FormElement $element): string
+    {
+        return $element->getDecorators()->apply($element);
+    }
+
+    public function renderElement(ValidHtml $element): string
+    {
+        if ($element instanceof FormElement && $element->hasDecorators() && ! $this->hasDefaultElementDecorator()) {
+            return $this->renderDecorated($element);
+        }
+
+        return parent::renderElement($element);
     }
 }
