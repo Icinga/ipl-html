@@ -196,6 +196,14 @@ trait FormElements
             }
         }
 
+        if (
+            $this->hasDefaultElementDecorator()
+            && $element instanceof FieldsetElement
+            && ! $element->hasDefaultElementDecorator()
+        ) {
+            $element->setDefaultElementDecorator($this->getDefaultElementDecorator());
+        }
+
         $this->onElementRegistered($element);
         $this->emit(Form::ON_ELEMENT_REGISTERED, [$element]);
 

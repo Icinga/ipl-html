@@ -49,8 +49,6 @@ class DivDecorator extends BaseHtmlElement implements FormElementDecorator
         /**
          * Wrapper logic can be overridden to propagate the decorator.
          * So here we make sure that a yet unbound decorator is passed.
-         *
-         * {@see FieldsetElement::setWrapper()}
          */
         $formElement->prependWrapper($decorator);
 

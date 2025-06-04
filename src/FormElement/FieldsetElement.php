@@ -5,8 +5,6 @@ namespace ipl\Html\FormElement;
 use InvalidArgumentException;
 use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\Contract\FormElementDecorator;
-use ipl\Html\Contract\Wrappable;
 use LogicException;
 
 use function ipl\Stdlib\get_php_type;
@@ -90,19 +88,6 @@ class FieldsetElement extends BaseFormElement
     {
         // Fieldsets do not have the value attribute.
         return null;
-    }
-
-    public function setWrapper(Wrappable $wrapper)
-    {
-        // TODO(lippserd): Revise decorator implementation to properly implement decorator propagation
-        if (
-            ! $this->hasDefaultElementDecorator()
-            && $wrapper instanceof FormElementDecorator
-        ) {
-            $this->setDefaultElementDecorator(clone $wrapper);
-        }
-
-        return parent::setWrapper($wrapper);
     }
 
     protected function onElementRegistered(FormElement $element)
