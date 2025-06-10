@@ -156,6 +156,27 @@ HTML;
         $this->assertHtml($expected, $fieldset);
     }
 
+    public function testDecoratorPropagationWithExplicitDecorateCall(): void
+    {
+        $fieldset = new FieldsetElement('test_fieldset');
+
+        (new SimpleFormElementDecorator())->decorate($fieldset);
+
+        $fieldset->addElement('select', 'test_select');
+
+        $expected = <<<'HTML'
+<div class="simple-decorator">
+  <fieldset name="test_fieldset">
+    <div class="simple-decorator">
+      <select name="test_fieldset[test_select]"></select>
+    </div>
+  </fieldset>
+</div>
+HTML;
+
+        $this->assertHtml($expected, $fieldset);
+    }
+
     public function testDecoratorPropagationWithDivDecorator(): void
     {
         // Order is important because addElement() calls decorate(). Could be fixed.
