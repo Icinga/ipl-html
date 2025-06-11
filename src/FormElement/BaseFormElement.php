@@ -9,7 +9,9 @@ use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\DecoratorChain;
+use ipl\Html\ValidHtml;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
@@ -474,5 +476,15 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         $this->getDecorators()->addDecorators($decorators);
 
         return $this;
+    }
+
+    /**
+     * Render the element with decorators
+     *
+     * @return DecorationResults Decorated element
+     */
+    public function renderDecorated(): DecorationResults
+    {
+        return $this->getDecorators()->apply($this);
     }
 }

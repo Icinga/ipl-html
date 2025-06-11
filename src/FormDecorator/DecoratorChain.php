@@ -205,25 +205,17 @@ class DecoratorChain
         return ! empty($this->decorators);
     }
 
-    /**
-     * Apply the decorator chain to the given form element
-     *
-     * @param BaseFormElement $formElement The form element to decorate
-     *
-     * @return string The decorated form element
-     */
-    public function apply(BaseFormElement $formElement): string
+    public function apply(BaseFormElement $formElement): DecorationResults
     {
-        if ($formElement instanceof HiddenElement) {
-            // no need to decorate hidden elements
-            return $formElement->render();
-        }
-
         $results = (new DecorationResults())->append($formElement);
-        foreach ($this->decorators as $decorator) {
-            $decorator->decorate($results, $formElement);
+        if (! $formElement instanceof HiddenElement) {
+            // no need to decorate hidden elements
+
+            foreach ($this->decorators as $decorator) {
+                $decorator->decorate($results, $formElement);
+            }
         }
 
-        return (string) $results;
+        return $results;
     }
 }

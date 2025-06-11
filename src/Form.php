@@ -4,6 +4,7 @@ namespace ipl\Html;
 
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
@@ -398,5 +399,19 @@ class Form extends BaseHtmlElement
         $attributes
             ->registerAttributeCallback('action', [$this, 'getAction'], [$this, 'setAction'])
             ->registerAttributeCallback('method', [$this, 'getMethod'], [$this, 'setMethod']);
+    }
+
+    public function getContent()
+    {
+        $newContent = [];
+        foreach (parent::getContent() as $element) {
+            if ($element instanceof FormElement && $element->hasDecorators() && ! $this->hasDefaultElementDecorator()) {
+                $newContent[] = $element->renderDecorated();
+            } else {
+                $newContent[] = $element;
+            }
+        }
+
+        return $newContent;
     }
 }

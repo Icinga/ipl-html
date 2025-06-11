@@ -7,6 +7,7 @@ use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
+use ipl\Html\FormDecorator\DecorationResults;
 use LogicException;
 
 use function ipl\Stdlib\get_php_type;
@@ -125,5 +126,23 @@ class FieldsetElement extends BaseFormElement
                 $multiple ? '[]' : ''
             );
         });
+    }
+
+    public function renderDecorated(): DecorationResults
+    {
+        $results = parent::renderDecorated();
+
+        $children = [];
+        foreach ($this->getContent() as $element) {
+            if ($element instanceof FormElement && $element->hasDecorators() && ! $this->hasDefaultElementDecorator()) {
+                $children[] = $element->renderDecorated();
+            } else {
+                $children[] = $element;
+            }
+        }
+
+        $this->setContent($children);
+
+        return $results;
     }
 }
