@@ -5,9 +5,11 @@ namespace ipl\Html\FormElement;
 use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DecoratorChain;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
@@ -44,6 +46,12 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
 
     /** @var array<int, mixed> Value candidates of the element */
     protected $valueCandidates = [];
+
+    /** All registered decorators */
+    protected ?DecoratorChain $decorators = null;
+
+    /** Get whether the element has explicit decorators */
+    protected bool $hasExplicitDecorators = false;
 
     /**
      * Create a new form element
@@ -350,6 +358,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             ->registerAttributeCallback('name', [$this, 'getNameAttribute'], [$this, 'setName'])
             ->registerAttributeCallback('description', null, [$this, 'setDescription'])
             ->registerAttributeCallback('validators', null, [$this, 'setValidators'])
+            ->registerAttributeCallback('decorators', null, [$this, 'setDecorators'])
             ->registerAttributeCallback('ignore', null, [$this, 'setIgnored'])
             ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired']);
 
@@ -386,5 +395,84 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         }
 
         return $this->getName();
+    }
+
+    /**
+     * Get all decorators
+     *
+     * @return DecoratorChain
+     */
+    public function getDecorators(): DecoratorChain
+    {
+        if ($this->decorators === null) {
+            $this->decorators = new DecoratorChain();
+        }
+
+        return $this->decorators;
+    }
+
+    /**
+     * Set the decorators
+     *
+     * @param iterable $decorators
+     *
+     * @return $this
+     */
+    public function setDecorators(iterable $decorators): self
+    {
+        $this->hasExplicitDecorators = true;
+
+        $this
+            ->getDecorators()
+            ->clearDecorators()
+            ->addDecorators($decorators);
+
+        return $this;
+    }
+
+    /**
+     * Get the decorators
+     *
+     * @return ?Decorator
+     */
+    public function getDecorator(string $name): ?Decorator
+    {
+        return $this
+            ->getDecorators()
+            ->getDecorators()[$name] ?? null;
+    }
+
+    /**
+     * Get whether the element has explicit decorators
+     *
+     * @return bool
+     */
+    public function hasExplicitDecorators(): bool
+    {
+        return $this->hasExplicitDecorators;
+    }
+
+    /**
+     * Get whether the element has any decorators
+     *
+     * @return bool
+     */
+    public function hasDecorators(): bool
+    {
+        return $this->getDecorators()->hasDecorators();
+    }
+
+    /**
+     * Add the decorators
+     *
+     * @param iterable $decorators
+     *
+     * @return $this
+     */
+    public function addDecorators(iterable $decorators): self
+    {
+        $this->getDecorators()->addDecorators($decorators);
+
+        return $this;
     }
 }
