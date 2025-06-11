@@ -11,7 +11,6 @@ use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\DecoratorChain;
-use ipl\Html\ValidHtml;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
@@ -481,10 +480,12 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /**
      * Render the element with decorators
      *
+     * @param DecorationResults $results
+     *
      * @return DecorationResults Decorated element
      */
-    public function renderDecorated(): DecorationResults
+    public function renderDecorated(DecorationResults $results): DecorationResults
     {
-        return $this->getDecorators()->apply($this);
+        return $this->getDecorators()->apply($this, $results);
     }
 }

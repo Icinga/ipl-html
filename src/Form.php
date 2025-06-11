@@ -4,7 +4,7 @@ namespace ipl\Html;
 
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
-use ipl\Html\FormDecorator\DecorationResults;
+use ipl\Html\FormDecorator\FormDecorationResults;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
@@ -403,15 +403,21 @@ class Form extends BaseHtmlElement
 
     public function getContent()
     {
+        $instance = new FormDecorationResults();
+
         $newContent = [];
         foreach (parent::getContent() as $element) {
             if ($element instanceof FormElement && $element->hasDecorators() && ! $this->hasDefaultElementDecorator()) {
-                $newContent[] = $element->renderDecorated();
+                $newContent[] = $element->renderDecorated($instance->getElementDecorationResults());
             } else {
                 $newContent[] = $element;
             }
         }
 
-        return $newContent;
+        return array_merge(
+            $instance->getHeader(),
+            $newContent,
+            $instance->getFooter()
+        );
     }
 }

@@ -205,12 +205,11 @@ class DecoratorChain
         return ! empty($this->decorators);
     }
 
-    public function apply(BaseFormElement $formElement): DecorationResults
+    public function apply(BaseFormElement $formElement, $results): DecorationResults
     {
-        $results = (new DecorationResults())->append($formElement);
+        $results->append($formElement);
         if (! $formElement instanceof HiddenElement) {
             // no need to decorate hidden elements
-
             foreach ($this->decorators as $decorator) {
                 $decorator->decorate($results, $formElement);
             }

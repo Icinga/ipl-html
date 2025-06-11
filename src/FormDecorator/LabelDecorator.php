@@ -30,6 +30,13 @@ class LabelDecorator extends BaseDecorator
                 . ' ' .
                 new HtmlElement('span', Attributes::create(['class' => 'required-cue']), Text::create('*'))
             );
+
+            if ($results->getParent()) {
+                $results->getParent()->addToFooterOnce(
+                    new HtmlElement('div',null, new Text('* fields are required')),
+                    'required-cue-hint',
+                );
+            }
         }
 
         $labelAttr = null;

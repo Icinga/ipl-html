@@ -8,6 +8,8 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
 use ipl\Html\FormDecorator\DecorationResults;
+use ipl\Html\HtmlDocument;
+use ipl\Html\ValidHtml;
 use LogicException;
 
 use function ipl\Stdlib\get_php_type;
@@ -93,7 +95,7 @@ class FieldsetElement extends BaseFormElement
         return null;
     }
 
-    public function setWrapper(Wrappable $wrapper)
+    public function setWrapperX(Wrappable $wrapper)
     {
         // TODO(lippserd): Revise decorator implementation to properly implement decorator propagation
         if (
@@ -128,14 +130,14 @@ class FieldsetElement extends BaseFormElement
         });
     }
 
-    public function renderDecorated(): DecorationResults
+    public function renderDecorated($results): DecorationResults
     {
-        $results = parent::renderDecorated();
+        parent::renderDecorated($results);
 
         $children = [];
         foreach ($this->getContent() as $element) {
             if ($element instanceof FormElement && $element->hasDecorators() && ! $this->hasDefaultElementDecorator()) {
-                $children[] = $element->renderDecorated();
+                $children[] = $element->renderDecorated($results->getParent()->getElementDecorationResults());
             } else {
                 $children[] = $element;
             }

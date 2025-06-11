@@ -112,4 +112,18 @@ class DecorationResults implements ValidHtml
 
         return $parent;
     }
+
+    protected $parent;
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
 }
