@@ -5,6 +5,7 @@ namespace ipl\Html\FormElement;
 use ipl\Html\Attribute;
 use ipl\Html\Contract\FormSubmitElement;
 
+/** @extends InputElement<string> */
 class SubmitElement extends InputElement implements FormSubmitElement
 {
     protected $type = 'submit';

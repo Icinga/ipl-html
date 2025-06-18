@@ -11,6 +11,7 @@ use ipl\Validator\DeferredInArrayValidator;
 use ipl\Validator\ValidatorChain;
 use UnexpectedValueException;
 
+/** @extends BaseFormElement<string|array<string>> */
 class SelectElement extends BaseFormElement
 {
     use MultipleAttribute;
@@ -26,7 +27,7 @@ class SelectElement extends BaseFormElement
     /** @var array Disabled select options */
     protected $disabledOptions = [];
 
-    /** @var array|string|null */
+    /** @var array<string>|string|null */
     protected $value;
 
     /**
@@ -92,7 +93,7 @@ class SelectElement extends BaseFormElement
      *
      * Returns `array` when the attribute `multiple` is set to `true`, `string` or `null` otherwise
      *
-     * @return array|string|null
+     * @return array<string>|string|null
      */
     public function getValue()
     {

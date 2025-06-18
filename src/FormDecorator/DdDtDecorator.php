@@ -15,13 +15,13 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 
     protected $dd;
 
-    /** @var BaseFormElement */
+    /** @var BaseFormElement<mixed> */
     protected $wrappedElement;
 
     protected $ready = false;
 
     /**
-     * @param BaseFormElement $element
+     * @param BaseFormElement<mixed> $element
      * @return static
      */
     public function decorate(BaseFormElement $element)

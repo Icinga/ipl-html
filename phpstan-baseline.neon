@@ -241,27 +241,12 @@ parameters:
 			path: src/Form.php
 
 		-
-			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\<mixed\\>\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
 			count: 1
 			path: src/Form.php
 
 		-
 			message: "#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge_recursive expects array, array\\|object\\|null given\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Parameter \\#3 \\$postfix of method ipl\\\\Html\\\\Form\\:\\:addPluginLoader\\(\\) expects string, string\\|null given\\.$#"
-			count: 2
-			path: src/Form.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Form\\:\\:\\$defaultElementDecorator \\(ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|null\\) does not accept ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|ipl\\\\Html\\\\FormDecorator\\\\DecoratorInterface\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Form\\:\\:\\$submitButton \\(ipl\\\\Html\\\\Contract\\\\FormSubmitElement\\) does not accept null\\.$#"
 			count: 1
 			path: src/Form.php
 
@@ -326,7 +311,7 @@ parameters:
 			path: src/FormDecorator/DivDecorator.php
 
 		-
-			message: "#^Call to an undefined method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:ensureAssembled\\(\\)\\.$#"
+			message: "#^Call to an undefined method ipl\\\\Html\\\\Contract\\\\FormElement\\<mixed\\>\\:\\:ensureAssembled\\(\\)\\.$#"
 			count: 1
 			path: src/FormDecorator/DivDecorator.php
 
@@ -362,7 +347,7 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'name' on mixed\\.$#"
-			count: 2
+			count: 1
 			path: src/FormElement/BaseFormElement.php
 
 		-
@@ -406,6 +391,11 @@ parameters:
 			path: src/FormElement/BaseFormElement.php
 
 		-
+			message: "#^Parameter \\#1 \\$validators of method ipl\\\\Validator\\\\ValidatorChain\\:\\:addValidators\\(\\) expects Traversable\\<int\\|string, mixed\\>, iterable given\\.$#"
+			count: 2
+			path: src/FormElement/BaseFormElement.php
+
+		-
 			message: "#^Trying to invoke mixed but it's not a callable\\.$#"
 			count: 1
 			path: src/FormElement/BaseFormElement.php
@@ -436,24 +426,9 @@ parameters:
 			path: src/FormElement/FieldsetElement.php
 
 		-
-			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\<mixed\\>\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
 			count: 1
 			path: src/FormElement/FieldsetElement.php
-
-		-
-			message: "#^Parameter \\#3 \\$postfix of method ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:addPluginLoader\\(\\) expects string, string\\|null given\\.$#"
-			count: 2
-			path: src/FormElement/FieldsetElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:\\$defaultElementDecorator \\(ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|null\\) does not accept ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|ipl\\\\Html\\\\FormDecorator\\\\DecoratorInterface\\.$#"
-			count: 1
-			path: src/FormElement/FieldsetElement.php
-
-		-
-			message: "#^Cannot access offset 0 on mixed\\.$#"
-			count: 1
-			path: src/FormElement/FileElement.php
 
 		-
 			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FileElement\\:\\:assemble\\(\\) has no return type specified\\.$#"
@@ -531,16 +506,6 @@ parameters:
 			path: src/FormElement/SelectElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:getValue\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:getValue\\(\\) should return array\\|string\\|null but returns mixed\\.$#"
-			count: 2
-			path: src/FormElement/SelectElement.php
-
-		-
 			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:makeOption\\(\\) has parameter \\$label with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/FormElement/SelectElement.php
@@ -562,11 +527,6 @@ parameters:
 
 		-
 			message: "#^Property ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:\\$disabledOptions type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/FormElement/SelectElement.php
 

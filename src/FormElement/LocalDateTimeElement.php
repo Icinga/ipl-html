@@ -6,6 +6,7 @@ use DateTime;
 use ipl\Validator\DateTimeValidator;
 use ipl\Validator\ValidatorChain;
 
+/** @extends InputElement<DateTime|string> */
 class LocalDateTimeElement extends InputElement
 {
     public const FORMAT = 'Y-m-d\TH:i:s';
@@ -13,9 +14,6 @@ class LocalDateTimeElement extends InputElement
     protected $type = 'datetime-local';
 
     protected $defaultAttributes = ['step' => '1'];
-
-    /** @var DateTime */
-    protected $value;
 
     public function setValue($value)
     {

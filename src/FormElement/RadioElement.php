@@ -11,6 +11,7 @@ use ipl\I18n\Translation;
 use ipl\Validator\DeferredInArrayValidator;
 use ipl\Validator\ValidatorChain;
 
+/** @extends BaseFormElement<string> */
 class RadioElement extends BaseFormElement
 {
     use Translation;

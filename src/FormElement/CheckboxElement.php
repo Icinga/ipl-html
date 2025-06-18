@@ -4,6 +4,7 @@ namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
 
+/** @extends InputElement<string> */
 class CheckboxElement extends InputElement
 {
     /** @var bool Whether the checkbox is checked */

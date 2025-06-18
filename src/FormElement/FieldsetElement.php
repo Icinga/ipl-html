@@ -11,8 +11,13 @@ use LogicException;
 
 use function ipl\Stdlib\get_php_type;
 
+/**
+ * @template TElements of array<string, FormElement<mixed>>
+ * @extends BaseFormElement<mixed>
+ */
 class FieldsetElement extends BaseFormElement
 {
+    /** @use FormElements<TElements> */
     use FormElements {
         FormElements::getValue as private getElementValue;
     }
@@ -105,6 +110,7 @@ class FieldsetElement extends BaseFormElement
         return parent::setWrapper($wrapper);
     }
 
+    /** @param value-of<TElements> $element */
     protected function onElementRegistered(FormElement $element)
     {
         $element->getAttributes()->registerAttributeCallback('name', function () use ($element) {

@@ -9,8 +9,10 @@ use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
+/** @template TFormElements of array<string, FormElement<mixed>> */
 class Form extends BaseHtmlElement
 {
+    /** @use FormElements<TFormElements> */
     use FormElements {
         FormElements::remove as private removeElement;
     }
@@ -29,7 +31,7 @@ class Form extends BaseHtmlElement
     /** @var string HTTP method to submit the form with */
     protected $method = 'POST';
 
-    /** @var FormSubmitElement Primary submit button */
+    /** @var ?FormSubmitElement Primary submit button */
     protected $submitButton;
 
     /** @var FormSubmitElement[] Other elements that may submit the form */
@@ -380,6 +382,7 @@ class Form extends BaseHtmlElement
         // $this->redirectOnSuccess();
     }
 
+    /** @param value-of<TFormElements> $element */
     protected function onElementRegistered(FormElement $element)
     {
         if ($element instanceof FormSubmitElement) {
