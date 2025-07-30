@@ -9,7 +9,7 @@
     "sort-packages": true
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=8.2",
     "ext-fileinfo": "*",
     "ipl/stdlib": ">=0.12.0",
     "ipl/validator": ">=0.5.0",
