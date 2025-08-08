@@ -33,6 +33,9 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** @var string Name of the element */
     protected $name;
 
+    /** @var string Sanitized name of the element */
+    protected $sanitizedName;
+
     /** @var bool Whether the element is ignored */
     protected $ignored = false;
 
@@ -124,6 +127,30 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     {
         $this->name = $name;
 
+        // Name is always sanitized
+        if (! isset($this->sanitizedName)) {
+            $this->sanitizedName = self::sanitizeName($name);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the sanitized name for the element
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setSanitizedName(string $name)
+    {
+        // Name is always sanitized
+        if (! isset($this->name)) {
+            $this->name = $name;
+        }
+
+        $this->sanitizedName = self::sanitizeName($name);
+
         return $this;
     }
 
@@ -144,6 +171,35 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         $this->ignored = (bool) $ignored;
 
         return $this;
+    }
+
+    /**
+     * Sanitize the given name
+     * The name is sanitized to only contain alphanumeric characters, underscores and brackets.
+     *
+     * @param  string $value
+     *
+     * @return string
+     */
+    public static function sanitizeName($value, $escapeBrackets = true)
+    {
+        $value = mb_strtolower($value ?? '', 'UTF-8');
+        $charset = '^a-zA-Z0-9_';
+        if ($escapeBrackets) {
+            $charset .= '\[\]';
+        }
+
+        return preg_replace('/[^' . $charset . ']/', '_', (string) $value);
+    }
+
+    /**
+     * Get the sanitized name of the element
+     *
+     * @return string
+     */
+    public function getSanitizedName(): string
+    {
+        return $this->sanitizedName;
     }
 
     public function isRequired()
@@ -298,7 +354,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      */
     public function getNameAttribute()
     {
-        return $this->getName();
+        return $this->getSanitizedName();
     }
 
     /**
@@ -389,13 +445,13 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             $name = $callbacks['name']();
 
             if ($name instanceof Attribute) {
-                return $name->getValue();
+                return static::sanitizeName($name->getValue());
             }
 
-            return $name;
+            return static::sanitizeName($name);
         }
 
-        return $this->getName();
+        return $this->getSanitizedName();
     }
 
     public function getDecorators(): DecoratorChain

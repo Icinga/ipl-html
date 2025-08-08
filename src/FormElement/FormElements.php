@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
+use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorChain;
@@ -57,6 +58,9 @@ trait FormElements
 
     /** @var FormElement[] */
     private $elements = [];
+
+    /** @var array<string, int>  Mapping of escaped element names to counter */
+    private $escapedElementNameCounter = [];
 
     /** @var array<string, array<int, mixed>> */
     private $populatedValues = [];
@@ -249,6 +253,7 @@ trait FormElements
      */
     public function registerElement(FormElement $element)
     {
+        $sanitizedName = $element->getSanitizedName();
         $name = $element->getName();
 
         if ($name === null) {
@@ -258,7 +263,24 @@ trait FormElements
             ));
         }
 
+        // Elements with the same sanitized name should get new names, except for submit elements
+        if (
+            ! $element instanceof FormSubmitElement
+            && ! array_key_exists($name, $this->elements)
+            && array_key_exists($sanitizedName, $this->escapedElementNameCounter)
+        ) {
+            $this->escapedElementNameCounter[$sanitizedName]++;
+            $sanitizedName .= $this->escapedElementNameCounter[$sanitizedName];
+            $element->setSanitizedName($sanitizedName);
+        }
+
         $this->elements[$name] = $element;
+        $this->escapedElementNameCounter[$sanitizedName] = 1;
+
+        // If the populated values is the POST data, use the sanitized name
+        if (array_key_exists($sanitizedName, $this->populatedValues)) {
+            $name = $sanitizedName;
+        }
 
         if (array_key_exists($name, $this->populatedValues)) {
             $element->setValue($this->populatedValues[$name][count($this->populatedValues[$name]) - 1]);
@@ -389,6 +411,7 @@ trait FormElements
      */
     public function populate($values)
     {
+        // TODO: Check if the populated values could be cleared before populating them
         foreach ($values as $name => $value) {
             $this->populatedValues[$name][] = $value;
             if ($this->hasElement($name)) {
