@@ -124,7 +124,7 @@ class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\Form
             return sprintf(
                 '%s[%s]%s',
                 $this->getValueOfNameAttribute(),
-                $element->getName(),
+                $element->getSanitizedName(),
                 $multiple ? '[]' : ''
             );
         });

@@ -93,7 +93,7 @@ class FileElement extends InputElement
 
     public function getNameAttribute()
     {
-        $name = $this->getName();
+        $name = $this->getSanitizedName();
 
         return $this->isMultiple() ? ($name . '[]') : $name;
     }
@@ -260,12 +260,12 @@ class FileElement extends InputElement
             $form->setAttribute('enctype', 'multipart/form-data');
         }
 
-        $chosenFiles = (array) $form->getPopulatedValue('chosen_file_' . $this->getName(), []);
+        $chosenFiles = (array) $form->getPopulatedValue('chosen_file_' . $this->getSanitizedName(), []);
         foreach ($chosenFiles as $chosenFile) {
             $this->files[$chosenFile] = null;
         }
 
-        $this->filesToRemove = (array) $form->getPopulatedValue('remove_file_' . $this->getName(), []);
+        $this->filesToRemove = (array) $form->getPopulatedValue('remove_file_' . $this->getSanitizedName(), []);
     }
 
     protected function addDefaultValidators(ValidatorChain $chain): void
