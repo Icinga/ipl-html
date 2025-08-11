@@ -13,12 +13,12 @@ class FormElementDecoratorTest extends TestCase
     {
         $form = (new Form())
             ->setDefaultElementDecorator(new PositionedFormElementDecorator())
-            ->addElement('text', 'decorated-form-element');
+            ->addElement('text', 'decorated_form_element');
 
         $html = <<<'HTML'
 <form method="POST">
   <div class="positioned-decorator">
-    <input type="text" name="decorated-form-element">
+    <input type="text" name="decorated_form_element">
   </div>
 </form>
 HTML;
@@ -30,12 +30,12 @@ HTML;
     {
         $form = (new Form())
             ->setDefaultElementDecorator(new SimpleFormElementDecorator())
-            ->addElement('text', 'decorated-form-element');
+            ->addElement('text', 'decorated_form_element');
 
         $html = <<<'HTML'
 <form method="POST">
   <div class="simple-decorator">
-    <input type="text" name="decorated-form-element">
+    <input type="text" name="decorated_form_element">
   </div>
 </form>
 HTML;
@@ -47,13 +47,13 @@ HTML;
     {
         $form = (new Form())
             ->setDefaultElementDecorator(new WithinContainerFormElementDecorator())
-            ->addElement('text', 'decorated-form-element');
+            ->addElement('text', 'decorated_form_element');
 
         $html = <<<'HTML'
 <form method="POST">
   <div class="within-container-decorator">
     <div class="container">
-      <input type="text" name="decorated-form-element">
+      <input type="text" name="decorated_form_element">
     </div>
   </div>
 </form>
