@@ -106,4 +106,11 @@ class DocumentationFormsTest extends TestCase
             ]))
         );
     }
+
+    public function testElementWithSpecialCharactersAsName()
+    {
+        $form = new Form();
+        $form->registerElement($form->createElement('text', 'foo.bar'));
+        $this->assertHtml('<input name="foo_bar" type="text" />', $form->getElement('foo.bar'));
+    }
 }
