@@ -341,4 +341,18 @@ HTML;
 
         $this->assertHtml($expected, $outer);
     }
+
+    public function testFieldsetsAreAssembledWhenAskingForTheirValue(): void
+    {
+        $fieldset = new class ('set') extends FieldsetElement {
+            protected function assemble()
+            {
+                $this->addElement('text', 'test');
+            }
+        };
+
+        $fieldset->populate(['test' => 'bogus']);
+
+        $this->assertTrue($fieldset->hasValue(), 'Fieldsets are not assembled when asked for their value');
+    }
 }
