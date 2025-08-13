@@ -26,6 +26,8 @@ class FieldsetElement extends BaseFormElement
      */
     public function hasValue()
     {
+        $this->ensureAssembled();
+
         foreach ($this->getElements() as $element) {
             if ($element->hasValue()) {
                 return true;
