@@ -4,6 +4,7 @@ namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
 use ipl\Html\Common\MultipleAttribute;
+use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
@@ -12,7 +13,7 @@ use LogicException;
 
 use function ipl\Stdlib\get_php_type;
 
-class FieldsetElement extends BaseFormElement
+class FieldsetElement extends BaseFormElement implements DefaultFormElementDecoration
 {
     use FormElements {
         FormElements::getValue as private getElementValue;
