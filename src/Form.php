@@ -2,6 +2,7 @@
 
 namespace ipl\Html;
 
+use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\FormElements;
@@ -9,7 +10,7 @@ use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-class Form extends BaseHtmlElement
+class Form extends BaseHtmlElement implements DefaultFormElementDecoration
 {
     use FormElements {
         FormElements::remove as private removeElement;

@@ -8,6 +8,8 @@ use ipl\Html\FormDecorator\DecoratorChain;
 
 /**
  * Representation of form elements
+ *
+ * @phpstan-import-type decoratorsFormat from DecoratorChain
  */
 interface FormElement extends Wrappable
 {
@@ -125,7 +127,7 @@ interface FormElement extends Wrappable
     /**
      * Set the decorators
      *
-     * @param array<int|string, string|array|Decorator> $decorators
+     * @param decoratorsFormat $decorators
      *
      * @return $this
      */

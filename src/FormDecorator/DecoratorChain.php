@@ -11,6 +11,13 @@ use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
 
+/**
+ * @phpstan-type decoratorName string
+ * @phpstan-type decoratorOptionsFormat array<string, array<string, mixed>|string>
+ *
+ * @phpstan-type decoratorFormat decoratorName | Decorator | decoratorOptionsFormat
+ * @phpstan-type decoratorsFormat array<int|decoratorName, decoratorFormat>
+ */
 class DecoratorChain
 {
     use Plugins;
@@ -42,9 +49,12 @@ class DecoratorChain
     }
 
     /**
-     * Add a decorator to the chain
+     * Add a decorator to the chain.
      *
-     * @param Decorator|array|string $decorator
+     * Please see {@see static::addDecorators()} for the supported array formats, where each array entry defines
+     * a decorator.
+     *
+     * @param decoratorFormat $decorator
      *
      * @return $this
      *
@@ -102,7 +112,37 @@ class DecoratorChain
     /**
      * Add the decorators from the given decorator specification to the chain
      *
-     * @param static|array<int|string, string|array|Decorator> $decorators
+     *   *The following array formats are supported:*
+     *
+     * ```
+     * // When no options are required or defaults are sufficient
+     * $decorators = [
+     *      'HtmlTag',
+     *      'Label'
+     * ];
+     *
+     * // Override default options by defining the option key and value
+     *
+     * // key: decorator name, value: options
+     * $decorators = [
+     *      'HtmlTag' => ['tag' => 'span', 'placement' => 'append'],
+     *      'Label' => ['class' => 'element-label']
+     * ];
+     *
+     * // or define the `name` and `options` key
+     * $decorators = [
+     *      ['name' => 'HtmlTag', 'options' => ['tag' => 'span', 'placement' => 'append']],
+     *      ['name' => 'Label', 'options' => ['class' => 'element-label']]
+     * ];
+     *
+     * // or add Decorator instances
+     * $decorators = [
+     *      (new HtmlTagDecorator())->setAttributes(['tag' => 'span', 'placement' => 'append']),
+     *      (new LabelDecorator())->setAttributes(['class' => 'element-label'])
+     * ];
+     * ```
+     *
+     * @param static|decoratorsFormat $decorators
      *
      * @return $this
      */
@@ -148,8 +188,8 @@ class DecoratorChain
     /**
      * Create a decorator from the given name and options
      *
-     * @param string $name
-     * @param array $options
+     * @param decoratorName $name
+     * @param decoratorOptionsFormat $options
      *
      * @return Decorator
      */
