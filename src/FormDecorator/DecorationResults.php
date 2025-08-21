@@ -2,7 +2,8 @@
 
 namespace ipl\Html\FormDecorator;
 
-use ipl\Html\BaseHtmlElement;
+use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\MutableHtml;
 use ipl\Html\HtmlDocument;
 use ipl\Html\ValidHtml;
 
@@ -16,11 +17,11 @@ class DecorationResults implements ValidHtml
     /**
      * Add the given HTML element to the results
      *
-     * @param BaseHtmlElement $item The HTML content to be added
+     * @param FormElement|MutableHtml $item The HTML content to be added
      *
      * @return $this
      */
-    public function append(BaseHtmlElement $item): static
+    public function append(FormElement|MutableHtml $item): static
     {
         $this->content[] = $item;
 
@@ -30,11 +31,11 @@ class DecorationResults implements ValidHtml
     /**
      * Add the given HTML element to the beginning of the results
      *
-     * @param BaseHtmlElement $item The HTML element to be added
+     * @param FormElement|MutableHtml $item The HTML element to be added
      *
      * @return $this
      */
-    public function prepend(BaseHtmlElement $item): static
+    public function prepend(FormElement|MutableHtml $item): static
     {
         array_unshift($this->content, $item);
 
@@ -44,11 +45,11 @@ class DecorationResults implements ValidHtml
     /**
      * Add the given HTML element as the wrapper of the results
      *
-     * @param BaseHtmlElement $item The HTML element to wrap around the content
+     * @param MutableHtml $item The HTML element to wrap around the content
      *
      * @return $this
      */
-    public function wrap(BaseHtmlElement $item): static
+    public function wrap(MutableHtml $item): static
     {
         $this->content = [[$item, $this->content]];
 
@@ -91,21 +92,21 @@ class DecorationResults implements ValidHtml
     /**
      * Resolve wrapped content
      *
-     * @param BaseHtmlElement $parent The parent element
-     * @param BaseHtmlElement|array $item The content to be added
+     * @param MutableHtml $parent The parent element
+     * @param MutableHtml|array $item The content to be added
      *
-     * @return BaseHtmlElement The resolved parent element with content added
+     * @return MutableHtml The resolved parent element with content added
      */
-    private function resolveWrapped(BaseHtmlElement $parent, BaseHtmlElement|array $item): BaseHtmlElement
+    private function resolveWrapped(MutableHtml $parent, MutableHtml|array $item): MutableHtml
     {
-        if (is_array($item) && isset($item[0]) && is_array($item[0])) {
-            $item = $this->resolveWrapped($item[0][0], $item[0][1]);
-        }
-
-        if (is_array($item)) {
-            $parent->addHtml(...$item);
-        } else {
+        if ($item instanceof MutableHtml) {
             $parent->addHtml($item);
+        } elseif (! empty($item)) {
+            if (is_array($item[0])) {
+                $parent->addHtml($this->resolveWrapped($item[0][0], $item[0][1]));
+            } else {
+                $parent->addHtml(...$item);
+            }
         }
 
         return $parent;

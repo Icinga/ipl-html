@@ -3,7 +3,6 @@
 namespace ipl\Html\Contract;
 
 use ipl\Html\Attributes;
-use ipl\Html\BaseHtmlElement;
 use ipl\Html\FormDecorator\DecorationResults;
 
 /**
@@ -40,7 +39,7 @@ interface Decorator
      *
      * @param DecorationResults $results
      *
-     * @param FormElement & BaseHtmlElement $formElement
+     * @param FormElement $formElement
      */
     public function decorate(DecorationResults $results, FormElement $formElement): void;
 
