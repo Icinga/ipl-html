@@ -5,6 +5,7 @@ namespace ipl\Html\FormDecorator;
 use InvalidArgumentException;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\MutableHtml;
 use ipl\Html\FormElement\HiddenElement;
 use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
