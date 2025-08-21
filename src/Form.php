@@ -349,13 +349,13 @@ class Form extends BaseHtmlElement
         return $this;
     }
 
-    public function remove(ValidHtml $elementOrHtml)
+    public function remove(ValidHtml $content): static
     {
-        if ($this->submitButton === $elementOrHtml) {
+        if ($this->submitButton === $content) {
             $this->submitButton = null;
         }
 
-        $this->removeElement($elementOrHtml);
+        $this->removeElement($content);
 
         return $this;
     }

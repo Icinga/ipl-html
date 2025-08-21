@@ -484,18 +484,18 @@ trait FormElements
         ]);
     }
 
-    public function remove(ValidHtml $elementOrHtml)
+    public function remove(ValidHtml $content): static
     {
-        if ($elementOrHtml instanceof FormElement) {
-            if ($this->hasElement($elementOrHtml)) {
-                $name = array_search($elementOrHtml, $this->elements, true);
+        if ($content instanceof FormElement) {
+            if ($this->hasElement($content)) {
+                $name = array_search($content, $this->elements, true);
                 if ($name !== false) {
                     unset($this->elements[$name]);
                 }
             }
         }
 
-        return parent::remove($elementOrHtml);
+        return parent::remove($content);
     }
 
     /**

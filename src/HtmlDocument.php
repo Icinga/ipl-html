@@ -4,6 +4,7 @@ namespace ipl\Html;
 
 use Countable;
 use InvalidArgumentException;
+use ipl\Html\Contract\MutableHtml;
 use ipl\Html\Contract\Wrappable;
 use ipl\Stdlib\Events;
 use RuntimeException;
@@ -14,7 +15,7 @@ use Throwable;
  *
  * An HTML document is composed of a tree of HTML nodes, i.e. text nodes and HTML elements.
  */
-class HtmlDocument implements Countable, Wrappable
+class HtmlDocument implements Countable, Wrappable, MutableHtml
 {
     use Events;
 
@@ -69,12 +70,7 @@ class HtmlDocument implements Countable, Wrappable
         return $wrapped;
     }
 
-    /**
-     * Get the content
-     *
-     * return ValidHtml[]
-     */
-    public function getContent()
+    public function getContent(): array
     {
         return $this->content;
     }
@@ -94,14 +90,7 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * Set content
-     *
-     * @param ValidHtml ...$content
-     *
-     * @return $this
-     */
-    public function setHtmlContent(ValidHtml ...$content)
+    public function setHtmlContent(ValidHtml ...$content): static
     {
         $this->content = [];
         foreach ($content as $element) {
@@ -158,15 +147,7 @@ class HtmlDocument implements Countable, Wrappable
         ));
     }
 
-    /**
-     * Insert Html after an existing Html node
-     *
-     * @param ValidHtml $newNode
-     * @param ValidHtml $existingNode
-     *
-     * @return $this
-     */
-    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): self
+    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): static
     {
         $index = array_search($existingNode, $this->content, true);
         if ($index === false) {
@@ -180,15 +161,7 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * Insert Html after an existing Html node
-     *
-     * @param ValidHtml $newNode
-     * @param ValidHtml $existingNode
-     *
-     * @return $this
-     */
-    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): self
+    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): static
     {
         $index = array_search($existingNode, $this->content);
         if ($index === false) {
@@ -216,14 +189,7 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * Add content
-     *
-     * @param ValidHtml ...$content
-     *
-     * @return $this
-     */
-    public function addHtml(ValidHtml ...$content)
+    public function addHtml(ValidHtml ...$content): static
     {
         foreach ($content as $element) {
             $this->addIndexedContent($element);
@@ -235,12 +201,12 @@ class HtmlDocument implements Countable, Wrappable
     /**
      * Add content from the given document
      *
-     * @param HtmlDocument $from
-     * @param callable     $callback Optional callback in order to transform the content to add
+     * @param MutableHtml $from
+     * @param callable    $callback Optional callback in order to transform the content to add
      *
      * @return $this
      */
-    public function addFrom(HtmlDocument $from, $callback = null)
+    public function addFrom(MutableHtml $from, $callback = null)
     {
         $from->ensureAssembled();
 
@@ -252,25 +218,15 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * Check whether the given element is a direct or indirect child of this document
-     *
-     * A direct child is one that is part of this document's content. An indirect child
-     * is one that is part of a direct child's content (recursively).
-     *
-     * @param ValidHtml $element
-     *
-     * @return bool
-     */
-    public function contains(ValidHtml $element)
+    public function contains(ValidHtml $content): bool
     {
-        $key = spl_object_hash($element);
+        $key = spl_object_hash($content);
         if (array_key_exists($key, $this->contentIndex)) {
             return true;
         }
 
         foreach ($this->content as $child) {
-            if ($child instanceof self && $child->contains($element)) {
+            if ($child instanceof self && $child->contains($content)) {
                 return true;
             }
         }
@@ -292,14 +248,7 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * Prepend content
-     *
-     * @param ValidHtml ...$content
-     *
-     * @return $this
-     */
-    public function prependHtml(ValidHtml ...$content)
+    public function prependHtml(ValidHtml ...$content): static
     {
         foreach (array_reverse($content) as $html) {
             array_unshift($this->content, $html);
@@ -310,16 +259,9 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * Remove content
-     *
-     * @param ValidHtml $html
-     *
-     * @return $this
-     */
-    public function remove(ValidHtml $html)
+    public function remove(ValidHtml $content): static
     {
-        $key = spl_object_hash($html);
+        $key = spl_object_hash($content);
         if (array_key_exists($key, $this->contentIndex)) {
             foreach ($this->contentIndex[$key] as $pos) {
                 unset($this->content[$pos]);
@@ -349,12 +291,7 @@ class HtmlDocument implements Countable, Wrappable
         return $this;
     }
 
-    /**
-     * Get whether the document is empty
-     *
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         $this->ensureAssembled();
 
