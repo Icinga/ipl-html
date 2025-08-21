@@ -167,7 +167,6 @@ class Form extends BaseHtmlElement
     public function setRequest($request)
     {
         $this->request = $request;
-        $this->emit(Form::ON_REQUEST, [$request]);
 
         return $this;
     }
@@ -206,6 +205,8 @@ class Form extends BaseHtmlElement
         $this->setRequest($request);
 
         if (! $this->hasBeenSent()) {
+            $this->emit(Form::ON_REQUEST, [$request, $this]);
+
             // Always assemble
             $this->ensureAssembled();
 
