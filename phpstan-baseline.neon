@@ -241,11 +241,6 @@ parameters:
 			path: src/Form.php
 
 		-
-			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
 			message: "#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge_recursive expects array, array\\|object\\|null given\\.$#"
 			count: 1
 			path: src/Form.php
@@ -362,11 +357,6 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'name' on mixed\\.$#"
-			count: 2
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:addValidators\\(\\) has parameter \\$validators with no value type specified in iterable type iterable\\.$#"
 			count: 1
 			path: src/FormElement/BaseFormElement.php
 
@@ -392,11 +382,6 @@ parameters:
 
 		-
 			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:registerValueCallback\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:setValidators\\(\\) has parameter \\$validators with no value type specified in iterable type iterable\\.$#"
 			count: 1
 			path: src/FormElement/BaseFormElement.php
 
@@ -432,11 +417,6 @@ parameters:
 
 		-
 			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:onElementRegistered\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/FieldsetElement.php
-
-		-
-			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
 			count: 1
 			path: src/FormElement/FieldsetElement.php
 

@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
+use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\ValueCandidates;
@@ -29,7 +30,7 @@ trait FormElements
     /** @var bool Whether the default element loader has been registered */
     protected $defaultElementLoaderRegistered = false;
 
-    /** @var FormElement[] */
+    /** @var (FormElement & BaseHtmlElement)[] */
     private $elements = [];
 
     /** @var array<string, array<int, mixed>> */
@@ -38,7 +39,7 @@ trait FormElements
     /**
      * Get all elements
      *
-     * @return FormElement[]
+     * @return (FormElement & BaseHtmlElement)[]
      */
     public function getElements()
     {
@@ -70,7 +71,7 @@ trait FormElements
      *
      * @param string $name
      *
-     * @return FormElement
+     * @return FormElement & BaseHtmlElement
      *
      * @throws InvalidArgumentException If no element with the given name exists
      */
@@ -89,9 +90,9 @@ trait FormElements
     /**
      * Add an element
      *
-     * @param string|FormElement $typeOrElement Type of the element as string or an instance of FormElement
-     * @param string             $name          Name of the element
-     * @param mixed              $options       Element options as key-value pairs
+     * @param string|(FormElement & BaseHtmlElement)    $typeOrElement Element name OR FormElement instance
+     * @param string                                    $name          Name of the element
+     * @param array<string, mixed>|null                 $options       Element options as key-value pairs
      *
      * @return $this
      *
@@ -135,9 +136,9 @@ trait FormElements
      *
      * @param string $type    Type of the element
      * @param string $name    Name of the element
-     * @param mixed  $options Element options as key-value pairs
+     * @param array<string, mixed>|null $options Element options as key-value pairs
      *
-     * @return FormElement
+     * @return FormElement & BaseHtmlElement
      *
      * @throws InvalidArgumentException If the type of the element is unknown
      */
@@ -154,7 +155,7 @@ trait FormElements
             ));
         }
 
-        /** @var FormElement $element */
+        /** @var FormElement & BaseFormElement $element */
         $element = new $class($name);
 
         if ($options !== null) {
@@ -169,7 +170,7 @@ trait FormElements
      *
      * Registers the element for value and validation handling but does not add it to the render stack.
      *
-     * @param FormElement $element
+     * @param FormElement & BaseHtmlElement $element
      *
      * @return $this
      *
