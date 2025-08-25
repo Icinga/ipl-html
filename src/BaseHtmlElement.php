@@ -2,7 +2,7 @@
 
 namespace ipl\Html;
 
-use InvalidArgumentException;
+use ipl\Html\Contract\HtmlElementInterface;
 use RuntimeException;
 
 /**
@@ -32,7 +32,7 @@ use RuntimeException;
  * }
  * ```
  */
-abstract class BaseHtmlElement extends HtmlDocument
+abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterface
 {
     /**
      * List of void elements which must not contain end tags or content
@@ -76,12 +76,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
 
-    /**
-     * Get the attributes of the element
-     *
-     * @return Attributes
-     */
-    public function getAttributes()
+    public function getAttributes(): Attributes
     {
         if ($this->attributes === null) {
             $default = $this->getDefaultAttributes();
@@ -95,6 +90,13 @@ abstract class BaseHtmlElement extends HtmlDocument
         }
 
         return $this->attributes;
+    }
+
+    public function addAttributes(Attributes|array $attributes): static
+    {
+        $this->getAttributes()->add($attributes);
+
+        return $this;
     }
 
     /**
@@ -114,76 +116,26 @@ abstract class BaseHtmlElement extends HtmlDocument
         return $this;
     }
 
-    /**
-     * Return true if the attribute with the given name exists, false otherwise
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
     public function hasAttribute(string $name): bool
     {
         return $this->getAttributes()->has($name);
     }
 
-    /**
-     * Get the attribute with the given name
-     *
-     * If the attribute does not already exist, an empty one is automatically created and added to the attributes.
-     *
-     * @param string $name
-     *
-     * @return Attribute
-     *
-     * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
-     */
     public function getAttribute(string $name): Attribute
     {
         return $this->getAttributes()->get($name);
     }
 
-    /**
-     * Set the attribute with the given name and value
-     *
-     * If the attribute with the given name already exists, it gets overridden.
-     *
-     * @param string            $name  The name of the attribute
-     * @param string|bool|array $value The value of the attribute
-     *
-     * @return $this
-     */
-    public function setAttribute($name, $value)
+    public function setAttribute(string $name, bool|string|array $value): static
     {
         $this->getAttributes()->set($name, $value);
 
         return $this;
     }
 
-    /**
-     * Remove the attribute with the given name or remove the given value from the attribute
-     *
-     * @param string $name  The name of the attribute
-     * @param null|string|array $value The value to remove if specified
-     *
-     * @return ?Attribute The removed or changed attribute, if any, otherwise null
-     */
-    public function removeAttribute(string $name, $value = null): ?Attribute
+    public function removeAttribute(string $name, null|string|array $value = null): ?Attribute
     {
         return $this->getAttributes()->remove($name, $value);
-    }
-
-    /**
-     * Add the given attributes
-     *
-     * @param Attributes|array $attributes
-     *
-     * @return $this
-     */
-    public function addAttributes($attributes)
-    {
-        $this->getAttributes()->add($attributes);
-
-        return $this;
     }
 
     /**
@@ -205,7 +157,7 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * @throws RuntimeException If the element does not have a tag
      */
-    final public function getTag()
+    final public function getTag(): string
     {
         $tag = $this->tag();
 
@@ -240,7 +192,7 @@ abstract class BaseHtmlElement extends HtmlDocument
      *
      * @return bool
      */
-    public function isVoid()
+    public function isVoid(): bool
     {
         if ($this->isVoid !== null) {
             return $this->isVoid;

@@ -2,30 +2,13 @@
 
 namespace ipl\Html\Contract;
 
-use ipl\Html\Attributes;
 use ipl\Html\Form;
 
 /**
  * Representation of form elements
  */
-interface FormElement extends Wrappable
+interface FormElement extends Wrappable, HtmlElementInterface
 {
-    /**
-     * Get the attributes or options of the element
-     *
-     * @return Attributes
-     */
-    public function getAttributes();
-
-    /**
-     * Add attributes or options to the form element
-     *
-     * @param iterable $attributes
-     *
-     * @return $this
-     */
-    public function addAttributes($attributes);
-
     /**
      * Get the description for the element, if any
      *
