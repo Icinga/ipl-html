@@ -343,7 +343,7 @@ abstract class BaseHtmlElement extends HtmlDocument
     {
     }
 
-    public function addHtml(ValidHtml ...$content)
+    public function addHtml(ValidHtml ...$content): static
     {
         $this->ensureAssembled();
 

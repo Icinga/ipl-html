@@ -92,7 +92,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
         return null;
     }
 
-    public function addHtml(ValidHtml ...$content)
+    public function addHtml(ValidHtml ...$content): static
     {
         // TODO: is this required?
         if (! in_array($this->wrappedElement, $content, true)) {
