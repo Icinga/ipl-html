@@ -74,7 +74,7 @@ class Table extends BaseHtmlElement
      * @param mixed $content
      * @return $this
      */
-    public function add($content)
+    public function add($content): static
     {
         if ($content instanceof stdClass) {
             $this->getBody()->addHtml(static::row((array) $content));

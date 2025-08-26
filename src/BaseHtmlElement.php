@@ -40,11 +40,11 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      * If {@link $isVoid} is null, this property should be used to decide whether the content and end tag has to be
      * rendered.
      *
-     * @var array
+     * @var array<string, int>
      *
      * @see https://www.w3.org/TR/html5/syntax.html#void-elements
      */
-    protected static $voidElements = [
+    protected static array $voidElements = [
         'area'   => 1,
         'base'   => 1,
         'br'     => 1,
@@ -61,14 +61,14 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
         'wbr'    => 1
     ];
 
-    /** @var Attributes */
-    protected $attributes;
+    /** @var ?Attributes Attributes of the element */
+    protected ?Attributes $attributes;
 
     /** @var bool Whether possible attribute callbacks have been registered */
-    protected $attributeCallbacksRegistered = false;
+    protected bool $attributeCallbacksRegistered = false;
 
-    /** @var bool|null Whether the element is void. If null, void check should use {@link $voidElements} */
-    protected $isVoid;
+    /** @var ?bool Whether the element is void. If null, void check should use {@link $voidElements} */
+    protected ?bool $isVoid;
 
     /** @var array<string, mixed> You may want to set default attributes when extending this class */
     protected $defaultAttributes;
@@ -106,7 +106,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return $this
      */
-    public function setAttributes($attributes)
+    public function setAttributes(Attributes|array|null $attributes): static
     {
         $this->attributes = Attributes::wantAttributes($attributes);
 
@@ -143,7 +143,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return array
      */
-    public function getDefaultAttributes()
+    public function getDefaultAttributes(): array
     {
         return $this->defaultAttributes;
     }
@@ -175,7 +175,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return $this
      */
-    public function setTag($tag)
+    public function setTag(string $tag): static
     {
         $this->tag = $tag;
 
@@ -215,9 +215,9 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return $this
      */
-    public function setVoid($void = true)
+    public function setVoid(?bool $void = true): static
     {
-        $this->isVoid = $void === null ?: (bool) $void;
+        $this->isVoid = $void === null ?: $void;
 
         return $this;
     }
@@ -229,7 +229,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return $this
      */
-    public function ensureAttributeCallbacksRegistered()
+    public function ensureAttributeCallbacksRegistered(): static
     {
         if (! $this->attributeCallbacksRegistered) {
             $this->attributeCallbacksRegistered = true;
@@ -254,7 +254,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return bool True for void elements, false otherwise
      */
-    public function wantsClosingTag()
+    public function wantsClosingTag(): bool
     {
         // TODO: There is more. SVG and MathML namespaces
         return ! $this->isVoid();
@@ -267,7 +267,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return $this
      */
-    public function wrap(HtmlDocument $document)
+    public function wrap(HtmlDocument $document): static
     {
         $document->addWrapper($this);
 
@@ -281,7 +281,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return string
      */
-    protected function tag()
+    protected function tag(): string
     {
         return $this->tag;
     }
@@ -347,7 +347,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
         );
     }
 
-    public function __clone()
+    public function __clone(): void
     {
         parent::__clone();
 
