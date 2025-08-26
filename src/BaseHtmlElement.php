@@ -62,13 +62,13 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
     ];
 
     /** @var ?Attributes Attributes of the element */
-    protected ?Attributes $attributes;
+    protected ?Attributes $attributes = null;
 
     /** @var bool Whether possible attribute callbacks have been registered */
     protected bool $attributeCallbacksRegistered = false;
 
     /** @var ?bool Whether the element is void. If null, void check should use {@link $voidElements} */
-    protected ?bool $isVoid;
+    protected ?bool $isVoid = null;
 
     /** @var array<string, mixed> You may want to set default attributes when extending this class */
     protected $defaultAttributes;
@@ -141,9 +141,9 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
     /**
      * Get the default attributes of the element
      *
-     * @return array
+     * @return ?array
      */
-    public function getDefaultAttributes(): array
+    public function getDefaultAttributes(): ?array
     {
         return $this->defaultAttributes;
     }
@@ -279,9 +279,9 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * You may override this method in order to provide the tag dynamically
      *
-     * @return string
+     * @return ?string
      */
-    protected function tag(): string
+    protected function tag(): ?string
     {
         return $this->tag;
     }

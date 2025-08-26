@@ -52,13 +52,13 @@ class RadioElement extends BaseFormElement
     /**
      * Get the option with specified value
      *
-     * @param int|string $value
+     * @param ?(int|string) $value
      *
      * @return RadioOption
      *
      * @throws InvalidArgumentException If no option with the specified value exists
      */
-    public function getOption(int|string $value): RadioOption
+    public function getOption(null|int|string $value): RadioOption
     {
         if (! isset($this->options[$value])) {
             throw new InvalidArgumentException(sprintf('There is no such option "%s"', $value));

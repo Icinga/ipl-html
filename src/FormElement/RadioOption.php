@@ -22,7 +22,7 @@ class RadioOption
     protected bool $disabled = false;
 
     /** @var ?Attributes */
-    protected ?Attributes $attributes;
+    protected ?Attributes $attributes = null;
 
     /**
      * RadioOption constructor.

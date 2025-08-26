@@ -15,9 +15,9 @@ class InputElement extends BaseFormElement
     /**
      * Get the type of the input
      *
-     * @return string
+     * @return ?string
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }

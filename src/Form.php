@@ -23,26 +23,26 @@ class Form extends BaseHtmlElement
     public const ON_SENT = 'sent';
     public const ON_VALIDATE = 'validate';
 
-    /** @var string Form submission URL */
-    protected $action;
+    /** @var ?string Form submission URL */
+    protected ?string $action = null;
 
     /** @var string HTTP method to submit the form with */
     protected $method = 'POST';
 
-    /** @var FormSubmitElement Primary submit button */
-    protected FormSubmitElement $submitButton;
+    /** @var ?FormSubmitElement Primary submit button */
+    protected ?FormSubmitElement $submitButton = null;
 
     /** @var FormSubmitElement[] Other elements that may submit the form */
     protected array $submitElements = [];
 
-    /** @var bool Whether the form is valid */
-    protected bool $isValid;
+    /** @var ?bool Whether the form is valid */
+    protected ?bool $isValid = null;
 
-    /** @var ServerRequestInterface The server request being processed */
-    protected ServerRequestInterface $request;
+    /** @var ?ServerRequestInterface The server request being processed */
+    protected ?ServerRequestInterface $request = null;
 
     /** @var string */
-    protected string $redirectUrl;
+    protected ?string $redirectUrl = null;
 
     protected $tag = 'form';
 

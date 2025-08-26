@@ -13,16 +13,16 @@ class Table extends BaseHtmlElement
     protected $tag = 'table';
 
     /** @var ?HtmlElement */
-    private ?HtmlElement $caption;
+    private ?HtmlElement $caption = null;
 
     /** @var ?HtmlElement */
-    private ?HtmlElement $header;
+    private ?HtmlElement $header = null;
 
     /** @var ?HtmlElement */
-    private ?HtmlElement $body;
+    private ?HtmlElement $body = null;
 
     /** @var ?HtmlElement */
-    private ?HtmlElement $footer;
+    private ?HtmlElement $footer = null;
 
     public function addHtml(ValidHtml ...$content): static
     {

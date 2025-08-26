@@ -46,7 +46,7 @@ class FormElementsTest extends TestCase
                 return $this->ensureDefaultElementDecoratorLoaderRegisteredRun;
             }
 
-            protected function ensureDefaultElementLoaderRegistered()
+            protected function ensureDefaultElementLoaderRegistered(): static
             {
                 if (! $this->defaultElementLoaderRegistered) {
                     $this->ensureDefaultElementLoaderRegisteredRun = true;
@@ -57,7 +57,7 @@ class FormElementsTest extends TestCase
                 return $this;
             }
 
-            protected function ensureDefaultElementDecoratorLoaderRegistered()
+            protected function ensureDefaultElementDecoratorLoaderRegistered(): static
             {
                 if (! $this->defaultElementDecoratorLoaderRegistered) {
                     $this->ensureDefaultElementDecoratorLoaderRegisteredRun = true;

@@ -40,10 +40,10 @@ class FileElement extends InputElement
     protected array $filesToRemove = [];
 
     /** @var ?string Path to store files to preserve them across requests */
-    protected ?string $destination;
+    protected ?string $destination = null;
 
     /** @var ?int The default maximum file size */
-    protected static ?int $defaultMaxFileSize;
+    protected static ?int $defaultMaxFileSize = null;
 
     public function __construct(string $name, null|array|Attributes $attributes = null)
     {

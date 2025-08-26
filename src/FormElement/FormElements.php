@@ -22,7 +22,7 @@ trait FormElements
     use Plugins;
 
     /** @var ?FormElementDecorator */
-    private ?FormElementDecorator $defaultElementDecorator;
+    private ?FormElementDecorator $defaultElementDecorator = null;
 
     /** @var bool Whether the default element decorator loader has been registered */
     protected bool $defaultElementDecoratorLoaderRegistered = false;

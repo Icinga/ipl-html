@@ -55,7 +55,7 @@ class SpecialHtmlString extends HtmlString
 {
     public $state;
 
-    public function render()
+    public function render(): string
     {
         $html = parent::render();
 

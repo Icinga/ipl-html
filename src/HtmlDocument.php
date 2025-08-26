@@ -29,13 +29,13 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     protected bool $hasBeenAssembled = false;
 
     /** @var ?Wrappable Wrapper */
-    protected ?Wrappable $wrapper;
+    protected ?Wrappable $wrapper = null;
 
     /** @var ?Wrappable Wrapped element */
-    private ?Wrappable $wrapped;
+    private ?Wrappable $wrapped = null;
 
     /** @var ?HtmlDocument The currently responsible wrapper */
-    private ?HtmlDocument $renderedBy;
+    private ?HtmlDocument $renderedBy = null;
 
     /** @var ValidHtml[] Content */
     private array $content = [];
@@ -60,9 +60,9 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Consume the wrapped element
      *
-     * @return Wrappable
+     * @return ?Wrappable
      */
-    private function consumeWrapped(): Wrappable
+    private function consumeWrapped(): ?Wrappable
     {
         $wrapped = $this->wrapped;
         $this->wrapped = null;

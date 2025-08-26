@@ -19,10 +19,10 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     use Translation;
 
     /** @var ?string Description of the element */
-    protected ?string $description;
+    protected ?string $description = null;
 
     /** @var ?string Label of the element */
-    protected ?string $label;
+    protected ?string $label = null;
 
     /** @var string Name of the element */
     protected string $name;
@@ -34,10 +34,10 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     protected bool $required = false;
 
     /** @var ?bool Whether the element is valid; null if the element has not been validated yet, bool otherwise */
-    protected ?bool $valid;
+    protected ?bool $valid = null;
 
     /** @var ?ValidatorChain Registered validators */
-    protected ?ValidatorChain $validators;
+    protected ?ValidatorChain $validators = null;
 
     /** @var mixed Value of the element */
     protected $value;

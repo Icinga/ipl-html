@@ -9,7 +9,7 @@ class SubmitElement extends InputElement implements FormSubmitElement
 {
     protected $type = 'submit';
 
-    protected string $buttonLabel;
+    protected ?string $buttonLabel = null;
 
     public function setLabel(string $label): static
     {

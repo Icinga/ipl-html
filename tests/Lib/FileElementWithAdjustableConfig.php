@@ -6,7 +6,7 @@ use ipl\Html\FormElement\FileElement;
 
 class FileElementWithAdjustableConfig extends FileElement
 {
-    public static ?int $defaultMaxFileSize;
+    public static ?int $defaultMaxFileSize = null;
 
     public static $postMaxSize = '8M';
 
