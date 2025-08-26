@@ -152,11 +152,11 @@ class Table extends BaseHtmlElement
 
     /**
      * @param $row
-     * @param Attributes|array|null  $attributes
+     * @param Attributes|array|null $attributes
      * @param string $tag
      * @return HtmlElement
      */
-    public static function row($row, Attributes|array|null  $attributes = null, string $tag = 'td'): HtmlElement
+    public static function row($row, Attributes|array|null $attributes = null, string $tag = 'td'): HtmlElement
     {
         $tr = static::tr();
         foreach ((array) $row as $value) {

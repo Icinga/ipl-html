@@ -105,8 +105,7 @@ trait FormElements
         string|FormElement $typeOrElement,
         ?string $name = null,
         array|Attributes|null $options = null
-    ): static
-    {
+    ): static {
         if (is_string($typeOrElement)) {
             if ($name === null) {
                 throw new InvalidArgumentException(sprintf(
