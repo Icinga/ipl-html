@@ -78,7 +78,7 @@ class FileElement extends InputElement
      *
      * @return $this
      */
-    public function setDestination(string $path): self
+    public function setDestination(string $path): static
     {
         $this->destination = $path;
 

@@ -28,7 +28,7 @@ class TextElement extends InputElement
      *
      * @return $this
      */
-    public function setPlaceholder(?string $placeholder): self
+    public function setPlaceholder(?string $placeholder): static
     {
         $this->placeholder = $placeholder;
 

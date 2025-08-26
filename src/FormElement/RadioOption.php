@@ -43,7 +43,7 @@ class RadioOption
      *
      * @return $this
      */
-    public function setLabel(string $label): self
+    public function setLabel(string $label): static
     {
         $this->label = $label;
 
@@ -77,7 +77,7 @@ class RadioOption
      *
      * @return $this
      */
-    public function setLabelCssClass(string|array $labelCssClass): self
+    public function setLabelCssClass(string|array $labelCssClass): static
     {
         $this->labelCssClass = $labelCssClass;
 

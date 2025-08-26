@@ -111,7 +111,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Merge the given attributes
      *
-     * @param Attributes $attributes
+     * @param static $attributes
      *
      * @return $this
      */
@@ -170,14 +170,14 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * If the attribute with the given name already exists, it gets overridden.
      *
-     * @param string|AttributesType|Attribute|self  $attribute The attribute(s) to add
-     * @param AttributeValue                        $value     The value of the attribute
+     * @param Attribute|AttributesType|string|static    $attribute The attribute(s) to add
+     * @param AttributeValue                            $value     The value of the attribute
      *
      * @return $this
      *
      * @throws InvalidArgumentException If the attribute name contains special characters
      */
-    public function set(Attribute|array|string|Attributes $attribute, bool|array|string|null $value = null)
+    public function set(Attribute|array|string|self $attribute, bool|array|string|null $value = null): static
     {
         if ($attribute instanceof self) {
             foreach ($attribute as $a) {
@@ -220,14 +220,14 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * If an attribute with the same name already exists, the attribute's value will be added to the current value of
      * the attribute.
      *
-     * @param string|AttributesType|Attribute|self|null $attribute The attribute(s) to add
-     * @param AttributeValue                            $value     The value of the attribute
+     * @param Attribute|AttributesType|string|static|null   $attribute The attribute(s) to add
+     * @param AttributeValue                                $value     The value of the attribute
      *
      * @return $this
      *
      * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
-    public function add(Attribute|array|string|Attributes|null $attribute, bool|array|string|null $value = null): static
+    public function add(Attribute|array|string|self|null $attribute, bool|array|string|null $value = null): static
     {
         if ($attribute === null) {
             return $this;
@@ -368,8 +368,11 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return $this
      */
-    public function registerAttributeCallback(string $name, ?callable $callback, ?callable $setterCallback = null): self
-    {
+    public function registerAttributeCallback(
+        string $name,
+        ?callable $callback,
+        ?callable $setterCallback = null
+    ): static {
         if ($callback !== null) {
             $this->callbacks[$name] = $callback;
         }

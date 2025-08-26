@@ -31,7 +31,7 @@ class RadioElement extends BaseFormElement
      *
      * @return $this
      */
-    public function setOptions(array $options): self
+    public function setOptions(array $options): static
     {
         $this->options = [];
         foreach ($options as $value => $label) {
@@ -74,7 +74,7 @@ class RadioElement extends BaseFormElement
      *
      * @return $this
      */
-    public function setDisabledOptions(array $disabledOptions): self
+    public function setDisabledOptions(array $disabledOptions): static
     {
         if (! empty($this->options)) {
             foreach ($this->options as $value => $option) {

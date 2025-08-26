@@ -189,7 +189,7 @@ class Attribute
      *
      * @return AttributeValue
      */
-    public function getValue(): bool|array|string|null
+    public function getValue()
     {
         return $this->value;
     }
