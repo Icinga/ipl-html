@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use InvalidArgumentException;
 use ipl\Html\Html;
+use TypeError;
 
 class HtmlTest extends TestCase
 {
@@ -43,7 +44,7 @@ class HtmlTest extends TestCase
 
     public function testTagDoesNotIgnoreContent()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(TypeError::class);
         Html::tag('span', Html::tag('a'), Html::tag('b'));
     }
 
