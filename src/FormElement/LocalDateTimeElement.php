@@ -17,7 +17,7 @@ class LocalDateTimeElement extends InputElement
     /** @var DateTime */
     protected $value;
 
-    public function setValue($value)
+    public function setValue($value): static
     {
         if (is_string($value)) {
             $originalVal = $value;

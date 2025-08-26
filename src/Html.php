@@ -24,7 +24,7 @@ abstract class Html
      *
      * @return HtmlElement The created element
      */
-    public static function tag($name, $attributes = null, $content = null)
+    public static function tag(string $name, $attributes = null, $content = null): HtmlElement
     {
         if ($content !== null) {
             // If not null, it's html content, no question
@@ -71,7 +71,7 @@ abstract class Html
      *
      * @return string The encoded content
      */
-    public static function escape($content)
+    public static function escape(string $content): string
     {
         return htmlspecialchars($content, ENT_COMPAT | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
     }
@@ -92,7 +92,7 @@ abstract class Html
      *
      * @return FormattedString
      */
-    public static function sprintf($format, ...$args)
+    public static function sprintf(string $format, ...$args): FormattedString
     {
         return new FormattedString($format, $args);
     }
@@ -103,30 +103,19 @@ abstract class Html
      * $wrapper is a simple HTML tag per entry if a string is given,
      * otherwise the given callable is called with key and value of each list item as parameters.
      *
-     * @param iterable        $list
-     * @param string|callable $wrapper
+     * @param iterable $list
+     * @param callable|string $wrapper
      *
      * @return HtmlDocument
      */
-    public static function wrapEach($list, $wrapper)
+    public static function wrapEach(iterable $list, callable|string $wrapper)
     {
-        if (! is_iterable($list)) {
-            throw new InvalidArgumentException(sprintf(
-                'Html::wrapEach() requires a traversable list, got "%s"',
-                get_php_type($list)
-            ));
-        }
         $result = new HtmlDocument();
         foreach ($list as $name => $value) {
             if (is_string($wrapper)) {
                 $result->addHtml(Html::tag($wrapper, $value));
-            } elseif (is_callable($wrapper)) {
-                $result->add($wrapper($name, $value));
             } else {
-                throw new InvalidArgumentException(sprintf(
-                    'Wrapper must be callable or a string in Html::wrapEach(), got "%s"',
-                    get_php_type($wrapper)
-                ));
+                $result->add($wrapper($name, $value));
             }
         }
 
@@ -144,7 +133,7 @@ abstract class Html
      *
      * @throws InvalidArgumentException In case the given content is of an unsupported type
      */
-    public static function wantHtml($any)
+    public static function wantHtml($any): ValidHtml
     {
         if ($any instanceof ValidHtml) {
             return $any;
@@ -174,7 +163,7 @@ abstract class Html
      *
      * @return ValidHtml[]
      */
-    public static function wantHtmlList($content)
+    public static function wantHtmlList($content): array
     {
         $list = [];
 
@@ -200,7 +189,7 @@ abstract class Html
      *
      * @return bool
      */
-    public static function canBeRenderedAsString($any)
+    public static function canBeRenderedAsString($any): bool
     {
         return is_scalar($any) || is_null($any) || (
             is_object($any) && method_exists($any, '__toString')
@@ -211,11 +200,11 @@ abstract class Html
      * Forward inaccessible static method calls to {@link Html::tag()} with the method's name as tag
      *
      * @param string $name
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return HtmlElement
      */
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments): HtmlElement
     {
         $attributes = array_shift($arguments);
         $content = array_shift($arguments);
@@ -226,7 +215,7 @@ abstract class Html
     /**
      * @deprecated Use {@link Html::encode()} instead
      */
-    public static function escapeForHtml($content)
+    public static function escapeForHtml($content): string
     {
         return static::escape($content);
     }
@@ -234,7 +223,7 @@ abstract class Html
     /**
      * @deprecated Use {@link Error::render()} instead
      */
-    public static function renderError($error)
+    public static function renderError($error): string
     {
         return Error::render($error);
     }

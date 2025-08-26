@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
+use ipl\Html\Attributes;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\ValueCandidates;
@@ -20,20 +21,20 @@ trait FormElements
     use Events;
     use Plugins;
 
-    /** @var FormElementDecorator|null */
-    private $defaultElementDecorator;
+    /** @var ?FormElementDecorator */
+    private ?FormElementDecorator $defaultElementDecorator;
 
     /** @var bool Whether the default element decorator loader has been registered */
-    protected $defaultElementDecoratorLoaderRegistered = false;
+    protected bool $defaultElementDecoratorLoaderRegistered = false;
 
     /** @var bool Whether the default element loader has been registered */
-    protected $defaultElementLoaderRegistered = false;
+    protected bool $defaultElementLoaderRegistered = false;
 
     /** @var FormElement[] */
-    private $elements = [];
+    private array $elements = [];
 
     /** @var array<string, array<int, mixed>> */
-    private $populatedValues = [];
+    private array $populatedValues = [];
 
     /**
      * Get all elements
@@ -48,11 +49,11 @@ trait FormElements
     /**
      * Get whether the given element exists
      *
-     * @param string|FormElement $element
+     * @param FormElement|string $element
      *
      * @return bool
      */
-    public function hasElement($element)
+    public function hasElement(FormElement|string $element): bool
     {
         if (is_string($element)) {
             return array_key_exists($element, $this->elements);
@@ -74,7 +75,7 @@ trait FormElements
      *
      * @throws InvalidArgumentException If no element with the given name exists
      */
-    public function getElement($name)
+    public function getElement(string $name): FormElement
     {
         if (! array_key_exists($name, $this->elements)) {
             throw new InvalidArgumentException(sprintf(
@@ -89,9 +90,9 @@ trait FormElements
     /**
      * Add an element
      *
-     * @param string|FormElement $typeOrElement Type of the element as string or an instance of FormElement
-     * @param string             $name          Name of the element
-     * @param mixed              $options       Element options as key-value pairs
+     * @param string|FormElement    $typeOrElement  Type of the element as string or an instance of FormElement
+     * @param ?string               $name           Name of the element
+     * @param array|Attributes|null $options        Element options as key-value pairs
      *
      * @return $this
      *
@@ -100,7 +101,11 @@ trait FormElements
      *                                  or if $typeOrElement is a string but type is unknown
      *                                  or if $typeOrElement is an instance of FormElement but does not have a name
      */
-    public function addElement($typeOrElement, $name = null, $options = null)
+    public function addElement(
+        string|FormElement $typeOrElement,
+        ?string $name = null,
+        array|Attributes|null $options = null
+    ): static
     {
         if (is_string($typeOrElement)) {
             if ($name === null) {
@@ -135,13 +140,13 @@ trait FormElements
      *
      * @param string $type    Type of the element
      * @param string $name    Name of the element
-     * @param mixed  $options Element options as key-value pairs
+     * @param array|Attributes|null  $options Element options as key-value pairs
      *
      * @return FormElement
      *
      * @throws InvalidArgumentException If the type of the element is unknown
      */
-    public function createElement($type, $name, $options = null)
+    public function createElement(string $type, string $name, array|Attributes|null $options = null): FormElement
     {
         $this->ensureDefaultElementLoaderRegistered();
 
@@ -175,7 +180,7 @@ trait FormElements
      *
      * @throws InvalidArgumentException If $element does not provide a name
      */
-    public function registerElement(FormElement $element)
+    public function registerElement(FormElement $element): static
     {
         $name = $element->getName();
 
@@ -215,9 +220,9 @@ trait FormElements
     /**
      * Get the default element decorator, if any
      *
-     * @return FormElementDecorator|null
+     * @return ?FormElementDecorator
      */
-    public function getDefaultElementDecorator()
+    public function getDefaultElementDecorator(): ?FormElementDecorator
     {
         return $this->defaultElementDecorator;
     }
@@ -229,7 +234,7 @@ trait FormElements
      * A loader for the namespace ipl\\Html\\FormDecorator is automatically registered by default.
      * See {@link addDecoratorLoader()} for registering a custom loader.
      *
-     * @param FormElementDecorator|string $decorator
+     * @param string|FormElementDecorator $decorator
      *
      * @return $this
      *
@@ -237,7 +242,7 @@ trait FormElements
      *                                  or if a decorator loader does not return an instance of
      *                                  {@link FormElementDecorator}
      */
-    public function setDefaultElementDecorator($decorator)
+    public function setDefaultElementDecorator(string|FormElementDecorator $decorator): static
     {
         if ($decorator instanceof FormElementDecorator || $decorator instanceof DecoratorInterface) {
             $this->defaultElementDecorator = $decorator;
@@ -337,7 +342,7 @@ trait FormElements
      *
      * @return mixed
      */
-    public function getPopulatedValue($name, $default = null)
+    public function getPopulatedValue(string $name, $default = null)
     {
         return isset($this->populatedValues[$name])
             ? $this->populatedValues[$name][count($this->populatedValues[$name]) - 1]
@@ -351,7 +356,7 @@ trait FormElements
      *
      * @return $this
      */
-    public function clearPopulatedValue($name)
+    public function clearPopulatedValue(string $name): static
     {
         if (isset($this->populatedValues[$name])) {
             unset($this->populatedValues[$name]);
@@ -367,7 +372,7 @@ trait FormElements
      *
      * @return $this
      */
-    public function addElementsFrom($form)
+    public function addElementsFrom(Form $form): static
     {
         foreach ($form->getElements() as $element) {
             $this->addElement($element);
@@ -380,11 +385,11 @@ trait FormElements
      * Add a decorator loader
      *
      * @param string $namespace Namespace of the decorators
-     * @param string $postfix   Decorator name postfix, if any
+     * @param ?string $postfix   Decorator name postfix, if any
      *
      * @return $this
      */
-    public function addDecoratorLoader($namespace, $postfix = null)
+    public function addDecoratorLoader(string $namespace, ?string $postfix = null): static
     {
         $this->addPluginLoader('decorator', $namespace, $postfix);
 
@@ -395,11 +400,11 @@ trait FormElements
      * Add an element loader
      *
      * @param string $namespace Namespace of the elements
-     * @param string $postfix   Element name postfix, if any
+     * @param ?string $postfix   Element name postfix, if any
      *
      * @return $this
      */
-    public function addElementLoader($namespace, $postfix = null)
+    public function addElementLoader(string $namespace, ?string $postfix = null): static
     {
         $this->addPluginLoader('element', $namespace, $postfix);
 
@@ -411,7 +416,7 @@ trait FormElements
      *
      * @return $this
      */
-    protected function ensureDefaultElementDecoratorLoaderRegistered()
+    protected function ensureDefaultElementDecoratorLoaderRegistered(): static
     {
         if (! $this->defaultElementDecoratorLoaderRegistered) {
             $this->addDefaultPluginLoader(
@@ -431,7 +436,7 @@ trait FormElements
      *
      * @return $this
      */
-    protected function ensureDefaultElementLoaderRegistered()
+    protected function ensureDefaultElementLoaderRegistered(): static
     {
         if (! $this->defaultElementLoaderRegistered) {
             $this->addDefaultPluginLoader('element', __NAMESPACE__, 'Element');
@@ -452,7 +457,7 @@ trait FormElements
      * @throws UnexpectedValueException If the default decorator is set but not an instance of
      *                                  {@link FormElementDecorator}
      */
-    protected function decorate(FormElement $element)
+    protected function decorate(FormElement $element): static
     {
         if ($this->hasDefaultElementDecorator()) {
             $decorator = $this->getDefaultElementDecorator();
@@ -503,7 +508,7 @@ trait FormElements
      *
      * @param FormElement $element
      */
-    protected function onElementRegistered(FormElement $element)
+    protected function onElementRegistered(FormElement $element): void
     {
     }
 }

@@ -10,7 +10,7 @@ class SubmitButtonElement extends ButtonElement implements FormSubmitElement
     protected $defaultAttributes = ['type' => 'submit'];
 
     /** @var string The value that's transmitted once the button is pressed */
-    protected $submitValue = 'y';
+    protected string $submitValue = 'y';
 
     /**
      * Get the value to transmit once the button is pressed
@@ -29,36 +29,36 @@ class SubmitButtonElement extends ButtonElement implements FormSubmitElement
      *
      * @return $this
      */
-    public function setSubmitValue(string $value): self
+    public function setSubmitValue(string $value): static
     {
         $this->submitValue = $value;
 
         return $this;
     }
 
-    public function setLabel($label)
+    public function setLabel(string $label): static
     {
         return $this->setContent($label);
     }
 
-    public function hasBeenPressed()
+    public function hasBeenPressed(): bool
     {
         return $this->getValue() === $this->getSubmitValue();
     }
 
-    public function isIgnored()
+    public function isIgnored(): bool
     {
         return true;
     }
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         parent::registerAttributeCallbacks($attributes);
 
         $attributes->registerAttributeCallback('value', null, [$this, 'setSubmitValue']);
     }
 
-    public function getValueAttribute()
+    public function getValueAttribute(): string
     {
         return $this->submitValue;
     }

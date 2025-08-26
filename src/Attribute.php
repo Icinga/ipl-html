@@ -19,13 +19,13 @@ use InvalidArgumentException;
 class Attribute
 {
     /** @var string */
-    protected $name;
+    protected string $name;
 
     /** @var string The separator used if value is an array */
-    protected $separator = ' ';
+    protected string $separator = ' ';
 
     /** @var AttributeValue */
-    protected $value;
+    protected string|array|bool|null $value = null;
 
     /**
      * Create a new HTML attribute from the given name and value
@@ -35,7 +35,7 @@ class Attribute
      *
      * @throws InvalidArgumentException If the name of the attribute contains special characters
      */
-    public function __construct($name, $value = null)
+    public function __construct(string $name, bool|array|string|null $value = null)
     {
         $this->setName($name)->setValue($value);
     }
@@ -50,7 +50,7 @@ class Attribute
      *
      * @throws InvalidArgumentException If the name of the attribute contains special characters
      */
-    public static function create($name, $value)
+    public static function create(string $name, bool|array|string|null $value): static
     {
         return new static($name, $value);
     }
@@ -66,7 +66,7 @@ class Attribute
      *
      * @throws InvalidArgumentException If the name of the attribute contains special characters
      */
-    public static function createEmpty($name)
+    public static function createEmpty(string $name): static
     {
         return new static($name, null);
     }
@@ -80,9 +80,9 @@ class Attribute
      *
      * @return string
      */
-    public static function escapeName($name)
+    public static function escapeName(string $name): string
     {
-        return (string) $name;
+        return $name;
     }
 
     /**
@@ -99,7 +99,7 @@ class Attribute
      *
      * @return string
      */
-    public static function escapeValue($value, $glue = ' ')
+    public static function escapeValue(array|string $value, string $glue = ' '): string
     {
         if (is_array($value)) {
             $value = implode($glue, $value);
@@ -132,7 +132,7 @@ class Attribute
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -146,7 +146,7 @@ class Attribute
      *
      * @throws InvalidArgumentException If the name contains special characters
      */
-    protected function setName($name)
+    protected function setName(string $name): static
     {
         if (! preg_match('/^[a-z][a-z0-9:-]*$/i', $name)) {
             throw new InvalidArgumentException(sprintf(
@@ -177,7 +177,7 @@ class Attribute
      *
      * @return $this
      */
-    public function setSeparator(string $separator): self
+    public function setSeparator(string $separator): static
     {
         $this->separator = $separator;
 
@@ -189,7 +189,7 @@ class Attribute
      *
      * @return AttributeValue
      */
-    public function getValue()
+    public function getValue(): bool|array|string|null
     {
         return $this->value;
     }
@@ -201,7 +201,7 @@ class Attribute
      *
      * @return $this
      */
-    public function setValue($value)
+    public function setValue(bool|array|string|null $value): static
     {
         $this->value = $value;
 
@@ -215,7 +215,7 @@ class Attribute
      *
      * @return $this
      */
-    public function addValue($value)
+    public function addValue(array|string $value): static
     {
         $this->value = array_merge((array) $this->value, (array) $value);
 
@@ -237,7 +237,7 @@ class Attribute
      *
      * @return $this
      */
-    public function removeValue($value)
+    public function removeValue(array|string $value): static
     {
         $value = (array) $value;
 
@@ -257,7 +257,7 @@ class Attribute
      *
      * @return bool
      */
-    public function isBoolean()
+    public function isBoolean(): bool
     {
         return is_bool($this->value);
     }
@@ -269,7 +269,7 @@ class Attribute
      *
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->value === null || $this->value === [];
     }
@@ -288,7 +288,7 @@ class Attribute
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         if ($this->isEmpty()) {
             return '';
@@ -314,7 +314,7 @@ class Attribute
      *
      * @return string
      */
-    public function renderName()
+    public function renderName(): string
     {
         return static::escapeName($this->name);
     }
@@ -324,7 +324,7 @@ class Attribute
      *
      * @return string
      */
-    public function renderValue()
+    public function renderValue(): string
     {
         return static::escapeValue($this->value, $this->separator);
     }

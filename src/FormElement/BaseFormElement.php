@@ -18,40 +18,40 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     use Messages;
     use Translation;
 
-    /** @var string Description of the element */
-    protected $description;
+    /** @var ?string Description of the element */
+    protected ?string $description;
 
-    /** @var string Label of the element */
-    protected $label;
+    /** @var ?string Label of the element */
+    protected ?string $label;
 
     /** @var string Name of the element */
-    protected $name;
+    protected string $name;
 
     /** @var bool Whether the element is ignored */
-    protected $ignored = false;
+    protected bool $ignored = false;
 
     /** @var bool Whether the element is required */
-    protected $required = false;
+    protected bool $required = false;
 
-    /** @var null|bool Whether the element is valid; null if the element has not been validated yet, bool otherwise */
-    protected $valid;
+    /** @var ?bool Whether the element is valid; null if the element has not been validated yet, bool otherwise */
+    protected ?bool $valid;
 
-    /** @var ValidatorChain Registered validators */
-    protected $validators;
+    /** @var ?ValidatorChain Registered validators */
+    protected ?ValidatorChain $validators;
 
     /** @var mixed Value of the element */
     protected $value;
 
     /** @var array<int, mixed> Value candidates of the element */
-    protected $valueCandidates = [];
+    protected array $valueCandidates = [];
 
     /**
      * Create a new form element
      *
      * @param string $name       Name of the form element
-     * @param mixed  $attributes Attributes of the form element
+     * @param null|array|Attributes  $attributes Attributes of the form element
      */
-    public function __construct($name, $attributes = null)
+    public function __construct(string $name, null|array|Attributes $attributes = null)
     {
         $this->setName($name);
         $this->init();
@@ -61,7 +61,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         }
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -73,14 +73,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getLabel()
+    public function getLabel(): ?string
     {
         return $this->label;
     }
@@ -92,14 +92,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function setLabel($label)
+    public function setLabel(string $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -111,14 +111,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function isIgnored()
+    public function isIgnored(): bool
     {
         return $this->ignored;
     }
@@ -130,14 +130,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function setIgnored($ignored = true)
+    public function setIgnored(bool $ignored = true): static
     {
-        $this->ignored = (bool) $ignored;
+        $this->ignored = $ignored;
 
         return $this;
     }
 
-    public function isRequired()
+    public function isRequired(): bool
     {
         return $this->required;
     }
@@ -149,14 +149,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function setRequired($required = true)
+    public function setRequired(bool $required = true): static
     {
-        $this->required = (bool) $required;
+        $this->required = $required;
 
         return $this;
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
         if ($this->valid === null) {
             $this->validate();
@@ -170,7 +170,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return ValidatorChain
      */
-    public function getValidators()
+    public function getValidators(): ValidatorChain
     {
         if ($this->validators === null) {
             $chain = new ValidatorChain();
@@ -188,7 +188,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function setValidators($validators)
+    public function setValidators($validators): static
     {
         $this
             ->getValidators()
@@ -205,14 +205,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function addValidators($validators)
+    public function addValidators($validators): static
     {
         $this->getValidators()->addValidators($validators);
 
         return $this;
     }
 
-    public function hasValue()
+    public function hasValue(): bool
     {
         $value = $this->getValue();
 
@@ -237,19 +237,19 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         return $this;
     }
 
-    public function getValueCandidates()
+    public function getValueCandidates(): array
     {
         return $this->valueCandidates;
     }
 
-    public function setValueCandidates(array $values)
+    public function setValueCandidates(array $values): static
     {
         $this->valueCandidates = $values;
 
         return $this;
     }
 
-    public function onRegistered(Form $form)
+    public function onRegistered(Form $form): void
     {
     }
 
@@ -277,7 +277,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         return $this;
     }
 
-    public function hasBeenValidated()
+    public function hasBeenValidated(): bool
     {
         return $this->valid !== null;
     }
@@ -287,7 +287,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return Attribute|string
      */
-    public function getNameAttribute()
+    public function getNameAttribute(): Attribute|string
     {
         return $this->getName();
     }
@@ -295,9 +295,9 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /**
      * Callback for the required attribute
      *
-     * @return Attribute|null
+     * @return ?Attribute
      */
-    public function getRequiredAttribute()
+    public function getRequiredAttribute(): ?Attribute
     {
         if ($this->isRequired()) {
             return new Attribute('required', true);
@@ -332,7 +332,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     {
     }
 
-    protected function registerValueCallback(Attributes $attributes)
+    protected function registerValueCallback(Attributes $attributes): void
     {
         $attributes->registerAttributeCallback(
             'value',

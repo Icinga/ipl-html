@@ -12,17 +12,17 @@ class Table extends BaseHtmlElement
     /** @var string */
     protected $tag = 'table';
 
-    /** @var HtmlElement */
-    private $caption;
+    /** @var ?HtmlElement */
+    private ?HtmlElement $caption;
 
-    /** @var HtmlElement */
-    private $header;
+    /** @var ?HtmlElement */
+    private ?HtmlElement $header;
 
-    /** @var HtmlElement */
-    private $body;
+    /** @var ?HtmlElement */
+    private ?HtmlElement $body;
 
-    /** @var HtmlElement */
-    private $footer;
+    /** @var ?HtmlElement */
+    private ?HtmlElement $footer;
 
     public function addHtml(ValidHtml ...$content): static
     {
@@ -97,7 +97,7 @@ class Table extends BaseHtmlElement
      * @param mixed $caption
      * @return $this
      */
-    public function setCaption($caption)
+    public function setCaption($caption): static
     {
         if ($caption instanceof BaseHtmlElement && $caption->getTag() === 'caption') {
             $this->caption = $caption;
@@ -115,11 +115,12 @@ class Table extends BaseHtmlElement
     /**
      * Static helper creating a tr element
      *
-     * @param Attributes|array $attributes
+     * @param Attributes|array|null $attributes
      * @param Html|array|string $content
+     *
      * @return HtmlElement
      */
-    public static function tr($content = null, $attributes = null)
+    public static function tr($content = null, Attributes|array|null $attributes = null)
     {
         return Html::tag('tr', $attributes, $content);
     }
@@ -127,11 +128,11 @@ class Table extends BaseHtmlElement
     /**
      * Static helper creating a th element
      *
-     * @param Attributes|array $attributes
+     * @param Attributes|array|null $attributes
      * @param Html|array|string $content
      * @return HtmlElement
      */
-    public static function th($content = null, $attributes = null)
+    public static function th($content = null, Attributes|array|null $attributes = null)
     {
         return Html::tag('th', $attributes, $content);
     }
@@ -139,22 +140,23 @@ class Table extends BaseHtmlElement
     /**
      * Static helper creating a td element
      *
-     * @param Attributes|array $attributes
+     * @param Attributes|array|null $attributes
      * @param Html|array|string $content
+ *
      * @return HtmlElement
      */
-    public static function td($content = null, $attributes = null)
+    public static function td($content = null, Attributes|array|null $attributes = null): HtmlElement
     {
         return Html::tag('td', $attributes, $content);
     }
 
     /**
      * @param $row
-     * @param null $attributes
+     * @param Attributes|array|null  $attributes
      * @param string $tag
      * @return HtmlElement
      */
-    public static function row($row, $attributes = null, $tag = 'td')
+    public static function row($row, Attributes|array|null  $attributes = null, string $tag = 'td'): HtmlElement
     {
         $tr = static::tr();
         foreach ((array) $row as $value) {
@@ -171,7 +173,7 @@ class Table extends BaseHtmlElement
     /**
      * @return HtmlElement
      */
-    public function getBody()
+    public function getBody(): HtmlElement
     {
         if ($this->body === null) {
             $this->addHtml(Html::tag('tbody')->setSeparator("\n"));
@@ -183,7 +185,7 @@ class Table extends BaseHtmlElement
     /**
      * @return HtmlElement
      */
-    public function getHeader()
+    public function getHeader(): HtmlElement
     {
         if ($this->header === null) {
             $this->addHtml(Html::tag('thead')->setSeparator("\n"));
@@ -195,7 +197,7 @@ class Table extends BaseHtmlElement
     /**
      * @return HtmlElement
      */
-    public function getFooter()
+    public function getFooter(): HtmlElement
     {
         if ($this->footer === null) {
             $this->addHtml(Html::tag('tfoot')->setSeparator("\n"));
@@ -207,7 +209,7 @@ class Table extends BaseHtmlElement
     /**
      * @return HtmlElement
      */
-    public function nextBody()
+    public function nextBody(): HtmlElement
     {
         $this->body = null;
 
@@ -217,7 +219,7 @@ class Table extends BaseHtmlElement
     /**
      * @return HtmlElement
      */
-    public function nextHeader()
+    public function nextHeader(): HtmlElement
     {
         $this->header = null;
 

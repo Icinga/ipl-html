@@ -16,13 +16,13 @@ class RadioElement extends BaseFormElement
     use Translation;
 
     /** @var string The element type */
-    protected $type = 'radio';
+    protected string $type = 'radio';
 
     /** @var RadioOption[] Radio options */
-    protected $options = [];
+    protected array $options = [];
 
     /** @var array Disabled radio options */
-    protected $disabledOptions = [];
+    protected array $disabledOptions = [];
 
     /**
      * Set the options
@@ -52,13 +52,13 @@ class RadioElement extends BaseFormElement
     /**
      * Get the option with specified value
      *
-     * @param string|int $value
+     * @param int|string $value
      *
      * @return RadioOption
      *
      * @throws InvalidArgumentException If no option with the specified value exists
      */
-    public function getOption($value): RadioOption
+    public function getOption(int|string $value): RadioOption
     {
         if (! isset($this->options[$value])) {
             throw new InvalidArgumentException(sprintf('There is no such option "%s"', $value));
@@ -92,14 +92,14 @@ class RadioElement extends BaseFormElement
         return $this;
     }
 
-    public function renderUnwrapped()
+    public function renderUnwrapped(): string
     {
         // Parent::renderUnwrapped() requires $tag and the content should be empty. However, since we are wrapping
         // each button in a label, the call to parent cannot work here and must be overridden.
         return HtmlDocument::renderUnwrapped();
     }
 
-    protected function assemble()
+    protected function assemble(): void
     {
         foreach ($this->options as $option) {
             $radio = (new InputElement($this->getValueOfNameAttribute()))
@@ -158,7 +158,7 @@ class RadioElement extends BaseFormElement
         }));
     }
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         parent::registerAttributeCallbacks($attributes);
 

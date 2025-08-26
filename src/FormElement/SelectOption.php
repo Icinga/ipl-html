@@ -9,18 +9,18 @@ class SelectOption extends BaseHtmlElement
     protected $tag = 'option';
 
     /** @var string|int|null Value of the option */
-    protected $value;
+    protected string|int|null $value;
 
     /** @var string Label of the option */
-    protected $label;
+    protected string $label;
 
     /**
      * SelectOption constructor.
      *
-     * @param string|int|null $value
+     * @param int|string|null $value
      * @param string $label
      */
-    public function __construct($value, string $label)
+    public function __construct(int|string|null $value, string $label)
     {
         $this->value = $value === '' ? null : $value;
         $this->label = $label;
@@ -35,7 +35,7 @@ class SelectOption extends BaseHtmlElement
      *
      * @return $this
      */
-    public function setLabel(string $label): self
+    public function setLabel(string $label): static
     {
         $this->label = $label;
 
@@ -57,7 +57,7 @@ class SelectOption extends BaseHtmlElement
      *
      * @return string|int|null
      */
-    public function getValue()
+    public function getValue(): int|string|null
     {
         return $this->value;
     }
@@ -65,14 +65,14 @@ class SelectOption extends BaseHtmlElement
     /**
      * Callback for the value attribute
      *
-     * @return mixed
+     * @return string
      */
-    public function getValueAttribute()
+    public function getValueAttribute(): string
     {
         return (string) $this->getValue();
     }
 
-    protected function assemble()
+    protected function assemble(): void
     {
         $this->setContent($this->getLabel());
     }

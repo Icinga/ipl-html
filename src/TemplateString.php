@@ -21,16 +21,16 @@ use Exception;
 class TemplateString extends FormattedString
 {
     /** @var array */
-    protected $templateArgs = [];
+    protected array $templateArgs = [];
 
     /** @var int  */
-    protected $pos = 0;
+    protected int $pos = 0;
 
     /** @var string  */
-    protected $string;
+    protected string $string = '';
 
     /** @var int */
-    protected $length;
+    protected int $length = 0;
 
     public function __construct($format, $args = null)
     {
@@ -50,10 +50,11 @@ class TemplateString extends FormattedString
      * Parse template strings
      *
      * @param  ?string $for template name
+     *
      * @return HtmlDocument
      * @throws Exception in case of missing template argument or unbounded open or close templates
      */
-    protected function parseTemplates($for = null)
+    protected function parseTemplates(?string $for = null): HtmlDocument
     {
         $buffer = '';
 
@@ -130,7 +131,7 @@ class TemplateString extends FormattedString
      *
      * @return string
      */
-    protected function readUntil(...$chars)
+    protected function readUntil(...$chars): string
     {
         $buffer = '';
         while (($c = $this->readChar()) !== false) {
@@ -150,7 +151,7 @@ class TemplateString extends FormattedString
      *
      * @return false|string false if there is no character left
      */
-    protected function readChar()
+    protected function readChar(): false|string
     {
         if ($this->length > $this->pos) {
             return $this->string[$this->pos++];
@@ -159,7 +160,7 @@ class TemplateString extends FormattedString
         return false;
     }
 
-    public function render()
+    public function render(): string
     {
         $formattedstring = parent::render();
         if (empty($this->templateArgs)) {

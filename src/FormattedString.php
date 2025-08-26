@@ -24,20 +24,20 @@ use function ipl\Stdlib\get_php_type;
 class FormattedString implements ValidHtml
 {
     /** @var ValidHtml[] */
-    protected $args = [];
+    protected array $args = [];
 
     /** @var ValidHtml */
-    protected $format;
+    protected ValidHtml $format;
 
     /**
      * Create a new {@link sprintf()}-like formatted HTML string
      *
-     * @param string   $format
+     * @param string $format
      * @param iterable $args
      *
      * @throws InvalidArgumentException If arguments given but not iterable
      */
-    public function __construct($format, $args = null)
+    public function __construct(string $format, $args = null)
     {
         $this->format = Html::wantHtml($format);
 
@@ -69,7 +69,7 @@ class FormattedString implements ValidHtml
      *
      * @return static
      */
-    public static function create($format, ...$args)
+    public static function create(string $format, ...$args): static
     {
         return new static($format, $args);
     }
@@ -82,7 +82,7 @@ class FormattedString implements ValidHtml
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->render();
@@ -91,7 +91,7 @@ class FormattedString implements ValidHtml
         }
     }
 
-    public function render()
+    public function render(): string
     {
         return vsprintf(
             $this->format->render(),

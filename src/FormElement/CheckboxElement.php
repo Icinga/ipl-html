@@ -7,13 +7,13 @@ use ipl\Html\Attributes;
 class CheckboxElement extends InputElement
 {
     /** @var bool Whether the checkbox is checked */
-    protected $checked = false;
+    protected bool $checked = false;
 
     /** @var string Value of the checkbox when it is checked */
-    protected $checkedValue = 'y';
+    protected string $checkedValue = 'y';
 
     /** @var string Value of the checkbox when it is not checked */
-    protected $uncheckedValue = 'n';
+    protected string $uncheckedValue = 'n';
 
     protected $type = 'checkbox';
 
@@ -22,7 +22,7 @@ class CheckboxElement extends InputElement
      *
      * @return bool
      */
-    public function isChecked()
+    public function isChecked(): bool
     {
         return $this->checked;
     }
@@ -34,9 +34,9 @@ class CheckboxElement extends InputElement
      *
      * @return $this
      */
-    public function setChecked($checked)
+    public function setChecked(bool $checked): static
     {
-        $this->checked = (bool) $checked;
+        $this->checked = $checked;
 
         return $this;
     }
@@ -46,7 +46,7 @@ class CheckboxElement extends InputElement
      *
      * @return string
      */
-    public function getCheckedValue()
+    public function getCheckedValue(): string
     {
         return $this->checkedValue;
     }
@@ -58,7 +58,7 @@ class CheckboxElement extends InputElement
      *
      * @return $this
      */
-    public function setCheckedValue($checkedValue)
+    public function setCheckedValue(string $checkedValue): static
     {
         $this->checkedValue = $checkedValue;
 
@@ -70,7 +70,7 @@ class CheckboxElement extends InputElement
      *
      * @return string
      */
-    public function getUncheckedValue()
+    public function getUncheckedValue(): string
     {
         return $this->uncheckedValue;
     }
@@ -82,14 +82,14 @@ class CheckboxElement extends InputElement
      *
      * @return $this
      */
-    public function setUncheckedValue($uncheckedValue)
+    public function setUncheckedValue(string $uncheckedValue): static
     {
         $this->uncheckedValue = $uncheckedValue;
 
         return $this;
     }
 
-    public function setValue($value)
+    public function setValue($value): static
     {
         if (is_bool($value)) {
             $value = $value ? $this->getCheckedValue() : $this->getUncheckedValue();
@@ -100,12 +100,12 @@ class CheckboxElement extends InputElement
         return parent::setValue($value);
     }
 
-    public function getValueAttribute()
+    public function getValueAttribute(): string
     {
         return $this->getCheckedValue();
     }
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         parent::registerAttributeCallbacks($attributes);
 
@@ -115,7 +115,7 @@ class CheckboxElement extends InputElement
             ->registerAttributeCallback('uncheckedValue', null, [$this, 'setUncheckedValue']);
     }
 
-    public function renderUnwrapped()
+    public function renderUnwrapped(): string
     {
         $html = parent::renderUnwrapped();
 

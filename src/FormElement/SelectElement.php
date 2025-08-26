@@ -18,13 +18,13 @@ class SelectElement extends BaseFormElement
     protected $tag = 'select';
 
     /** @var SelectOption[] */
-    protected $options = [];
+    protected array $options = [];
 
     /** @var SelectOption[]|HtmlElement[] */
-    protected $optionContent = [];
+    protected array $optionContent = [];
 
     /** @var array Disabled select options */
-    protected $disabledOptions = [];
+    protected array $disabledOptions = [];
 
     /** @var array|string|null */
     protected $value;
@@ -32,11 +32,11 @@ class SelectElement extends BaseFormElement
     /**
      * Get the option with specified value
      *
-     * @param string|int|null $value
+     * @param int|string|null $value
      *
      * @return ?SelectOption
      */
-    public function getOption($value): ?SelectOption
+    public function getOption(int|string|null $value): ?SelectOption
     {
         return $this->options[$value] ?? null;
     }
@@ -48,7 +48,7 @@ class SelectElement extends BaseFormElement
      *
      * @return $this
      */
-    public function setOptions(array $options): self
+    public function setOptions(array $options): static
     {
         $this->options = [];
         $this->optionContent = [];
@@ -66,7 +66,7 @@ class SelectElement extends BaseFormElement
      *
      * @return $this
      */
-    public function setDisabledOptions(array $disabledOptions): self
+    public function setDisabledOptions(array $disabledOptions): static
     {
         if (! empty($this->options)) {
             foreach ($this->options as $option) {
@@ -94,7 +94,7 @@ class SelectElement extends BaseFormElement
      *
      * @return array|string|null
      */
-    public function getValue()
+    public function getValue(): array|string|null
     {
         if ($this->isMultiple()) {
             return parent::getValue() ?? [];
@@ -103,13 +103,13 @@ class SelectElement extends BaseFormElement
         return parent::getValue();
     }
 
-    public function getValueAttribute()
+    public function getValueAttribute(): null
     {
         // select elements don't have a value attribute
         return null;
     }
 
-    public function getNameAttribute()
+    public function getNameAttribute(): string
     {
         $name = $this->getName();
 
@@ -119,12 +119,12 @@ class SelectElement extends BaseFormElement
     /**
      * Make the selectOption for the specified value and the label
      *
-     * @param string|int|null $value Value of the option
-     * @param string|array $label Label of the option
+     * @param int|string|null $value Value of the option
+     * @param array|string $label Label of the option
      *
      * @return SelectOption|HtmlElement
      */
-    protected function makeOption($value, $label)
+    protected function makeOption(int|string|null $value, array|string $label): SelectOption|HtmlElement
     {
         if (is_array($label)) {
             $grp = Html::tag('optgroup', ['label' => $value]);
@@ -154,7 +154,7 @@ class SelectElement extends BaseFormElement
      *
      * @return bool
      */
-    protected function isSelectedOption($optionValue): bool
+    protected function isSelectedOption(int|string|null $optionValue): bool
     {
         $value = $this->getValue();
 
@@ -205,12 +205,12 @@ class SelectElement extends BaseFormElement
         );
     }
 
-    protected function assemble()
+    protected function assemble(): void
     {
         $this->addHtml(...array_values($this->optionContent));
     }
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         parent::registerAttributeCallbacks($attributes);
 

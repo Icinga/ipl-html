@@ -24,23 +24,23 @@ use function ipl\Stdlib\get_php_type;
 class Attributes implements ArrayAccess, IteratorAggregate
 {
     /** @var Attribute[] */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /** @var callable[] */
-    protected $callbacks = [];
+    protected array $callbacks = [];
 
     /** @var string */
-    protected $prefix = '';
+    protected string $prefix = '';
 
     /** @var callable[] */
-    protected $setterCallbacks = [];
+    protected array $setterCallbacks = [];
 
     /**
      * Create new HTML attributes
      *
-     * @param AttributesType $attributes
+     * @param ?AttributesType $attributes
      */
-    public function __construct(array $attributes = null)
+    public function __construct(array|null $attributes = null)
     {
         if (empty($attributes)) {
             return;
@@ -60,11 +60,11 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Create new HTML attributes
      *
-     * @param AttributesType $attributes
+     * @param ?AttributesType $attributes
      *
      * @return static
      */
-    public static function create(array $attributes = null)
+    public static function create(array|null $attributes = null): static
     {
         return new static($attributes);
     }
@@ -85,7 +85,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException In case the given attributes are of an unsupported type
      */
-    public static function wantAttributes($attributes)
+    public static function wantAttributes(array|self|null $attributes): static
     {
         if ($attributes instanceof self) {
             return $attributes;
@@ -95,14 +95,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
             return new static($attributes);
         }
 
-        if ($attributes === null) {
-            return new static();
-        }
-
-        throw new InvalidArgumentException(sprintf(
-            'Attributes instance, array or null expected. Got %s instead.',
-            get_php_type($attributes)
-        ));
+        return new static();
     }
 
     /**
@@ -110,7 +103,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return Attribute[]
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -122,7 +115,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return $this
      */
-    public function merge(Attributes $attributes)
+    public function merge(Attributes $attributes): static
     {
         foreach ($attributes as $attribute) {
             $this->addAttribute($attribute);
@@ -147,7 +140,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return bool
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return array_key_exists($name, $this->attributes);
     }
@@ -163,7 +156,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
-    public function get($name)
+    public function get(string $name): Attribute
     {
         if (! $this->has($name)) {
             $this->attributes[$name] = Attribute::createEmpty($name);
@@ -184,7 +177,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException If the attribute name contains special characters
      */
-    public function set($attribute, $value = null)
+    public function set(Attribute|array|string|Attributes $attribute, bool|array|string|null $value = null)
     {
         if ($attribute instanceof self) {
             foreach ($attribute as $a) {
@@ -227,14 +220,14 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * If an attribute with the same name already exists, the attribute's value will be added to the current value of
      * the attribute.
      *
-     * @param string|AttributesType|Attribute|self  $attribute The attribute(s) to add
-     * @param AttributeValue                        $value     The value of the attribute
+     * @param string|AttributesType|Attribute|self|null $attribute The attribute(s) to add
+     * @param AttributeValue                            $value     The value of the attribute
      *
      * @return $this
      *
      * @throws InvalidArgumentException If the attribute does not yet exist and its name contains special characters
      */
-    public function add($attribute, $value = null)
+    public function add(Attribute|array|string|Attributes|null $attribute, bool|array|string|null $value = null): static
     {
         if ($attribute === null) {
             return $this;
@@ -288,7 +281,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return ?Attribute The removed or changed attribute, if any, otherwise null
      */
-    public function remove($name, $value = null): ?Attribute
+    public function remove(string $name, array|string|null $value = null): ?Attribute
     {
         if (! $this->has($name)) {
             return null;
@@ -312,7 +305,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return $this
      */
-    public function setAttribute(Attribute $attribute)
+    public function setAttribute(Attribute $attribute): static
     {
         $this->attributes[$attribute->getName()] = $attribute;
 
@@ -329,7 +322,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return $this
      */
-    public function addAttribute(Attribute $attribute)
+    public function addAttribute(Attribute $attribute): static
     {
         $name = $attribute->getName();
 
@@ -347,7 +340,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return string|null
      */
-    public function getPrefix()
+    public function getPrefix(): ?string
     {
         return $this->prefix;
     }
@@ -359,7 +352,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return $this
      */
-    public function setPrefix($prefix)
+    public function setPrefix($prefix): static
     {
         $this->prefix = $prefix;
 
@@ -402,7 +395,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @throws InvalidArgumentException If the result of a callback is invalid
      */
-    public function render()
+    public function render(): string
     {
         $attributes = $this->attributes;
         foreach ($this->callbacks as $name => $callback) {
@@ -513,7 +506,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
         return new ArrayIterator($this->attributes);
     }
 
-    public function __clone()
+    public function __clone(): void
     {
         foreach ($this->attributes as &$attribute) {
             $attribute = clone $attribute;

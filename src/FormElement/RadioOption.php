@@ -9,28 +9,28 @@ class RadioOption
     /** @var string The default label class */
     public const LABEL_CLASS = 'radio-label';
 
-    /** @var string|int|null Value of the option */
-    protected $value;
+    /** @var ?(int|string) Value of the option */
+    protected int|string|null $value;
 
     /** @var string Label of the option */
-    protected $label;
+    protected string $label;
 
-    /** @var mixed Css class of the option's label */
-    protected $labelCssClass = self::LABEL_CLASS;
+    /** @var string|string[] Css class of the option's label */
+    protected string|array $labelCssClass = self::LABEL_CLASS;
 
     /** @var bool Whether the radio option is disabled */
-    protected $disabled = false;
+    protected bool $disabled = false;
 
-    /** @var Attributes */
-    protected $attributes;
+    /** @var ?Attributes */
+    protected ?Attributes $attributes;
 
     /**
      * RadioOption constructor.
      *
-     * @param string|int|null $value
+     * @param int|string|null $value
      * @param string $label
      */
-    public function __construct($value, string $label)
+    public function __construct(int|string|null $value, string $label)
     {
         $this->value = $value === '' ? null : $value;
         $this->label = $label;
@@ -63,9 +63,9 @@ class RadioOption
     /**
      * Get the value of the option
      *
-     * @return string|int|null
+     * @return int|string|null
      */
-    public function getValue()
+    public function getValue(): int|string|null
     {
         return $this->value;
     }
@@ -77,7 +77,7 @@ class RadioOption
      *
      * @return $this
      */
-    public function setLabelCssClass($labelCssClass): self
+    public function setLabelCssClass(string|array $labelCssClass): self
     {
         $this->labelCssClass = $labelCssClass;
 
@@ -89,7 +89,7 @@ class RadioOption
      *
      * @return string|string[]
      */
-    public function getLabelCssClass()
+    public function getLabelCssClass(): string|array
     {
         return $this->labelCssClass;
     }
@@ -101,7 +101,7 @@ class RadioOption
      *
      * @return $this
      */
-    public function setDisabled(bool $disabled = true): self
+    public function setDisabled(bool $disabled = true): static
     {
         $this->disabled = $disabled;
 
@@ -125,7 +125,7 @@ class RadioOption
      *
      * @return $this
      */
-    public function addAttributes(Attributes $attributes): self
+    public function addAttributes(Attributes $attributes): static
     {
         $this->attributes = $attributes;
 

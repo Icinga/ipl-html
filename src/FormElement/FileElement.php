@@ -34,18 +34,18 @@ class FileElement extends InputElement
     protected $value;
 
     /** @var UploadedFileInterface[] Files that are stored on disk */
-    protected $files = [];
+    protected array $files = [];
 
     /** @var string[] Files to be removed from disk */
-    protected $filesToRemove = [];
+    protected array $filesToRemove = [];
 
     /** @var ?string Path to store files to preserve them across requests */
-    protected $destination;
+    protected ?string $destination;
 
-    /** @var int The default maximum file size */
-    protected static $defaultMaxFileSize;
+    /** @var ?int The default maximum file size */
+    protected static ?int $defaultMaxFileSize;
 
-    public function __construct($name, $attributes = null)
+    public function __construct(string $name, null|array|Attributes $attributes = null)
     {
         $this->getAttributes()->get('accept')->setSeparator(', ');
 
@@ -55,7 +55,7 @@ class FileElement extends InputElement
     /**
      * Get the path to store files to preserve them across requests
      *
-     * @return string
+     * @return ?string
      */
     public function getDestination(): ?string
     {
@@ -85,20 +85,20 @@ class FileElement extends InputElement
         return $this;
     }
 
-    public function getValueAttribute()
+    public function getValueAttribute(): null
     {
         // Value attributes of file inputs are set only client-side.
         return null;
     }
 
-    public function getNameAttribute()
+    public function getNameAttribute(): string
     {
         $name = $this->getName();
 
         return $this->isMultiple() ? ($name . '[]') : $name;
     }
 
-    public function hasValue()
+    public function hasValue(): bool
     {
         if ($this->value === null) {
             $files = $this->loadFiles();
@@ -116,7 +116,7 @@ class FileElement extends InputElement
         return $this->value !== null;
     }
 
-    public function setValue($value)
+    public function setValue($value): static
     {
         if (! empty($value)) {
             $fileToTest = $value;
@@ -254,7 +254,7 @@ class FileElement extends InputElement
         return implode(DIRECTORY_SEPARATOR, [$this->destination, sha1($name)]);
     }
 
-    public function onRegistered(Form $form)
+    public function onRegistered(Form $form): void
     {
         if (! $form->hasAttribute('enctype')) {
             $form->setAttribute('enctype', 'multipart/form-data');
@@ -283,7 +283,7 @@ class FileElement extends InputElement
         ]));
     }
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         parent::registerAttributeCallbacks($attributes);
         $this->registerMultipleAttributeCallback($attributes);
@@ -369,7 +369,7 @@ class FileElement extends InputElement
         return ini_get('upload_max_filesize') ?: '2M';
     }
 
-    protected function assemble()
+    protected function assemble(): void
     {
         $doc = new HtmlDocument();
         if ($this->hasFiles()) {
@@ -383,7 +383,7 @@ class FileElement extends InputElement
         }
     }
 
-    public function renderUnwrapped()
+    public function renderUnwrapped(): string
     {
         if (! $this->hasValue() || ! $this->hasFiles()) {
             return parent::renderUnwrapped();

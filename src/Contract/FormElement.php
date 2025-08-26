@@ -12,16 +12,16 @@ interface FormElement extends Wrappable, HtmlElementInterface
     /**
      * Get the description for the element, if any
      *
-     * @return string|null
+     * @return ?string
      */
-    public function getDescription();
+    public function getDescription(): ?string;
 
     /**
      * Get the label for the element, if any
      *
-     * @return string|null
+     * @return ?string
      */
-    public function getLabel();
+    public function getLabel(): ?string;
 
     /**
      * Get the validation error messages
@@ -44,14 +44,14 @@ interface FormElement extends Wrappable, HtmlElementInterface
      *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Get whether the element has a value
      *
      * @return bool False if the element's value is null, the empty string or the empty array; true otherwise
      */
-    public function hasValue();
+    public function hasValue(): bool;
 
     /**
      * Get the value of the element
@@ -74,21 +74,21 @@ interface FormElement extends Wrappable, HtmlElementInterface
      *
      * @return bool
      */
-    public function hasBeenValidated();
+    public function hasBeenValidated(): bool;
 
     /**
      * Get whether the element is ignored
      *
      * @return bool
      */
-    public function isIgnored();
+    public function isIgnored(): bool;
 
     /**
      * Get whether the element is required
      *
      * @return bool
      */
-    public function isRequired();
+    public function isRequired(): bool;
 
     /**
      * Get whether the element is valid
@@ -111,5 +111,5 @@ interface FormElement extends Wrappable, HtmlElementInterface
      *
      * @return void
      */
-    public function onRegistered(Form $form);
+    public function onRegistered(Form $form): void;
 }

@@ -30,19 +30,19 @@ class Form extends BaseHtmlElement
     protected $method = 'POST';
 
     /** @var FormSubmitElement Primary submit button */
-    protected $submitButton;
+    protected FormSubmitElement $submitButton;
 
     /** @var FormSubmitElement[] Other elements that may submit the form */
-    protected $submitElements = [];
+    protected array $submitElements = [];
 
     /** @var bool Whether the form is valid */
-    protected $isValid;
+    protected bool $isValid;
 
     /** @var ServerRequestInterface The server request being processed */
-    protected $request;
+    protected ServerRequestInterface $request;
 
     /** @var string */
-    protected $redirectUrl;
+    protected string $redirectUrl;
 
     protected $tag = 'form';
 
@@ -63,7 +63,7 @@ class Form extends BaseHtmlElement
      *
      * @return string|null
      */
-    public function getAction()
+    public function getAction(): ?string
     {
         return $this->action;
     }
@@ -75,7 +75,7 @@ class Form extends BaseHtmlElement
      *
      * @return $this
      */
-    public function setAction($action)
+    public function setAction(string $action): static
     {
         $this->action = $action;
 
@@ -87,7 +87,7 @@ class Form extends BaseHtmlElement
      *
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -99,7 +99,7 @@ class Form extends BaseHtmlElement
      *
      * @return $this
      */
-    public function setMethod($method)
+    public function setMethod(string $method): static
     {
         $this->method = strtoupper($method);
 
@@ -381,7 +381,7 @@ class Form extends BaseHtmlElement
         // $this->redirectOnSuccess();
     }
 
-    protected function onElementRegistered(FormElement $element)
+    protected function onElementRegistered(FormElement $element): void
     {
         if ($element instanceof FormSubmitElement) {
             $this->submitElements[$element->getName()] = $element;
@@ -394,7 +394,7 @@ class Form extends BaseHtmlElement
         $element->onRegistered($this);
     }
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         $attributes
             ->registerAttributeCallback('action', [$this, 'getAction'], [$this, 'setAction'])

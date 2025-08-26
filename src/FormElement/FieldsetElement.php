@@ -24,7 +24,7 @@ class FieldsetElement extends BaseFormElement
      *
      * @return bool
      */
-    public function hasValue()
+    public function hasValue(): bool
     {
         $this->ensureAssembled();
 
@@ -50,7 +50,7 @@ class FieldsetElement extends BaseFormElement
         return $this->getElementValue($name, $default);
     }
 
-    public function setValue($value)
+    public function setValue($value): static
     {
         if (! is_iterable($value)) {
             throw new InvalidArgumentException(
@@ -69,7 +69,7 @@ class FieldsetElement extends BaseFormElement
         return $this;
     }
 
-    public function validate()
+    public function validate(): static
     {
         $this->ensureAssembled();
 
@@ -88,13 +88,13 @@ class FieldsetElement extends BaseFormElement
         return $this;
     }
 
-    public function getValueAttribute()
+    public function getValueAttribute(): null
     {
         // Fieldsets do not have the value attribute.
         return null;
     }
 
-    public function setWrapper(Wrappable $wrapper)
+    public function setWrapper(Wrappable $wrapper): static
     {
         // TODO(lippserd): Revise decorator implementation to properly implement decorator propagation
         if (
@@ -107,7 +107,7 @@ class FieldsetElement extends BaseFormElement
         return parent::setWrapper($wrapper);
     }
 
-    protected function onElementRegistered(FormElement $element)
+    protected function onElementRegistered(FormElement $element): void
     {
         $element->getAttributes()->registerAttributeCallback('name', function () use ($element) {
             $multiple = false;
