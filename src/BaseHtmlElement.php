@@ -126,14 +126,14 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
         return $this->getAttributes()->get($name);
     }
 
-    public function setAttribute(string $name, bool|string|array $value): static
+    public function setAttribute(string $name, bool|string|array|null $value): static
     {
         $this->getAttributes()->set($name, $value);
 
         return $this;
     }
 
-    public function removeAttribute(string $name, null|string|array $value = null): ?Attribute
+    public function removeAttribute(string $name, bool|string|array|null $value = null): ?Attribute
     {
         return $this->getAttributes()->remove($name, $value);
     }

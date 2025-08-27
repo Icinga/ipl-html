@@ -12,6 +12,9 @@ use InvalidArgumentException;
  *
  * Usually attributes are not instantiated directly, but created through an HTML
  * element's exposed methods.
+ *
+ * @phpstan-type _AttributeScalar string|bool|null
+ * @phpstan-type AttributeValue _AttributeScalar|array<_AttributeScalar>
  */
 class Attribute
 {
@@ -21,14 +24,14 @@ class Attribute
     /** @var string The separator used if value is an array */
     protected $separator = ' ';
 
-    /** @var string|array|bool|null */
+    /** @var AttributeValue */
     protected $value;
 
     /**
      * Create a new HTML attribute from the given name and value
      *
-     * @param string                 $name  The name of the attribute
-     * @param string|bool|array|null $value The value of the attribute
+     * @param string            $name  The name of the attribute
+     * @param AttributeValue    $value The value of the attribute
      *
      * @throws InvalidArgumentException If the name of the attribute contains special characters
      */
@@ -40,8 +43,8 @@ class Attribute
     /**
      * Create a new HTML attribute from the given name and value
      *
-     * @param string                 $name  The name of the attribute
-     * @param string|bool|array|null $value The value of the attribute
+     * @param string            $name  The name of the attribute
+     * @param AttributeValue    $value The value of the attribute
      *
      * @return static
      *
@@ -91,8 +94,8 @@ class Attribute
      * Values are escaped according to the HTML5 double-quoted attribute value syntax:
      * {@link https://html.spec.whatwg.org/multipage/syntax.html#attributes-2 }.
      *
-     * @param string|array $value
-     * @param string       $glue Glue string to join elements if value is an array
+     * @param string|string[]   $value
+     * @param string            $glue Glue string to join elements if value is an array
      *
      * @return string
      */
@@ -184,7 +187,7 @@ class Attribute
     /**
      * Get the value of the attribute
      *
-     * @return string|bool|array|null
+     * @return AttributeValue
      */
     public function getValue()
     {
@@ -194,7 +197,7 @@ class Attribute
     /**
      * Set the value of the attribute
      *
-     * @param string|bool|array|null $value
+     * @param AttributeValue $value
      *
      * @return $this
      */
@@ -208,7 +211,7 @@ class Attribute
     /**
      * Add the given value(s) to the attribute
      *
-     * @param string|array $value The value(s) to add
+     * @param AttributeValue $value The value(s) to add
      *
      * @return $this
      */
@@ -230,7 +233,7 @@ class Attribute
      *
      * Does nothing if there is no such value to remove.
      *
-     * @param string|array $value The value(s) to remove
+     * @param AttributeValue $value The value(s) to remove
      *
      * @return $this
      */
