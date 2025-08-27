@@ -41,7 +41,7 @@ class DeferredText implements ValidHtml
     /**
      * Create a new text node where content creation is deferred until rendering
      *
-     * @param callable $callback Must return the content that should be rendered
+     * @param callable(): string $callback Must return the content that should be rendered
      */
     public function __construct(callable $callback)
     {
@@ -51,7 +51,7 @@ class DeferredText implements ValidHtml
     /**
      * Create a new text node where content creation is deferred until rendering
      *
-     * @param callable $callback Must return the content that should be rendered
+     * @param callable(): string $callback Must return the content that should be rendered
      *
      * @return static
      */

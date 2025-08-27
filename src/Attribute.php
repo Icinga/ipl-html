@@ -215,7 +215,7 @@ class Attribute
      *
      * @return $this
      */
-    public function addValue(array|string $value): static
+    public function addValue(bool|array|string|null $value): static
     {
         $this->value = array_merge((array) $this->value, (array) $value);
 
@@ -237,7 +237,7 @@ class Attribute
      *
      * @return $this
      */
-    public function removeValue(array|string $value): static
+    public function removeValue(bool|array|string|null $value): static
     {
         $value = (array) $value;
 

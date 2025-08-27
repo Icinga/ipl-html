@@ -59,11 +59,7 @@ trait FormElements
             return array_key_exists($element, $this->elements);
         }
 
-        if ($element instanceof FormElement) {
-            return in_array($element, $this->elements, true);
-        }
-
-        return false;
+        return in_array($element, $this->elements, true);
     }
 
     /**
@@ -115,15 +111,8 @@ trait FormElements
             }
 
             $element = $this->createElement($typeOrElement, $name, $options);
-        } elseif ($typeOrElement instanceof FormElement) {
-            $element = $typeOrElement;
         } else {
-            throw new InvalidArgumentException(sprintf(
-                '%s() expects parameter 1 to be a string or an instance of %s, %s given',
-                __METHOD__,
-                FormElement::class,
-                get_php_type($typeOrElement)
-            ));
+            $element = $typeOrElement;
         }
 
         $this
@@ -183,13 +172,6 @@ trait FormElements
     {
         $name = $element->getName();
 
-        if ($name === null) {
-            throw new InvalidArgumentException(sprintf(
-                '%s expects the element to provide a name',
-                __METHOD__
-            ));
-        }
-
         $this->elements[$name] = $element;
 
         if (array_key_exists($name, $this->populatedValues)) {
@@ -233,7 +215,7 @@ trait FormElements
      * A loader for the namespace ipl\\Html\\FormDecorator is automatically registered by default.
      * See {@link addDecoratorLoader()} for registering a custom loader.
      *
-     * @param string|FormElementDecorator $decorator
+     * @param string|FormElementDecorator|DecoratorInterface $decorator
      *
      * @return $this
      *
@@ -241,11 +223,9 @@ trait FormElements
      *                                  or if a decorator loader does not return an instance of
      *                                  {@link FormElementDecorator}
      */
-    public function setDefaultElementDecorator(string|FormElementDecorator $decorator): static
+    public function setDefaultElementDecorator(string|FormElementDecorator|DecoratorInterface $decorator): static
     {
-        if ($decorator instanceof FormElementDecorator || $decorator instanceof DecoratorInterface) {
-            $this->defaultElementDecorator = $decorator;
-        } else {
+        if (is_string($decorator)) {
             $this->ensureDefaultElementDecoratorLoaderRegistered();
 
             $class = $this->loadPlugin('decorator', $decorator);
@@ -256,19 +236,19 @@ trait FormElements
                 ));
             }
 
-            $d = new $class();
-            if (! $d instanceof FormElementDecorator && ! $d instanceof DecoratorInterface) {
+            $decorator = new $class();
+            if (! $decorator instanceof FormElementDecorator && ! $decorator instanceof DecoratorInterface) {
                 throw new InvalidArgumentException(sprintf(
                     "Expected instance of %s for decorator '%s',"
                     . " got %s from a decorator loader instead",
                     FormElementDecorator::class,
                     $decorator,
-                    get_php_type($d)
+                    get_php_type($decorator)
                 ));
             }
-
-            $this->defaultElementDecorator = $d;
         }
+
+        $this->defaultElementDecorator = $decorator;
 
         return $this;
     }

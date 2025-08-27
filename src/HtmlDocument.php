@@ -201,12 +201,12 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Add content from the given document
      *
-     * @param MutableHtml $from
+     * @param HtmlDocument $from
      * @param ?callable $callback Optional callback in order to transform the content to add
      *
      * @return $this
      */
-    public function addFrom(MutableHtml $from, ?callable $callback = null): static
+    public function addFrom(HtmlDocument $from, ?callable $callback = null): static
     {
         $from->ensureAssembled();
 
@@ -378,7 +378,10 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         $wrapper = $this->wrapper;
 
         if (isset($this->renderedBy)) {
-            if ($wrapper === $this->renderedBy || $wrapper->contains($this->renderedBy)) {
+            if (
+                $wrapper === $this->renderedBy
+                || ($wrapper instanceof MutableHtml && $wrapper->contains($this->renderedBy))
+            ) {
                 // $this might be an intermediate wrapper that's already about to be rendered.
                 // In case of an element (referencing $this as a wrapper) that is a child of an
                 // outer wrapper, it is required to ignore $wrapper as otherwise it's a loop.

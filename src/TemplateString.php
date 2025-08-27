@@ -20,7 +20,7 @@ use Exception;
  */
 class TemplateString extends FormattedString
 {
-    /** @var array */
+    /** @var array<string, mixed> */
     protected array $templateArgs = [];
 
     /** @var int  */
@@ -32,7 +32,7 @@ class TemplateString extends FormattedString
     /** @var int */
     protected int $length = 0;
 
-    public function __construct($format, $args = null)
+    public function __construct(string $format, iterable|null $args = null)
     {
         $parentArgs = [];
         foreach ($args ?: [] as $val) {

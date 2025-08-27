@@ -36,7 +36,7 @@ class SubmitButtonElement extends ButtonElement implements FormSubmitElement
         return $this;
     }
 
-    public function setLabel(string $label): static
+    public function setLabel(?string $label): static
     {
         return $this->setContent($label);
     }

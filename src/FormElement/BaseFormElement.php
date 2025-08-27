@@ -92,7 +92,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function setLabel(string $label): static
+    public function setLabel(?string $label): static
     {
         $this->label = $label;
 

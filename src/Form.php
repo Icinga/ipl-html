@@ -42,7 +42,7 @@ class Form extends BaseHtmlElement
     /** @var ?ServerRequestInterface The server request being processed */
     protected ?ServerRequestInterface $request = null;
 
-    /** @var ?string|Url Form redirect url */
+    /** @var string|Url|null Form redirect url */
     protected ?string $redirectUrl = null;
 
     protected $tag = 'form';
