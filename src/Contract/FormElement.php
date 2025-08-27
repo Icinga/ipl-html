@@ -26,7 +26,7 @@ interface FormElement extends Wrappable, HtmlElementInterface
     /**
      * Get the validation error messages
      *
-     * @return array
+     * @return string[]
      */
     public function getMessages();
 
@@ -67,7 +67,7 @@ interface FormElement extends Wrappable, HtmlElementInterface
      *
      * @return $this
      */
-    public function setValue($value);
+    public function setValue($value): static;
 
     /**
      * Get whether the element has been validated
@@ -95,14 +95,14 @@ interface FormElement extends Wrappable, HtmlElementInterface
      *
      * @return bool
      */
-    public function isValid();
+    public function isValid(): bool;
 
     /**
      * Validate the element
      *
      * @return $this
      */
-    public function validate();
+    public function validate(): static;
 
     /**
      * Handler which is called after this element has been registered

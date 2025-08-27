@@ -10,7 +10,7 @@ class LocalDateTimeElement extends InputElement
 {
     public const FORMAT = 'Y-m-d\TH:i:s';
 
-    protected $type = 'datetime-local';
+    protected ?string $type = 'datetime-local';
 
     protected $defaultAttributes = ['step' => '1'];
 

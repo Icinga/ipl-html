@@ -224,7 +224,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         return $this->value;
     }
 
-    public function setValue($value)
+    public function setValue($value): static
     {
         if ($value === '') {
             $this->value = null;
@@ -258,7 +258,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
-    public function validate()
+    public function validate(): static
     {
         $this->ensureAssembled();
 

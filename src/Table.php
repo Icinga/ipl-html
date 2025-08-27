@@ -23,7 +23,7 @@ class Table extends BaseHtmlElement
 
     /** @var ?HtmlElement */
     private ?HtmlElement $footer = null;
-
+//TODO: use HtmlInterface & MutableHtml instead?
     public function addHtml(ValidHtml ...$content): static
     {
         foreach ($content as $html) {
@@ -130,6 +130,7 @@ class Table extends BaseHtmlElement
      *
      * @param Attributes|array|null $attributes
      * @param Html|array|string $content
+     *
      * @return HtmlElement
      */
     public static function th($content = null, Attributes|array|null $attributes = null)
@@ -140,9 +141,9 @@ class Table extends BaseHtmlElement
     /**
      * Static helper creating a td element
      *
-     * @param Attributes|array|null $attributes
      * @param Html|array|string $content
- *
+     * @param Attributes|array|null $attributes
+     *
      * @return HtmlElement
      */
     public static function td($content = null, Attributes|array|null $attributes = null): HtmlElement
@@ -154,6 +155,7 @@ class Table extends BaseHtmlElement
      * @param $row
      * @param Attributes|array|null $attributes
      * @param string $tag
+     *
      * @return HtmlElement
      */
     public static function row($row, Attributes|array|null $attributes = null, string $tag = 'td'): HtmlElement

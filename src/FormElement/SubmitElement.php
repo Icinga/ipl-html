@@ -7,7 +7,7 @@ use ipl\Html\Contract\FormSubmitElement;
 
 class SubmitElement extends InputElement implements FormSubmitElement
 {
-    protected $type = 'submit';
+    protected ?string $type = 'submit';
 
     protected ?string $buttonLabel = null;
 

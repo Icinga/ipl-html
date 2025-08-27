@@ -6,7 +6,7 @@ use ipl\Html\Attributes;
 
 class TextElement extends InputElement
 {
-    protected $type = 'text';
+    protected ?string $type = 'text';
 
     /** @var ?string Placeholder text for the input */
     protected ?string $placeholder = null;

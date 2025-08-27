@@ -2,7 +2,6 @@
 
 namespace ipl\Html\FormElement;
 
-use InvalidArgumentException;
 use ipl\Html\Attributes;
 use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Html;

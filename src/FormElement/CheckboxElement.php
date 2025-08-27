@@ -15,7 +15,7 @@ class CheckboxElement extends InputElement
     /** @var string Value of the checkbox when it is not checked */
     protected string $uncheckedValue = 'n';
 
-    protected $type = 'checkbox';
+    protected ?string $type = 'checkbox';
 
     /**
      * Get whether the checkbox is checked

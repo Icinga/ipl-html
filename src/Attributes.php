@@ -352,7 +352,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * @return $this
      */
-    public function setPrefix($prefix): static
+    public function setPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
 

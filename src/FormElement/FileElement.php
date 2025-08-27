@@ -28,7 +28,7 @@ class FileElement extends InputElement
     use MultipleAttribute;
     use Translation;
 
-    protected $type = 'file';
+    protected ?string $type = 'file';
 
     /** @var UploadedFileInterface|UploadedFileInterface[] */
     protected $value;

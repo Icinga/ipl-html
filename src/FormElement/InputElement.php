@@ -7,8 +7,8 @@ use ipl\Html\Attributes;
 
 class InputElement extends BaseFormElement
 {
-    /** @var string Type of the input */
-    protected $type;
+    /** @var ?string Type of the input */
+    protected ?string $type = null;
 
     protected $tag = 'input';
 
@@ -29,9 +29,9 @@ class InputElement extends BaseFormElement
      *
      * @return $this
      */
-    public function setType($type): static
+    public function setType(string $type): static
     {
-        $this->type = (string) $type;
+        $this->type = $type;
 
         return $this;
     }

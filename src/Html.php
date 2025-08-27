@@ -108,7 +108,7 @@ abstract class Html
      *
      * @return HtmlDocument
      */
-    public static function wrapEach(iterable $list, callable|string $wrapper)
+    public static function wrapEach(iterable $list, callable|string $wrapper): HtmlDocument
     {
         $result = new HtmlDocument();
         foreach ($list as $name => $value) {
@@ -215,7 +215,7 @@ abstract class Html
     /**
      * @deprecated Use {@link Html::encode()} instead
      */
-    public static function escapeForHtml($content): string
+    public static function escapeForHtml($content)
     {
         return static::escape($content);
     }
@@ -223,7 +223,7 @@ abstract class Html
     /**
      * @deprecated Use {@link Error::render()} instead
      */
-    public static function renderError($error): string
+    public static function renderError($error)
     {
         return Error::render($error);
     }

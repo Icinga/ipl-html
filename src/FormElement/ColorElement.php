@@ -7,7 +7,7 @@ use ipl\Validator\ValidatorChain;
 
 class ColorElement extends InputElement
 {
-    protected $type = 'color';
+    protected ?string $type = 'color';
 
     protected function addDefaultValidators(ValidatorChain $chain): void
     {

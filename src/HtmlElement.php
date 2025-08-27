@@ -36,7 +36,7 @@ class HtmlElement extends BaseHtmlElement
      *
      * @return static
      */
-    public static function create(string $tag, array|Attributes|null $attributes = null, $content = null)
+    public static function create(string $tag, array|Attributes|null $attributes = null, $content = null): static
     {
         return new static($tag, Attributes::wantAttributes($attributes), ...Html::wantHtmlList($content));
     }

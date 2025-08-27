@@ -133,7 +133,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @throws InvalidArgumentException If no {@link BaseHtmlElement} with the given tag exists
      */
-    public function getFirst($tag)
+    public function getFirst(string $tag): BaseHtmlElement
     {
         foreach ($this->content as $c) {
             if ($c instanceof BaseHtmlElement && $c->getTag() === $tag) {
@@ -182,7 +182,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    public function add($content)
+    public function add($content): static
     {
         $this->addHtml(...Html::wantHtmlList($content));
 
@@ -278,7 +278,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    public function ensureAssembled()
+    public function ensureAssembled(): static
     {
         if (! $this->hasBeenAssembled) {
             $this->hasBeenAssembled = true;

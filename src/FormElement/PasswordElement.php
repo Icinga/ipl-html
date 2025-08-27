@@ -10,7 +10,7 @@ class PasswordElement extends InputElement
     /** @var string Dummy passwd of this element to be rendered */
     public const DUMMYPASSWORD = '_ipl_form_5847ed1b5b8ca';
 
-    protected $type = 'password';
+    protected ?string $type = 'password';
 
     /** @var bool Status of the form */
     protected bool $isFormValid = true;
@@ -54,7 +54,7 @@ class PasswordElement extends InputElement
         });
     }
 
-    public function getValue(): string
+    public function getValue(): ?string
     {
         $value = parent::getValue();
         $candidates = $this->getValueCandidates();

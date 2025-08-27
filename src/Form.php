@@ -6,6 +6,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
+use ipl\Web\Url;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
@@ -41,7 +42,7 @@ class Form extends BaseHtmlElement
     /** @var ?ServerRequestInterface The server request being processed */
     protected ?ServerRequestInterface $request = null;
 
-    /** @var string */
+    /** @var ?string|Url Form redirect url */
     protected ?string $redirectUrl = null;
 
     protected $tag = 'form';
@@ -111,7 +112,7 @@ class Form extends BaseHtmlElement
      *
      * @return bool
      */
-    public function hasSubmitButton()
+    public function hasSubmitButton(): bool
     {
         return $this->submitButton !== null;
     }
@@ -119,9 +120,9 @@ class Form extends BaseHtmlElement
     /**
      * Get the primary submit button
      *
-     * @return FormSubmitElement|null
+     * @return ?FormSubmitElement
      */
-    public function getSubmitButton()
+    public function getSubmitButton(): ?FormSubmitElement
     {
         return $this->submitButton;
     }
@@ -133,7 +134,7 @@ class Form extends BaseHtmlElement
      *
      * @return $this
      */
-    public function setSubmitButton(FormSubmitElement $element)
+    public function setSubmitButton(FormSubmitElement $element): static
     {
         $this->submitButton = $element;
 
@@ -143,9 +144,9 @@ class Form extends BaseHtmlElement
     /**
      * Get the submit element used to send the form
      *
-     * @return FormSubmitElement|null
+     * @return ?FormSubmitElement
      */
-    public function getPressedSubmitElement()
+    public function getPressedSubmitElement(): ?FormSubmitElement
     {
         foreach ($this->submitElements as $submitElement) {
             if ($submitElement->hasBeenPressed()) {
@@ -157,14 +158,14 @@ class Form extends BaseHtmlElement
     }
 
     /**
-     * @return ServerRequestInterface|null
+     * @return ?ServerRequestInterface
      */
-    public function getRequest()
+    public function getRequest(): ?ServerRequestInterface
     {
         return $this->request;
     }
 
-    public function setRequest($request)
+    public function setRequest(ServerRequestInterface $request): static
     {
         $this->request = $request;
 
@@ -174,9 +175,9 @@ class Form extends BaseHtmlElement
     /**
      * Get the url to redirect to on success
      *
-     * @return string
+     * @return null|string|Url
      */
-    public function getRedirectUrl()
+    public function getRedirectUrl(): null|string|Url
     {
         return $this->redirectUrl;
     }
@@ -184,11 +185,11 @@ class Form extends BaseHtmlElement
     /**
      * Set the url to redirect to on success
      *
-     * @param string $url
+     * @param Url|string $url
      *
      * @return $this
      */
-    public function setRedirectUrl($url)
+    public function setRedirectUrl(Url|string $url): static
     {
         $this->redirectUrl = $url;
 
@@ -200,7 +201,7 @@ class Form extends BaseHtmlElement
      *
      * @return $this
      */
-    public function handleRequest(ServerRequestInterface $request)
+    public function handleRequest(ServerRequestInterface $request): static
     {
         $this->setRequest($request);
 
@@ -261,7 +262,7 @@ class Form extends BaseHtmlElement
      *
      * @return bool
      */
-    public function hasBeenSent()
+    public function hasBeenSent(): bool
     {
         if ($this->request === null) {
             return false;
@@ -336,7 +337,7 @@ class Form extends BaseHtmlElement
      *
      * @return $this
      */
-    public function validatePartial()
+    public function validatePartial(): static
     {
         $this->ensureAssembled();
 
