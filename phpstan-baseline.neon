@@ -1,801 +1,307 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:__construct\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$value of static method ipl\\Html\\Attribute\:\:escapeValue\(\) expects array\<string\>\|string, array\<bool\|string\|null\>\|bool\|string\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Attribute.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:addValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:create\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:escapeValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:escapeValue\\(\\) should return string but returns string\\|null\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:getValue\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:removeValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attribute\\:\\:setValue\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of static method ipl\\\\Html\\\\Attribute\\:\\:escapeValue\\(\\) expects array\\|string, array\\|bool\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Attribute\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attribute.php
-
-		-
-			message: "#^Class ipl\\\\Html\\\\Attributes implements generic interface ArrayAccess but does not specify its types\\: TKey, TValue$#"
+			message: '#^Parameter \#1 \$attribute of method ipl\\Html\\Attributes\:\:add\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attribute\|ipl\\Html\\Attributes\|string, bool\|string\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Attributes.php
 
 		-
-			message: "#^Class ipl\\\\Html\\\\Attributes implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			message: '#^Parameter \#2 \$value of static method ipl\\Html\\Attribute\:\:create\(\) expects array\<bool\|string\|null\>\|bool\|string\|null, bool\|float\|int\|string given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Attributes.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:__construct\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:add\\(\\) has parameter \\$attribute with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:add\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:create\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:getIterator\\(\\) return type with generic class ArrayIterator does not specify its types\\: TKey, TValue$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:remove\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:set\\(\\) has parameter \\$attribute with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:set\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Attributes\\:\\:wantAttributes\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method ipl\\\\Html\\\\Attribute\\:\\:addValue\\(\\) expects array\\|string, array\\|bool\\|string\\|null given\\.$#"
-			count: 3
-			path: src/Attributes.php
-
-		-
-			message: "#^Parameter \\#2 \\$value of method ipl\\\\Html\\\\Attributes\\:\\:set\\(\\) expects array\\|bool\\|string\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Parameter \\#2 \\$value of static method ipl\\\\Html\\\\Attribute\\:\\:create\\(\\) expects array\\|bool\\|string\\|null, bool\\|float\\|int\\|string given\\.$#"
-			count: 1
-			path: src/Attributes.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\BaseHtmlElement\\:\\:addAttributes\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$attributes of static method ipl\\Html\\Attributes\:\:wantAttributes\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attributes\|null, array given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/BaseHtmlElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\BaseHtmlElement\\:\\:addAttributes\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\|ipl\\\\Html\\\\Attributes\\.$#"
+			message: '#^Parameter \#1 \$attributes of static method ipl\\Html\\Attributes\:\:wantAttributes\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attributes\|null, array\|ipl\\Html\\Attributes\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/BaseHtmlElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\BaseHtmlElement\\:\\:getDefaultAttributes\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method ipl\\Html\\DeferredText\:\:render\(\) should return string but returns mixed\.$#'
+			identifier: return.type
 			count: 1
-			path: src/BaseHtmlElement.php
+			path: src/DeferredText.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\BaseHtmlElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \$content of static method ipl\\Html\\Html\:\:escape\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/BaseHtmlElement.php
+			path: src/DeferredText.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\BaseHtmlElement\\:\\:removeAttribute\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/BaseHtmlElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\BaseHtmlElement\\:\\:setAttribute\\(\\) has parameter \\$value with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/BaseHtmlElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\BaseHtmlElement\\:\\:setAttributes\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/BaseHtmlElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\BaseHtmlElement\\:\\:\\$voidElements type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/BaseHtmlElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:addAttributes\\(\\) has parameter \\$attributes with no value type specified in iterable type iterable\\.$#"
-			count: 1
-			path: src/Contract/FormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:getMessages\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Contract/FormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\:\\:decorate\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Contract/FormElementDecorator.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Error\\:\\:getPhpTypeName\\(\\) has no return type specified\\.$#"
+			message: '#^PHPDoc tag @param has invalid value \(string\)\: Unexpected token "\\n     \* ", expected variable at offset 24 on line 2$#'
+			identifier: phpDoc.parseError
 			count: 1
 			path: src/Error.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Error\\:\\:getPhpTypeName\\(\\) has parameter \\$any with no type specified\\.$#"
-			count: 1
-			path: src/Error.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Error\\:\\:renderErrorMessage\\(\\) has parameter \\$message with no type specified\\.$#"
-			count: 1
-			path: src/Error.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(string\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 24$#"
-			count: 1
-			path: src/Error.php
-
-		-
-			message: "#^Cannot call method hasBeenPressed\\(\\) on ipl\\\\Html\\\\Contract\\\\FormSubmitElement\\|null\\.$#"
+			message: '#^Parameter \#1 \$attributes of method ipl\\Html\\Contract\\HtmlElementInterface\:\:addAttributes\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attributes, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Form.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:getValues\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$values of method ipl\\Html\\Form\:\:populate\(\) expects iterable\<string, mixed\>, array given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Form.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:onElementRegistered\\(\\) has no return type specified\\.$#"
+			message: '#^Property ipl\\Html\\Form\:\:\$request \(Psr\\Http\\Message\\ServerRequestInterface\) does not accept mixed\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/Form.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:onError\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:onSuccess\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:removeElement\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:setRequest\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Form\\:\\:setRequest\\(\\) has parameter \\$request with no type specified\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge_recursive expects array, array\\|object\\|null given\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Parameter \\#3 \\$postfix of method ipl\\\\Html\\\\Form\\:\\:addPluginLoader\\(\\) expects string, string\\|null given\\.$#"
-			count: 2
-			path: src/Form.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Form\\:\\:\\$defaultElementDecorator \\(ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|null\\) does not accept ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|ipl\\\\Html\\\\FormDecorator\\\\DecoratorInterface\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Form\\:\\:\\$submitButton \\(ipl\\\\Html\\\\Contract\\\\FormSubmitElement\\) does not accept null\\.$#"
-			count: 1
-			path: src/Form.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\CallbackDecorator\\:\\:assemble\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/CallbackDecorator.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\CallbackDecorator\\:\\:decorate\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/CallbackDecorator.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:assemble\\(\\) has no return type specified\\.$#"
+			message: '#^Method ipl\\Html\\FormDecorator\\DdDtDecorator\:\:dd\(\) should return ipl\\Html\\HtmlElement but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: src/FormDecorator/DdDtDecorator.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:dt\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \.\.\.\$content of method ipl\\Html\\FormDecorator\\DdDtDecorator\:\:addHtml\(\) expects ipl\\Html\\ValidHtml, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormDecorator/DdDtDecorator.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:renderDescription\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DdDtDecorator.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:renderErrors\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DdDtDecorator.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:renderLabel\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DdDtDecorator.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:\\$dd has no type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DdDtDecorator.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:\\$dt has no type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DdDtDecorator.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormDecorator\\\\DdDtDecorator\\:\\:\\$ready has no type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DdDtDecorator.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\HtmlDocument\\:\\:\\$wrapper \\(ipl\\\\Html\\\\Contract\\\\Wrappable\\) does not accept null\\.$#"
-			count: 1
-			path: src/FormDecorator/DdDtDecorator.php
-
-		-
-			message: "#^Binary operation \"\\.\" between 'desc_' and array\\|bool\\|string\\|null results in an error\\.$#"
+			message: '#^Binary operation "\." between ''desc_'' and array\<bool\|string\|null\>\|bool\|string\|null results in an error\.$#'
+			identifier: binaryOp.invalid
 			count: 1
 			path: src/FormDecorator/DivDecorator.php
 
 		-
-			message: "#^Call to an undefined method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:ensureAssembled\\(\\)\\.$#"
+			message: '#^Cannot call method prependHtml\(\) on mixed\.$#'
+			identifier: method.nonObject
 			count: 1
 			path: src/FormDecorator/DivDecorator.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DivDecorator\\:\\:assemble\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \$content of static method ipl\\Html\\Text\:\:create\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormDecorator/DivDecorator.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DivDecorator\\:\\:assembleDescription\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#2 \$value of method ipl\\Html\\Attributes\:\:set\(\) expects array\<bool\|string\|null\>\|bool\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormDecorator/DivDecorator.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DivDecorator\\:\\:assembleElement\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \$attributes of method ipl\\Html\\BaseHtmlElement\:\:addAttributes\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attributes, mixed given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/FormDecorator/DivDecorator.php
+			path: src/FormElement/BaseFormElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DivDecorator\\:\\:assembleErrors\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \$messages of method ipl\\Html\\FormElement\\BaseFormElement\:\:setMessages\(\) expects array\<string\>, array given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/FormDecorator/DivDecorator.php
+			path: src/FormElement/BaseFormElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DivDecorator\\:\\:assembleLabel\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DivDecorator.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormDecorator\\\\DivDecorator\\:\\:decorate\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormDecorator/DivDecorator.php
-
-		-
-			message: "#^Cannot access offset 'name' on mixed\\.$#"
+			message: '#^Parameter \#1 \$validators of method ipl\\Validator\\ValidatorChain\:\:addValidators\(\) expects Traversable\<int\|string, mixed\>, iterable given\.$#'
+			identifier: argument.type
 			count: 2
 			path: src/FormElement/BaseFormElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:addValidators\\(\\) has parameter \\$validators with no value type specified in iterable type iterable\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:getValueOfNameAttribute\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:isValid\\(\\) should return bool but returns bool\\|null\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:registerCallbacks\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:registerValueCallback\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\BaseFormElement\\:\\:setValidators\\(\\) has parameter \\$validators with no value type specified in iterable type iterable\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\BaseHtmlElement\\:\\:addAttributes\\(\\) expects array\\|ipl\\\\Html\\\\Attributes, mixed given\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Trying to invoke mixed but it's not a callable\\.$#"
-			count: 1
-			path: src/FormElement/BaseFormElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\CheckboxElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \$name of class ipl\\Html\\FormElement\\HiddenElement constructor expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormElement/CheckboxElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:getValue\\(\\) has parameter \\$default with no type specified\\.$#"
+			message: '#^Call to an undefined method ipl\\Html\\Contract\\FormElement\:\:isMultiple\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/FormElement/FieldsetElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:getValue\\(\\) has parameter \\$name with no type specified\\.$#"
+			message: '#^Parameter \#1 \$attributes of method ipl\\Html\\Contract\\HtmlElementInterface\:\:addAttributes\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attributes, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormElement/FieldsetElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:getValues\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$name of method ipl\\Html\\FormElement\\FieldsetElement\:\:getElementValue\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormElement/FieldsetElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:onElementRegistered\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \$values of method ipl\\Html\\FormElement\\FieldsetElement\:\:populate\(\) expects iterable\<string, mixed\>, iterable given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormElement/FieldsetElement.php
 
 		-
-			message: "#^Parameter \\#1 \\$attributes of method ipl\\\\Html\\\\Contract\\\\FormElement\\:\\:addAttributes\\(\\) expects iterable, mixed given\\.$#"
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormElement/FieldsetElement.php
 
 		-
-			message: "#^Parameter \\#3 \\$postfix of method ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:addPluginLoader\\(\\) expects string, string\\|null given\\.$#"
-			count: 2
-			path: src/FormElement/FieldsetElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\FieldsetElement\\:\\:\\$defaultElementDecorator \\(ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|null\\) does not accept ipl\\\\Html\\\\Contract\\\\FormElementDecorator\\|ipl\\\\Html\\\\FormDecorator\\\\DecoratorInterface\\.$#"
-			count: 1
-			path: src/FormElement/FieldsetElement.php
-
-		-
-			message: "#^Cannot access offset 0 on mixed\\.$#"
+			message: '#^Binary operation "\." between ''chosen_file_'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
 			count: 1
 			path: src/FormElement/FileElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FileElement\\:\\:assemble\\(\\) has no return type specified\\.$#"
+			message: '#^Binary operation "\." between ''remove_file_'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
 			count: 1
 			path: src/FormElement/FileElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\FileElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
+			message: '#^Property ipl\\Html\\FormElement\\FileElement\:\:\$filesToRemove \(array\<string\>\) does not accept array\<mixed, mixed\>\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/FormElement/FileElement.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of static method ipl\\\\Html\\\\Text\\:\\:create\\(\\) expects string, string\\|null given\\.$#"
+			message: '#^Parameter \#1 \$format of method DateTime\:\:format\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/FormElement/FileElement.php
+			path: src/FormElement/LocalDateTimeElement.php
 
 		-
-			message: "#^Parameter \\#1 \\$name of method ipl\\\\Html\\\\FormElement\\\\FileElement\\:\\:getFilePath\\(\\) expects string, string\\|null given\\.$#"
+			message: '#^Parameter \#1 \$format of static method DateTime\:\:createFromFormat\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/FormElement/FileElement.php
+			path: src/FormElement/LocalDateTimeElement.php
 
 		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\FileElement\\:\\:\\$files \\(array\\<Psr\\\\Http\\\\Message\\\\UploadedFileInterface\\>\\) does not accept array\\<Psr\\\\Http\\\\Message\\\\UploadedFileInterface\\|null\\>\\.$#"
+			message: '#^Parameter \#1 \$haystack of function strrpos expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/FormElement/FileElement.php
+			path: src/FormElement/LocalDateTimeElement.php
 
 		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\FileElement\\:\\:\\$filesToRemove \\(array\\<string\\>\\) does not accept array\\.$#"
+			message: '#^Parameter \#1 \$string of function substr expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
-			path: src/FormElement/FileElement.php
+			path: src/FormElement/LocalDateTimeElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\InputElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/InputElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\PasswordElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
+			message: '#^Cannot call method hasBeenSent\(\) on mixed\.$#'
+			identifier: method.nonObject
 			count: 1
 			path: src/FormElement/PasswordElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\RadioElement\\:\\:assemble\\(\\) has no return type specified\\.$#"
+			message: '#^Cannot call method isValid\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/FormElement/PasswordElement.php
+
+		-
+			message: '#^Property ipl\\Html\\FormElement\\PasswordElement\:\:\$isFormSubmitted \(bool\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/FormElement/PasswordElement.php
+
+		-
+			message: '#^Property ipl\\Html\\FormElement\\PasswordElement\:\:\$isFormValid \(bool\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/FormElement/PasswordElement.php
+
+		-
+			message: '#^Parameter \#1 \$name of class ipl\\Html\\FormElement\\InputElement constructor expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormElement/RadioElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\RadioElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#2 \$label of class ipl\\Html\\FormElement\\RadioOption constructor expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/FormElement/RadioElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\RadioElement\\:\\:setDisabledOptions\\(\\) has parameter \\$disabledOptions with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/RadioElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\RadioElement\\:\\:setOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/RadioElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\RadioElement\\:\\:\\$disabledOptions type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/RadioElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\RadioOption\\:\\:getLabelCssClass\\(\\) should return array\\<string\\>\\|string but returns mixed\\.$#"
-			count: 1
-			path: src/FormElement/RadioOption.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:assemble\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:getValue\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:getValue\\(\\) should return array\\|string\\|null but returns mixed\\.$#"
+			message: '#^Parameter \#2 \$label of method ipl\\Html\\FormElement\\SelectElement\:\:makeOption\(\) expects array\|string, mixed given\.$#'
+			identifier: argument.type
 			count: 2
 			path: src/FormElement/SelectElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:makeOption\\(\\) has parameter \\$label with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:setDisabledOptions\\(\\) has parameter \\$disabledOptions with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:setOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:\\$disabledOptions type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\SelectElement\\:\\:\\$value type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/FormElement/SelectElement.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SelectOption\\:\\:assemble\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/SelectOption.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\FormElement\\\\SubmitButtonElement\\:\\:registerAttributeCallbacks\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/FormElement/SubmitButtonElement.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormElement\\\\SubmitElement\\:\\:\\$buttonLabel has no type specified\\.$#"
+			message: '#^Method ipl\\Html\\FormElement\\SubmitElement\:\:getButtonLabel\(\) should return string but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: src/FormElement/SubmitElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\FormattedString\\:\\:__construct\\(\\) has parameter \\$args with no value type specified in iterable type iterable\\.$#"
-			count: 1
-			path: src/FormattedString.php
-
-		-
-			message: "#^Parameter \\#2 \\$values of function vsprintf expects array\\<bool\\|float\\|int\\|string\\|null\\>, array\\<ipl\\\\Html\\\\ValidHtml\\> given\\.$#"
-			count: 1
-			path: src/FormattedString.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\FormattedString\\:\\:\\$args \\(array\\<ipl\\\\Html\\\\ValidHtml\\>\\) does not accept array\\<bool\\|float\\|int\\|ipl\\\\Html\\\\ValidHtml\\|string\\>\\.$#"
-			count: 1
-			path: src/FormattedString.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Html\\:\\:__callStatic\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$attributes of static method ipl\\Html\\Attributes\:\:wantAttributes\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attributes\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Html.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Html\\:\\:escapeForHtml\\(\\) has no return type specified\\.$#"
+			message: '#^Parameter \#1 \$content of static method ipl\\Html\\Html\:\:escape\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Html.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Html\\:\\:escapeForHtml\\(\\) has parameter \\$content with no type specified\\.$#"
+			message: '#^Parameter \#1 \$error of static method ipl\\Html\\Error\:\:render\(\) expects string\|Throwable, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Html.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Html\\:\\:renderError\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Html.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Html\\:\\:renderError\\(\\) has parameter \\$error with no type specified\\.$#"
-			count: 1
-			path: src/Html.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Html\\:\\:wrapEach\\(\\) has parameter \\$list with no value type specified in iterable type iterable\\.$#"
-			count: 1
-			path: src/Html.php
-
-		-
-			message: "#^Parameter \\#1 \\$attributes of static method ipl\\\\Html\\\\Attributes\\:\\:wantAttributes\\(\\) expects array\\|ipl\\\\Html\\\\Attributes\\|null, mixed given\\.$#"
-			count: 1
-			path: src/Html.php
-
-		-
-			message: "#^Parameter \\#1 \\$content of class ipl\\\\Html\\\\Text constructor expects string, mixed given\\.$#"
-			count: 1
-			path: src/Html.php
-
-		-
-			message: "#^Access to an undefined property ipl\\\\Html\\\\Contract\\\\Wrappable\\:\\:\\$renderedBy\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Call to an undefined method ipl\\\\Html\\\\Contract\\\\Wrappable\\:\\:contains\\(\\)\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Call to an undefined method ipl\\\\Html\\\\Contract\\\\Wrappable\\:\\:renderWrappedDocument\\(\\)\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Call to an undefined method ipl\\\\Html\\\\Contract\\\\Wrappable\\:\\:wrappedBy\\(\\)\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\HtmlDocument\\:\\:addIndexedContent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\HtmlDocument\\:\\:addObjectPosition\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\HtmlDocument\\:\\:addObjectPosition\\(\\) has parameter \\$pos with no type specified\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\HtmlDocument\\:\\:assemble\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\HtmlDocument\\:\\:getContent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\HtmlDocument\\:\\:incrementIndexKeys\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\HtmlDocument\\:\\:reIndexContent\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\HtmlDocument\\:\\:\\$contentIndex type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\HtmlDocument\\:\\:\\$renderedBy \\(ipl\\\\Html\\\\HtmlDocument\\) does not accept ipl\\\\Html\\\\Contract\\\\Wrappable\\.$#"
-			count: 1
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\HtmlDocument\\:\\:\\$renderedBy \\(ipl\\\\Html\\\\HtmlDocument\\) does not accept null\\.$#"
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
 			count: 2
 			path: src/HtmlDocument.php
 
 		-
-			message: "#^Property ipl\\\\Html\\\\HtmlDocument\\:\\:\\$renderedBy \\(ipl\\\\Html\\\\HtmlDocument\\) in isset\\(\\) is not nullable\\.$#"
-			count: 2
-			path: src/HtmlDocument.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\HtmlDocument\\:\\:\\$wrapped \\(ipl\\\\Html\\\\Contract\\\\Wrappable\\) does not accept null\\.$#"
+			message: '#^Call to an undefined method ipl\\Html\\Contract\\MutableHtml\:\:ensureAssembled\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/HtmlDocument.php
 
 		-
-			message: "#^Parameter \\#1 \\$attributes of static method ipl\\\\Html\\\\Attributes\\:\\:wantAttributes\\(\\) expects array\\|ipl\\\\Html\\\\Attributes\\|null, mixed given\\.$#"
+			message: '#^Cannot access an offset on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/HtmlDocument.php
+
+		-
+			message: '#^Cannot use \+\+ on mixed\.$#'
+			identifier: postInc.type
+			count: 1
+			path: src/HtmlDocument.php
+
+		-
+			message: '#^Method ipl\\Html\\HtmlDocument\:\:renderWrapped\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/HtmlDocument.php
+
+		-
+			message: '#^Parameter \#1 \$attributes of static method ipl\\Html\\Attributes\:\:wantAttributes\(\) expects array\<string, array\<bool\|string\|null\>\|bool\|string\|null\>\|ipl\\Html\\Attributes\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/HtmlElement.php
 
 		-
-			message: "#^Method ipl\\\\Html\\\\Table\\:\\:row\\(\\) has parameter \\$row with no type specified\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Table\\:\\:td\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Table\\:\\:td\\(\\) has parameter \\$content with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Table\\:\\:th\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Table\\:\\:th\\(\\) has parameter \\$content with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Table\\:\\:tr\\(\\) has parameter \\$attributes with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\Table\\:\\:tr\\(\\) has parameter \\$content with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Table\\:\\:\\$body \\(ipl\\\\Html\\\\HtmlElement\\) does not accept ipl\\\\Html\\\\BaseHtmlElement\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Table\\:\\:\\$body \\(ipl\\\\Html\\\\HtmlElement\\) does not accept null\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Table\\:\\:\\$caption \\(ipl\\\\Html\\\\HtmlElement\\) does not accept ipl\\\\Html\\\\BaseHtmlElement\\.$#"
-			count: 2
-			path: src/Table.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Table\\:\\:\\$footer \\(ipl\\\\Html\\\\HtmlElement\\) does not accept ipl\\\\Html\\\\BaseHtmlElement\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Table\\:\\:\\$header \\(ipl\\\\Html\\\\HtmlElement\\) does not accept ipl\\\\Html\\\\BaseHtmlElement\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\Table\\:\\:\\$header \\(ipl\\\\Html\\\\HtmlElement\\) does not accept null\\.$#"
-			count: 1
-			path: src/Table.php
-
-		-
-			message: "#^Method ipl\\\\Html\\\\TemplateString\\:\\:__construct\\(\\) has parameter \\$args with no value type specified in iterable type iterable\\.$#"
-			count: 1
-			path: src/TemplateString.php
-
-		-
-			message: "#^Property ipl\\\\Html\\\\TemplateString\\:\\:\\$templateArgs type has no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$wrapper of method ipl\\Html\\HtmlDocument\:\:prependWrapper\(\) expects ipl\\Html\\Contract\\Wrappable, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/TemplateString.php

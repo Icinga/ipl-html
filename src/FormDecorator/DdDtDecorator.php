@@ -2,6 +2,7 @@
 
 namespace ipl\Html\FormDecorator;
 
+use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\Html;
@@ -46,7 +47,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
         return null;
     }
 
-    public function getAttributes()
+    public function getAttributes(): Attributes
     {
         $attributes = parent::getAttributes();
 

@@ -17,6 +17,9 @@ use function ipl\Stdlib\get_php_type;
  * behavior in various ways.
  *
  * Attributes usually come in name-value pairs and are rendered as name="value".
+ *
+ * @phpstan-import-type AttributeValue from Attribute
+ * @phpstan-type AttributesType array<string, AttributeValue>
  */
 class Attributes implements ArrayAccess, IteratorAggregate
 {
@@ -35,7 +38,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Create new HTML attributes
      *
-     * @param array $attributes
+     * @param AttributesType $attributes
      */
     public function __construct(array $attributes = null)
     {
@@ -57,7 +60,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Create new HTML attributes
      *
-     * @param array $attributes
+     * @param AttributesType $attributes
      *
      * @return static
      */
@@ -76,7 +79,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * construct and return a new Attributes instance.
      * If the attributes are null, an empty new instance of Attributes is returned.
      *
-     * @param array|static|null $attributes
+     * @param AttributesType|static|null $attributes
      *
      * @return static
      *
@@ -174,8 +177,8 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * If the attribute with the given name already exists, it gets overridden.
      *
-     * @param string|array|Attribute|self $attribute The attribute(s) to add
-     * @param string|bool|array           $value     The value of the attribute
+     * @param string|AttributesType|Attribute|self  $attribute The attribute(s) to add
+     * @param AttributeValue                        $value     The value of the attribute
      *
      * @return $this
      *
@@ -224,8 +227,8 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * If an attribute with the same name already exists, the attribute's value will be added to the current value of
      * the attribute.
      *
-     * @param string|array|Attribute|self $attribute The attribute(s) to add
-     * @param string|bool|array           $value     The value of the attribute
+     * @param string|AttributesType|Attribute|self  $attribute The attribute(s) to add
+     * @param AttributeValue                        $value     The value of the attribute
      *
      * @return $this
      *
@@ -246,6 +249,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
         }
 
         if (is_array($attribute)) {
+            // TODO: Handle if $attribute = [new Attribute('class', 'bar')]
             foreach ($attribute as $name => $value) {
                 $this->add($name, $value);
             }
@@ -280,7 +284,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * Remove the attribute with the given name or remove the given value from the attribute
      *
      * @param string            $name  The name of the attribute
-     * @param null|string|array $value The value to remove if specified
+     * @param AttributeValue    $value The value to remove if specified
      *
      * @return ?Attribute The removed or changed attribute, if any, otherwise null
      */
@@ -479,8 +483,8 @@ class Attributes implements ArrayAccess, IteratorAggregate
      *
      * If the attribute with the given name already exists, it gets overridden.
      *
-     * @param string $name  Name of the attribute
-     * @param mixed  $value Value of the attribute
+     * @param string            $name  Name of the attribute
+     * @param AttributeValue    $value Value of the attribute
      *
      * @throws InvalidArgumentException If the attribute name contains special characters
      */
