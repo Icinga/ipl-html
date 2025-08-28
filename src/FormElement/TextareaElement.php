@@ -6,7 +6,7 @@ class TextareaElement extends BaseFormElement
 {
     protected $tag = 'textarea';
 
-    public function setValue($value)
+    public function setValue($value): static
     {
         parent::setValue($value);
 
@@ -16,7 +16,7 @@ class TextareaElement extends BaseFormElement
         return $this;
     }
 
-    public function getValueAttribute()
+    public function getValueAttribute(): null
     {
         // textarea elements don't have a value attribute
         return null;

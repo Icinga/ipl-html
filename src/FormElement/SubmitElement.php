@@ -7,11 +7,11 @@ use ipl\Html\Contract\FormSubmitElement;
 
 class SubmitElement extends InputElement implements FormSubmitElement
 {
-    protected $type = 'submit';
+    protected ?string $type = 'submit';
 
-    protected $buttonLabel;
+    protected ?string $buttonLabel = null;
 
-    public function setLabel($label)
+    public function setLabel(?string $label): static
     {
         $this->buttonLabel = $label;
 
@@ -21,7 +21,7 @@ class SubmitElement extends InputElement implements FormSubmitElement
     /**
      * @return string
      */
-    public function getButtonLabel()
+    public function getButtonLabel(): string
     {
         if ($this->buttonLabel === null) {
             return $this->getName();
@@ -31,19 +31,19 @@ class SubmitElement extends InputElement implements FormSubmitElement
     }
 
     /**
-     * @return mixed|static
+     * @return Attribute
      */
-    public function getValueAttribute()
+    public function getValueAttribute(): Attribute
     {
         return new Attribute('value', $this->getButtonLabel());
     }
 
-    public function hasBeenPressed()
+    public function hasBeenPressed(): bool
     {
         return $this->getButtonLabel() === $this->getValue();
     }
 
-    public function isIgnored()
+    public function isIgnored(): bool
     {
         return true;
     }

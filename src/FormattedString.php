@@ -5,8 +5,6 @@ namespace ipl\Html;
 use InvalidArgumentException;
 use Throwable;
 
-use function ipl\Stdlib\get_php_type;
-
 /**
  * {@link sprintf()}-like formatted HTML string supporting lazy rendering of {@link ValidHtml} element arguments
  *
@@ -24,32 +22,24 @@ use function ipl\Stdlib\get_php_type;
 class FormattedString implements ValidHtml
 {
     /** @var ValidHtml[] */
-    protected $args = [];
+    protected array $args = [];
 
     /** @var ValidHtml */
-    protected $format;
+    protected ValidHtml $format;
 
     /**
      * Create a new {@link sprintf()}-like formatted HTML string
      *
-     * @param string   $format
-     * @param iterable $args
+     * @param string $format
+     * @param iterable|null $args
      *
      * @throws InvalidArgumentException If arguments given but not iterable
      */
-    public function __construct($format, $args = null)
+    public function __construct(string $format, iterable|null $args = null)
     {
         $this->format = Html::wantHtml($format);
 
         if ($args !== null) {
-            if (! is_iterable($args)) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s expects parameter two to be iterable, got %s instead',
-                    __METHOD__,
-                    get_php_type($args)
-                ));
-            }
-
             foreach ($args as $key => $val) {
                 if (! is_scalar($val) || (is_string($val) && ! is_numeric($val))) {
                     $val = Html::wantHtml($val);
@@ -69,7 +59,7 @@ class FormattedString implements ValidHtml
      *
      * @return static
      */
-    public static function create($format, ...$args)
+    public static function create(string $format, ...$args): static
     {
         return new static($format, $args);
     }
@@ -82,7 +72,7 @@ class FormattedString implements ValidHtml
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->render();
@@ -91,7 +81,7 @@ class FormattedString implements ValidHtml
         }
     }
 
-    public function render()
+    public function render(): string
     {
         return vsprintf(
             $this->format->render(),

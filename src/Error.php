@@ -17,14 +17,14 @@ use function ipl\Stdlib\get_php_type;
 abstract class Error
 {
     /** @var bool */
-    protected static $showTraces = true;
+    protected static bool $showTraces = true;
 
     /**
      *
      * @param Exception|Throwable|string $error
      * @return HtmlDocument
      */
-    public static function show($error)
+    public static function show($error): HtmlDocument
     {
         if ($error instanceof Throwable) {
             // PHP 7+
@@ -49,19 +49,20 @@ abstract class Error
      * @param Exception|Throwable|string $error
      * @return string
      */
-    public static function render($error)
+    public static function render($error): string
     {
         return static::show($error)->render();
     }
 
     /**
-     * @param bool|null $show
+     * @param ?bool $show
+     *
      * @return bool
      */
-    public static function showTraces($show = null)
+    public static function showTraces(?bool $show = null): bool
     {
         if ($show !== null) {
-            self::$showTraces = (bool) $show;
+            self::$showTraces = $show;
         }
 
         return self::$showTraces;
@@ -79,7 +80,7 @@ abstract class Error
      * @param Exception|Throwable $exception
      * @return string
      */
-    protected static function createMessageForException($exception)
+    protected static function createMessageForException($exception): string
     {
         $file = preg_split('/[\/\\\]/', $exception->getFile(), -1, PREG_SPLIT_NO_EMPTY) ?: [];
         $file = array_pop($file);
@@ -92,10 +93,11 @@ abstract class Error
     }
 
     /**
-     * @param string
+     * @param string $message
+     *
      * @return HtmlDocument
      */
-    protected static function renderErrorMessage($message)
+    protected static function renderErrorMessage(string $message): HtmlDocument
     {
         $output = new HtmlDocument();
         $output->addHtml(

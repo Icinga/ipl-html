@@ -10,15 +10,15 @@ class PasswordElement extends InputElement
     /** @var string Dummy passwd of this element to be rendered */
     public const DUMMYPASSWORD = '_ipl_form_5847ed1b5b8ca';
 
-    protected $type = 'password';
+    protected ?string $type = 'password';
 
     /** @var bool Status of the form */
-    protected $isFormValid = true;
+    protected bool $isFormValid = true;
 
     /** @var bool Status indicating if the form got submitted */
-    protected $isFormSubmitted = false;
+    protected bool $isFormSubmitted = false;
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         parent::registerAttributeCallbacks($attributes);
 
@@ -43,7 +43,7 @@ class PasswordElement extends InputElement
         );
     }
 
-    public function onRegistered(Form $form)
+    public function onRegistered(Form $form): void
     {
         $form->on(Form::ON_VALIDATE, function ($form) {
             $this->isFormValid = $form->isValid();
@@ -54,7 +54,7 @@ class PasswordElement extends InputElement
         });
     }
 
-    public function getValue()
+    public function getValue(): ?string
     {
         $value = parent::getValue();
         $candidates = $this->getValueCandidates();

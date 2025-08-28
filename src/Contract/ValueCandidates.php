@@ -9,7 +9,7 @@ interface ValueCandidates
      *
      * @return array<int, mixed>
      */
-    public function getValueCandidates();
+    public function getValueCandidates(): array;
 
     /**
      * Set value candidates of this element
@@ -18,5 +18,5 @@ interface ValueCandidates
      *
      * @return $this
      */
-    public function setValueCandidates(array $values);
+    public function setValueCandidates(array $values): static;
 }

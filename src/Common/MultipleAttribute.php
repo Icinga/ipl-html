@@ -28,7 +28,7 @@ use ipl\Html\Contract\FormElement;
 trait MultipleAttribute
 {
     /** @var bool Whether the attribute `multiple` is set to `true` */
-    protected $multiple = false;
+    protected bool $multiple = false;
 
     /**
      * Get whether the attribute `multiple` is set to `true`
@@ -47,7 +47,7 @@ trait MultipleAttribute
      *
      * @return $this
      */
-    public function setMultiple(bool $multiple): self
+    public function setMultiple(bool $multiple): static
     {
         $this->multiple = $multiple;
 

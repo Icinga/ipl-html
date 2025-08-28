@@ -17,7 +17,7 @@ class DefaultAttributesAsMethod extends BaseHtmlElement
 {
     protected $tag = 'div';
 
-    public function getDefaultAttributes()
+    public function getDefaultAttributes(): array
     {
         return ['class' => 'test'];
     }
@@ -35,7 +35,7 @@ class VoidElementWithContent extends BaseHtmlElement
 
 class Img extends BaseHtmlElement
 {
-    protected function tag()
+    protected function tag(): string
     {
         return 'img';
     }
@@ -55,7 +55,7 @@ class SpecialHtmlString extends HtmlString
 {
     public $state;
 
-    public function render()
+    public function render(): string
     {
         $html = parent::render();
 

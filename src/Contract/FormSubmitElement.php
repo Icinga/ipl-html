@@ -9,5 +9,5 @@ interface FormSubmitElement extends FormElement
      *
      * @return bool
      */
-    public function hasBeenPressed();
+    public function hasBeenPressed(): bool;
 }

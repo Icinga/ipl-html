@@ -36,12 +36,12 @@ class DeferredText implements ValidHtml
     protected $callback;
 
     /** @var bool */
-    protected $escaped = false;
+    protected bool $escaped = false;
 
     /**
      * Create a new text node where content creation is deferred until rendering
      *
-     * @param callable $callback Must return the content that should be rendered
+     * @param callable(): string $callback Must return the content that should be rendered
      */
     public function __construct(callable $callback)
     {
@@ -51,11 +51,11 @@ class DeferredText implements ValidHtml
     /**
      * Create a new text node where content creation is deferred until rendering
      *
-     * @param callable $callback Must return the content that should be rendered
+     * @param callable(): string $callback Must return the content that should be rendered
      *
      * @return static
      */
-    public static function create(callable $callback)
+    public static function create(callable $callback): static
     {
         return new static($callback);
     }
@@ -65,7 +65,7 @@ class DeferredText implements ValidHtml
      *
      * @return bool
      */
-    public function isEscaped()
+    public function isEscaped(): bool
     {
         return $this->escaped;
     }
@@ -77,7 +77,7 @@ class DeferredText implements ValidHtml
      *
      * @return $this
      */
-    public function setEscaped($escaped = true)
+    public function setEscaped(bool $escaped = true): static
     {
         $this->escaped = $escaped;
 
@@ -92,7 +92,7 @@ class DeferredText implements ValidHtml
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->render();
@@ -101,7 +101,7 @@ class DeferredText implements ValidHtml
         }
     }
 
-    public function render()
+    public function render(): string
     {
         $callback = $this->callback;
 

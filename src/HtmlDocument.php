@@ -26,22 +26,22 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     protected $contentSeparator = '';
 
     /** @var bool Whether the document has been assembled */
-    protected $hasBeenAssembled = false;
+    protected bool $hasBeenAssembled = false;
 
-    /** @var Wrappable Wrapper */
-    protected $wrapper;
+    /** @var ?Wrappable Wrapper */
+    protected ?Wrappable $wrapper = null;
 
-    /** @var Wrappable Wrapped element */
-    private $wrapped;
+    /** @var ?Wrappable Wrapped element */
+    private ?Wrappable $wrapped = null;
 
-    /** @var HtmlDocument The currently responsible wrapper */
-    private $renderedBy;
+    /** @var ?HtmlDocument The currently responsible wrapper */
+    private ?HtmlDocument $renderedBy = null;
 
     /** @var ValidHtml[] Content */
-    private $content = [];
+    private array $content = [];
 
     /** @var array */
-    private $contentIndex = [];
+    private array $contentIndex = [];
 
     /**
      * Set the element to wrap
@@ -50,7 +50,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    private function setWrapped(Wrappable $element)
+    private function setWrapped(Wrappable $element): static
     {
         $this->wrapped = $element;
 
@@ -60,9 +60,9 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Consume the wrapped element
      *
-     * @return Wrappable
+     * @return ?Wrappable
      */
-    private function consumeWrapped()
+    private function consumeWrapped(): ?Wrappable
     {
         $wrapped = $this->wrapped;
         $this->wrapped = null;
@@ -82,7 +82,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    public function setContent($content)
+    public function setContent($content): static
     {
         $this->content = [];
         $this->setHtmlContent(...Html::wantHtmlList($content));
@@ -105,7 +105,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return string
      */
-    public function getSeparator()
+    public function getSeparator(): string
     {
         return $this->contentSeparator;
     }
@@ -117,7 +117,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    public function setSeparator($separator)
+    public function setSeparator(string $separator): static
     {
         $this->contentSeparator = $separator;
 
@@ -133,7 +133,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @throws InvalidArgumentException If no {@link BaseHtmlElement} with the given tag exists
      */
-    public function getFirst($tag)
+    public function getFirst(string $tag): BaseHtmlElement
     {
         foreach ($this->content as $c) {
             if ($c instanceof BaseHtmlElement && $c->getTag() === $tag) {
@@ -182,7 +182,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    public function add($content)
+    public function add($content): static
     {
         $this->addHtml(...Html::wantHtmlList($content));
 
@@ -201,18 +201,17 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Add content from the given document
      *
-     * @param MutableHtml $from
-     * @param callable    $callback Optional callback in order to transform the content to add
+     * @param HtmlDocument $from
+     * @param ?callable $callback Optional callback in order to transform the content to add
      *
      * @return $this
      */
-    public function addFrom(MutableHtml $from, $callback = null)
+    public function addFrom(HtmlDocument $from, ?callable $callback = null): static
     {
         $from->ensureAssembled();
 
-        $isCallable = is_callable($callback);
         foreach ($from->getContent() as $item) {
-            $this->add($isCallable ? $callback($item) : $item);
+            $this->add($callback !== null ? $callback($item) : $item);
         }
 
         return $this;
@@ -241,7 +240,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    public function prepend($content)
+    public function prepend($content): static
     {
         $this->prependHtml(...Html::wantHtmlList($content));
 
@@ -279,7 +278,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return $this
      */
-    public function ensureAssembled()
+    public function ensureAssembled(): static
     {
         if (! $this->hasBeenAssembled) {
             $this->hasBeenAssembled = true;
@@ -334,7 +333,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return implode($this->contentSeparator, $html);
     }
 
-    public function __clone()
+    public function __clone(): void
     {
         foreach ($this->content as $key => $element) {
             $this->content[$key] = clone $element;
@@ -351,7 +350,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->render();
@@ -374,12 +373,15 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return string
      */
-    protected function renderWrapped()
+    protected function renderWrapped(): string
     {
         $wrapper = $this->wrapper;
 
         if (isset($this->renderedBy)) {
-            if ($wrapper === $this->renderedBy || $wrapper->contains($this->renderedBy)) {
+            if (
+                $wrapper === $this->renderedBy
+                || ($wrapper instanceof MutableHtml && $wrapper->contains($this->renderedBy))
+            ) {
                 // $this might be an intermediate wrapper that's already about to be rendered.
                 // In case of an element (referencing $this as a wrapper) that is a child of an
                 // outer wrapper, it is required to ignore $wrapper as otherwise it's a loop.
@@ -414,7 +416,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return string
      */
-    protected function renderWrappedDocument(HtmlDocument $document)
+    protected function renderWrappedDocument(HtmlDocument $document): string
     {
         return $this->setWrapped($document)->render();
     }
@@ -425,19 +427,19 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return count($this->content);
     }
 
-    public function getWrapper()
+    public function getWrapper(): ?Wrappable
     {
         return $this->wrapper;
     }
 
-    public function setWrapper(Wrappable $wrapper)
+    public function setWrapper(Wrappable $wrapper): static
     {
         $this->wrapper = $wrapper;
 
         return $this;
     }
 
-    public function addWrapper(Wrappable $wrapper)
+    public function addWrapper(Wrappable $wrapper): static
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
@@ -448,7 +450,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function prependWrapper(Wrappable $wrapper)
+    public function prependWrapper(Wrappable $wrapper): static
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
@@ -467,7 +469,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
      *
      * @return bool
      */
-    protected function wrappedBy(ValidHtml $element)
+    protected function wrappedBy(ValidHtml $element): bool
     {
         if ($this->wrapper === null) {
             return false;
@@ -508,14 +510,14 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         }
     }
 
-    private function addIndexedContent(ValidHtml $html)
+    private function addIndexedContent(ValidHtml $html): void
     {
         $pos = count($this->content);
         $this->content[$pos] = $html;
         $this->addObjectPosition($html, $pos);
     }
 
-    private function addObjectPosition(ValidHtml $html, $pos)
+    private function addObjectPosition(ValidHtml $html, $pos): void
     {
         $key = spl_object_hash($html);
         if (array_key_exists($key, $this->contentIndex)) {
@@ -525,7 +527,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         }
     }
 
-    private function incrementIndexKeys()
+    private function incrementIndexKeys(): void
     {
         foreach ($this->contentIndex as & $index) {
             foreach ($index as & $pos) {
@@ -534,7 +536,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         }
     }
 
-    private function reIndexContent()
+    private function reIndexContent(): void
     {
         $this->contentIndex = [];
         foreach ($this->content as $pos => $html) {

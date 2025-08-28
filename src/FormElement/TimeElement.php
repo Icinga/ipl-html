@@ -4,5 +4,5 @@ namespace ipl\Html\FormElement;
 
 class TimeElement extends InputElement
 {
-    protected $type = 'time';
+    protected ?string $type = 'time';
 }

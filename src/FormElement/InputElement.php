@@ -7,17 +7,17 @@ use ipl\Html\Attributes;
 
 class InputElement extends BaseFormElement
 {
-    /** @var string Type of the input */
-    protected $type;
+    /** @var ?string Type of the input */
+    protected ?string $type = null;
 
     protected $tag = 'input';
 
     /**
      * Get the type of the input
      *
-     * @return string
+     * @return ?string
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -29,14 +29,14 @@ class InputElement extends BaseFormElement
      *
      * @return $this
      */
-    public function setType($type)
+    public function setType(string $type): static
     {
-        $this->type = (string) $type;
+        $this->type = $type;
 
         return $this;
     }
 
-    protected function registerAttributeCallbacks(Attributes $attributes)
+    protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         parent::registerAttributeCallbacks($attributes);
 

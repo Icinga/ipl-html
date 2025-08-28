@@ -12,9 +12,9 @@ interface Wrappable extends ValidHtml
     /**
      * Get the wrapper, if any
      *
-     * @return Wrappable|null
+     * @return ?Wrappable
      */
-    public function getWrapper();
+    public function getWrapper(): ?Wrappable;
 
     /**
      * Set the wrapper
@@ -23,7 +23,7 @@ interface Wrappable extends ValidHtml
      *
      * @return $this
      */
-    public function setWrapper(Wrappable $wrapper);
+    public function setWrapper(Wrappable $wrapper): static;
 
     /**
      * Add a wrapper
@@ -32,7 +32,7 @@ interface Wrappable extends ValidHtml
      *
      * @return $this
      */
-    public function addWrapper(Wrappable $wrapper);
+    public function addWrapper(Wrappable $wrapper): static;
 
     /**
      * Prepend a wrapper
@@ -41,5 +41,5 @@ interface Wrappable extends ValidHtml
      *
      * @return $this
      */
-    public function prependWrapper(Wrappable $wrapper);
+    public function prependWrapper(Wrappable $wrapper): static;
 }

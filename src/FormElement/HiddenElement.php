@@ -4,5 +4,5 @@ namespace ipl\Html\FormElement;
 
 class HiddenElement extends InputElement
 {
-    protected $type = 'hidden';
+    protected ?string $type = 'hidden';
 }

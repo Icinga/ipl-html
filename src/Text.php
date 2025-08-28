@@ -13,17 +13,17 @@ use Throwable;
 class Text implements ValidHtml
 {
     /** @var string */
-    protected $content;
+    protected string $content;
 
     /** @var bool Whether the content is already escaped */
-    protected $escaped = false;
+    protected bool $escaped = false;
 
     /**
      * Create a new text node
      *
      * @param string $content
      */
-    public function __construct($content)
+    public function __construct(string $content)
     {
         $this->setContent($content);
     }
@@ -35,7 +35,7 @@ class Text implements ValidHtml
      *
      * @return static
      */
-    public static function create($content)
+    public static function create(string $content): static
     {
         return new static($content);
     }
@@ -45,7 +45,7 @@ class Text implements ValidHtml
      *
      * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -57,9 +57,9 @@ class Text implements ValidHtml
      *
      * @return $this
      */
-    public function setContent($content)
+    public function setContent(string $content): static
     {
-        $this->content = (string) $content;
+        $this->content = $content;
 
         return $this;
     }
@@ -69,7 +69,7 @@ class Text implements ValidHtml
      *
      * @return bool
      */
-    public function isEscaped()
+    public function isEscaped(): bool
     {
         return $this->escaped;
     }
@@ -81,7 +81,7 @@ class Text implements ValidHtml
      *
      * @return $this
      */
-    public function setEscaped($escaped = true)
+    public function setEscaped(bool $escaped = true): static
     {
         $this->escaped = $escaped;
 
@@ -96,7 +96,7 @@ class Text implements ValidHtml
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->render();
@@ -105,7 +105,7 @@ class Text implements ValidHtml
         }
     }
 
-    public function render()
+    public function render(): string
     {
         if ($this->escaped) {
             return $this->content;
