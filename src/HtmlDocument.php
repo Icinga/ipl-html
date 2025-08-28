@@ -28,14 +28,14 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /** @var bool Whether the document has been assembled */
     protected $hasBeenAssembled = false;
 
-    /** @var Wrappable Wrapper */
-    protected $wrapper;
+    /** @var ?(HtmlDocument|Wrappable) Wrapper */
+    protected null|HtmlDocument|Wrappable $wrapper = null;
 
-    /** @var Wrappable Wrapped element */
-    private $wrapped;
+    /** @var ?(HtmlDocument|Wrappable) Wrapped element */
+    private null|HtmlDocument|Wrappable $wrapped = null;
 
-    /** @var HtmlDocument The currently responsible wrapper */
-    private $renderedBy;
+    /** @var ?(HtmlDocument|Wrappable) The currently responsible wrapper */
+    private null|HtmlDocument|Wrappable $renderedBy = null;
 
     /** @var ValidHtml[] Content */
     private $content = [];
@@ -46,11 +46,11 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Set the element to wrap
      *
-     * @param Wrappable $element
+     * @param HtmlDocument|Wrappable $element
      *
      * @return $this
      */
-    private function setWrapped(Wrappable $element)
+    private function setWrapped(HtmlDocument|Wrappable $element)
     {
         $this->wrapped = $element;
 
@@ -60,7 +60,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Consume the wrapped element
      *
-     * @return Wrappable
+     * @return Wrappable|HtmlDocument|null
      */
     private function consumeWrapped()
     {
@@ -379,7 +379,10 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         $wrapper = $this->wrapper;
 
         if (isset($this->renderedBy)) {
-            if ($wrapper === $this->renderedBy || $wrapper->contains($this->renderedBy)) {
+            if (
+                $wrapper === $this->renderedBy
+                || ($wrapper instanceof MutableHtml && $wrapper->contains($this->renderedBy))
+            ) {
                 // $this might be an intermediate wrapper that's already about to be rendered.
                 // In case of an element (referencing $this as a wrapper) that is a child of an
                 // outer wrapper, it is required to ignore $wrapper as otherwise it's a loop.
@@ -430,14 +433,25 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this->wrapper;
     }
 
-    public function setWrapper(Wrappable $wrapper)
+    public function setWrapper(HtmlDocument|Wrappable $wrapper)
     {
+        if (! $wrapper instanceof self) {
+            trigger_error(
+                sprintf(
+                    '%s::%s: Passing an instance of Wrappable that is not HtmlDocument is deprecated.',
+                    static::class,
+                    __FUNCTION__
+                ),
+                E_USER_DEPRECATED
+            );
+        }
+
         $this->wrapper = $wrapper;
 
         return $this;
     }
 
-    public function addWrapper(Wrappable $wrapper)
+    public function addWrapper(HtmlDocument|Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
@@ -448,7 +462,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function prependWrapper(Wrappable $wrapper)
+    public function prependWrapper(HtmlDocument|Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
