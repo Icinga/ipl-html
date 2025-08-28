@@ -16,13 +16,13 @@ class HtmlTagDecorator implements Decorator
 {
     use DecoratorOptions;
 
-    /** @var string Wrap the element with the tag */
+    /** @var int Wrap the element with the tag */
     public const PLACEMENT_WRAP = 0;
 
-    /** @var string Append the tag */
+    /** @var int Append the tag */
     public const PLACEMENT_APPEND = 1;
 
-    /** @var string Prepend the tag */
+    /** @var int Prepend the tag */
     public const PLACEMENT_PREPEND = 2;
 
     /** @var int Describes where the HTML tag should be placed. Default : wrap */
@@ -108,7 +108,7 @@ class HtmlTagDecorator implements Decorator
      */
     public function setPlacement(int $placement): static
     {
-        if (! in_array($placement, [self::PLACEMENT_APPEND, self::PLACEMENT_PREPEND, self::PLACEMENT_WRAP], true)) {
+        if (! in_array($placement, [self::PLACEMENT_APPEND, self::PLACEMENT_PREPEND, self::PLACEMENT_WRAP])) {
             throw new InvalidArgumentException(sprintf('Unknown placement "%d" given', $placement));
         }
 

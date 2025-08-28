@@ -2,26 +2,28 @@
 
 namespace ipl\Html\FormDecorator;
 
-use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\MutableHtml;
 use ipl\Html\HtmlDocument;
 use ipl\Html\ValidHtml;
 
 /**
  * DecorationResults stores and render the results of decorators
+ *
+ * @phpstan-type content array<int, ValidHtml|content>
  */
 class DecorationResults implements ValidHtml
 {
+    /** @var content The HTML content */
     protected array $content = [];
 
     /**
      * Add the given HTML element to the results
      *
-     * @param FormElement|MutableHtml $item The HTML content to be added
+     * @param ValidHtml $item The HTML content to be added
      *
      * @return $this
      */
-    public function append(FormElement|MutableHtml $item): static
+    public function append(ValidHtml $item): static
     {
         $this->content[] = $item;
 
@@ -31,11 +33,11 @@ class DecorationResults implements ValidHtml
     /**
      * Add the given HTML element to the beginning of the results
      *
-     * @param FormElement|MutableHtml $item The HTML element to be added
+     * @param ValidHtml $item The HTML element to be added
      *
      * @return $this
      */
-    public function prepend(FormElement|MutableHtml $item): static
+    public function prepend(ValidHtml $item): static
     {
         array_unshift($this->content, $item);
 
@@ -95,9 +97,9 @@ class DecorationResults implements ValidHtml
      * @param MutableHtml $parent The parent element
      * @param MutableHtml|array $item The content to be added
      *
-     * @return MutableHtml The resolved parent element with content added
+     * @return ValidHtml The resolved parent element with content added
      */
-    private function resolveWrapped(MutableHtml $parent, MutableHtml|array $item): MutableHtml
+    protected function resolveWrapped(MutableHtml $parent, MutableHtml|array $item): ValidHtml
     {
         if ($item instanceof MutableHtml) {
             $parent->addHtml($item);
