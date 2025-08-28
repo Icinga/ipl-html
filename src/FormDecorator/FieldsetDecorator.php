@@ -1,0 +1,43 @@
+<?php
+
+namespace ipl\Html\FormDecorator;
+
+use ipl\Html\Attributes;
+use ipl\Html\BaseHtmlElement;
+use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\DecoratorOptions;
+use ipl\Html\Contract\FormElement;
+use ipl\Html\HtmlElement;
+use ipl\Html\Text;
+
+/**
+ * Decorates the fieldset of the form element
+ */
+class FieldsetDecorator implements Decorator
+{
+    use DecoratorOptions;
+
+    public function decorate(DecorationResults $results, FormElement $formElement): void
+    {
+        if ($formElement instanceof BaseHtmlElement && $formElement->getTag() !== 'fieldset') {
+            return;
+        }
+
+        $description = $formElement->getDescription();
+        if ($description !== null) {
+            $attributes = null;
+            if ($formElement->getAttributes()->has('id')) {
+                $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
+                $formElement->getAttributes()->set('aria-describedby', $descriptionId);
+                $attributes = new Attributes(['id' => $descriptionId]);
+            }
+
+            $formElement->prependHtml(new HtmlElement('p', $attributes, new Text($description)));
+        }
+
+        $label = $formElement->getLabel();
+        if ($label !== null) {
+            $formElement->prependHtml(new HtmlElement('legend', null, Text::create($label)));
+        }
+    }
+}

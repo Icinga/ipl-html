@@ -3,9 +3,12 @@
 namespace ipl\Html\Contract;
 
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DecoratorChain;
 
 /**
  * Representation of form elements
+ *
+ * @phpstan-import-type decoratorsFormat from DecoratorChain
  */
 interface FormElement extends Wrappable, HtmlElementInterface
 {
@@ -103,6 +106,29 @@ interface FormElement extends Wrappable, HtmlElementInterface
      * @return $this
      */
     public function validate();
+
+    /**
+     * Set the decorators
+     *
+     * @param decoratorsFormat $decorators
+     *
+     * @return $this
+     */
+    public function setDecorators(array $decorators): self;
+
+    /**
+     * Get all decorators
+     *
+     * @return DecoratorChain
+     */
+    public function getDecorators(): DecoratorChain;
+
+    /**
+     * Get whether the element has any decorators
+     *
+     * @return bool
+     */
+    public function hasDecorators(): bool;
 
     /**
      * Handler which is called after this element has been registered
