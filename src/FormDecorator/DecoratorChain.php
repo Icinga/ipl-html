@@ -5,7 +5,6 @@ namespace ipl\Html\FormDecorator;
 use InvalidArgumentException;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\Contract\MutableHtml;
 use ipl\Html\FormElement\HiddenElement;
 use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
@@ -13,11 +12,11 @@ use UnexpectedValueException;
 use function ipl\Stdlib\get_php_type;
 
 /**
- * @phpstan-type decoratorName string
- * @phpstan-type decoratorOptionsFormat array<string, array<string, mixed>|string>
+ * DecoratorChain for form elements
  *
- * @phpstan-type decoratorFormat decoratorName | Decorator | decoratorOptionsFormat
- * @phpstan-type decoratorsFormat array<int|decoratorName, decoratorFormat>
+ * @phpstan-type decoratorOptionsFormat array<non-empty-string, mixed>
+ * @phpstan-type decoratorFormat non-empty-string | Decorator | decoratorOptionsFormat
+ * @phpstan-type decoratorsFormat array<int|non-empty-string, Decorator|decoratorOptionsFormat>
  */
 class DecoratorChain
 {
@@ -189,7 +188,7 @@ class DecoratorChain
     /**
      * Create a decorator from the given name and options
      *
-     * @param decoratorName $name
+     * @param non-empty-string $name
      * @param decoratorOptionsFormat $options
      *
      * @return Decorator

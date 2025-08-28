@@ -5,11 +5,10 @@ namespace ipl\Html\Contract;
 use ipl\Html\FormDecorator\DecoratorChain;
 
 /**
- * @phpstan-import-type decoratorFormat from DecoratorChain
- * @phpstan-import-type decoratorsFormat from DecoratorChain
- * @phpstan-import-type decoratorOptionsFormat from DecoratorChain
+ * Interface for form elements that support default element decoration
  *
- * @phpstan-type loaderPaths array<int, array{0: string, 1?: string}>
+ * @phpstan-import-type decoratorsFormat from DecoratorChain
+ * @phpstan-type loaderPaths array<int, array{0: class-string, 1?: string}>
  */
 interface DefaultFormElementDecoration
 {
