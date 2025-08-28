@@ -5,7 +5,6 @@ namespace ipl\Html\FormDecorator;
 use InvalidArgumentException;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormElement\HiddenElement;
 use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
 
@@ -243,11 +242,8 @@ class DecoratorChain
     public function apply(FormElement $formElement): string
     {
         $results = (new DecorationResults())->append($formElement);
-
-        if (! $formElement instanceof HiddenElement) {
-            foreach ($this->decorators as $decorator) {
-                $decorator->decorate($results, $formElement);
-            }
+        foreach ($this->decorators as $decorator) {
+            $decorator->decorate($results, $formElement);
         }
 
         return (string) $results;

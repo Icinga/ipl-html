@@ -214,8 +214,9 @@ trait FormElements
             }
         }
 
+        $isHidden = $element instanceof HiddenElement || ! $element->getAttributes()->get('hidden')->isEmpty();
         $defaultDecorators = $this->getDefaultElementDecorators();
-        if (! empty($defaultDecorators) && ! $this->hasDefaultElementDecorator()) {
+        if (! $isHidden && ! empty($defaultDecorators) && ! $this->hasDefaultElementDecorator()) {
             if ($element instanceof DefaultFormElementDecoration) {
                 $element->setDefaultElementDecorators($defaultDecorators);
             }
