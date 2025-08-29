@@ -100,6 +100,7 @@ class DecoratorChainTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Can't load decorator 'invalid'. decorator unknown");
+
         $this->createDecoratorChain()->addDecorator('invalid');
     }
 

@@ -37,14 +37,38 @@ class DescriptionDecorator implements Decorator
         $results->append(
             new HtmlElement(
                 'p',
-                new Attributes(['class' => $this->class, 'id' => $descriptionId]),
+                new Attributes(['class' => $this->getClass(), 'id' => $descriptionId]),
                 new Text($description)
             )
         );
     }
 
+    /**
+     * Get the css class(es)
+     *
+     * @return string|string[]
+     */
+    public function getClass(): string|array
+    {
+        return $this->class;
+    }
+
+    /**
+     * Set the css class(es)
+     *
+     * @param string|string[] $class
+     *
+     * @return $this
+     */
+    public function setClass(string|array $class): static
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
     protected function registerAttributeCallbacks(Attributes $attributes): void
     {
-        $attributes->registerAttributeCallback('class', null, fn(string|array $value) => $this->class = $value);
+        $attributes->registerAttributeCallback('class', null, $this->setClass(...));
     }
 }
