@@ -111,7 +111,7 @@ class SelectElement extends BaseFormElement
 
     public function getNameAttribute()
     {
-        $name = $this->getName();
+        $name = $this->getSanitizedName();
 
         return $this->isMultiple() ? ($name . '[]') : $name;
     }

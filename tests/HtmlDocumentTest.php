@@ -355,13 +355,13 @@ class HtmlDocumentTest extends TestCase
     public function testAddFromCorrectlyPassesElementsWithCallback()
     {
         $ul = h::tag('ul');
-        $ul->add(h::tag('li', ['id' => '1'], 'one'));
-        $ul->add(h::tag('li', ['id' => '2'], 'two'));
-        $ul->add(h::tag('li', ['id' => '3'], 'three'));
+        $ul->add(h::tag('li', ['id' => 'item-1'], 'one'));
+        $ul->add(h::tag('li', ['id' => 'item-2'], 'two'));
+        $ul->add(h::tag('li', ['id' => 'item-3'], 'three'));
 
         $div = h::tag('div');
         $div->addFrom($ul, function (BaseHtmlElement $item) {
-            if ($item->getAttributes()->get('id')->getValue() !== '2') {
+            if ($item->getAttributes()->get('id')->getValue() !== 'item-2') {
                 $item->setTag('p');
                 $item->getAttributes()->remove('id');
                 return $item;
