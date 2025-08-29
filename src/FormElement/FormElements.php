@@ -61,6 +61,11 @@ trait FormElements
     /** @var array<string, array<int, mixed>> */
     private $populatedValues = [];
 
+    /**
+     * Get the default element decorators.
+     *
+     * @return decoratorsFormat
+     */
     public function getDefaultElementDecorators(): array
     {
         return $this->defaultElementDecorators;

@@ -108,15 +108,6 @@ interface FormElement extends Wrappable, HtmlElementInterface
     public function validate();
 
     /**
-     * Set the decorators
-     *
-     * @param decoratorsFormat $decorators
-     *
-     * @return $this
-     */
-    public function setDecorators(array $decorators): self;
-
-    /**
      * Get all decorators
      *
      * @return DecoratorChain
