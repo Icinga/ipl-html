@@ -13,13 +13,6 @@ use ipl\Html\FormDecorator\DecoratorChain;
 interface DefaultFormElementDecoration
 {
     /**
-     * Get the default element decorators.
-     *
-     * @return decoratorsFormat
-     */
-    public function getDefaultElementDecorators(): array;
-
-    /**
      * Set the default element decorators.
      *
      * The default decorators will be applied to all elements that do not have explicit decorators.
