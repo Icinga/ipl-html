@@ -49,14 +49,38 @@ class LabelDecorator implements Decorator
         $results->prepend(
             new HtmlElement(
                 'div',
-                Attributes::create(['class' => $this->class]),
+                Attributes::create(['class' => $this->getClass()]),
                 new HtmlElement('label', $labelAttr, $label)
             )
         );
     }
 
+    /**
+     * Get the css class(es)
+     *
+     * @return string|string[]
+     */
+    public function getClass(): string|array
+    {
+        return $this->class;
+    }
+
+    /**
+     * Set the css class(es)
+     *
+     * @param string|string[] $class
+     *
+     * @return $this
+     */
+    public function setClass(string|array $class): static
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
     protected function registerAttributeCallbacks(Attributes $attributes): void
     {
-        $attributes->registerAttributeCallback('class', null, fn(string|array $value) => $this->class = $value);
+        $attributes->registerAttributeCallback('class', null, $this->setClass(...));
     }
 }

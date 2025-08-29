@@ -55,7 +55,8 @@ class HtmlTagDecorator implements Decorator
             }
         }
 
-        $html = new HtmlElement($this->getTag(), $this->class ? new Attributes(['class' => $this->class]) : null);
+        $class = $this->getClass();
+        $html = new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]));
 
         switch ($this->getPlacement()) {
             case self::PLACEMENT_APPEND:
@@ -151,12 +152,36 @@ class HtmlTagDecorator implements Decorator
         return $this;
     }
 
+    /**
+     * Get the css class(es)
+     *
+     * @return ?(string|string[])
+     */
+    public function getClass(): string|array|null
+    {
+        return $this->class;
+    }
+
+    /**
+     * Set the css class(es)
+     *
+     * @param string|string[] $class
+     *
+     * @return $this
+     */
+    public function setClass(string|array $class): static
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
     protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         $attributes
             ->registerAttributeCallback('tag', null, $this->setTag(...))
             ->registerAttributeCallback('placement', null, $this->setPlacement(...))
             ->registerAttributeCallback('condition', null, $this->setCondition(...))
-            ->registerAttributeCallback('class', null, fn(string|array $value) => $this->class = $value);
+            ->registerAttributeCallback('class', null, $this->setClass(...));
     }
 }
