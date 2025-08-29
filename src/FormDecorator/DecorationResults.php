@@ -80,35 +80,44 @@ class DecorationResults implements ValidHtml
         }
 
         $content = new HtmlDocument();
-        foreach ($this->content as $item) {
-            if (is_array($item)) {
-                $item = $this->resolveWrapped($item[0], $item[1]);
-            }
-
-            $content->addHtml($item);
-        }
+        $this->resolveContent($content, $this->content);
 
         return $content->render();
+    }
+
+    /**
+     * Resolve content
+     *
+     * @param MutableHtml $parent The parent element
+     * @param content $content The content to be added
+     *
+     * @return void
+     */
+    protected function resolveContent(MutableHtml $parent, array $content): void
+    {
+        foreach ($content as $item) {
+            if (is_array($item)) {
+                $item = $this->resolveWrappedContent($item[0], $item[1]);
+            }
+
+            $parent->addHtml($item);
+        }
     }
 
     /**
      * Resolve wrapped content
      *
      * @param MutableHtml $parent The parent element
-     * @param MutableHtml|array $item The content to be added
+     * @param ValidHtml|array $item The content to be added
      *
      * @return ValidHtml The resolved parent element with content added
      */
-    protected function resolveWrapped(MutableHtml $parent, MutableHtml|array $item): ValidHtml
+    protected function resolveWrappedContent(MutableHtml $parent, ValidHtml|array $item): ValidHtml
     {
-        if ($item instanceof MutableHtml) {
+        if ($item instanceof ValidHtml) {
             $parent->addHtml($item);
-        } elseif (! empty($item)) {
-            if (is_array($item[0])) {
-                $parent->addHtml($this->resolveWrapped($item[0][0], $item[0][1]));
-            } else {
-                $parent->addHtml(...$item);
-            }
+        } else {
+            $this->resolveContent($parent, $item);
         }
 
         return $parent;
