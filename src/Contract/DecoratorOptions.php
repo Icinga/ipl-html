@@ -7,7 +7,7 @@ use ipl\Html\Attributes;
 /**
  * Options for decorators
  *
- * This trait manages the decorator options.
+ * This trait is intended for use by the classes which implement {@see DecoratorOptionsInterface}.
  */
 trait DecoratorOptions
 {
@@ -30,27 +30,11 @@ trait DecoratorOptions
     }
 
     /**
-     * Set the attributes
-     *
-     * @param ?(Attributes|array) $attributes
-     *
-     * @return $this
-     */
-    public function setAttributes(Attributes|array|null $attributes): static
-    {
-        $this->attributes = Attributes::wantAttributes($attributes);
-
-        return $this;
-    }
-
-    /**
      * Register attribute callbacks
      *
      * Override this method in order to register attribute callbacks in concrete classes.
      *
      * @param Attributes $attributes
      */
-    protected function registerAttributeCallbacks(Attributes $attributes): void
-    {
-    }
+    abstract protected function registerAttributeCallbacks(Attributes $attributes): void;
 }

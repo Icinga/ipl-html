@@ -5,6 +5,7 @@ namespace ipl\Html\FormDecorator;
 use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
+use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\HtmlElement;
@@ -13,7 +14,7 @@ use ipl\Html\Text;
 /**
  * Decorates the description of the form element
  */
-class DescriptionDecorator implements Decorator
+class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 

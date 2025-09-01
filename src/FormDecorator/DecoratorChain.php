@@ -4,6 +4,7 @@ namespace ipl\Html\FormDecorator;
 
 use InvalidArgumentException;
 use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
@@ -136,8 +137,8 @@ class DecoratorChain
      *
      * // or add Decorator instances
      * $decorators = [
-     *      (new HtmlTagDecorator())->setAttributes(['tag' => 'span', 'placement' => 'append']),
-     *      (new LabelDecorator())->setAttributes(['class' => 'element-label'])
+     *      (new HtmlTagDecorator())->getAttributes()->add(['tag' => 'span', 'placement' => 'append']),
+     *      (new LabelDecorator())->getAttributes()->add(['class' => 'element-label'])
      * ];
      * ```
      *
@@ -216,6 +217,10 @@ class DecoratorChain
         }
 
         if (! empty($options)) {
+            if (! $decorator instanceof DecoratorOptionsInterface) {
+                throw new InvalidArgumentException(sprintf("Decorator '%s' does not support options", $name));
+            }
+
             $decorator->getAttributes()->add($options);
         }
 
