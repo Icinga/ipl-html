@@ -14,9 +14,10 @@ use function ipl\Stdlib\get_php_type;
 /**
  * DecoratorChain for form elements
  *
- * @phpstan-type decoratorOptionsFormat array<non-empty-string, mixed>
- * @phpstan-type decoratorFormat non-empty-string | Decorator | decoratorOptionsFormat
- * @phpstan-type decoratorsFormat array<int|non-empty-string, Decorator|decoratorOptionsFormat>
+ * @phpstan-type decoratorOptionsFormat array<string, mixed>
+ * @phpstan-type _decoratorsFormat1 array<string, decoratorOptionsFormat>
+ * @phpstan-type _decoratorsFormat2 array<int, string|Decorator|decoratorOptionsFormat>
+ * @phpstan-type decoratorsFormat _decoratorsFormat1 | _decoratorsFormat2
  */
 class DecoratorChain
 {
@@ -54,54 +55,21 @@ class DecoratorChain
      * Please see {@see static::addDecorators()} for the supported array formats, where each array entry defines
      * a decorator.
      *
-     * @param decoratorFormat $decorator
+     * @param Decorator|string $decorator
+     * @param decoratorOptionsFormat $options
      *
      * @return $this
      *
-     * @throws InvalidArgumentException If array specification is invalid
+     * @throws InvalidArgumentException If the decorator specification is invalid
      */
-    public function addDecorator(Decorator|array|string $decorator): static
+    public function addDecorator(Decorator|string $decorator, array $options = []): static
     {
-        if (empty($decorator)) {
-            return $this;
+        if (! empty($options) && ! is_string($decorator)) {
+            throw new InvalidArgumentException('No options are allowed with parameter 1 of type Decorator');
         }
 
         if (! $decorator instanceof Decorator) {
-            $options = [];
-            if (is_string($decorator)) {
-                $name = $decorator;
-            } else {
-                if (isset($decorator['name'])) {
-                    $name = $decorator['name'];
-                    unset($decorator['name']);
-                } else {
-                    $name = array_key_first($decorator);
-
-                    if (is_int($name)) {
-                        $name = $decorator[$name];
-                    } else {
-                        $decorator = $decorator[$name];
-                        if (! is_array($decorator)) {
-                            throw new InvalidArgumentException(sprintf(
-                                "Invalid decorator specification: The key must be a decorator name and value"
-                                . " must be an array of options, got value of type '%s' for key '%s'",
-                                get_php_type($decorator),
-                                $name,
-                            ));
-                        }
-                    }
-                }
-
-                if (isset($decorator['options'])) {
-                    $options = $decorator['options'];
-
-                    unset($decorator['options']);
-                }
-
-                $options += $decorator;
-            }
-
-            $decorator = $this->createDecorator($name, $options);
+            $decorator = $this->createDecorator($decorator, $options);
         }
 
         $this->decorators[] = $decorator;
@@ -145,19 +113,70 @@ class DecoratorChain
      * @param static|decoratorsFormat $decorators
      *
      * @return $this
+     *
+     * @throws InvalidArgumentException If the decorator specification is invalid
      */
     public function addDecorators(DecoratorChain|array $decorators): static
     {
         if ($decorators instanceof static) {
-            $decorators = $decorators->getDecorators();
-        }
-
-        foreach ($decorators as $name => $decorator) {
-            if (is_string($name) && is_array($decorator)) {
-                $decorator = [$name => $decorator];
+            foreach ($decorators->getDecorators() as $decorator) {
+                $this->addDecorator($decorator);
             }
 
-            $this->addDecorator($decorator);
+            return $this;
+        }
+
+        foreach ($decorators as $decoratorName => $decoratorOptions) {
+            if (is_int($decoratorName)) {
+                if (is_array($decoratorOptions)) {
+                    if (! isset($decoratorOptions['name'])) {
+                        throw new InvalidArgumentException("Key 'name' is missing");
+                    }
+
+                    $decoratorName = $decoratorOptions['name'];
+                    unset($decoratorOptions['name']);
+
+                    $options = [];
+                    if (isset($decoratorOptions['options'])) {
+                        $options = $decoratorOptions['options'];
+
+                        unset($decoratorOptions['options']);
+                    }
+
+                    if (! empty($decoratorOptions)) {
+                        throw new InvalidArgumentException(
+                            sprintf(
+                                "No other keys except 'name' and 'options' are allowed, got '%s'",
+                                implode("', '", array_keys($decoratorOptions))
+                            )
+                        );
+                    }
+
+                    $decoratorOptions = $options;
+                } else {
+                    $decoratorName = $decoratorOptions;
+                    $decoratorOptions = [];
+                }
+            }
+
+            if (! is_array($decoratorOptions)) {
+                throw new InvalidArgumentException(sprintf(
+                    "The key must be a decorator name and value must be an array of options, got value of type"
+                    . " '%s' for key '%s'",
+                    get_php_type($decoratorOptions),
+                    $decoratorName,
+                ));
+            }
+
+            if (! is_string($decoratorName) && ! $decoratorName instanceof Decorator) {
+                throw new InvalidArgumentException(sprintf(
+                    'Expects variable $decoratorName to be a string or an instance of %s, got %s instead',
+                    Decorator::class,
+                    get_php_type($decoratorName)
+                ));
+            }
+
+            $this->addDecorator($decoratorName, $decoratorOptions);
         }
 
         return $this;
@@ -188,10 +207,12 @@ class DecoratorChain
     /**
      * Create a decorator from the given name and options
      *
-     * @param non-empty-string $name
+     * @param string $name
      * @param decoratorOptionsFormat $options
      *
      * @return Decorator
+     *
+     * @throws InvalidArgumentException If the given decorator is unknown
      */
     protected function createDecorator(string $name, array $options = []): Decorator
     {

@@ -126,9 +126,9 @@ class DecoratorChainTest extends TestCase
         $decoratorFormats = [
             'TestWithOptions',
             new TestWithOptionsDecorator(),
-            ['TestWithOptions' => ['optionKey1' => 'optionValue1']],
-            ['name' => 'TestWithOptions', 'optionKey1' => 'optionValue1'],
-            ['name' => 'TestWithOptions', 'optionKey1' => 'optionValue1', 'options' => ['optionKey2' => 'optionValue2']]
+            'TestWithOptions' => ['optionKey1' => 'optionValue1', 'options' => ['optionKey2' => 'optionValue2']],
+           /* ['name' => 'TestWithOptions', 'optionKey1' => 'optionValue1'],
+            ['name' => 'TestWithOptions', 'optionKey1' => 'optionValue1', 'options' => ['optionKey2' => 'optionValue2']]*/
         ];
 
         $chain = $this->createDecoratorChain()->addDecorators($decoratorFormats);
