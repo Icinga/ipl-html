@@ -43,11 +43,4 @@ interface Decorator
      * @return void
      */
     public function decorate(DecorationResults $results, FormElement $formElement): void;
-
-    /**
-     * Get the attributes (decorator options)
-     *
-     * @return Attributes
-     */
-    public function getAttributes(): Attributes;
 }

@@ -7,12 +7,13 @@ use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
+use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\HtmlElement;
 
 use function ipl\Stdlib\get_php_type;
 
-class HtmlTagDecorator implements Decorator
+class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
