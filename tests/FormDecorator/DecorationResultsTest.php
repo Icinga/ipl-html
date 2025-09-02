@@ -138,5 +138,4 @@ HTML;
 HTML;
         $this->assertHtml($html, HtmlString::create($results));
     }
-
 }
