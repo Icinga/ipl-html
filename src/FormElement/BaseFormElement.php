@@ -14,6 +14,11 @@ use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
 
+/**
+ * Base implementation of a form element
+ *
+ * @phpstan-import-type decoratorsFormat from DecoratorChain
+ */
 abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
 {
     use Messages;
@@ -402,7 +407,14 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         return $this->decorators;
     }
 
-    public function setDecorators(array $decorators): self
+    /**
+     * Set the decorators
+     *
+     * @param decoratorsFormat $decorators
+     *
+     * @return $this
+     */
+    public function setDecorators(array $decorators): static
     {
         $this->getDecorators()
             ->clearDecorators()

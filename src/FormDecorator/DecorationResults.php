@@ -9,7 +9,7 @@ use ipl\Html\ValidHtml;
 /**
  * DecorationResults stores and render the results of decorators
  *
- * @phpstan-type content array<int, ValidHtml|content>
+ * @phpstan-type content array<int, ValidHtml|array<int, mixed>>
  */
 class DecorationResults implements ValidHtml
 {

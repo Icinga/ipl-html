@@ -4,11 +4,11 @@ namespace ipl\Html\FormDecorator;
 
 use InvalidArgumentException;
 use ipl\Html\Attributes;
-use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 
 use function ipl\Stdlib\get_php_type;
@@ -32,7 +32,7 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /** @var string HTML tag to use for the decoration. */
     protected string $tag;
 
-    /** @var ?callable(FormElement & BaseHtmlElement): bool Callable condition to decide whether to decorate element */
+    /** @var ?callable(FormElement & HtmlElementInterface): bool Callable to decide whether to decorate element */
     protected $condition;
 
     /** @var ?(string|string[]) CSS classes to apply */
@@ -132,7 +132,7 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /**
      * Get the element tags to ignore when decorating
      *
-     * @return ?callable(FormElement & BaseHtmlElement): bool
+     * @return ?callable(FormElement & HtmlElementInterface): bool
      */
     public function getCondition(): ?callable
     {
@@ -142,7 +142,7 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /**
      * Set the element tags to ignore when decorating
      *
-     * @param callable(FormElement & BaseHtmlElement): bool $condition
+     * @param callable(FormElement & HtmlElementInterface): bool $condition
      *
      * @return $this
      */
