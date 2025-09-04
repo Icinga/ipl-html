@@ -37,7 +37,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     protected $name;
 
     /** @var string Sanitized name of the element */
-    protected $sanitizedName;
+    protected string $sanitizedName;
 
     /** @var bool Whether the element is ignored */
     protected $ignored = false;
@@ -131,9 +131,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         $this->name = $name;
 
         // Name is always sanitized
-        if (! isset($this->sanitizedName)) {
-            $this->sanitizedName = self::sanitizeName($name);
-        }
+        $this->sanitizedName = Form::sanitizeName($name);
 
         return $this;
     }
@@ -152,7 +150,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             $this->name = $name;
         }
 
-        $this->sanitizedName = self::sanitizeName($name);
+        $this->sanitizedName = Form::sanitizeName($name);
 
         return $this;
     }
@@ -174,25 +172,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         $this->ignored = (bool) $ignored;
 
         return $this;
-    }
-
-    /**
-     * Sanitize the given name
-     * The name is sanitized to only contain alphanumeric characters, underscores and brackets.
-     *
-     * @param  string $value
-     *
-     * @return string
-     */
-    public static function sanitizeName($value, $escapeBrackets = true)
-    {
-        $value = mb_strtolower($value ?? '', 'UTF-8');
-        $charset = '^a-zA-Z0-9_';
-        if ($escapeBrackets) {
-            $charset .= '\[\]';
-        }
-
-        return preg_replace('/[^' . $charset . ']/', '_', (string) $value);
     }
 
     /**
@@ -448,10 +427,10 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             $name = $callbacks['name']();
 
             if ($name instanceof Attribute) {
-                return static::sanitizeName($name->getValue());
+                return $name->getValue();
             }
 
-            return static::sanitizeName($name);
+            return $name;
         }
 
         return $this->getSanitizedName();

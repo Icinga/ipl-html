@@ -242,7 +242,8 @@ trait FormElements
             ));
         }
 
-        // Elements with the same sanitized name should get new names, except for submit elements
+        // Elements with the same sanitized name should get new names, except for submit elements.
+        // Because of submit button duplication, please include this in the comment
         if (
             ! $element instanceof FormSubmitElement
             && ! array_key_exists($name, $this->elements)
