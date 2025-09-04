@@ -59,6 +59,28 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         return $value === null || $value === [] || (is_string($value) && trim($value) === '');
     }
 
+
+    /**
+     * Sanitize the given name
+     *
+     * The name is sanitized to only contain alphanumeric characters, underscores, hyphen and optionally brackets.
+     *
+     * @param string $name
+     * @param bool   $escapeBrackets Whether to escape brackets during sanitization
+     *
+     * @return string
+     */
+    public static function sanitizeName(string $name, bool $escapeBrackets = false)
+    {
+        $name = mb_strtolower($name, 'UTF-8');
+        $charset = '^a-zA-Z0-9_\-';
+        if (! $escapeBrackets) {
+            $charset .= '\[\]';
+        }
+
+        return preg_replace('/[^' . $charset . ']/', '_', (string) $name);
+    }
+
     /**
      * Get the Form submission URL
      *
