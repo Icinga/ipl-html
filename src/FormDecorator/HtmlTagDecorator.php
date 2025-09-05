@@ -19,17 +19,8 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
-    /** @var int Wrap the element with the tag */
-    public const PLACEMENT_WRAP = 0;
-
-    /** @var int Append the tag */
-    public const PLACEMENT_APPEND = 1;
-
-    /** @var int Prepend the tag */
-    public const PLACEMENT_PREPEND = 2;
-
-    /** @var int Describes where the HTML tag should be placed. Default : wrap */
-    protected int $placement = self::PLACEMENT_WRAP;
+    /** @var Placement Describes where the HTML tag should be placed. Default : Wrap */
+    protected Placement $placement = Placement::Wrap;
 
     /** @var string HTML tag to use for the decoration. */
     protected string $tag;
@@ -73,16 +64,12 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /**
      * Set the placement of the HTML tag
      *
-     * @param int $placement
+     * @param Placement $placement
      *
      * @return $this
      */
-    public function setPlacement(int $placement): static
+    public function setPlacement(Placement $placement): static
     {
-        if (! in_array($placement, [self::PLACEMENT_APPEND, self::PLACEMENT_PREPEND, self::PLACEMENT_WRAP])) {
-            throw new InvalidArgumentException(sprintf('Unknown placement "%d" given', $placement));
-        }
-
         $this->placement = $placement;
 
         return $this;
@@ -91,9 +78,9 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /**
      * Get the placement of the HTML tag
      *
-     * @return int
+     * @return Placement
      */
-    public function getPlacement(): int
+    public function getPlacement(): Placement
     {
         return $this->placement;
     }
@@ -167,16 +154,11 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
         $class = $this->getClass();
         $html = new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]));
 
-        switch ($this->getPlacement()) {
-            case self::PLACEMENT_APPEND:
-                $results->append($html);
-                break;
-            case self::PLACEMENT_PREPEND:
-                $results->prepend($html);
-                break;
-            default:
-                $results->wrap($html);
-        }
+        match ($this->getPlacement()) {
+            Placement::Append   => $results->append($html),
+            Placement::Prepend  => $results->prepend($html),
+            default             => $results->wrap($html)
+        };
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void

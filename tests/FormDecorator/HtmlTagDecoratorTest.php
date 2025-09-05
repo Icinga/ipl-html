@@ -5,6 +5,7 @@ namespace ipl\Tests\Html\FormDecorator;
 use InvalidArgumentException;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\HtmlTagDecorator;
+use ipl\Html\FormDecorator\Placement;
 use ipl\Html\FormElement\TextElement;
 use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
@@ -17,14 +18,6 @@ class HtmlTagDecoratorTest extends TestCase
         $this->expectExceptionMessage('Option "tag" must be set');
 
         (new HtmlTagDecorator())->getTag();
-    }
-
-    public function testInvalidPlacementThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unknown placement "5" given');
-
-        (new HtmlTagDecorator())->setPlacement(5)->getPlacement();
     }
 
     public function testTag(): void
@@ -40,16 +33,16 @@ class HtmlTagDecoratorTest extends TestCase
     {
         $htmlTag = new HtmlTagDecorator();
 
-        $this->assertSame(HtmlTagDecorator::PLACEMENT_WRAP, $htmlTag->getPlacement());
+        $this->assertSame(Placement::Wrap, $htmlTag->getPlacement());
 
-        $htmlTag->setPlacement(HtmlTagDecorator::PLACEMENT_APPEND);
-        $this->assertSame(HtmlTagDecorator::PLACEMENT_APPEND, $htmlTag->getPlacement());
+        $htmlTag->setPlacement(Placement::Append);
+        $this->assertSame(Placement::Append, $htmlTag->getPlacement());
 
-        $htmlTag->setPlacement(HtmlTagDecorator::PLACEMENT_PREPEND);
-        $this->assertSame(HtmlTagDecorator::PLACEMENT_PREPEND, $htmlTag->getPlacement());
+        $htmlTag->setPlacement(Placement::Prepend);
+        $this->assertSame(Placement::Prepend, $htmlTag->getPlacement());
 
-        $htmlTag->setPlacement(HtmlTagDecorator::PLACEMENT_WRAP);
-        $this->assertSame(HtmlTagDecorator::PLACEMENT_WRAP, $htmlTag->getPlacement());
+        $htmlTag->setPlacement(Placement::Wrap);
+        $this->assertSame(Placement::Wrap, $htmlTag->getPlacement());
     }
 
     public function testCondition(): void
@@ -94,13 +87,13 @@ HTML;
         $this->assertHtml($html, HtmlString::create($results));
     }
 
-    public function testMethodDDecorateWithPlacementAppend(): void
+    public function testMethodDecorateWithPlacementAppend(): void
     {
         $element = new TextElement('test');
         $results = (new DecorationResults())->append($element);
         (new HtmlTagDecorator())
             ->setTag('div')
-            ->setPlacement(HtmlTagDecorator::PLACEMENT_APPEND)
+            ->setPlacement(Placement::Append)
             ->decorate($results, $element);
 
         $html = <<<'HTML'
@@ -111,13 +104,13 @@ HTML;
         $this->assertHtml($html, HtmlString::create($results));
     }
 
-    public function testMethodDDecorateWithDefaultPlacementPrepend(): void
+    public function testMethodDecorateWithPlacementPrepend(): void
     {
         $element = new TextElement('test');
         $results = (new DecorationResults())->append($element);
         (new HtmlTagDecorator())
             ->setTag('div')
-            ->setPlacement(HtmlTagDecorator::PLACEMENT_PREPEND)
+            ->setPlacement(Placement::Prepend)
             ->decorate($results, $element);
 
         $html = <<<'HTML'
