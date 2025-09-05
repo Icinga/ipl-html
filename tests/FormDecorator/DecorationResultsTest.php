@@ -4,7 +4,6 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\Html;
-use ipl\Html\HtmlElement;
 use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
 

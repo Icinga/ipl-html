@@ -45,6 +45,11 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
         return $this;
     }
 
+    public function getName(): string
+    {
+        return 'Label';
+    }
+
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         if (
@@ -55,18 +60,12 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
             return;
         }
 
-        $labelAttr = null;
+        $labelAttr = new Attributes(['class' => $this->getClass()]);
         if ($formElement->getAttributes()->has('id')) {
-            $labelAttr = Attributes::create(['for' => $formElement->getAttributes()->get('id')->getValue()]);
+            $labelAttr->add(['for' => $formElement->getAttributes()->get('id')->getValue()]);
         }
 
-        $results->prepend(
-            new HtmlElement(
-                'div',
-                Attributes::create(['class' => $this->getClass()]),
-                new HtmlElement('label', $labelAttr, new Text($formElement->getLabel()))
-            )
-        );
+        $results->append(new HtmlElement('label', $labelAttr, new Text($formElement->getLabel())));
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void

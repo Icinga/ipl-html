@@ -16,6 +16,33 @@ class DecorationResults implements ValidHtml
     /** @var content The HTML content */
     protected array $content = [];
 
+    /** @var string[] List of decorator names to skip */
+    protected array $skipDecorators = [];
+
+    /**
+     * Add decorator names to be skipped
+     *
+     * @param string[] $decoratorNames List of decorator names to skip
+     *
+     * @return $this
+     */
+    public function skipDecorators(array $decoratorNames): static
+    {
+        $this->skipDecorators += $decoratorNames;
+
+        return $this;
+    }
+
+    /**
+     * Get the list of decorator names to skip
+     *
+     * @return string[]
+     */
+    public function getSkipDecorators(): array
+    {
+        return $this->skipDecorators;
+    }
+
     /**
      * Add the given HTML element to the results
      *

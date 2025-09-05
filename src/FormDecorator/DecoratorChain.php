@@ -2,6 +2,7 @@
 
 namespace ipl\Html\FormDecorator;
 
+use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptionsInterface;
@@ -263,14 +264,33 @@ class DecoratorChain
      * @param FormElement $formElement The form element to decorate
      *
      * @return string The decorated form element
+     *
+     * @throws Exception If a decorator wants to skip already applied decorator
      */
     public function apply(FormElement $formElement): string
     {
-        $results = (new DecorationResults())->append($formElement);
+        $results = new DecorationResults();
+        $appliedDecorators = [];
+        $toSkip = [];
         foreach ($this->decorators as $decorator) {
+            $decoratorName = $decorator->getName();
+            if (in_array($decoratorName, $toSkip, true)) {
+                continue;
+            }
+
             $decorator->decorate($results, $formElement);
+
+            $appliedDecorators[] = $decoratorName;
+            $toSkip = $results->getSkipDecorators();
+            $alreadyApplied = array_intersect($toSkip, $appliedDecorators);
+            if (! empty($alreadyApplied)) {
+                throw new Exception(sprintf(
+                    "Cannot skip Decorator(s) '%s', Decoration already applied",
+                    implode("', '", $alreadyApplied)
+                ));
+            }
         }
 
-        return (string) $results;
+        return $results;
     }
 }

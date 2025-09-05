@@ -2,7 +2,6 @@
 
 namespace ipl\Html\Contract;
 
-use ipl\Html\Attributes;
 use ipl\Html\FormDecorator\DecorationResults;
 
 /**
@@ -10,6 +9,16 @@ use ipl\Html\FormDecorator\DecorationResults;
  */
 interface Decorator
 {
+    /**
+     * Get the name of the decorator
+     *
+     * The name is used to identify the decorator. Decorators can skip upcoming decorator(s) by its name using
+     * {@see DecorationResults::$skipDecorators()} method.
+     *
+     * @return string
+     */
+    public function getName(): string;
+
     /**
      * Decorate the given form element
      *

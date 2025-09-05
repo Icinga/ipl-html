@@ -2,24 +2,22 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
-use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecorator\DecorationResults;
-use ipl\Html\HtmlElement;
 
 /**
- * Wraps the $formElement with a div with class "test-decorator"
+ * Render the $formElement
  */
-class TestDecorator implements Decorator
+class TestRenderElementDecorator implements Decorator
 {
     public function getName(): string
     {
-        return 'Test';
+        return 'TestRenderElement';
     }
 
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
-        $results->wrap(new HtmlElement('div', new Attributes(['class' => 'test-decorator'])));
+        $results->append($formElement);
     }
 }

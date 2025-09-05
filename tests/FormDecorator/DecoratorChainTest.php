@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
+use Exception;
 use InvalidArgumentException;
 use ipl\Html\FormDecorator\DecoratorChain;
 use ipl\Html\FormElement\TextElement;
@@ -200,10 +201,22 @@ class DecoratorChainTest extends TestCase
         $this->createDecoratorChain()->addDecorators([$this->createDecoratorChain()]);
     }
 
-    public function testMethodApply(): void
+    public function testMethodApplyWithoutADecoratorThatRendersTheElementItself(): void
     {
         $results = $this->createDecoratorChain()
             ->addDecorator('Test')
+            ->apply(new TextElement('element-1'));
+
+        $html = <<<'HTML'
+<div class="test-decorator"></div>
+HTML;
+        $this->assertHtml($html, HtmlString::create($results));
+    }
+
+    public function testMethodApplyWithADecoratorThatRendersTheElementItself(): void
+    {
+        $results = $this->createDecoratorChain()
+            ->addDecorators(['TestRenderElement', 'Test'])
             ->apply(new TextElement('element-1'));
 
         $html = <<<'HTML'
@@ -212,5 +225,29 @@ class DecoratorChainTest extends TestCase
 </div>
 HTML;
         $this->assertHtml($html, HtmlString::create($results));
+    }
+
+    public function testMethodApplySkipADecoratorThatShouldBeSkipped(): void
+    {
+        $results = $this->createDecoratorChain()
+            ->addDecorators(['TestSkipRenderElement', 'TestRenderElement', 'Test'])
+            ->apply(new TextElement('element-1'));
+
+        $html = <<<'HTML'
+<div class="test-decorator">
+  <input type="text" name="element-1">
+</div>
+HTML;
+        $this->assertHtml($html, HtmlString::create($results));
+    }
+
+    public function testMethodApplyThrowsExceptionWhenADecoratorShouldBeSkippedButIsAlreadyApplied(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Cannot skip Decorator(s) 'TestRenderElement', Decoration already applied");
+
+        $this->createDecoratorChain()
+            ->addDecorators(['TestRenderElement', 'TestSkipRenderElement', 'Test'])
+            ->apply(new TextElement('element-1'));
     }
 }
