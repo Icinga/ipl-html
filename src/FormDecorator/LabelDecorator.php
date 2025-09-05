@@ -24,6 +24,30 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
     /** @var string|string[] CSS classes to apply */
     protected string|array $class = 'form-element-label';
 
+    /**
+     * Get the css class(es)
+     *
+     * @return string|string[]
+     */
+    public function getClass(): string|array
+    {
+        return $this->class;
+    }
+
+    /**
+     * Set the css class(es)
+     *
+     * @param string|string[] $class
+     *
+     * @return $this
+     */
+    public function setClass(string|array $class): static
+    {
+        $this->class = $class;
+
+        return $this;
+    }
+
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         if ($formElement instanceof FormSubmitElement || $formElement instanceof FieldsetElement) {
@@ -54,30 +78,6 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
                 new HtmlElement('label', $labelAttr, $label)
             )
         );
-    }
-
-    /**
-     * Get the css class(es)
-     *
-     * @return string|string[]
-     */
-    public function getClass(): string|array
-    {
-        return $this->class;
-    }
-
-    /**
-     * Set the css class(es)
-     *
-     * @param string|string[] $class
-     *
-     * @return $this
-     */
-    public function setClass(string|array $class): static
-    {
-        $this->class = $class;
-
-        return $this;
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void

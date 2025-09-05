@@ -40,39 +40,6 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /** @var ?(string|string[]) CSS classes to apply */
     protected null|string|array $class = null;
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
-    {
-        $condition = $this->getCondition();
-        if ($condition !== null) {
-            $shouldDecorate = $condition($formElement);
-
-            if (! is_bool($shouldDecorate)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Condition callback must return a boolean, got %s',
-                    get_php_type($shouldDecorate)
-                ));
-            }
-
-            if (! $shouldDecorate) {
-                return;
-            }
-        }
-
-        $class = $this->getClass();
-        $html = new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]));
-
-        switch ($this->getPlacement()) {
-            case self::PLACEMENT_APPEND:
-                $results->append($html);
-                break;
-            case self::PLACEMENT_PREPEND:
-                $results->prepend($html);
-                break;
-            default:
-                $results->wrap($html);
-        }
-    }
-
     /**
      * Get the HTML tag to use for the decoration
      *
@@ -177,6 +144,39 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
         $this->class = $class;
 
         return $this;
+    }
+
+    public function decorate(DecorationResults $results, FormElement $formElement): void
+    {
+        $condition = $this->getCondition();
+        if ($condition !== null) {
+            $shouldDecorate = $condition($formElement);
+
+            if (! is_bool($shouldDecorate)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Condition callback must return a boolean, got %s',
+                    get_php_type($shouldDecorate)
+                ));
+            }
+
+            if (! $shouldDecorate) {
+                return;
+            }
+        }
+
+        $class = $this->getClass();
+        $html = new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]));
+
+        switch ($this->getPlacement()) {
+            case self::PLACEMENT_APPEND:
+                $results->append($html);
+                break;
+            case self::PLACEMENT_PREPEND:
+                $results->prepend($html);
+                break;
+            default:
+                $results->wrap($html);
+        }
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void
