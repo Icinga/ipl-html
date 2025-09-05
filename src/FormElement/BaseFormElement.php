@@ -8,11 +8,17 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DecoratorChain;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
 
+/**
+ * Base implementation of a form element
+ *
+ * @phpstan-import-type decoratorsFormat from DecoratorChain
+ */
 abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
 {
     use Messages;
@@ -44,6 +50,9 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
 
     /** @var array<int, mixed> Value candidates of the element */
     protected $valueCandidates = [];
+
+    /** All registered decorators */
+    protected ?DecoratorChain $decorators = null;
 
     /**
      * Create a new form element
@@ -351,7 +360,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             ->registerAttributeCallback('description', null, [$this, 'setDescription'])
             ->registerAttributeCallback('validators', null, [$this, 'setValidators'])
             ->registerAttributeCallback('ignore', null, [$this, 'setIgnored'])
-            ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired']);
+            ->registerAttributeCallback('required', [$this, 'getRequiredAttribute'], [$this, 'setRequired'])
+            ->registerAttributeCallback('decorators', null, [$this, 'setDecorators']);
 
         $this->registerCallbacks();
     }
@@ -386,5 +396,35 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         }
 
         return $this->getName();
+    }
+
+    public function getDecorators(): DecoratorChain
+    {
+        if ($this->decorators === null) {
+            $this->decorators = new DecoratorChain();
+        }
+
+        return $this->decorators;
+    }
+
+    /**
+     * Set the decorators
+     *
+     * @param decoratorsFormat $decorators
+     *
+     * @return $this
+     */
+    public function setDecorators(array $decorators): static
+    {
+        $this->getDecorators()
+            ->clearDecorators()
+            ->addDecorators($decorators);
+
+        return $this;
+    }
+
+    public function hasDecorators(): bool
+    {
+        return $this->getDecorators()->hasDecorators();
     }
 }

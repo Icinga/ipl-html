@@ -3,6 +3,7 @@
 namespace ipl\Html\Contract;
 
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DecoratorChain;
 
 /**
  * Representation of form elements
@@ -103,6 +104,20 @@ interface FormElement extends Wrappable, HtmlElementInterface
      * @return $this
      */
     public function validate();
+
+    /**
+     * Get all decorators
+     *
+     * @return DecoratorChain
+     */
+    public function getDecorators(): DecoratorChain;
+
+    /**
+     * Get whether the element has any decorators
+     *
+     * @return bool
+     */
+    public function hasDecorators(): bool;
 
     /**
      * Handler which is called after this element has been registered
