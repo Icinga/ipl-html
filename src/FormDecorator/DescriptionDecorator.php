@@ -21,29 +21,6 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
     /** @var string|string[] CSS classes to apply */
     protected string|array $class = 'form-element-description';
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
-    {
-        $description = $formElement->getDescription();
-
-        if ($description === null || $formElement instanceof FieldsetElement) {
-            return;
-        }
-
-        $descriptionId = null;
-        if ($formElement->getAttributes()->has('id')) {
-            $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
-            $formElement->getAttributes()->set('aria-describedby', $descriptionId);
-        }
-
-        $results->append(
-            new HtmlElement(
-                'p',
-                new Attributes(['class' => $this->getClass(), 'id' => $descriptionId]),
-                new Text($description)
-            )
-        );
-    }
-
     /**
      * Get the css class(es)
      *
@@ -66,6 +43,29 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
         $this->class = $class;
 
         return $this;
+    }
+
+    public function decorate(DecorationResults $results, FormElement $formElement): void
+    {
+        $description = $formElement->getDescription();
+
+        if ($description === null || $formElement instanceof FieldsetElement) {
+            return;
+        }
+
+        $descriptionId = null;
+        if ($formElement->getAttributes()->has('id')) {
+            $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
+            $formElement->getAttributes()->set('aria-describedby', $descriptionId);
+        }
+
+        $results->append(
+            new HtmlElement(
+                'p',
+                new Attributes(['class' => $this->getClass(), 'id' => $descriptionId]),
+                new Text($description)
+            )
+        );
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void

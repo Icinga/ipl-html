@@ -20,18 +20,6 @@ class ErrorsDecorator implements Decorator, DecoratorOptionsInterface
     /** @var string|string[] CSS classes to apply */
     protected string|array $class = 'form-element-errors';
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
-    {
-        $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));
-        foreach ($formElement->getMessages() as $message) {
-            $errors->addHtml(new HtmlElement('li', null, Text::create($message)));
-        }
-
-        if (! $errors->isEmpty()) {
-            $results->append($errors);
-        }
-    }
-
     /**
      * Get the css class(es)
      *
@@ -54,6 +42,18 @@ class ErrorsDecorator implements Decorator, DecoratorOptionsInterface
         $this->class = $class;
 
         return $this;
+    }
+
+    public function decorate(DecorationResults $results, FormElement $formElement): void
+    {
+        $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));
+        foreach ($formElement->getMessages() as $message) {
+            $errors->addHtml(new HtmlElement('li', null, Text::create($message)));
+        }
+
+        if (! $errors->isEmpty()) {
+            $results->append($errors);
+        }
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void
