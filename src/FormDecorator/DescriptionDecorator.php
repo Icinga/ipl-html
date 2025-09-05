@@ -7,7 +7,6 @@ use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
@@ -49,7 +48,7 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
     {
         $description = $formElement->getDescription();
 
-        if ($description === null || $formElement instanceof FieldsetElement) {
+        if ($description === null || $formElement->getTag() === 'fieldset') {
             return;
         }
 
