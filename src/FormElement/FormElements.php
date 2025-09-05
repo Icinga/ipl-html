@@ -67,9 +67,6 @@ trait FormElements
     /** @var FormElement[] */
     private $elements = [];
 
-    /** @var array<string, int>  Mapping of escaped element names to counter */
-    private $escapedElementNameCounter = [];
-
     /** @var array<string, array<int, mixed>> */
     private $populatedValues = [];
 
@@ -232,7 +229,7 @@ trait FormElements
 
     public function registerElement(FormElement $element)
     {
-        $sanitizedName = $element->getSanitizedName();
+        $escapedName = $element->getEscapedName();
         $name = $element->getName();
 
         if ($name === null) {
@@ -242,31 +239,15 @@ trait FormElements
             ));
         }
 
-        // Elements with the same sanitized name should get new names, except for submit elements.
-        // Because of submit button duplication, please include this in the comment
-        if (
-            ! $element instanceof FormSubmitElement
-            && ! array_key_exists($name, $this->elements)
-            && array_key_exists($sanitizedName, $this->escapedElementNameCounter)
-        ) {
-            $this->escapedElementNameCounter[$sanitizedName]++;
-            $sanitizedName .= $this->escapedElementNameCounter[$sanitizedName];
-            $element->setSanitizedName($sanitizedName);
-        }
-
         $this->elements[$name] = $element;
-        $this->escapedElementNameCounter[$sanitizedName] = 1;
 
-        // If the populated values is the POST data, use the sanitized name
-        if (array_key_exists($sanitizedName, $this->populatedValues)) {
-            $name = $sanitizedName;
-        }
-
-        if (array_key_exists($name, $this->populatedValues)) {
-            $element->setValue($this->populatedValues[$name][count($this->populatedValues[$name]) - 1]);
+        if (array_key_exists($escapedName, $this->populatedValues)) {
+            $element->setValue(
+                $this->populatedValues[$escapedName][count($this->populatedValues[$escapedName]) - 1]
+            );
 
             if ($element instanceof ValueCandidates) {
-                $element->setValueCandidates($this->populatedValues[$name]);
+                $element->setValueCandidates($this->populatedValues[$escapedName]);
             }
         }
 
@@ -377,9 +358,8 @@ trait FormElements
 
     public function populate($values)
     {
-        // TODO: Check if the populated values could be cleared before populating them
         foreach ($values as $name => $value) {
-            $this->populatedValues[$name][] = $value;
+            $this->populatedValues[Form::escapeReservedChars($name)][] = $value;
             if ($this->hasElement($name)) {
                 $this->getElement($name)->setValue($value);
             }
@@ -400,6 +380,7 @@ trait FormElements
      */
     public function getPopulatedValue($name, $default = null)
     {
+        $name = Form::escapeReservedChars($name);
         return isset($this->populatedValues[$name])
             ? $this->populatedValues[$name][count($this->populatedValues[$name]) - 1]
             : $default;
@@ -414,6 +395,7 @@ trait FormElements
      */
     public function clearPopulatedValue($name)
     {
+        $name = Form::escapeReservedChars($name);
         if (isset($this->populatedValues[$name])) {
             unset($this->populatedValues[$name]);
         }
