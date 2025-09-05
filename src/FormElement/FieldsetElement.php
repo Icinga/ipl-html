@@ -123,7 +123,7 @@ class FieldsetElement extends BaseFormElement
             return sprintf(
                 '%s[%s]%s',
                 $this->getValueOfNameAttribute(),
-                $element->getSanitizedName(),
+                $element->getEscapedName(),
                 $multiple ? '[]' : ''
             );
         });

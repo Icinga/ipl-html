@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Form;
+use ipl\Stdlib\Str;
 use Psr\Http\Message\ServerRequestInterface;
 
 class FormTest extends TestCase
@@ -61,7 +62,32 @@ class FormTest extends TestCase
         $form = new Form();
         $form->registerElement($form->createElement('text', 'foo.bar'));
         $form->registerElement($form->createElement('text', 'foo_bar'));
+
         $this->assertHtml('<input name="foo_bar" type="text" />', $form->getElement('foo.bar'));
         $this->assertHtml('<input name="foo_bar2" type="text" />', $form->getElement('foo_bar'));
+
+        $form->populate(['foo.bar' => 'foo', 'foo_bar' => 'bar']);
+    }
+
+    public function testElementWithDuplicateSanitizedElementNamesAndDifferentValues()
+    {
+        $form = new Form();
+        $form->registerElement($form->createElement('text', 'foo.bar'));
+        $form->registerElement($form->createElement('text', 'foo_bar'));
+
+        $form->populate(['foo.bar' => 'foo', 'foo_bar' => 'bar']);
+
+        $this->assertSame('foo', $form->getPopulatedValue('foo.bar'));
+        $this->assertSame('bar', $form->getPopulatedValue('foo_bar'));
+    }
+
+    public function testElementWithDuplicateSanitizedElementNamesAndDifferentPostValues()
+    {
+        $form = new Form();
+        $form->registerElement($form->createElement('text', 'foo.bar'));
+        $form->registerElement($form->createElement('text', 'foo_bar'));;
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $form->handleRequest($request);
     }
 }
