@@ -8,10 +8,8 @@ use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
-use ipl\Html\FormattedString;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\HtmlElement;
-use ipl\Html\HtmlString;
 use ipl\Html\Text;
 
 /**
@@ -50,20 +48,12 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
 
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
-        if ($formElement instanceof FormSubmitElement || $formElement instanceof FieldsetElement) {
+        if (
+            $formElement instanceof FormSubmitElement
+            || $formElement instanceof FieldsetElement
+            || $formElement->getLabel() === null
+        ) {
             return;
-        }
-
-        $label = $formElement->getLabel() ?? '';
-        if ($formElement->isRequired()) {
-            $formElement->setAttribute('aria-required', 'true');
-            $label = FormattedString::create(
-                '%s %s',
-                $label,
-                new HtmlElement('span', Attributes::create(['class' => 'required-cue']), Text::create('*'))
-            );
-        } else {
-            $label = HtmlString::create($label);
         }
 
         $labelAttr = null;
@@ -75,7 +65,7 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
             new HtmlElement(
                 'div',
                 Attributes::create(['class' => $this->getClass()]),
-                new HtmlElement('label', $labelAttr, $label)
+                new HtmlElement('label', $labelAttr, new Text($formElement->getLabel()))
             )
         );
     }
