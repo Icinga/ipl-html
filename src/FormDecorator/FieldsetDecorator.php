@@ -14,6 +14,11 @@ use ipl\Html\Text;
  */
 class FieldsetDecorator implements Decorator
 {
+    public function getName(): string
+    {
+        return 'Fieldset';
+    }
+
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         if ($formElement instanceof BaseHtmlElement && $formElement->getTag() !== 'fieldset') {

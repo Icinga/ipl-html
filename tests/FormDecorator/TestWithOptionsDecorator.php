@@ -21,6 +21,11 @@ class TestWithOptionsDecorator implements Decorator, DecoratorOptionsInterface
 
     protected array $options = [];
 
+    public function getName(): string
+    {
+        return 'TestWithOptions';
+    }
+
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $results->wrap(new HtmlElement('div', new Attributes(['class' => 'test-with-options-decorator'])));

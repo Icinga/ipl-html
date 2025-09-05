@@ -44,6 +44,11 @@ class ErrorsDecorator implements Decorator, DecoratorOptionsInterface
         return $this;
     }
 
+    public function getName(): string
+    {
+        return 'Errors';
+    }
+
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));

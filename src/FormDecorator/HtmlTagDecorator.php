@@ -133,6 +133,11 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
         return $this;
     }
 
+    public function getName(): string
+    {
+        return 'HtmlTag';
+    }
+
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $condition = $this->getCondition();

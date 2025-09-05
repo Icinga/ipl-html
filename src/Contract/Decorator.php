@@ -2,7 +2,6 @@
 
 namespace ipl\Html\Contract;
 
-use ipl\Html\Attributes;
 use ipl\Html\FormDecorator\DecorationResults;
 
 /**
@@ -10,6 +9,13 @@ use ipl\Html\FormDecorator\DecorationResults;
  */
 interface Decorator
 {
+    /**
+     * Get the name of the decorator
+     *
+     * @return string
+     */
+    public function getName(): string;
+
     /**
      * Decorate the given form element
      *

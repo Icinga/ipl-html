@@ -44,6 +44,12 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
         return $this;
     }
 
+
+    public function getName(): string
+    {
+        return 'Description';
+    }
+
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $description = $formElement->getDescription();
