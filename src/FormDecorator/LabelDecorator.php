@@ -8,7 +8,6 @@ use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
-use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
@@ -50,7 +49,7 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
     {
         if (
             $formElement instanceof FormSubmitElement
-            || $formElement instanceof FieldsetElement
+            || $formElement->getTag() === 'fieldset'
             || $formElement->getLabel() === null
         ) {
             return;
