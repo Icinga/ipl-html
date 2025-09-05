@@ -16,14 +16,14 @@ use function ipl\Stdlib\get_php_type;
  *
  * @phpstan-type decoratorOptionsFormat array<string, mixed>
  * @phpstan-type _decoratorsFormat1 array<string, decoratorOptionsFormat>
- * @phpstan-type _decoratorsFormat2 array<int, string|Decorator|decoratorOptionsFormat>
+ * @phpstan-type _decoratorsFormat2 array<int, string|Decorator|array{name: string, options?: decoratorOptionsFormat}>
  * @phpstan-type decoratorsFormat _decoratorsFormat1 | _decoratorsFormat2
  */
 class DecoratorChain
 {
     use Plugins;
 
-    /** @var Decorator[] Decorator chain */
+    /** @var Decorator[] All registered decorators */
     protected array $decorators = [];
 
     /**
@@ -37,8 +37,8 @@ class DecoratorChain
     /**
      * Add a decorator loader
      *
-     * @param string $namespace Namespace of the decorators
-     * @param string $suffix   Decorator class name suffix, if any
+     * @param string $namespace Namespace of the decorator(s)
+     * @param string $suffix    Decorator class name suffix, if any
      *
      * @return $this
      */
@@ -52,11 +52,8 @@ class DecoratorChain
     /**
      * Add a decorator to the chain.
      *
-     * Please see {@see static::addDecorators()} for the supported array formats, where each array entry defines
-     * a decorator.
-     *
-     * @param Decorator|string $decorator
-     * @param decoratorOptionsFormat $options
+     * @param Decorator|string          $decorator
+     * @param decoratorOptionsFormat    $options Only allowed if parameter 1 is a string
      *
      * @return $this
      *
@@ -79,6 +76,8 @@ class DecoratorChain
 
     /**
      * Add the decorators from the given decorator specification to the chain
+     *
+     * The order of the decorators is important, as it determines the rendering order.
      *
      *   *The following array formats are supported:*
      *
@@ -193,7 +192,7 @@ class DecoratorChain
     }
 
     /**
-     * Remove all decorators from the chain
+     * Clear all decorators from the chain
      *
      * @return $this
      */
@@ -249,7 +248,7 @@ class DecoratorChain
     }
 
     /**
-     * Get whether the chain has any decorators
+     * Get whether the chain has decorators
      *
      * @return bool
      */
@@ -259,7 +258,7 @@ class DecoratorChain
     }
 
     /**
-     * Apply the decorator chain to the given form element
+     * Apply the registered decorators to the given form element
      *
      * @param FormElement $formElement The form element to decorate
      *

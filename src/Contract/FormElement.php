@@ -10,7 +10,6 @@ use ipl\Html\FormDecorator\DecoratorChain;
  * Representation of form elements
  *
  * @phpstan-import-type AttributesType from Attributes
- * @phpstan-import-type decoratorsFormat from DecoratorChain
  */
 interface FormElement extends Wrappable
 {
