@@ -49,19 +49,15 @@ class FormTest extends TestCase
         $form->handleRequest($request2);
     }
 
-    public function testElementWithSpecialCharactersAsName()
+    public function testEscapeReservedChars(): void
     {
-        $form = new Form();
-        $form->registerElement($form->createElement('text', 'foo.bar'));
-        $this->assertHtml('<input name="foo_bar" type="text" />', $form->getElement('foo.bar'));
-    }
+        // Reserved chars '.', ' ', '[' and ']' are escaped
+        $this->assertSame(Form::escapeReservedChars('foo.bar'), 'foo' . chr(28) . 'bar');
+        $this->assertSame(Form::escapeReservedChars('foo bar'), 'foo' . chr(29) . 'bar');
+        $this->assertSame(Form::escapeReservedChars('foo[bar]', true), 'foo' . chr(30) . 'bar' . chr(31));
 
-    public function testElementWithDuplicateSanitizedElementNames()
-    {
-        $form = new Form();
-        $form->registerElement($form->createElement('text', 'foo.bar'));
-        $form->registerElement($form->createElement('text', 'foo_bar'));
-        $this->assertHtml('<input name="foo_bar" type="text" />', $form->getElement('foo.bar'));
-        $this->assertHtml('<input name="foo_bar2" type="text" />', $form->getElement('foo_bar'));
+        // The string remains the same
+        $this->assertSame(Form::escapeReservedChars('foo[bar]'), 'foo[bar]');
+        $this->assertSame(Form::escapeReservedChars('foo-bar123', true), 'foo-bar123');
     }
 }
