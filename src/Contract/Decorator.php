@@ -25,7 +25,7 @@ interface Decorator
      *
      *```
      *
-     * public function decorate(DecorationResults $results, BaseFormElement $formElement): void
+     * public function decorate(DecorationResults $results, FormElement $formElement): void
      * {
      *     $description = $formElement->getDescription();
      *

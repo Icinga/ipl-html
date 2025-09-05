@@ -108,7 +108,7 @@ class DecorationResults implements ValidHtml
      * Resolve wrapped content
      *
      * @param MutableHtml $parent The parent element
-     * @param ValidHtml|array $item The content to be added
+     * @param ValidHtml|content $item The content to be added
      *
      * @return ValidHtml The resolved parent element with content added
      */
