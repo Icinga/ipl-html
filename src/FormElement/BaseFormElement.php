@@ -27,6 +27,9 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** @var string Name of the element */
     protected $name;
 
+    /** @var string Escaped name of the element */
+    protected string $escapedName;
+
     /** @var bool Whether the element is ignored */
     protected $ignored = false;
 
@@ -115,6 +118,28 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     {
         $this->name = $name;
 
+        // Name is always escaped
+        $this->escapedName = Form::escapeName($name);
+
+        return $this;
+    }
+
+    /**
+     * Set the escaped name for the element
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setEscapedName(string $name)
+    {
+        // Name is always escaped
+        if (! isset($this->name)) {
+            $this->name = $name;
+        }
+
+        $this->escapedName = Form::escapeName($name);
+
         return $this;
     }
 
@@ -135,6 +160,16 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         $this->ignored = (bool) $ignored;
 
         return $this;
+    }
+
+    /**
+     * Get the escaped name of the element
+     *
+     * @return string
+     */
+    public function getEscapedName(): string
+    {
+        return $this->escapedName;
     }
 
     public function isRequired()
@@ -289,7 +324,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      */
     public function getNameAttribute()
     {
-        return $this->getName();
+        return $this->getEscapedName();
     }
 
     /**
@@ -385,6 +420,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
             return $name;
         }
 
-        return $this->getName();
+        return $this->getEscapedName();
     }
 }

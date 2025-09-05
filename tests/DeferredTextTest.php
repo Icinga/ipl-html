@@ -51,7 +51,7 @@ class DeferredTextTest extends TestCase
             throw new Exception('Boom');
         });
 
-        $this->assertRegExp('/Boom.*/', (string) $text);
-        $this->assertRegExp('/error/', (string) $text);
+        $this->assertMatchesRegularExpression('/Boom.*/', (string) $text);
+        $this->assertMatchesRegularExpression('/error/', (string) $text);
     }
 }

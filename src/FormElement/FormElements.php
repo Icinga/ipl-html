@@ -5,6 +5,7 @@ namespace ipl\Html\FormElement;
 use InvalidArgumentException;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
+use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
@@ -31,6 +32,9 @@ trait FormElements
 
     /** @var FormElement[] */
     private $elements = [];
+
+    /** @var array<string, int>  Mapping of escaped element names to counter */
+    private $escapedElementNameCounter = [];
 
     /** @var array<string, array<int, mixed>> */
     private $populatedValues = [];
@@ -177,6 +181,7 @@ trait FormElements
      */
     public function registerElement(FormElement $element)
     {
+        $escapedName = $element->getEscapedName();
         $name = $element->getName();
 
         if ($name === null) {
@@ -186,8 +191,27 @@ trait FormElements
             ));
         }
 
-        $this->elements[$name] = $element;
+        // Elements with the same escaped name should get new names, except for submit elements.
+        // Because of submit button duplication, please include this in the comment
+        if (
+            ! $element instanceof FormSubmitElement
+            && ! array_key_exists($name, $this->elements)
+            && array_key_exists($escapedName, $this->escapedElementNameCounter)
+        ) {
+            $this->escapedElementNameCounter[$escapedName]++;
+            $escapedName .= $this->escapedElementNameCounter[$escapedName];
+            $element->setEscapedName($escapedName);
+        }
 
+        $this->elements[$name] = $element;
+        $this->escapedElementNameCounter[$escapedName] = 1;
+
+        // If the populated values is the POST data, use the escaped name
+        if (array_key_exists($escapedName, $this->populatedValues)) {
+            $name = $escapedName;
+        }
+
+        // TODO: Use escaped name for value and value candidates
         if (array_key_exists($name, $this->populatedValues)) {
             $element->setValue($this->populatedValues[$name][count($this->populatedValues[$name]) - 1]);
 
@@ -318,6 +342,7 @@ trait FormElements
     public function populate($values)
     {
         foreach ($values as $name => $value) {
+            // TODO: Use escaped name
             $this->populatedValues[$name][] = $value;
             if ($this->hasElement($name)) {
                 $this->getElement($name)->setValue($value);
@@ -339,6 +364,7 @@ trait FormElements
      */
     public function getPopulatedValue($name, $default = null)
     {
+        // TODO: Use escaped name
         return isset($this->populatedValues[$name])
             ? $this->populatedValues[$name][count($this->populatedValues[$name]) - 1]
             : $default;

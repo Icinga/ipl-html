@@ -58,6 +58,40 @@ class Form extends BaseHtmlElement
         return $value === null || $value === [] || (is_string($value) && trim($value) === '');
     }
 
+
+    /**
+     * Escape the invalid characters in the given name
+     * The characters '.', ' ' and optionally brackets are escaped.
+     *
+     * This is done because:
+     *
+     * PHP converts dots and spaces in form element names to underscores by default in the request data.
+     * For example <input name="a.b" /> becomes $_REQUEST["a_b"].
+     *
+     * And if an external variable name begins with a valid array syntax, trailing characters are silently ignored.
+     * For example, <input name="foo[bar]baz"> becomes $_REQUEST['foo']['bar'].
+     *
+     * See https://www.php.net/manual/en/language.variables.external.php
+     *
+     * @param string $name
+     * @param bool   $escapeBrackets Whether to escape brackets
+     *
+     * @return string
+     */
+    public static function escapeName(string $name, bool $escapeBrackets = false)
+    {
+        // TODO: Remove lowercasing
+        $name = mb_strtolower($name, 'UTF-8');
+        $charset = '^a-zA-Z0-9_\-' . chr(30);
+        if (! $escapeBrackets) {
+            $charset .= '\[\]';
+        }
+
+        // TODO: Use separator chars and enums and replace only '.', ' ' and brackets
+
+        return preg_replace('/[^' . $charset . ']/', '_', (string) $name);
+    }
+
     /**
      * Get the Form submission URL
      *
