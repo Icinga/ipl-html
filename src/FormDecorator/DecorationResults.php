@@ -11,7 +11,7 @@ use ipl\Html\ValidHtml;
  *
  * @phpstan-type content array<int, ValidHtml|array<int, mixed>>
  */
-class DecorationResults implements ValidHtml
+class DecorationResults
 {
     /** @var content The HTML content */
     protected array $content = [];
@@ -100,7 +100,7 @@ class DecorationResults implements ValidHtml
      *
      * @return string The rendered HTML content
      */
-    public function render(): string
+    private function render(): string
     {
         if (empty($this->content)) {
             return '';
