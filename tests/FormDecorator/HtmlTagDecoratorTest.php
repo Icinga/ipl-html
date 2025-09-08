@@ -12,6 +12,10 @@ use ipl\Tests\Html\TestCase;
 
 class HtmlTagDecoratorTest extends TestCase
 {
+    public function testMethodGetName(): void
+    {
+        $this->assertNotEmpty((new HtmlTagDecorator())->getName());
+    }
     public function testExceptionThrownWhenNoTagSpecified(): void
     {
         $this->expectException(InvalidArgumentException::class);
