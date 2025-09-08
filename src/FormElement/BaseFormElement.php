@@ -82,6 +82,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setDescription($description)
     {
         $this->description = $description;
@@ -101,6 +102,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setLabel($label)
     {
         $this->label = $label;
@@ -120,6 +122,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setName($name)
     {
         $this->name = $name;
@@ -139,6 +142,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setIgnored($ignored = true)
     {
         $this->ignored = (bool) $ignored;
@@ -158,6 +162,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setRequired($required = true)
     {
         $this->required = (bool) $required;
@@ -197,6 +202,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setValidators($validators)
     {
         $this
@@ -233,6 +239,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         return $this->value;
     }
 
+    #[Option]
     public function setValue($value)
     {
         if ($value === '') {

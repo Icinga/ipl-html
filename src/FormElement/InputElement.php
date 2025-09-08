@@ -2,8 +2,8 @@
 
 namespace ipl\Html\FormElement;
 
-use ipl\Html\Attribute;
 use ipl\Html\Attributes;
+use ipl\Stdlib\Option;
 
 class InputElement extends BaseFormElement
 {
@@ -29,6 +29,7 @@ class InputElement extends BaseFormElement
      *
      * @return $this
      */
+    #[Option]
     public function setType($type)
     {
         $this->type = (string) $type;
