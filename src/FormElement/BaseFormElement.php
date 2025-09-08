@@ -10,6 +10,7 @@ use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
+use ipl\Stdlib\Option;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
 
@@ -54,9 +55,17 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function __construct($name, $attributes = null)
     {
         $this->setName($name);
+
+        if ($attributes === null || is_array($attributes)) {
+            // This may look inefficient, but we have to resolve options even if there are none to be set.
+            // Options may be required, and without resolving them, such constraints would not be checked.
+            $attributes ??= [];
+            Option::resolveOptions($this, $attributes);
+        }
+
         $this->init();
 
-        if ($attributes !== null) {
+        if (! empty($attributes)) {
             $this->addAttributes($attributes);
         }
     }
