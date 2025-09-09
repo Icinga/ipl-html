@@ -76,7 +76,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
     /** @var string Tag of element. Set this property in order to provide the element's tag when extending this class */
     protected $tag;
 
-    public function getAttributes(): Attributes
+    public function getAttributes()
     {
         if ($this->attributes === null) {
             $default = $this->getDefaultAttributes();
@@ -92,7 +92,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
         return $this->attributes;
     }
 
-    public function addAttributes(Attributes|array $attributes): static
+    public function addAttributes($attributes)
     {
         $this->getAttributes()->add($attributes);
 
@@ -126,14 +126,14 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
         return $this->getAttributes()->get($name);
     }
 
-    public function setAttribute(string $name, bool|string|array|null $value): static
+    public function setAttribute($name, $value)
     {
         $this->getAttributes()->set($name, $value);
 
         return $this;
     }
 
-    public function removeAttribute(string $name, bool|string|array|null $value = null): ?Attribute
+    public function removeAttribute(string $name, $value = null): ?Attribute
     {
         return $this->getAttributes()->remove($name, $value);
     }
@@ -157,7 +157,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @throws RuntimeException If the element does not have a tag
      */
-    final public function getTag(): string
+    final public function getTag()
     {
         $tag = $this->tag();
 
@@ -192,7 +192,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
      *
      * @return bool
      */
-    public function isVoid(): bool
+    public function isVoid()
     {
         if ($this->isVoid !== null) {
             return $this->isVoid;
@@ -295,7 +295,7 @@ abstract class BaseHtmlElement extends HtmlDocument implements HtmlElementInterf
     {
     }
 
-    public function addHtml(ValidHtml ...$content): static
+    public function addHtml(ValidHtml ...$content)
     {
         $this->ensureAssembled();
 

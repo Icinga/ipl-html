@@ -2,13 +2,32 @@
 
 namespace ipl\Html\Contract;
 
+use ipl\Html\Attributes;
 use ipl\Html\Form;
 
 /**
  * Representation of form elements
+ *
+ * @phpstan-import-type AttributesType from Attributes
  */
-interface FormElement extends Wrappable, HtmlElementInterface
+interface FormElement extends Wrappable
 {
+    /**
+     * Get the attributes or options of the element
+     *
+     * @return Attributes
+     */
+    public function getAttributes();
+
+    /**
+     * Add attributes or options to the form element
+     *
+     * @param Attributes|AttributesType $attributes
+     *
+     * @return $this
+     */
+    public function addAttributes($attributes);
+
     /**
      * Get the description for the element, if any
      *

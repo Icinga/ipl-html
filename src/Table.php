@@ -24,7 +24,7 @@ class Table extends BaseHtmlElement
     /** @var HtmlElement */
     private $footer;
 
-    public function addHtml(ValidHtml ...$content): static
+    public function addHtml(ValidHtml ...$content)
     {
         foreach ($content as $html) {
             if ($html instanceof BaseHtmlElement) {

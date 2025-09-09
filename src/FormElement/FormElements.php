@@ -484,7 +484,7 @@ trait FormElements
         ]);
     }
 
-    public function remove(ValidHtml $content): static
+    public function remove(ValidHtml $content)
     {
         if ($content instanceof FormElement) {
             if ($this->hasElement($content)) {

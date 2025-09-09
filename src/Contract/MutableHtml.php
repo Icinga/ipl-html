@@ -13,7 +13,7 @@ interface MutableHtml extends ValidHtml
      *
      * @return $this
      */
-    public function addHtml(ValidHtml ...$content): static;
+    public function addHtml(ValidHtml ...$content);
 
     /**
      * Prepend content
@@ -22,7 +22,7 @@ interface MutableHtml extends ValidHtml
      *
      * @return $this
      */
-    public function prependHtml(ValidHtml ...$content): static;
+    public function prependHtml(ValidHtml ...$content);
 
     /**
      * Set content
@@ -31,7 +31,7 @@ interface MutableHtml extends ValidHtml
      *
      * @return $this
      */
-    public function setHtmlContent(ValidHtml ...$content): static;
+    public function setHtmlContent(ValidHtml ...$content);
 
     /**
      * Insert Html after an existing Html node
@@ -41,7 +41,7 @@ interface MutableHtml extends ValidHtml
      *
      * @return $this
      */
-    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): static;
+    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): self;
 
     /**
      * Insert Html before an existing Html node
@@ -51,7 +51,7 @@ interface MutableHtml extends ValidHtml
      *
      * @return $this
      */
-    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): static;
+    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): self;
 
     /**
      * Remove content
@@ -60,14 +60,14 @@ interface MutableHtml extends ValidHtml
      *
      * @return $this
      */
-    public function remove(ValidHtml $content): static;
+    public function remove(ValidHtml $content);
 
     /**
      * Get the content
      *
      * @return ValidHtml[]
      */
-    public function getContent(): array;
+    public function getContent();
 
     /**
      * Check whether the given content is a direct or indirect child of this Html
@@ -79,12 +79,12 @@ interface MutableHtml extends ValidHtml
      *
      * @return bool
      */
-    public function contains(ValidHtml $content): bool;
+    public function contains(ValidHtml $content);
 
     /**
      * Get whether there is any content
      *
      * @return bool
      */
-    public function isEmpty(): bool;
+    public function isEmpty();
 }
