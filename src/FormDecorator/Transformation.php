@@ -3,9 +3,9 @@
 namespace ipl\Html\FormDecorator;
 
 /**
- * Describes the placement of decorative element
+ * Describes how the content should be transformed
  */
-enum Placement
+enum Transformation
 {
     /** Add the element at the end of the existing content */
     case Append;

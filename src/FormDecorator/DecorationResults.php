@@ -44,6 +44,25 @@ class DecorationResults implements ValidHtml
     }
 
     /**
+     * Transform the results according to the given case with the given HTML element
+     *
+     * @param Transformation $case
+     * @param ValidHtml|MutableHtml $item
+     *
+     * @return $this
+     */
+    public function transform(Transformation $case, ValidHtml|MutableHtml $item): static
+    {
+        match ($case) {
+            Transformation::Append  => $this->append($item),
+            Transformation::Prepend => $this->prepend($item),
+            Transformation::Wrap    => $this->wrap($item)
+        };
+
+        return $this;
+    }
+
+    /**
      * Add the given HTML element to the results
      *
      * @param ValidHtml $item The HTML content to be added

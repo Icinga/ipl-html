@@ -19,8 +19,8 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
-    /** @var Placement Describes where the HTML tag should be placed. Default: Wrap */
-    protected Placement $placement = Placement::Wrap;
+    /** @var Transformation Describes how the HTML tag should transform the content. Default: Wrap */
+    protected Transformation $transformation = Transformation::Wrap;
 
     /** @var string HTML tag to use for the decoration. */
     protected string $tag;
@@ -62,27 +62,27 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     }
 
     /**
-     * Set the placement of the HTML tag
+     * Set the transformation type of the HTML tag
      *
-     * @param Placement $placement
+     * @param Transformation $transformation
      *
      * @return $this
      */
-    public function setPlacement(Placement $placement): static
+    public function setTransformation(Transformation $transformation): static
     {
-        $this->placement = $placement;
+        $this->transformation = $transformation;
 
         return $this;
     }
 
     /**
-     * Get the placement of the HTML tag
+     * Get the transformation type of the HTML tag
      *
-     * @return Placement
+     * @return Transformation
      */
-    public function getPlacement(): Placement
+    public function getTransformation(): Transformation
     {
-        return $this->placement;
+        return $this->transformation;
     }
 
     /**
@@ -157,20 +157,17 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
         }
 
         $class = $this->getClass();
-        $html = new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]));
-
-        match ($this->getPlacement()) {
-            Placement::Append   => $results->append($html),
-            Placement::Prepend  => $results->prepend($html),
-            default             => $results->wrap($html)
-        };
+        $results->transform(
+            $this->getTransformation(),
+            new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]))
+        );
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         $attributes
             ->registerAttributeCallback('tag', null, $this->setTag(...))
-            ->registerAttributeCallback('placement', null, $this->setPlacement(...))
+            ->registerAttributeCallback('transformation', null, $this->setTransformation(...))
             ->registerAttributeCallback('condition', null, $this->setCondition(...))
             ->registerAttributeCallback('class', null, $this->setClass(...));
     }

@@ -5,7 +5,7 @@ namespace ipl\Tests\Html\FormDecorator;
 use InvalidArgumentException;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\HtmlTagDecorator;
-use ipl\Html\FormDecorator\Placement;
+use ipl\Html\FormDecorator\Transformation;
 use ipl\Html\FormElement\TextElement;
 use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
@@ -37,16 +37,16 @@ class HtmlTagDecoratorTest extends TestCase
     {
         $htmlTag = new HtmlTagDecorator();
 
-        $this->assertSame(Placement::Wrap, $htmlTag->getPlacement());
+        $this->assertSame(Transformation::Wrap, $htmlTag->getTransformation());
 
-        $htmlTag->setPlacement(Placement::Append);
-        $this->assertSame(Placement::Append, $htmlTag->getPlacement());
+        $htmlTag->setTransformation(Transformation::Append);
+        $this->assertSame(Transformation::Append, $htmlTag->getTransformation());
 
-        $htmlTag->setPlacement(Placement::Prepend);
-        $this->assertSame(Placement::Prepend, $htmlTag->getPlacement());
+        $htmlTag->setTransformation(Transformation::Prepend);
+        $this->assertSame(Transformation::Prepend, $htmlTag->getTransformation());
 
-        $htmlTag->setPlacement(Placement::Wrap);
-        $this->assertSame(Placement::Wrap, $htmlTag->getPlacement());
+        $htmlTag->setTransformation(Transformation::Wrap);
+        $this->assertSame(Transformation::Wrap, $htmlTag->getTransformation());
     }
 
     public function testCondition(): void
@@ -97,7 +97,7 @@ HTML;
         $results = (new DecorationResults())->append($element);
         (new HtmlTagDecorator())
             ->setTag('div')
-            ->setPlacement(Placement::Append)
+            ->setTransformation(Transformation::Append)
             ->decorate($results, $element);
 
         $html = <<<'HTML'
@@ -114,7 +114,7 @@ HTML;
         $results = (new DecorationResults())->append($element);
         (new HtmlTagDecorator())
             ->setTag('div')
-            ->setPlacement(Placement::Prepend)
+            ->setTransformation(Transformation::Prepend)
             ->decorate($results, $element);
 
         $html = <<<'HTML'
