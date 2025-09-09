@@ -14,6 +14,21 @@ class DecorationResultsTest extends TestCase
         $this->assertSame('', (string) new DecorationResults());
     }
 
+    public function testMethodSkipDecorators(): void
+    {
+        $results = new DecorationResults();
+        $this->assertCount(0, $results->getSkipDecorators());
+        $this->assertSame([], $results->getSkipDecorators());
+
+        $results->skipDecorators('Decorator1');
+        $this->assertCount(1, $results->getSkipDecorators());
+        $this->assertSame(['Decorator1'], $results->getSkipDecorators());
+
+        $results->skipDecorators('Decorator2', 'Decorator3');
+        $this->assertCount(3, $results->getSkipDecorators());
+        $this->assertSame(['Decorator1', 'Decorator2', 'Decorator3'], $results->getSkipDecorators());
+    }
+
     public function testMethodAppend(): void
     {
         $results = (new DecorationResults())

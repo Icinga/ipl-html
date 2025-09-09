@@ -7,7 +7,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecorator\DecorationResults;
 
 /**
- * Render the $formElement
+ * Render the $formElement and skip "TestRenderElement" decorator
  */
 class TestSkipRenderElementDecorator implements Decorator
 {
