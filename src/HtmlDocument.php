@@ -29,7 +29,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     protected $hasBeenAssembled = false;
 
     /** @var ?(HtmlDocument|Wrappable) Wrapper */
-    protected null|HtmlDocument|Wrappable $wrapper = null;
+    protected $wrapper;
 
     /** @var ?(HtmlDocument|Wrappable) Wrapped element */
     private null|HtmlDocument|Wrappable $wrapped = null;
@@ -70,7 +70,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $wrapped;
     }
 
-    public function getContent(): array
+    public function getContent()
     {
         return $this->content;
     }
@@ -90,7 +90,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function setHtmlContent(ValidHtml ...$content): static
+    public function setHtmlContent(ValidHtml ...$content)
     {
         $this->content = [];
         foreach ($content as $element) {
@@ -147,7 +147,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         ));
     }
 
-    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): static
+    public function insertAfter(ValidHtml $newNode, ValidHtml $existingNode): self
     {
         $index = array_search($existingNode, $this->content, true);
         if ($index === false) {
@@ -161,7 +161,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): static
+    public function insertBefore(ValidHtml $newNode, ValidHtml $existingNode): self
     {
         $index = array_search($existingNode, $this->content);
         if ($index === false) {
@@ -189,7 +189,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function addHtml(ValidHtml ...$content): static
+    public function addHtml(ValidHtml ...$content)
     {
         foreach ($content as $element) {
             $this->addIndexedContent($element);
@@ -201,12 +201,12 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Add content from the given document
      *
-     * @param MutableHtml $from
-     * @param callable    $callback Optional callback in order to transform the content to add
+     * @param HtmlDocument $from
+     * @param callable     $callback Optional callback in order to transform the content to add
      *
      * @return $this
      */
-    public function addFrom(MutableHtml $from, $callback = null)
+    public function addFrom(HtmlDocument $from, $callback = null)
     {
         $from->ensureAssembled();
 
@@ -218,7 +218,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function contains(ValidHtml $content): bool
+    public function contains(ValidHtml $content)
     {
         $key = spl_object_hash($content);
         if (array_key_exists($key, $this->contentIndex)) {
@@ -248,7 +248,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function prependHtml(ValidHtml ...$content): static
+    public function prependHtml(ValidHtml ...$content)
     {
         foreach (array_reverse($content) as $html) {
             array_unshift($this->content, $html);
@@ -259,7 +259,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function remove(ValidHtml $content): static
+    public function remove(ValidHtml $content)
     {
         $key = spl_object_hash($content);
         if (array_key_exists($key, $this->contentIndex)) {
@@ -291,7 +291,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function isEmpty(): bool
+    public function isEmpty()
     {
         $this->ensureAssembled();
 

@@ -19,14 +19,14 @@ interface HtmlElementInterface
      *
      * @return non-empty-string
      */
-    public function getTag(): string;
+    public function getTag();
 
     /**
      * Get the attributes of the element
      *
      * @return Attributes
      */
-    public function getAttributes(): Attributes;
+    public function getAttributes();
 
     /**
      * Add the given attributes to the element
@@ -35,7 +35,7 @@ interface HtmlElementInterface
      *
      * @return $this
      */
-    public function addAttributes(Attributes|array $attributes): static;
+    public function addAttributes($attributes);
 
     /**
      * Return true if the attribute with the given name exists, false otherwise
@@ -69,7 +69,7 @@ interface HtmlElementInterface
      *
      * @return $this
      */
-    public function setAttribute(string $name, bool|string|array|null $value): static;
+    public function setAttribute($name, $value);
 
     /**
      * Remove the attribute with the given name or remove the given value from the attribute
@@ -79,12 +79,12 @@ interface HtmlElementInterface
      *
      * @return ?Attribute The removed or changed attribute, if any, otherwise null
      */
-    public function removeAttribute(string $name, bool|string|array|null $value = null): ?Attribute;
+    public function removeAttribute(string $name, $value = null): ?Attribute;
 
     /**
      * Get whether the element is void
      *
      * @return bool
      */
-    public function isVoid(): bool;
+    public function isVoid();
 }

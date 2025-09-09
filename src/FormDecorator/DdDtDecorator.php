@@ -47,7 +47,7 @@ class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
         return null;
     }
 
-    public function getAttributes(): Attributes
+    public function getAttributes()
     {
         $attributes = parent::getAttributes();
 
