@@ -19,13 +19,13 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
-    /** @var Placement Describes where the HTML tag should be placed. Default : Wrap */
+    /** @var Placement Describes where the HTML tag should be placed. Default: Wrap */
     protected Placement $placement = Placement::Wrap;
 
     /** @var string HTML tag to use for the decoration. */
     protected string $tag;
 
-    /** @var ?callable(FormElement): bool Callable to decide whether to decorate element */
+    /** @var ?callable(FormElement): bool Callable to decide whether to decorate the element */
     protected $condition;
 
     /** @var ?(string|string[]) CSS classes to apply */

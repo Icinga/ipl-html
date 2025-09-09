@@ -44,7 +44,6 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
         return $this;
     }
 
-
     public function getName(): string
     {
         return 'Description';
