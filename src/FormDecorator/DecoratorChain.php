@@ -2,12 +2,12 @@
 
 namespace ipl\Html\FormDecorator;
 
-use Exception;
 use InvalidArgumentException;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Stdlib\Plugins;
+use LogicException;
 use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
@@ -127,6 +127,7 @@ class DecoratorChain
         }
 
         foreach ($decorators as $decoratorName => $decoratorOptions) {
+            $position = $decoratorName;
             if (is_int($decoratorName)) {
                 if (is_array($decoratorOptions)) {
                     if (! isset($decoratorOptions['name'])) {
@@ -170,7 +171,8 @@ class DecoratorChain
 
             if (! is_string($decoratorName) && ! $decoratorName instanceof Decorator) {
                 throw new InvalidArgumentException(sprintf(
-                    'Expects variable $decoratorName to be a string or an instance of %s, got %s instead',
+                    'Expects array value at position %d to be a string or an instance of %s, got %s instead',
+                    $position,
                     Decorator::class,
                     get_php_type($decoratorName)
                 ));
@@ -265,7 +267,7 @@ class DecoratorChain
      *
      * @return string The decorated form element
      *
-     * @throws Exception If a decorator wants to skip already applied decorator
+     * @throws LogicException If a decorator wants to skip a decorator that has already been applied
      */
     public function apply(FormElement $formElement): string
     {
@@ -284,7 +286,7 @@ class DecoratorChain
             $toSkip = $results->getSkipDecorators();
             $alreadyApplied = array_intersect($toSkip, $appliedDecorators);
             if (! empty($alreadyApplied)) {
-                throw new Exception(sprintf(
+                throw new LogicException(sprintf(
                     "Cannot skip Decorator(s) '%s', Decoration already applied",
                     implode("', '", $alreadyApplied)
                 ));

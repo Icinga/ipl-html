@@ -18,7 +18,7 @@ class TestSkipRenderElementDecorator implements Decorator
 
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
-        $results->skipDecorators(['TestRenderElement']);
+        $results->skipDecorators('TestRenderElement');
         $results->append($formElement);
     }
 }

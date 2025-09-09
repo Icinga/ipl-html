@@ -22,13 +22,13 @@ class DecorationResults implements ValidHtml
     /**
      * Add decorator names to be skipped
      *
-     * @param string[] $decoratorNames List of decorator names to skip
+     * @param string ...$decoratorNames Decorator names to skip
      *
      * @return $this
      */
-    public function skipDecorators(array $decoratorNames): static
+    public function skipDecorators(string ...$decoratorNames): static
     {
-        $this->skipDecorators += $decoratorNames;
+        $this->skipDecorators = array_merge($this->skipDecorators, $decoratorNames);
 
         return $this;
     }
