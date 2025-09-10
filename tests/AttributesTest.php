@@ -578,25 +578,13 @@ class AttributesTest extends TestCase
      */
     public function testAttributesMergeDoesNotMergeCallbacks(): void
     {
-        $attributes = Attributes::create(['foo' => 'bar']);
-        $callbacks = (new Attributes())
-            ->registerAttributeCallback('foo', function () {
-                return 'rab';
-            })
-            ->registerAttributeCallback(
-                'bar',
-                function () use (&$value) {
-                    return $value;
-                },
-                function ($v) use (&$value) {
-                    $value = $v;
-                }
-            );
+        $attributes = new Attributes();
+        $sourceAttributes = Attributes::create(['bar' => 'foo'])
+            ->setCallback('foo', fn() => 'bar');
 
-        $attributes->merge($callbacks);
+        $attributes->merge($sourceAttributes);
 
-        $attributes->set('bar', 'foo');
-
-        $this->assertEquals(' foo="bar rab" bar="foo"', $attributes->render());
+        $this->assertSame('foo', $attributes->get('bar')->getValue());
+        $this->assertNull($attributes->get('foo')->getValue());
     }
 }

@@ -21,7 +21,7 @@ class HtmlElement extends BaseHtmlElement
         $this->tag = $tag;
 
         if ($attributes !== null) {
-            $this->getAttributes()->merge($attributes);
+            $this->attributes = $attributes;
         }
 
         $this->setHtmlContent(...$content);
