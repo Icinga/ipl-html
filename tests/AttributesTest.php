@@ -668,4 +668,18 @@ class AttributesTest extends TestCase
 
         $attributes->render();
     }
+
+    /**
+     * @depends testRenderHandlesCallbackResultsCorrectly
+     */
+    public function testCallbacksAreResetUponClone(): void
+    {
+        $attributes = (new Attributes())
+            ->setCallback('callback', fn() => 'foo')
+            ->registerAttributeCallback('callback2', fn() => 'bar');
+
+        $clone = clone $attributes;
+
+        $this->assertSame('', $clone->render());
+    }
 }

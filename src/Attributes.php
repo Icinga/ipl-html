@@ -609,5 +609,10 @@ class Attributes implements ArrayAccess, IteratorAggregate
         foreach ($this->attributes as &$attribute) {
             $attribute = clone $attribute;
         }
+
+        // Reset callbacks to avoid memory leaks
+        $this->callbacks = [];
+        $this->newCallbacks = [];
+        $this->setterCallbacks = [];
     }
 }
