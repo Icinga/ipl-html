@@ -23,7 +23,7 @@ use function ipl\Stdlib\get_php_type;
  */
 class Attributes implements ArrayAccess, IteratorAggregate
 {
-    /** @var Attribute[] */
+    /** @var array<string, Attribute> */
     protected $attributes = [];
 
     /** @var callable[] */
@@ -108,7 +108,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Get the collection of attributes as array
      *
-     * @return Attribute[]
+     * @return array<string, Attribute>
      */
     public function getAttributes()
     {

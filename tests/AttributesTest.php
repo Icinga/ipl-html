@@ -2,17 +2,196 @@
 
 namespace ipl\Tests\Html;
 
+use InvalidArgumentException;
 use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
-use ipl\Html\HtmlString;
-use ipl\Html\ValidHtml;
 
 class AttributesTest extends TestCase
 {
-    public function testGetWithNonexistentAttribute()
+    /**
+     * @depends testGetWithExistingAttribute
+     */
+    public function testConstructorAcceptsAttributeInstances(): void
+    {
+        $attrStub1 = $this->createStub(Attribute::class);
+        $attrStub1->method('getName')->willReturn('foo');
+        $attrStub1->method('getValue')->willReturn('bar');
+
+        $attrStub2 = $this->createStub(Attribute::class);
+        $attrStub2->method('getName')->willReturn('baz');
+        $attrStub2->method('getValue')->willReturn('qux');
+
+        $attributes = new Attributes([$attrStub1, $attrStub2]);
+
+        $this->assertSame('foo', $attributes->get('foo')->getName());
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+
+        $this->assertSame('baz', $attributes->get('baz')->getName());
+        $this->assertSame('qux', $attributes->get('baz')->getValue());
+    }
+
+    /**
+     * @depends testGetWithExistingAttribute
+     */
+    public function testConstructorAcceptsAssociativeArrays(): void
+    {
+        $attributes = new Attributes([
+            'foo' => 'bar',
+            'baz' => 'qux'
+        ]);
+
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+        $this->assertSame('qux', $attributes->get('baz')->getValue());
+        $this->assertSame('foo', $attributes->get('foo')->getName());
+        $this->assertSame('baz', $attributes->get('baz')->getName());
+    }
+
+    /**
+     * @depends testGetWithExistingAttribute
+     * @todo Not sure of the importance of this format. None of the other methods support this.
+     */
+    public function testConstructorAcceptsTwoElementTuples(): void
+    {
+        $attributes = new Attributes([
+            ['foo', 'bar'],
+            ['baz', 'qux']
+        ]);
+
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+        $this->assertSame('qux', $attributes->get('baz')->getValue());
+        $this->assertSame('foo', $attributes->get('foo')->getName());
+        $this->assertSame('baz', $attributes->get('baz')->getName());
+    }
+
+    public function testWantAttributesAcceptsSelf(): void
     {
         $attributes = new Attributes();
+        $gotAttributes = $attributes->wantAttributes($attributes);
+
+        $this->assertSame($attributes, $gotAttributes);
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testConstructorAcceptsTwoElementTuples
+     * @depends testGetWithExistingAttribute
+     */
+    public function testWantAttributesAcceptsSupportedArrayFormats(): void
+    {
+        $associative = Attributes::wantAttributes([
+            'foo' => 'bar',
+            'baz' => 'qux'
+        ]);
+
+        $this->assertSame('foo', $associative->get('foo')->getName());
+        $this->assertSame('bar', $associative->get('foo')->getValue());
+        $this->assertSame('baz', $associative->get('baz')->getName());
+        $this->assertSame('qux', $associative->get('baz')->getValue());
+
+        $twoElementTuples = Attributes::wantAttributes([
+            ['foo', 'bar'],
+            ['baz', 'qux']
+        ]);
+
+        $this->assertSame('foo', $twoElementTuples->get('foo')->getName());
+        $this->assertSame('bar', $twoElementTuples->get('foo')->getValue());
+        $this->assertSame('baz', $twoElementTuples->get('baz')->getName());
+        $this->assertSame('qux', $twoElementTuples->get('baz')->getValue());
+    }
+
+    public function testWantAttributesAcceptsNull(): void
+    {
+        $this->assertInstanceOf(Attributes::class, Attributes::wantAttributes(null));
+    }
+
+    /**
+     * @depends testWantAttributesAcceptsSelf
+     * @depends testWantAttributesAcceptsSupportedArrayFormats
+     */
+    public function testWantAttributesThrowsOnInvalidInput(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attributes instance, array or null expected. Got string instead.');
+
+        Attributes::wantAttributes('foo');
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     */
+    public function testGetAttributes(): void
+    {
+        $attributes = new Attributes([
+            'foo' => 'bar',
+            'baz' => 'qux'
+        ]);
+
+        $this->assertCount(2, $attributes->getAttributes());
+        $this->assertSame('foo', $attributes->getAttributes()['foo']->getName());
+        $this->assertSame('bar', $attributes->getAttributes()['foo']->getValue());
+        $this->assertSame('baz', $attributes->getAttributes()['baz']->getName());
+        $this->assertSame('qux', $attributes->getAttributes()['baz']->getValue());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithNonexistentAttribute
+     */
+    public function testAttributesMerge(): void
+    {
+        $attributes = new Attributes();
+        $sourceAttributes = Attributes::create([
+            'foo' => 'bar',
+            'bar' => 'foo'
+        ]);
+
+        $attributes->merge($sourceAttributes);
+
+        $this->assertSame('foo', $attributes->get('foo')->getName());
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+        $this->assertSame('bar', $attributes->get('bar')->getName());
+        $this->assertSame('foo', $attributes->get('bar')->getValue());
+
+        $moreAttributes = Attributes::create(['foo' => 'rab']);
+
+        $attributes->merge($moreAttributes);
+
+        $this->assertSame('foo', $attributes->get('foo')->getName());
+        $this->assertSame(['bar', 'rab'], $attributes->get('foo')->getValue());
+    }
+
+    public function testHas(): void
+    {
+        $attributes = new Attributes();
+
+        $this->assertFalse($attributes->has('name'));
+
+        $attributes->set('name', 'value');
+
+        $this->assertTrue($attributes->has('name'));
+    }
+
+    /**
+     * @depends testSetAttribute
+     */
+    public function testGetWithExistingAttribute(): void
+    {
+        $attribute = $this->createStub(Attribute::class);
+        $attribute->method('getName')->willReturn('name');
+        $attribute->method('getValue')->willReturn('value');
+
+        $attributes = new Attributes();
+        $attributes->setAttribute($attribute);
+
+        $this->assertSame('value', $attributes->get('name')->getValue());
+    }
+
+    public function testGetWithNonexistentAttribute(): void
+    {
+        $attributes = new Attributes();
+
+        $this->assertNull($attributes->get('unknown')->getValue());
 
         $attributes
             ->get('name')
@@ -24,7 +203,298 @@ class AttributesTest extends TestCase
         );
     }
 
-    public function testForeach()
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithExistingAttribute
+     */
+    public function testSetAcceptsSelf(): void
+    {
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $newAttributes = new Attributes();
+        $newAttributes->set($attributes);
+
+        $this->assertSame('bar', $newAttributes->get('foo')->getValue());
+    }
+
+    /**
+     * @depends testGetWithExistingAttribute
+     */
+    public function testSetAcceptsAttributeInstances(): void
+    {
+        $attrStub = $this->createStub(Attribute::class);
+        $attrStub->method('getName')->willReturn('foo');
+        $attrStub->method('getValue')->willReturn('bar');
+
+        $attributes = new Attributes();
+
+        $attributes->set($attrStub);
+
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+    }
+
+    /**
+     * @depends testGetWithExistingAttribute
+     */
+    public function testSetAcceptsAssociativeArrays(): void
+    {
+        $attributes = new Attributes();
+
+        $attributes->set([
+            'foo' => 'bar'
+        ]);
+
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+    }
+
+    /**
+     * @depends testGetWithExistingAttribute
+     */
+    public function testSetAcceptsNameAndValue(): void
+    {
+        $attributes = new Attributes();
+
+        $attributes->set('foo', 'bar');
+
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+    }
+
+    /**
+     * @depends testGetAttributes
+     */
+    public function testAddAcceptsNull(): void
+    {
+        // for whatever reason…
+
+        $attributes = new Attributes();
+
+        $attributes->add(null);
+
+        $this->assertSame(0, count($attributes->getAttributes()));
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithExistingAttribute
+     */
+    public function testAddAcceptsSelf(): void
+    {
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $attributes->add(new Attributes([
+            'foo' => 'baz',
+            'bar' => 'qux'
+        ]));
+
+        $this->assertSame(['bar', 'baz'], $attributes->get('foo')->getValue());
+        $this->assertSame('qux', $attributes->get('bar')->getValue());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithExistingAttribute
+     */
+    public function testAddAcceptsAssociativeArrays(): void
+    {
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $attributes->add([
+            'foo' => 'baz',
+            'bar' => 'qux'
+        ]);
+
+        $this->assertSame(['bar', 'baz'], $attributes->get('foo')->getValue());
+        $this->assertSame('qux', $attributes->get('bar')->getValue());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithExistingAttribute
+     */
+    public function testAddAcceptsAttributeInstances(): void
+    {
+        $attrStub1 = $this->createStub(Attribute::class);
+        $attrStub1->method('getName')->willReturn('foo');
+        $attrStub1->method('getValue')->willReturn('baz');
+
+        $attrStub2 = $this->createStub(Attribute::class);
+        $attrStub2->method('getName')->willReturn('bar');
+        $attrStub2->method('getValue')->willReturn('qux');
+
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $attributes->add($attrStub1);
+        $attributes->add($attrStub2);
+
+        $this->assertSame(['bar', 'baz'], $attributes->get('foo')->getValue());
+        $this->assertSame('qux', $attributes->get('bar')->getValue());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithExistingAttribute
+     */
+    public function testAddAcceptsNameAndValue(): void
+    {
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $attributes->add('foo', 'baz');
+        $attributes->add('bar', 'qux');
+
+        $this->assertSame(['bar', 'baz'], $attributes->get('foo')->getValue());
+        $this->assertSame('qux', $attributes->get('bar')->getValue());
+    }
+
+    public function testRemoveReturnsNullIfAttributeDoesNotExist(): void
+    {
+        $attributes = new Attributes();
+
+        $this->assertNull($attributes->remove('foo'));
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testHas
+     */
+    public function testRemoveRemovesAllValuesIfNameIsGiven(): void
+    {
+        $attributes = new Attributes([
+            'foo' => ['bar', 'baz']
+        ]);
+
+        $this->assertSame(['bar', 'baz'], $attributes->remove('foo')->getValue());
+        $this->assertFalse($attributes->has('foo'));
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithExistingAttribute
+     */
+    public function testRemoveRemovesValueIfNameAndValueIsGiven(): void
+    {
+        $attributes = new Attributes([
+            'foo' => ['bar', 'baz']
+        ]);
+
+        // Honestly, at first I wanted to use assertSame('bar', …), but the returned attribute is not a copy of the
+        // original, it is the original. This means removing an entire attribute is not the same as removing a single
+        // value. In the first case, remove returns the removed state, and in the second case it returns the attribute's
+        // remaining state. Also, why is the remaining state not a reset array? The test only succeeds by asserting
+        // that `'baz'` is *contained*. Comparing with `['baz']` is not possible as the index is different.
+        $this->assertContains('baz', $attributes->remove('foo', 'bar')->getValue());
+    }
+
+    public function testSetAttribute(): void
+    {
+        $attrStub = $this->createStub(Attribute::class);
+        $attrStub->method('getName')->willReturn('foo');
+        $attrStub->method('getValue')->willReturn('bar');
+
+        $attributes = new Attributes();
+        $attributes->setAttribute($attrStub);
+
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testGetWithExistingAttribute
+     */
+    public function testAddAttribute(): void
+    {
+        $attrStub1 = $this->createStub(Attribute::class);
+        $attrStub1->method('getName')->willReturn('foo');
+        $attrStub1->method('getValue')->willReturn('baz');
+
+        $attrStub2 = $this->createStub(Attribute::class);
+        $attrStub2->method('getName')->willReturn('bar');
+        $attrStub2->method('getValue')->willReturn('qux');
+
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $attributes->addAttribute($attrStub1);
+        $attributes->addAttribute($attrStub2);
+
+        $this->assertSame(['bar', 'baz'], $attributes->get('foo')->getValue());
+        $this->assertSame('qux', $attributes->get('bar')->getValue());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testAttributesAreRenderedAsHtmlAttributes
+     */
+    public function testNamesCanHavePrefixes(): void
+    {
+        $attributes = new Attributes(['foo' => 'bar']);
+        $attributes->setPrefix('data-');
+
+        $this->assertSame(' data-foo="bar"', $attributes->render());
+    }
+
+    public function testEmptyAttributesAreRenderedAsEmptyString(): void
+    {
+        $this->assertSame('', (new Attributes())->render());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     */
+    public function testAttributesAreRenderedAsHtmlAttributes(): void
+    {
+        $attributes = new Attributes([
+            'foo' => 'bar',
+            'baz' => 'qux'
+        ]);
+
+        $this->assertSame(' foo="bar" baz="qux"', $attributes->render());
+    }
+
+    /**
+     * @depends testAttributesAreRenderedAsHtmlAttributes
+     * @depends testSetAttribute
+     */
+    public function testEmptyAttributesAreIgnoredWhenRendering(): void
+    {
+        $emptyAttribute = $this->createMock(Attribute::class);
+        $emptyAttribute->expects($this->any())->method('getName')->willReturn('foo');
+        $emptyAttribute->expects($this->any())->method('isEmpty')->willReturn(true);
+        $emptyAttribute->expects($this->never())->method('render');
+
+        $filledAttribute = $this->createMock(Attribute::class);
+        $filledAttribute->expects($this->any())->method('getName')->willReturn('bar');
+        $filledAttribute->expects($this->any())->method('isEmpty')->willReturn(false);
+        $filledAttribute->expects($this->once())->method('render')->willReturn('bar="baz"');
+
+        $attributes = new Attributes();
+        $attributes->setAttribute($emptyAttribute);
+        $attributes->setAttribute($filledAttribute);
+
+        $this->assertSame(' bar="baz"', $attributes->render());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     */
+    public function testArrayAccess(): void
+    {
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $this->assertTrue(isset($attributes['foo']));
+        $this->assertFalse(isset($attributes['bar']));
+        $this->assertSame('bar', $attributes['foo']->getValue());
+        $this->assertNull($attributes['bar']->getValue());
+
+        $attributes['bar'] = 'baz';
+        unset($attributes['foo']);
+
+        $this->assertFalse(isset($attributes['foo']));
+        $this->assertSame('baz', $attributes['bar']->getValue());
+    }
+
+    /**
+     * @depends testConstructorAcceptsAssociativeArrays
+     */
+    public function testForeach(): void
     {
         $attrs = ['foo' => 'bar', 'baz' => 'qux'];
 
@@ -43,7 +513,31 @@ class AttributesTest extends TestCase
         }
     }
 
-    public function testNativeAttributesAndCallbacks()
+    /**
+     * @depends testHas
+     * @depends testGetWithExistingAttribute
+     * @depends testConstructorAcceptsAssociativeArrays
+     * @depends testSetAcceptsNameAndValue
+     * @depends testRemoveRemovesAllValuesIfNameIsGiven
+     */
+    public function testClone(): void
+    {
+        $attributes = new Attributes(['foo' => 'bar']);
+
+        $clone = clone $attributes;
+
+        $attributes->set('bar', 'baz');
+        $clone->set('foo', 'qux');
+
+        $this->assertFalse($clone->has('bar'));
+        $this->assertSame('bar', $attributes->get('foo')->getValue());
+
+        $clone->remove('foo');
+
+        $this->assertTrue($attributes->has('foo'));
+    }
+
+    public function testNativeAttributesAndCallbacks(): void
     {
         $objectOne = new class extends BaseHtmlElement {
             protected $defaultAttributes = ['class' => 'foo'];
@@ -74,26 +568,15 @@ class AttributesTest extends TestCase
         $this->assertEquals('foo', $objectOne->getAttributes()->getAttributes()['class']->getValue());
     }
 
-    public function testAttributesMerge()
-    {
-        $emptyAttributes = new Attributes();
-        $filledAttributes = Attributes::create([
-            'foo' => 'bar',
-            'bar' => 'foo'
-        ]);
-
-        $emptyAttributes->merge($filledAttributes);
-
-        $this->assertEquals(' foo="bar" bar="foo"', $emptyAttributes->render());
-
-        $moreAttributes = Attributes::create(['foo' => 'rab']);
-
-        $moreAttributes->merge($filledAttributes);
-
-        $this->assertEquals(' foo="rab bar" bar="foo"', $moreAttributes->render());
-    }
-
-    public function testAttributesMergeWithCallbacks()
+    /**
+     * Merging attributes with callbacks is highly discouraged. Callbacks may hold references to other objects
+     * and may cause memory leaks. We cannot prevent passing entire attributes instances around, but we must
+     * not provide a native way to merge them.
+     *
+     * @depends testGetWithNonexistentAttribute
+     * @depends testCallReturnsACallbackResult
+     */
+    public function testAttributesMergeDoesNotMergeCallbacks(): void
     {
         $attributes = Attributes::create(['foo' => 'bar']);
         $callbacks = (new Attributes())
@@ -115,47 +598,5 @@ class AttributesTest extends TestCase
         $attributes->set('bar', 'foo');
 
         $this->assertEquals(' foo="bar rab" bar="foo"', $attributes->render());
-    }
-
-    public function testClone(): void
-    {
-        $original = Attributes::create([
-            'class' => 'original-class',
-            'value' => 'original-value'
-        ]);
-
-        $clone = clone $original;
-        $clone->get('class')->setValue('clone-class');
-        $clone->get('name')->setValue('clone-name');
-        $clone->remove('value');
-
-        $cloneCone = clone $clone;
-        $cloneCone->get('class')->addValue('clone-clone-class');
-        $cloneCone->get('name')->setValue('clone-clone-name');
-        $cloneCone->get('value')->setValue('clone-clone-value');
-
-        $this->assertSame('original-class', $original->get('class')->getValue());
-        $this->assertSame('original-value', $original->get('value')->getValue());
-        $this->assertNull($original->get('name')->getValue());
-        $this->assertSame(
-            ' class="original-class" value="original-value"',
-            $original->render()
-        );
-
-        $this->assertSame('clone-class', $clone->get('class')->getValue());
-        $this->assertNull($clone->get('value')->getValue());
-        $this->assertSame('clone-name', $clone->get('name')->getValue());
-        $this->assertSame(
-            ' class="clone-class" name="clone-name"',
-            $clone->render()
-        );
-
-        $this->assertSame(['clone-class', 'clone-clone-class'], $cloneCone->get('class')->getValue());
-        $this->assertSame('clone-clone-name', $cloneCone->get('name')->getValue());
-        $this->assertSame('clone-clone-value', $cloneCone->get('value')->getValue());
-        $this->assertSame(
-            ' class="clone-class clone-clone-class" name="clone-clone-name" value="clone-clone-value"',
-            $cloneCone->render()
-        );
     }
 }

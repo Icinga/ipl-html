@@ -212,13 +212,27 @@ class AttributeTest extends TestCase
         Attribute::create('a_a', 'sa');
     }
 
+    public function testClone(): void
+    {
+        $original = $this->simpleAttribute();
+
+        $clone = clone $original;
+        $clone->setValue('clone-class');
+
+        $secondClone = clone $clone;
+        $secondClone->addValue('clone-clone-class');
+
+        $this->assertSame('simple', $original->getValue());
+        $this->assertSame('clone-class', $clone->getValue());
+        $this->assertSame(['clone-class', 'clone-clone-class'], $secondClone->getValue());
+
+        $clone->removeValue('clone-class');
+
+        $this->assertSame(['clone-class', 'clone-clone-class'], $secondClone->getValue());
+    }
+
     protected function simpleAttribute()
     {
         return new Attribute('class', 'simple');
-    }
-
-    protected function complexAttribute()
-    {
-        return ;
     }
 }
