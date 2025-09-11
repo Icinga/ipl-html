@@ -8,6 +8,7 @@ use ipl\Html\HtmlDocument;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 use ipl\I18n\Translation;
+use ipl\Stdlib\Option;
 use ipl\Validator\DeferredInArrayValidator;
 use ipl\Validator\ValidatorChain;
 
@@ -31,6 +32,7 @@ class RadioElement extends BaseFormElement
      *
      * @return $this
      */
+    #[Option]
     public function setOptions(array $options): self
     {
         $this->options = [];
@@ -74,6 +76,7 @@ class RadioElement extends BaseFormElement
      *
      * @return $this
      */
+    #[Option]
     public function setDisabledOptions(array $disabledOptions): self
     {
         if (! empty($this->options)) {

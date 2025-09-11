@@ -10,6 +10,7 @@ use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
+use ipl\Stdlib\Option;
 use ipl\Validator\ValidatorChain;
 use ReflectionProperty;
 
@@ -54,9 +55,17 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function __construct($name, $attributes = null)
     {
         $this->setName($name);
+
+        if ($attributes === null || is_array($attributes)) {
+            // This may look inefficient, but we have to resolve options even if there are none to be set.
+            // Options may be required, and without resolving them, such constraints would not be checked.
+            $attributes ??= [];
+            Option::resolveOptions($this, $attributes);
+        }
+
         $this->init();
 
-        if ($attributes !== null) {
+        if (! empty($attributes)) {
             $this->addAttributes($attributes);
         }
     }
@@ -73,6 +82,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setDescription($description)
     {
         $this->description = $description;
@@ -92,6 +102,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setLabel($label)
     {
         $this->label = $label;
@@ -111,6 +122,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setName($name)
     {
         $this->name = $name;
@@ -130,6 +142,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setIgnored($ignored = true)
     {
         $this->ignored = (bool) $ignored;
@@ -149,6 +162,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setRequired($required = true)
     {
         $this->required = (bool) $required;
@@ -188,6 +202,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
      *
      * @return $this
      */
+    #[Option]
     public function setValidators($validators)
     {
         $this
@@ -224,6 +239,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         return $this->value;
     }
 
+    #[Option]
     public function setValue($value)
     {
         if ($value === '') {

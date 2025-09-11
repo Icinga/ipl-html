@@ -4,6 +4,7 @@ namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
 use ipl\Html\Contract\FormSubmitElement;
+use ipl\Stdlib\Option;
 
 class SubmitButtonElement extends ButtonElement implements FormSubmitElement
 {
@@ -29,6 +30,7 @@ class SubmitButtonElement extends ButtonElement implements FormSubmitElement
      *
      * @return $this
      */
+    #[Option(name: 'value')]
     public function setSubmitValue(string $value): self
     {
         $this->submitValue = $value;

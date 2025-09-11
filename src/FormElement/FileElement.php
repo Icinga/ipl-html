@@ -10,6 +10,7 @@ use ipl\Html\HtmlDocument;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 use ipl\I18n\Translation;
+use ipl\Stdlib\Option;
 use ipl\Validator\FileValidator;
 use ipl\Validator\ValidatorChain;
 use Psr\Http\Message\UploadedFileInterface;
@@ -78,6 +79,7 @@ class FileElement extends InputElement
      *
      * @return $this
      */
+    #[Option]
     public function setDestination(string $path): self
     {
         $this->destination = $path;

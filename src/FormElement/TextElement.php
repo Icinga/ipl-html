@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
+use ipl\Stdlib\Option;
 
 class TextElement extends InputElement
 {
@@ -28,6 +29,7 @@ class TextElement extends InputElement
      *
      * @return $this
      */
+    #[Option]
     public function setPlaceholder(?string $placeholder): self
     {
         $this->placeholder = $placeholder;

@@ -2,11 +2,11 @@
 
 namespace ipl\Html\FormElement;
 
-use InvalidArgumentException;
 use ipl\Html\Attributes;
 use ipl\Html\Common\MultipleAttribute;
 use ipl\Html\Html;
 use ipl\Html\HtmlElement;
+use ipl\Stdlib\Option;
 use ipl\Validator\DeferredInArrayValidator;
 use ipl\Validator\ValidatorChain;
 use UnexpectedValueException;
@@ -48,6 +48,7 @@ class SelectElement extends BaseFormElement
      *
      * @return $this
      */
+    #[Option(name: ['options', 'multiOptions'])]
     public function setOptions(array $options): self
     {
         $this->options = [];
@@ -66,6 +67,7 @@ class SelectElement extends BaseFormElement
      *
      * @return $this
      */
+    #[Option]
     public function setDisabledOptions(array $disabledOptions): self
     {
         if (! empty($this->options)) {

@@ -10,6 +10,7 @@ use ipl\Html\Form;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
 use ipl\Stdlib\Events;
+use ipl\Stdlib\Option;
 use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
 
@@ -157,7 +158,14 @@ trait FormElements
         /** @var FormElement $element */
         $element = new $class($name);
 
-        if ($options !== null) {
+        if ($options === null || is_array($options)) {
+            // This may look inefficient, but we have to resolve options even if there are none to be set.
+            // Options may be required, and without resolving them, such constraints would not be checked.
+            $options ??= [];
+            Option::resolveOptions($element, $options);
+        }
+
+        if (! empty($options)) {
             $element->addAttributes($options);
         }
 

@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use ipl\Html\Attributes;
+use ipl\Stdlib\Option;
 
 class CheckboxElement extends InputElement
 {
@@ -34,6 +35,7 @@ class CheckboxElement extends InputElement
      *
      * @return $this
      */
+    #[Option]
     public function setChecked($checked)
     {
         $this->checked = (bool) $checked;
@@ -58,6 +60,7 @@ class CheckboxElement extends InputElement
      *
      * @return $this
      */
+    #[Option]
     public function setCheckedValue($checkedValue)
     {
         $this->checkedValue = $checkedValue;
@@ -82,6 +85,7 @@ class CheckboxElement extends InputElement
      *
      * @return $this
      */
+    #[Option]
     public function setUncheckedValue($uncheckedValue)
     {
         $this->uncheckedValue = $uncheckedValue;
