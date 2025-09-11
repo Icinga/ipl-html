@@ -3,9 +3,20 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Attribute;
+use ipl\Html\ImmutableAttribute;
 
 class AttributeTest extends TestCase
 {
+    public function testSimpleAttributeIsNotImmutable(): void
+    {
+        $this->assertFalse($this->simpleAttribute()->isImmutable());
+    }
+
+    public function testImmutableAttributeIsImmutable(): void
+    {
+        $this->assertTrue($this->immutableAttribute()->isImmutable());
+    }
+
     public function testSimpleAttributeCanBeRendered()
     {
         $this->assertEquals(
@@ -234,5 +245,10 @@ class AttributeTest extends TestCase
     protected function simpleAttribute()
     {
         return new Attribute('class', 'simple');
+    }
+
+    protected function immutableAttribute()
+    {
+        return new ImmutableAttribute('name', 'test');
     }
 }
