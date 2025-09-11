@@ -2,10 +2,15 @@
 
 namespace ipl\Tests\Html;
 
+use Exception;
 use InvalidArgumentException;
 use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\ImmutableAttribute;
+use LogicException;
+use RuntimeException;
+use UnexpectedValueException;
 
 class AttributesTest extends TestCase
 {
@@ -537,35 +542,28 @@ class AttributesTest extends TestCase
         $this->assertTrue($attributes->has('foo'));
     }
 
+    /**
+     * @depends testAttributesAreRenderedAsHtmlAttributes
+     * @depends testGetWithExistingAttribute
+     */
     public function testNativeAttributesAndCallbacks(): void
     {
         $objectOne = new class extends BaseHtmlElement {
             protected $defaultAttributes = ['class' => 'foo'];
 
-            protected $attr;
-
             public function getAttr()
             {
-                return $this->attr;
-            }
-
-            public function setAttr($val)
-            {
-                $this->attr = $val;
+                return 'bar';
             }
         };
 
-        $objectOne->getAttributes()->registerAttributeCallback(
+        $objectOne->getAttributes()->setCallback(
             'class',
-            [$objectOne, 'getAttr'],
-            [$objectOne, 'setAttr']
+            $objectOne->getAttr(...)
         );
 
-        $objectOne->getAttributes()->set('class', 'bar');
-
-        $this->assertEquals('bar', $objectOne->getAttr());
         $this->assertEquals(' class="foo bar"', $objectOne->getAttributes()->render());
-        $this->assertEquals('foo', $objectOne->getAttributes()->getAttributes()['class']->getValue());
+        $this->assertEquals('foo', $objectOne->getAttributes()->get('class')->getValue());
     }
 
     /**
@@ -585,6 +583,89 @@ class AttributesTest extends TestCase
         $attributes->merge($sourceAttributes);
 
         $this->assertSame('foo', $attributes->get('bar')->getValue());
-        $this->assertNull($attributes->get('foo')->getValue());
+        $this->assertNull($attributes->call('foo')->getValue());
+    }
+
+    public function testCallReturnsACallbackResult(): void
+    {
+        $attributes = (new Attributes())->setCallback(
+            'callback',
+            fn() => ImmutableAttribute::create('callback', 'value from callback')
+        )->setCallback(
+            'callback2',
+            fn() => 'value from callback2'
+        );
+
+        $this->assertSame('value from callback', $attributes->call('callback')->getValue());
+        $this->assertSame('value from callback2', $attributes->call('callback2')->getValue());
+    }
+
+    public function testCallReturnsAnEmptyAttributeIfNoCallbackIsSetOrReturnsNull(): void
+    {
+        $attributes = new Attributes();
+
+        $this->assertTrue($attributes->call('callback')->isEmpty());
+
+        $attributes->setCallback('callback2', fn() => null);
+
+        $this->assertTrue($attributes->call('callback2')->isEmpty());
+    }
+
+    public function testCallThrowsInCaseCallbackFails(): void
+    {
+        $attributes = (new Attributes())->setCallback(
+            'callback',
+            fn() => throw new Exception()
+        );
+
+        $this->expectException(RuntimeException::class);
+        $attributes->call('callback');
+    }
+
+    public function testCallThrowsInCaseResultIsInvalid(): void
+    {
+        $attributes = (new Attributes())
+            ->setCallback('callback', fn() => Attribute::createEmpty('test'));
+
+        $this->expectException(UnexpectedValueException::class);
+        $attributes->call('callback');
+    }
+
+    /**
+     * @depends testCallReturnsACallbackResult
+     */
+    public function testCallbacksCanBeOverridden(): void
+    {
+        $attributes = (new Attributes())
+            ->setCallback('callback', fn() => 'foo');
+
+        $this->assertSame('foo', $attributes->call('callback')->getValue());
+
+        $attributes->setCallback('callback', fn() => 'bar');
+
+        $this->assertSame('bar', $attributes->call('callback')->getValue());
+    }
+
+    public function testRenderHandlesCallbackResultsCorrectly(): void
+    {
+        $attributes = (new Attributes())
+            ->setCallback('callback', fn() => 'foo')
+            ->setCallback('callback2', fn() => null);
+
+        $this->assertSame(' callback="foo"', $attributes->render());
+    }
+
+    public function testRenderThrowsIfLegacyAndNewAttributeCallbacksConflict(): void
+    {
+        $attributes = (new Attributes())
+            ->setCallback('callback', fn() => 'foo')
+            ->registerAttributeCallback('callback', fn() => 'bar');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            'Cannot use both legacy and new attribute callbacks at the same time. Offending attributes: callback'
+        );
+
+        $attributes->render();
     }
 }
