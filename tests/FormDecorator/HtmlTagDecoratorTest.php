@@ -7,8 +7,8 @@ use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\HtmlTagDecorator;
 use ipl\Html\FormDecorator\Transformation;
 use ipl\Html\FormElement\TextElement;
-use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
+use RuntimeException;
 
 class HtmlTagDecoratorTest extends TestCase
 {
@@ -18,7 +18,7 @@ class HtmlTagDecoratorTest extends TestCase
     }
     public function testExceptionThrownWhenNoTagSpecified(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Option "tag" must be set');
 
         (new HtmlTagDecorator())->getTag();

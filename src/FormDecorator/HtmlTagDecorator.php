@@ -10,6 +10,8 @@ use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
+use RuntimeException;
+use Throwable;
 
 use function ipl\Stdlib\get_php_type;
 
@@ -20,7 +22,11 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
-    /** @var Transformation Describes how the HTML tag should transform the content. Default: Wrap */
+    /**
+     * Describes how the HTML tag should transform the content. Default: {@see Transformation::Wrap}
+     *
+     * @var Transformation
+     */
     protected Transformation $transformation = Transformation::Wrap;
 
     /** @var string HTML tag to use for the decoration. */
@@ -37,12 +43,12 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
      *
      * @return string
      *
-     * @throws InvalidArgumentException if the tag is not set
+     * @throws RuntimeException if the tag is not set
      */
     public function getTag(): string
     {
         if (empty($this->tag)) {
-            throw new InvalidArgumentException('Option "tag" must be set');
+            throw new RuntimeException('Option "tag" must be set');
         }
 
         return $this->tag;
@@ -139,11 +145,24 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
         return 'HtmlTag';
     }
 
+    /**
+     * @param DecorationResults $results
+     * @param FormElement $formElement
+     *
+     * @throws RuntimeException if the condition callback throws an exception
+     * @throws InvalidArgumentException if the condition callback does not return a boolean
+     *
+     * @return void
+     */
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $condition = $this->getCondition();
         if ($condition !== null) {
-            $shouldDecorate = $condition($formElement);
+            try {
+                $shouldDecorate = $condition($formElement);
+            } catch (Throwable $e) {
+                throw new RuntimeException('Condition callback failed', previous:  $e);
+            }
 
             if (! is_bool($shouldDecorate)) {
                 throw new InvalidArgumentException(sprintf(
