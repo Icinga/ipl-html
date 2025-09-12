@@ -20,7 +20,7 @@ class TestWithOptionsDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
-    protected array $options = [];
+    protected array $attrs = [];
 
     public function getName(): string
     {
@@ -35,19 +35,19 @@ class TestWithOptionsDecorator implements Decorator, DecoratorOptionsInterface
     /**
      * @return string[]
      */
-    public function getOptions(): array
+    public function getAttrs(): array
     {
-        return $this->options;
+        return $this->attrs;
     }
 
     /**
-     * @param string[] $options
+     * @param string[] $attrs
      *
      * @return $this
      */
-    public function setOptions(array $options): static
+    public function setAttrs(array $attrs): static
     {
-        $this->options = $options;
+        $this->attrs = $attrs;
 
         return $this;
     }
@@ -55,6 +55,6 @@ class TestWithOptionsDecorator implements Decorator, DecoratorOptionsInterface
     protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         $attributes
-            ->registerAttributeCallback('options', null, $this->setOptions(...));
+            ->registerAttributeCallback('attrs', null, $this->setAttrs(...));
     }
 }

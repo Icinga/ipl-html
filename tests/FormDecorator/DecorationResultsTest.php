@@ -3,35 +3,40 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\FormDecorator\DecorationResults;
+use ipl\Html\FormDecorator\Transformation;
 use ipl\Html\Html;
-use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
 
 class DecorationResultsTest extends TestCase
 {
+    protected DecorationResults $results;
+
+    public function setUp(): void
+    {
+        $this->results = new DecorationResults();
+    }
+
     public function testEmptyDecorationResultsRenderEmptyString(): void
     {
-        $this->assertSame('', (new DecorationResults())->render());
+        $this->assertSame('', $this->results->render());
     }
 
     public function testMethodSkipDecorators(): void
     {
-        $results = new DecorationResults();
-        $this->assertCount(0, $results->getSkipDecorators());
-        $this->assertSame([], $results->getSkipDecorators());
-
-        $results->skipDecorators('Decorator1');
-        $this->assertCount(1, $results->getSkipDecorators());
-        $this->assertSame(['Decorator1'], $results->getSkipDecorators());
-
-        $results->skipDecorators('Decorator2', 'Decorator3');
-        $this->assertCount(3, $results->getSkipDecorators());
-        $this->assertSame(['Decorator1', 'Decorator2', 'Decorator3'], $results->getSkipDecorators());
+        $this->assertSame([], $this->results->getSkipDecorators());
+        $this->assertSame(
+            ['Decorator1'],
+            $this->results->skipDecorators('Decorator1')->getSkipDecorators()
+        );
+        $this->assertSame(
+            ['Decorator1', 'Decorator2', 'Decorator3'],
+            $this->results->skipDecorators('Decorator2', 'Decorator3')->getSkipDecorators()
+        );
     }
 
     public function testMethodAppend(): void
     {
-        $results = (new DecorationResults())
+        $this->results
             ->append(Html::tag('div', ['class' => 'first'], 'First'))
             ->append(Html::tag('div', ['class' => 'second'], 'Second'))
             ->append(Html::tag('div', ['class' => 'third'], 'Third'));
@@ -42,12 +47,12 @@ class DecorationResultsTest extends TestCase
 <div class="third">Third</div>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $this->results);
     }
 
     public function testMethodPrepend(): void
     {
-        $results = (new DecorationResults())
+        $this->results
             ->prepend(Html::tag('div', ['class' => 'third'], 'Third'))
             ->prepend(Html::tag('div', ['class' => 'second'], 'Second'))
             ->prepend(Html::tag('div', ['class' => 'first'], 'First'));
@@ -58,12 +63,12 @@ HTML;
 <div class="third">Third</div>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $this->results);
     }
 
     public function testMethodWrap(): void
     {
-        $results = (new DecorationResults())
+        $this->results
             ->wrap(Html::tag('div', ['class' => 'wrapper-1']))
             ->wrap(Html::tag('div', ['class' => 'wrapper-2']))
             ->wrap(Html::tag('div', ['class' => 'wrapper-3']));
@@ -76,12 +81,12 @@ HTML;
 </div>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $this->results);
     }
 
     public function testAppendAfterWrap(): void
     {
-        $results = (new DecorationResults())
+        $this->results
             ->append(Html::tag('div', ['class' => 'first'], 'First'))
             ->wrap(Html::tag('div', ['class' => 'wrapper']))
             ->append(Html::tag('div', ['class' => 'second'], 'Second'));
@@ -93,11 +98,11 @@ HTML;
 <div class="second">Second</div>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $this->results);
     }
     public function testPrependAfterWrap(): void
     {
-        $results = (new DecorationResults())
+        $this->results
             ->append(Html::tag('div', ['class' => 'first'], 'First'))
             ->wrap(Html::tag('div', ['class' => 'wrapper']))
             ->prepend(Html::tag('div', ['class' => 'second'], 'Second'));
@@ -108,12 +113,12 @@ HTML;
   <div class="first">First</div>
 </div>
 HTML;
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $this->results);
     }
 
     public function testMixed(): void
     {
-        $results = (new DecorationResults())
+        $this->results
             ->append(Html::tag('tag1'))
             ->wrap(Html::tag('tag2'))
             ->prepend(Html::tag('tag3'))
@@ -150,6 +155,40 @@ HTML;
 <tag12></tag12>
 <tag14></tag14>
 HTML;
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $this->results);
+    }
+
+    public function testMethodTransformSupportAllCasesAndDoNotThrowAnException(): void
+    {
+        foreach (Transformation::cases() as $transformation) {
+            $this->results->transform($transformation, Html::tag('div'));
+        }
+
+        $this->assertNotEmpty($this->results->render());
+    }
+
+    public function testMethodTransformResultsSameAsAppendPrependAndWrap(): void
+    {
+        $transform = new DecorationResults();
+
+        $this->assertSame(
+            $this->results->append(Html::tag('tag1'))->render(),
+            $transform->transform(Transformation::Append, Html::tag('tag1'))->render()
+        );
+
+        $this->assertSame(
+            $this->results->wrap(Html::tag('tag2'))->render(),
+            $transform->transform(Transformation::Wrap, Html::tag('tag2'))->render()
+        );
+
+        $this->assertSame(
+            $this->results->prepend(Html::tag('tag3'))->render(),
+            $transform->transform(Transformation::Prepend, Html::tag('tag3'))->render()
+        );
+
+        $this->assertSame(
+            $this->results->append(Html::tag('tag4'))->render(),
+            $transform->transform(Transformation::Append, Html::tag('tag4'))->render()
+        );
     }
 }

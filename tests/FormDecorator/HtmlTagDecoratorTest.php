@@ -12,53 +12,73 @@ use RuntimeException;
 
 class HtmlTagDecoratorTest extends TestCase
 {
+    protected HtmlTagDecorator $decorator;
+
+    public function setUp(): void
+    {
+        $this->decorator = new HtmlTagDecorator();
+    }
+
     public function testMethodGetName(): void
     {
-        $this->assertNotEmpty((new HtmlTagDecorator())->getName());
+        $this->assertNotEmpty($this->decorator->getName());
     }
     public function testExceptionThrownWhenNoTagSpecified(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Option "tag" must be set');
 
-        (new HtmlTagDecorator())->getTag();
+        $this->decorator->getTag();
     }
 
     public function testTag(): void
     {
-        $htmlTag = new HtmlTagDecorator();
-
-        $this->assertSame('div', $htmlTag->setTag('div')->getTag());
-        $this->assertSame('span', $htmlTag->setTag('span')->getTag());
-        $this->assertSame('custom', $htmlTag->setTag('custom')->getTag());
+        $this->assertSame('div', $this->decorator->setTag('div')->getTag());
+        $this->assertSame('span', $this->decorator->setTag('span')->getTag());
+        $this->assertSame('custom', $this->decorator->setTag('custom')->getTag());
     }
 
     public function testPlacement(): void
     {
-        $htmlTag = new HtmlTagDecorator();
+        $this->assertSame(Transformation::Wrap, $this->decorator->getTransformation());
 
-        $this->assertSame(Transformation::Wrap, $htmlTag->getTransformation());
+        $this->decorator->setTransformation(Transformation::Append);
+        $this->assertSame(Transformation::Append, $this->decorator->getTransformation());
 
-        $htmlTag->setTransformation(Transformation::Append);
-        $this->assertSame(Transformation::Append, $htmlTag->getTransformation());
+        $this->decorator->setTransformation(Transformation::Prepend);
+        $this->assertSame(Transformation::Prepend, $this->decorator->getTransformation());
 
-        $htmlTag->setTransformation(Transformation::Prepend);
-        $this->assertSame(Transformation::Prepend, $htmlTag->getTransformation());
-
-        $htmlTag->setTransformation(Transformation::Wrap);
-        $this->assertSame(Transformation::Wrap, $htmlTag->getTransformation());
+        $this->decorator->setTransformation(Transformation::Wrap);
+        $this->assertSame(Transformation::Wrap, $this->decorator->getTransformation());
     }
 
     public function testCondition(): void
     {
         $formElement = new TextElement('test');
-        $htmlTag = (new HtmlTagDecorator())
-            ->setCondition(fn($formElement) => $formElement->getName() === 'test');
 
-        $callback = $htmlTag->getCondition();
+        $results = new DecorationResults();
+        $this->decorator
+            ->setTag('div')
+            ->setCondition(fn($formElement) => false)
+            ->decorate($results, $formElement);
 
-        $this->assertIsCallable($callback);
-        $this->assertSame(true, $callback($formElement));
+        $this->assertSame('', $results->render());
+
+        $this->decorator
+            ->setCondition(fn($formElement) => true)
+            ->decorate($results, $formElement);
+
+        $this->assertSame('<div></div>', $results->render());
+    }
+
+    public function testConditionCallbackThrowsExceptionWhenCallbackFailed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Condition callback failed');
+
+        $this->decorator
+            ->setCondition(fn() => notExist())
+            ->decorate(new DecorationResults(), new TextElement('test'));
     }
 
     /**
@@ -69,7 +89,7 @@ class HtmlTagDecoratorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Condition callback must return a boolean, got integer');
 
-        (new HtmlTagDecorator())
+        $this->decorator
             ->setCondition(fn() => 1)
             ->decorate(new DecorationResults(), new TextElement('test'));
     }
@@ -78,7 +98,7 @@ class HtmlTagDecoratorTest extends TestCase
     {
         $element = new TextElement('test');
         $results = (new DecorationResults())->append($element);
-        (new HtmlTagDecorator())
+        $this->decorator
             ->setTag('div')
             ->decorate($results, $element);
 
@@ -95,7 +115,7 @@ HTML;
     {
         $element = new TextElement('test');
         $results = (new DecorationResults())->append($element);
-        (new HtmlTagDecorator())
+        $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Append)
             ->decorate($results, $element);
@@ -112,7 +132,7 @@ HTML;
     {
         $element = new TextElement('test');
         $results = (new DecorationResults())->append($element);
-        (new HtmlTagDecorator())
+        $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Prepend)
             ->decorate($results, $element);

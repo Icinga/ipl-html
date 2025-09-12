@@ -5,19 +5,25 @@ namespace ipl\Tests\Html\FormDecorator;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\ErrorsDecorator;
 use ipl\Html\FormElement\TextElement;
-use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
 
 class ErrorsDecoratorTest extends TestCase
 {
+    protected ErrorsDecorator $decorator;
+
+    public function setUp(): void
+    {
+        $this->decorator = new ErrorsDecorator();
+    }
+
     public function testDefaultCssClassExists(): void
     {
-        $this->assertNotEmpty((new ErrorsDecorator())->getClass());
+        $this->assertNotEmpty($this->decorator->getClass());
     }
 
     public function testSetClass(): void
     {
-        $decorator = (new ErrorsDecorator())->setClass('testing the setter');
+        $decorator = $this->decorator->setClass('testing the setter');
         $this->assertSame('testing the setter', $decorator->getClass());
 
         $decorator->setClass(['testing the setter']);
@@ -36,16 +42,18 @@ class ErrorsDecoratorTest extends TestCase
     public function testWithoutErrorMessages(): void
     {
         $results = new DecorationResults();
-        (new ErrorsDecorator())->decorate($results, new TextElement('test'));
+        $this->decorator->decorate($results, new TextElement('test'));
 
         $this->assertSame('', $results->render());
     }
 
     public function testWithErrorMessages(): void
     {
-        $element = (new TextElement('test'))->setMessages(['First error', 'Second error']);
         $results = new DecorationResults();
-        (new ErrorsDecorator())->decorate($results, $element);
+        $this->decorator->decorate(
+            $results,
+            (new TextElement('test'))->setMessages(['First error', 'Second error'])
+        );
 
         $html = <<<HTML
 <ul class="form-element-errors">

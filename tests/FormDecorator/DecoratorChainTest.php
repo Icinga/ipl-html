@@ -6,7 +6,6 @@ use Exception;
 use InvalidArgumentException;
 use ipl\Html\FormDecorator\DecoratorChain;
 use ipl\Html\FormElement\TextElement;
-use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
 
 class DecoratorChainTest extends TestCase
@@ -61,27 +60,23 @@ class DecoratorChainTest extends TestCase
         $this->assertCount(1, $this->chain->getDecorators());
         $decorator = $this->chain->getDecorators()[0];
         $this->assertInstanceOf(TestWithOptionsDecorator::class, $decorator);
-        $this->assertSame([], $decorator->getOptions());
-        $options = ['optionKey1' => 'optionValue1'];
-        $this->assertSame($options, $decorator->setOptions($options)->getOptions());
         $this->chain->clearDecorators();
 
         $this->chain->addDecorator(new TestWithOptionsDecorator());
         $this->assertCount(1, $this->chain->getDecorators());
         $decorator = $this->chain->getDecorators()[0];
         $this->assertInstanceOf(TestWithOptionsDecorator::class, $decorator);
-        $this->assertSame([], $decorator->getOptions());
-        $options = ['optionKey1' => 'optionValue1'];
-        $this->assertSame($options, $decorator->setOptions($options)->getOptions());
         $this->chain->clearDecorators();
 
+        $options = [
+            'attrs' => ['setter' => 'setter'], // set via setAttrs(), returned values of getAttrs() contains it
+            'not-setter' => 'not-setter' // added as attribute, returned values of getAttrs() does not contain it
+        ];
         $this->chain->addDecorator('TestWithOptions', $options);
         $this->assertCount(1, $this->chain->getDecorators());
         $decorator = $this->chain->getDecorators()[0];
         $this->assertInstanceOf(TestWithOptionsDecorator::class, $decorator);
-        $this->assertSame([], $decorator->getOptions());
-        $options = ['options' => ['optionKey1' => 'optionValue1'], 'optionKey2' => 'optionValue2'];
-        $this->assertSame($options, $decorator->setOptions($options)->getOptions());
+        $this->assertSame($options['attrs'], $decorator->getAttrs());
         $this->chain->clearDecorators();
     }
 

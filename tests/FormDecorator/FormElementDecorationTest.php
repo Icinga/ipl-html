@@ -9,28 +9,27 @@ use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
 
 class FormElementDecorationTest extends TestCase
 {
-    public function createForm(): Form
+    protected Form $form;
+
+    public function setUp(): void
     {
-        return (new Form())->addElementDecoratorLoaderPaths([[__NAMESPACE__, 'Decorator']]);
+        $this->form = (new Form())->addElementDecoratorLoaderPaths([[__NAMESPACE__, 'Decorator']]);
     }
 
-    public function testRenderFormWithDefaultDecorators(): void
+    public function testRenderFormWithoutDefaultDecorators(): void
     {
-        $form = $this->createForm()
-            ->addElement('text', 'element-1');
-
         $html = <<<'HTML'
 <form method="POST">
     <input type="text" name="element-1">
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form->addElement('text', 'element-1'));
     }
 
     public function testRenderFormWithDefaultDecoratorsWhichDoesNotContainADecoratorThatRendersTheElementItself(): void
     {
-        $form = $this->createForm()
+        $this->form
             ->setDefaultElementDecorators(['Test'])
             ->addElement('text', 'element-1');
 
@@ -40,12 +39,12 @@ HTML;
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form);
     }
 
     public function testRenderFormWithDefaultDecoratorsWhichContainADecoratorThatRendersTheElementItself(): void
     {
-        $form = $this->createForm()
+        $this->form
             ->setDefaultElementDecorators(['TestRenderElement', 'Test'])
             ->addElement('text', 'element-1');
 
@@ -57,12 +56,12 @@ HTML;
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form);
     }
 
     public function testLegacyDefaultElementDecoratorHasPriority(): void
     {
-        $form = $this->createForm()
+        $this->form
             ->setDefaultElementDecorator(new SimpleFormElementDecorator())
             ->setDefaultElementDecorators(['TestRenderElement', 'Test']) // no effect
             ->addElement('text', 'element-1');
@@ -75,12 +74,12 @@ HTML;
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form);
     }
 
     public function testExplicitDecoratorsHavePriorityOverLegacyDefaultElementDecorator(): void
     {
-        $form = $this->createForm()
+        $this->form
             ->setDefaultElementDecorator(new SimpleFormElementDecorator())
             ->addElement('text', 'element-1', ['decorators' => ['TestRenderElement', 'Test']]);
 
@@ -92,12 +91,12 @@ HTML;
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form);
     }
 
     public function testDefaultElementDecoratorsAreOnlyAppliedWhenElementIsCreatedUsingCreateElementMethod(): void
     {
-        $form = $this->createForm()
+        $this->form
             ->setDefaultElementDecorators(['Test'])
             ->addElement(new TextElement('element-1'));
 
@@ -107,16 +106,16 @@ HTML;
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form);
     }
 
     public function testFieldsetInheritsDefaultDecoratorsFromTheForm(): void
     {
-        $form = $this->createForm()->setDefaultElementDecorators(['TestRenderElement', 'Test']);
-        $fieldset = $form->createElement('fieldset', 'fieldset-1');
+        $this->form->setDefaultElementDecorators(['TestRenderElement', 'Test']);
+        $fieldset = $this->form->createElement('fieldset', 'fieldset-1');
         $fieldset->addElement('text', 'element-1');
 
-        $form->addElement($fieldset);
+        $this->form->addElement($fieldset);
 
         $html = <<<'HTML'
 <form method="POST">
@@ -130,13 +129,13 @@ HTML;
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form);
     }
 
     public function testExplicitDecoratorsOnFieldsetDoNotAffectTheDefaultDecoratorsForItsElements(): void
     {
-        $form = $this->createForm()->setDefaultElementDecorators(['TestRenderElement', 'Test']);
-        $fieldset = $form->createElement(
+        $this->form->setDefaultElementDecorators(['TestRenderElement', 'Test']);
+        $fieldset = $this->form->createElement(
             'fieldset',
             'fieldset-1',
             [
@@ -146,7 +145,7 @@ HTML;
 
         $fieldset->addElement('text', 'element-1');
 
-        $form->addElement($fieldset);
+        $this->form->addElement($fieldset);
 
         $html = <<<'HTML'
 <form method="POST">
@@ -160,6 +159,6 @@ HTML;
 </form>
 HTML;
 
-        $this->assertHtml($html, $form);
+        $this->assertHtml($html, $this->form);
     }
 }

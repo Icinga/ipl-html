@@ -4,44 +4,47 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\LabelDecorator;
+use ipl\Html\FormElement\FieldsetElement;
+use ipl\Html\FormElement\SubmitButtonElement;
+use ipl\Html\FormElement\SubmitElement;
 use ipl\Html\FormElement\TextElement;
-use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
 
 class LabelDecoratorTest extends TestCase
 {
+    protected LabelDecorator $decorator;
+
+    public function setUp(): void
+    {
+        $this->decorator = new LabelDecorator();
+    }
+
     public function testMethodGetName(): void
     {
-        $this->assertNotEmpty((new LabelDecorator())->getName());
+        $this->assertNotEmpty($this->decorator->getName());
     }
 
     public function testDefaultCssClassExists(): void
     {
-        $this->assertNotEmpty((new LabelDecorator())->getClass());
+        $this->assertNotEmpty($this->decorator->getClass());
     }
 
     public function testSetClass(): void
     {
-        $decorator = (new LabelDecorator())->setClass('testing the setter');
-        $this->assertSame('testing the setter', $decorator->getClass());
-
-        $decorator->setClass(['testing the setter']);
-        $this->assertSame(['testing the setter'], $decorator->getClass());
-
-        $decorator->setClass(['testing', 'the', 'setter']);
-        $this->assertSame(['testing', 'the', 'setter'], $decorator->getClass());
-
-        $decorator->setClass([]);
-        $this->assertSame([], $decorator->getClass());
-
-        $decorator->setClass('');
-        $this->assertSame('', $decorator->getClass());
+        $this->assertSame('', $this->decorator->setClass('')->getClass());
+        $this->assertSame([], $this->decorator->setClass([])->getClass());
+        $this->assertSame('testing the setter', $this->decorator->setClass('testing the setter')->getClass());
+        $this->assertSame(['testing the setter'], $this->decorator->setClass(['testing the setter'])->getClass());
+        $this->assertSame(
+            ['testing', 'the', 'setter'],
+            $this->decorator->setClass(['testing', 'the', 'setter'])->getClass()
+        );
     }
 
     public function testWithLabelAttributeOnly(): void
     {
         $results = new DecorationResults();
-        (new LabelDecorator())->decorate($results, new TextElement('test', ['label' => 'Label Here']));
+        $this->decorator->decorate($results, new TextElement('test', ['label' => 'Label Here']));
 
         $this->assertHtml(
             '<label class="form-element-label">Label Here</label>',
@@ -52,7 +55,7 @@ class LabelDecoratorTest extends TestCase
     public function testWithLabelAndIdAttribute(): void
     {
         $results = new DecorationResults();
-        (new LabelDecorator())->decorate(
+        $this->decorator->decorate(
             $results,
             new TextElement('test', ['label' => 'Label Here', 'id' => 'test-id'])
         );
@@ -66,7 +69,7 @@ class LabelDecoratorTest extends TestCase
     public function testWithEmptyLabelAttribute(): void
     {
         $results = new DecorationResults();
-        (new LabelDecorator())->decorate($results, new TextElement('test', ['label' => '']));
+        $this->decorator->decorate($results, new TextElement('test', ['label' => '']));
 
         $this->assertHtml(
             '<label class="form-element-label"></label>',
@@ -77,7 +80,17 @@ class LabelDecoratorTest extends TestCase
     public function testWithoutLabelAttribute(): void
     {
         $results = new DecorationResults();
-        (new LabelDecorator())->decorate($results, new TextElement('test'));
+        $this->decorator->decorate($results, new TextElement('test'));
+
+        $this->assertSame('', $results->render());
+    }
+
+    public function testThatSubmitElementsAndFieldsetElementsAreIgnored(): void
+    {
+        $results = new DecorationResults();
+        $this->decorator->decorate($results, new FieldsetElement('test'));
+        $this->decorator->decorate($results, new SubmitButtonElement('test'));
+        $this->decorator->decorate($results, new SubmitElement('test'));
 
         $this->assertSame('', $results->render());
     }

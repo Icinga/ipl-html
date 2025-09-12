@@ -4,25 +4,32 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\DescriptionDecorator;
+use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\TextElement;
-use ipl\Html\HtmlString;
 use ipl\Tests\Html\TestCase;
 
 class DescriptionDecoratorTest extends TestCase
 {
+    protected DescriptionDecorator $decorator;
+
+    public function setUp(): void
+    {
+        $this->decorator = new DescriptionDecorator();
+    }
+
     public function testMethodGetName(): void
     {
-        $this->assertNotEmpty((new DescriptionDecorator())->getName());
+        $this->assertNotEmpty($this->decorator->getName());
     }
 
     public function testDefaultCssClassExists(): void
     {
-        $this->assertNotEmpty((new DescriptionDecorator())->getClass());
+        $this->assertNotEmpty($this->decorator->getClass());
     }
 
     public function testSetClass(): void
     {
-        $decorator = (new DescriptionDecorator())->setClass('testing the setter');
+        $decorator = $this->decorator->setClass('testing the setter');
         $this->assertSame('testing the setter', $decorator->getClass());
 
         $decorator->setClass(['testing the setter']);
@@ -41,7 +48,7 @@ class DescriptionDecoratorTest extends TestCase
     public function testWithDescriptionAttributeOnly(): void
     {
         $results = new DecorationResults();
-        (new DescriptionDecorator())->decorate($results, new TextElement('test', ['description' => 'Testing']));
+        $this->decorator->decorate($results, new TextElement('test', ['description' => 'Testing']));
 
         $this->assertHtml('<p class="form-element-description">Testing</p>', $results);
     }
@@ -49,7 +56,7 @@ class DescriptionDecoratorTest extends TestCase
     public function testWithDescriptionAndIdAttribute(): void
     {
         $results = new DecorationResults();
-        (new DescriptionDecorator())->decorate(
+        $this->decorator->decorate(
             $results,
             new TextElement('test', ['description' => 'Testing', 'id' => 'test-id'])
         );
@@ -60,7 +67,7 @@ class DescriptionDecoratorTest extends TestCase
     public function testWithEmptyDescriptionAttribute(): void
     {
         $results = new DecorationResults();
-        (new DescriptionDecorator())->decorate($results, new TextElement('test', ['description' => '']));
+        $this->decorator->decorate($results, new TextElement('test', ['description' => '']));
 
         $this->assertHtml('<p class="form-element-description"></p>', $results);
     }
@@ -68,7 +75,15 @@ class DescriptionDecoratorTest extends TestCase
     public function testWithoutDescriptionAttribute(): void
     {
         $results = new DecorationResults();
-        (new DescriptionDecorator())->decorate($results, new TextElement('test'));
+        $this->decorator->decorate($results, new TextElement('test'));
+
+        $this->assertSame('', $results->render());
+    }
+
+    public function testFieldsetElementsAreIgnored(): void
+    {
+        $results = new DecorationResults();
+        $this->decorator->decorate($results, new FieldsetElement('test'));
 
         $this->assertSame('', $results->render());
     }
