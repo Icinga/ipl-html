@@ -3,10 +3,12 @@
 namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
+use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
+use ipl\Html\FormDecorator\DecoratorChain;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
 use ipl\Stdlib\Events;
@@ -15,6 +17,10 @@ use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
 
+/**
+ * @phpstan-import-type decoratorsFormat from DecoratorChain
+ * @phpstan-import-type loaderPaths from DefaultFormElementDecoration
+ */
 trait FormElements
 {
     use Events;
@@ -29,11 +35,55 @@ trait FormElements
     /** @var bool Whether the default element loader has been registered */
     protected $defaultElementLoaderRegistered = false;
 
+    /**
+     * Custom Element decorator loader paths
+     *
+     * Override this property to add custom decorator loader paths.
+     *
+     * @var loaderPaths
+     */
+    protected array $elementDecoratorLoaderPaths = [];
+
+    /**
+     * Default element decorators
+     *
+     * Override this property to change the default decorators of the elements.
+     *
+     * Please see {@see DecoratorChain::addDecorators()} for the supported array formats.
+     *
+     * @var decoratorsFormat
+     */
+    protected array $defaultElementDecorators = [];
+
     /** @var FormElement[] */
     private $elements = [];
 
     /** @var array<string, array<int, mixed>> */
     private $populatedValues = [];
+
+    /**
+     * Get the default element decorators.
+     *
+     * @return decoratorsFormat
+     */
+    public function getDefaultElementDecorators(): array
+    {
+        return $this->defaultElementDecorators;
+    }
+
+    public function setDefaultElementDecorators(array $decorators): static
+    {
+        $this->defaultElementDecorators = $decorators;
+
+        return $this;
+    }
+
+    public function addElementDecoratorLoaderPaths(array $loaderPaths): static
+    {
+        $this->elementDecoratorLoaderPaths = $loaderPaths;
+
+        return $this;
+    }
 
     /**
      * Get all elements
@@ -156,6 +206,28 @@ trait FormElements
 
         /** @var FormElement $element */
         $element = new $class($name);
+
+        $customDecoratorPaths = $this->elementDecoratorLoaderPaths;
+        $elementDecoratorChain = $element->getDecorators();
+        if (! empty($customDecoratorPaths)) {
+            if ($element instanceof DefaultFormElementDecoration) {
+                $element->addElementDecoratorLoaderPaths($customDecoratorPaths);
+            }
+
+            foreach ($customDecoratorPaths as $path) {
+                $elementDecoratorChain->addDecoratorLoader($path[0], $path[1] ?? '');
+            }
+        }
+
+        $isHidden = $element instanceof HiddenElement || ! $element->getAttributes()->get('hidden')->isEmpty();
+        $defaultDecorators = $this->getDefaultElementDecorators();
+        if (! $isHidden && ! empty($defaultDecorators) && ! $this->hasDefaultElementDecorator()) {
+            if ($element instanceof DefaultFormElementDecoration) {
+                $element->setDefaultElementDecorators($defaultDecorators);
+            }
+
+            $elementDecoratorChain->addDecorators($defaultDecorators);
+        }
 
         if ($options !== null) {
             $element->addAttributes($options);
@@ -454,6 +526,11 @@ trait FormElements
      */
     protected function decorate(FormElement $element)
     {
+        if ($element->hasDecorators()) {
+            // new decorator implementation in use
+            return $this;
+        }
+
         if ($this->hasDefaultElementDecorator()) {
             $decorator = $this->getDefaultElementDecorator();
 
@@ -505,5 +582,26 @@ trait FormElements
      */
     protected function onElementRegistered(FormElement $element)
     {
+    }
+
+    /**
+     * Render the element with decorators
+     *
+     * @param FormElement $element
+     *
+     * @return ValidHtml
+     */
+    protected function applyDecoration(FormElement $element): ValidHtml
+    {
+        return $element->getDecorators()->apply($element);
+    }
+
+    public function renderElement(ValidHtml $element): string
+    {
+        if ($element instanceof FormElement && $element->hasDecorators()) {
+            $element = $this->applyDecoration($element);
+        }
+
+        return parent::renderElement($element);
     }
 }
