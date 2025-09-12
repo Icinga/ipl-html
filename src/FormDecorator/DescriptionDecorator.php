@@ -7,6 +7,7 @@ use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
@@ -49,7 +50,7 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
         return 'Description';
     }
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
     {
         $description = $formElement->getDescription();
 

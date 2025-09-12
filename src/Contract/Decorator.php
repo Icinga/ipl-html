@@ -47,9 +47,9 @@ interface Decorator
      * ```
      *
      * @param DecorationResults $results
-     * @param FormElement $formElement
+     * @param FormElement & HtmlElementInterface $formElement
      *
      * @return void
      */
-    public function decorate(DecorationResults $results, FormElement $formElement): void;
+    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void;
 }

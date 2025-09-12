@@ -4,6 +4,7 @@ namespace ipl\Html\FormDecorator;
 
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\HtmlElementInterface;
 
 /**
  * Render the form element itself
@@ -15,7 +16,7 @@ class RenderElementDecorator implements Decorator
         return 'RenderElement';
     }
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
     {
         $results->append($formElement);
     }

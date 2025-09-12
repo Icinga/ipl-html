@@ -5,6 +5,7 @@ namespace ipl\Html\FormDecorator;
 use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\Contract\MutableHtml;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
@@ -19,7 +20,7 @@ class FieldsetDecorator implements Decorator
         return 'Fieldset';
     }
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
     {
         if (! $formElement instanceof MutableHtml || $formElement->getTag() !== 'fieldset') {
             return;

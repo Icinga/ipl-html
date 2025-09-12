@@ -7,6 +7,7 @@ use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\HtmlElement;
 
@@ -26,7 +27,7 @@ class TestWithOptionsDecorator implements Decorator, DecoratorOptionsInterface
         return 'TestWithOptions';
     }
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
     {
         $results->wrap(new HtmlElement('div', new Attributes(['class' => 'test-with-options-decorator'])));
     }
