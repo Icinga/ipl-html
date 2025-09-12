@@ -45,7 +45,7 @@ class LabelDecoratorTest extends TestCase
 
         $this->assertHtml(
             '<label class="form-element-label">Label Here</label>',
-            HtmlString::create($results)
+            $results
         );
     }
 
@@ -59,7 +59,7 @@ class LabelDecoratorTest extends TestCase
 
         $this->assertHtml(
             '<label for="test-id" class="form-element-label">Label Here</label>',
-            HtmlString::create($results)
+            $results
         );
     }
 
@@ -70,7 +70,7 @@ class LabelDecoratorTest extends TestCase
 
         $this->assertHtml(
             '<label class="form-element-label"></label>',
-            HtmlString::create($results)
+            $results
         );
     }
 
@@ -79,6 +79,6 @@ class LabelDecoratorTest extends TestCase
         $results = new DecorationResults();
         (new LabelDecorator())->decorate($results, new TextElement('test'));
 
-        $this->assertSame('', (string) $results);
+        $this->assertSame('', $results->render());
     }
 }

@@ -105,16 +105,6 @@ class DecorationResults implements ValidHtml
     }
 
     /**
-     * Render the given content
-     *
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->render();
-    }
-
-    /**
      * Render the results
      *
      * @return string The rendered HTML content

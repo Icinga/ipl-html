@@ -88,7 +88,7 @@ class HtmlTagDecoratorTest extends TestCase
 </div>
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMethodDecorateWithPlacementAppend(): void
@@ -105,7 +105,7 @@ HTML;
 <div></div>
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMethodDecorateWithPlacementPrepend(): void
@@ -122,6 +122,6 @@ HTML;
 <input type="text" name="test">
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 }

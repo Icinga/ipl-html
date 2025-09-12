@@ -589,9 +589,9 @@ trait FormElements
      *
      * @param FormElement $element
      *
-     * @return string Decorated element
+     * @return ValidHtml
      */
-    public function renderDecorated(FormElement $element): string
+    public function renderDecorated(FormElement $element): ValidHtml
     {
         return $element->getDecorators()->apply($element);
     }
@@ -599,7 +599,7 @@ trait FormElements
     public function renderElement(ValidHtml $element): string
     {
         if ($element instanceof FormElement && $element->hasDecorators()) {
-            return $this->renderDecorated($element);
+            $element = $this->renderDecorated($element);
         }
 
         return parent::renderElement($element);

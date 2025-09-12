@@ -210,7 +210,7 @@ class DecoratorChainTest extends TestCase
         $html = <<<'HTML'
 <div class="test-decorator"></div>
 HTML;
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMethodApplyWithADecoratorThatRendersTheElementItself(): void
@@ -224,7 +224,7 @@ HTML;
   <input type="text" name="element-1">
 </div>
 HTML;
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMethodApplySkipADecoratorThatShouldBeSkipped(): void
@@ -238,7 +238,7 @@ HTML;
   <input type="text" name="element-1">
 </div>
 HTML;
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMethodApplyThrowsExceptionWhenADecoratorShouldBeSkippedButIsAlreadyApplied(): void

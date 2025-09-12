@@ -11,7 +11,7 @@ class DecorationResultsTest extends TestCase
 {
     public function testEmptyDecorationResultsRenderEmptyString(): void
     {
-        $this->assertSame('', (string) new DecorationResults());
+        $this->assertSame('', (new DecorationResults())->render());
     }
 
     public function testMethodSkipDecorators(): void
@@ -42,7 +42,7 @@ class DecorationResultsTest extends TestCase
 <div class="third">Third</div>
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMethodPrepend(): void
@@ -58,7 +58,7 @@ HTML;
 <div class="third">Third</div>
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMethodWrap(): void
@@ -76,7 +76,7 @@ HTML;
 </div>
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testAppendAfterWrap(): void
@@ -93,7 +93,7 @@ HTML;
 <div class="second">Second</div>
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
     public function testPrependAfterWrap(): void
     {
@@ -108,7 +108,7 @@ HTML;
   <div class="first">First</div>
 </div>
 HTML;
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 
     public function testMixed(): void
@@ -150,6 +150,6 @@ HTML;
 <tag12></tag12>
 <tag14></tag14>
 HTML;
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 }

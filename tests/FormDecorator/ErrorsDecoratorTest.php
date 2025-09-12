@@ -38,7 +38,7 @@ class ErrorsDecoratorTest extends TestCase
         $results = new DecorationResults();
         (new ErrorsDecorator())->decorate($results, new TextElement('test'));
 
-        $this->assertSame('', (string) $results);
+        $this->assertSame('', $results->render());
     }
 
     public function testWithErrorMessages(): void
@@ -54,6 +54,6 @@ class ErrorsDecoratorTest extends TestCase
 </ul>
 HTML;
 
-        $this->assertHtml($html, HtmlString::create($results));
+        $this->assertHtml($html, $results);
     }
 }

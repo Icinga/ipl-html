@@ -43,10 +43,7 @@ class DescriptionDecoratorTest extends TestCase
         $results = new DecorationResults();
         (new DescriptionDecorator())->decorate($results, new TextElement('test', ['description' => 'Testing']));
 
-        $this->assertHtml(
-            '<p class="form-element-description">Testing</p>',
-            HtmlString::create($results)
-        );
+        $this->assertHtml('<p class="form-element-description">Testing</p>', $results);
     }
 
     public function testWithDescriptionAndIdAttribute(): void
@@ -57,10 +54,7 @@ class DescriptionDecoratorTest extends TestCase
             new TextElement('test', ['description' => 'Testing', 'id' => 'test-id'])
         );
 
-        $this->assertHtml(
-            '<p class="form-element-description" id="desc_test-id">Testing</p>',
-            HtmlString::create($results)
-        );
+        $this->assertHtml('<p class="form-element-description" id="desc_test-id">Testing</p>', $results);
     }
 
     public function testWithEmptyDescriptionAttribute(): void
@@ -68,7 +62,7 @@ class DescriptionDecoratorTest extends TestCase
         $results = new DecorationResults();
         (new DescriptionDecorator())->decorate($results, new TextElement('test', ['description' => '']));
 
-        $this->assertHtml('<p class="form-element-description"></p>', HtmlString::create($results));
+        $this->assertHtml('<p class="form-element-description"></p>', $results);
     }
 
     public function testWithoutDescriptionAttribute(): void
@@ -76,6 +70,6 @@ class DescriptionDecoratorTest extends TestCase
         $results = new DecorationResults();
         (new DescriptionDecorator())->decorate($results, new TextElement('test'));
 
-        $this->assertSame('', (string) $results);
+        $this->assertSame('', $results->render());
     }
 }
