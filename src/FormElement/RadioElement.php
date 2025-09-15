@@ -24,6 +24,14 @@ class RadioElement extends BaseFormElement
     /** @var array Disabled radio options */
     protected $disabledOptions = [];
 
+    protected function tag(): string
+    {
+        // In order to be able to decorate this element, we need to return a tag.
+        // If we'd have a distinct form element base implementation, that doesn't
+        // extend BaseHtmlElement, this wouldn't be necessary.
+        return 'bogus';
+    }
+
     /**
      * Set the options
      *

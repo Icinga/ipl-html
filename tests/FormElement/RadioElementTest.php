@@ -451,4 +451,22 @@ HTML;
         $this->assertNull($radio->getValue());
         $this->assertNull($radio->getOption(null)->getValue());
     }
+
+    public function testIsDecoratedWithLabelAndDescription(): void
+    {
+        $radio = new RadioElement('radio');
+        $radio->setLabel('Radio');
+        $radio->setDescription('Description');
+        $radio->setOptions(['a' => 'A', 'b' => 'B']);
+        $radio->setDecorators(['Label', 'RenderElement', 'Description']);
+
+        $html = <<<'HTML'
+<label class="form-element-label">Radio</label>
+<label class="radio-label"><input value="a" name="radio" type="radio">A</label>
+<label class="radio-label"><input value="b" name="radio" type="radio">B</label>
+<p class="form-element-description">Description</p>
+HTML;
+
+        $this->assertHtml($html, $radio->getDecorators()->apply($radio));
+    }
 }
