@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
+use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\LabelDecorator;
 use ipl\Html\FormElement\FieldsetElement;
@@ -93,5 +94,17 @@ class LabelDecoratorTest extends TestCase
         $this->decorator->decorate($results, new SubmitElement('test'));
 
         $this->assertSame('', $results->render());
+    }
+
+    public function testNonHtmlFormElementsAreSupported(): void
+    {
+        $results = new DecorationResults();
+        $element = $this->createStub(FormElement::class);
+        $element->method('getLabel')->willReturn('Testing');
+        $element->expects($this->never())->method('getAttributes');
+
+        $this->decorator->decorate($results, $element);
+
+        $this->assertHtml('<label class="form-element-label">Testing</label>', $results);
     }
 }

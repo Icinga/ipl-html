@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
+use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\DescriptionDecorator;
 use ipl\Html\FormElement\FieldsetElement;
@@ -86,5 +87,17 @@ class DescriptionDecoratorTest extends TestCase
         $this->decorator->decorate($results, new FieldsetElement('test'));
 
         $this->assertSame('', $results->render());
+    }
+
+    public function testNonHtmlFormElementsAreSupported(): void
+    {
+        $results = new DecorationResults();
+        $element = $this->createStub(FormElement::class);
+        $element->method('getDescription')->willReturn('Testing');
+        $element->expects($this->never())->method('getAttributes');
+
+        $this->decorator->decorate($results, $element);
+
+        $this->assertHtml('<p class="form-element-description">Testing</p>', $results);
     }
 }

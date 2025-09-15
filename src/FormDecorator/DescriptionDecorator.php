@@ -50,16 +50,17 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
         return 'Description';
     }
 
-    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
+    public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $description = $formElement->getDescription();
+        $isHtmlElement = $formElement instanceof HtmlElementInterface;
 
-        if ($description === null || $formElement->getTag() === 'fieldset') {
+        if ($description === null || $isHtmlElement && $formElement->getTag() === 'fieldset') {
             return;
         }
 
         $descriptionId = null;
-        if ($formElement->getAttributes()->has('id')) {
+        if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
             $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
             $formElement->getAttributes()->set('aria-describedby', $descriptionId);
         }

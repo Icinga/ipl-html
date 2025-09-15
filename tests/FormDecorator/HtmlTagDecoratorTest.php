@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use InvalidArgumentException;
+use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\HtmlTagDecorator;
 use ipl\Html\FormDecorator\Transformation;
@@ -140,6 +141,26 @@ HTML;
         $html = <<<'HTML'
 <div></div>
 <input type="text" name="test">
+HTML;
+
+        $this->assertHtml($html, $results);
+    }
+
+    public function testNonHtmlFormElementsAreSupported(): void
+    {
+        $results = new DecorationResults();
+        $element = $this->createStub(FormElement::class);
+        $element->method('render')->willReturn('<input type="text" name="test">');
+
+        $this->decorator->setTag('div');
+        $results->append($element);
+
+        $this->decorator->decorate($results, $element);
+
+        $html = <<<'HTML'
+<div>
+  <input type="text" name="test">
+</div>
 HTML;
 
         $this->assertHtml($html, $results);

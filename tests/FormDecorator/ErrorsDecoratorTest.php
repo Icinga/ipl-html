@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
+use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\ErrorsDecorator;
 use ipl\Html\FormElement\TextElement;
@@ -54,6 +55,24 @@ class ErrorsDecoratorTest extends TestCase
             $results,
             (new TextElement('test'))->setMessages(['First error', 'Second error'])
         );
+
+        $html = <<<HTML
+<ul class="form-element-errors">
+  <li>First error</li>
+  <li>Second error</li>
+</ul>
+HTML;
+
+        $this->assertHtml($html, $results);
+    }
+
+    public function testNonHtmlFormElementsAreSupported(): void
+    {
+        $results = new DecorationResults();
+        $element = $this->createStub(FormElement::class);
+        $element->method('getMessages')->willReturn(['First error', 'Second error']);
+
+        $this->decorator->decorate($results, $element);
 
         $html = <<<HTML
 <ul class="form-element-errors">
