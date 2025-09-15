@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
+use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecorator\DecorationResults;
 use ipl\Html\FormDecorator\FieldsetDecorator;
 use ipl\Html\FormElement\FieldsetElement;
@@ -105,6 +106,16 @@ HTML;
         $this->decorator->decorate($results, new FieldsetElement('test', ['label' => 'Testing']));
         $this->decorator->decorate($results, new FieldsetElement('test', ['label' => 'Testing']));
         $this->decorator->decorate($results, new FieldsetElement('test', ['label' => 'Testing']));
+
+        $this->assertEmpty($results->render());
+    }
+
+    public function testNonHtmlFormElementsAreIgnored(): void
+    {
+        $results = new DecorationResults();
+        $element = $this->createStub(FormElement::class);
+
+        $this->decorator->decorate($results, $element);
 
         $this->assertEmpty($results->render());
     }

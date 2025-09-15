@@ -7,7 +7,6 @@ use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
@@ -50,7 +49,7 @@ class ErrorsDecorator implements Decorator, DecoratorOptionsInterface
         return 'Errors';
     }
 
-    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
+    public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));
         foreach ($formElement->getMessages() as $message) {

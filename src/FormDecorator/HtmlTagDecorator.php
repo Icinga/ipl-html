@@ -8,7 +8,6 @@ use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use RuntimeException;
 use Throwable;
@@ -32,7 +31,7 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /** @var string HTML tag to use for the decoration. */
     protected string $tag;
 
-    /** @var ?callable(FormElement & HtmlElementInterface): bool Callable to decide whether to decorate the element */
+    /** @var ?callable(FormElement): bool Callable to decide whether to decorate the element */
     protected $condition;
 
     /** @var ?(string|string[]) CSS classes to apply */
@@ -95,7 +94,7 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /**
      * Get the condition callable to decide whether to decorate the element
      *
-     * @return ?callable(FormElement & HtmlElementInterface): bool
+     * @return ?callable(FormElement): bool
      */
     public function getCondition(): ?callable
     {
@@ -105,7 +104,7 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
     /**
      * Set the condition callable to decide whether to decorate the element
      *
-     * @param callable(FormElement & HtmlElementInterface): bool $condition
+     * @param callable(FormElement): bool $condition
      *
      * @return $this
      */
@@ -149,7 +148,7 @@ class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
      * @throws InvalidArgumentException if the condition callback does not return a boolean
      * @throws RuntimeException if the condition callback throws an exception
      */
-    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
+    public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $condition = $this->getCondition();
         if ($condition !== null) {

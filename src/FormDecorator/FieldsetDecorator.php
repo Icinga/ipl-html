@@ -20,9 +20,10 @@ class FieldsetDecorator implements Decorator
         return 'Fieldset';
     }
 
-    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
+    public function decorate(DecorationResults $results, FormElement $formElement): void
     {
-        if (! $formElement instanceof MutableHtml || $formElement->getTag() !== 'fieldset') {
+        $isHtmlElement = $formElement instanceof HtmlElementInterface;
+        if (! $formElement instanceof MutableHtml || ! $isHtmlElement || $formElement->getTag() !== 'fieldset') {
             return;
         }
 

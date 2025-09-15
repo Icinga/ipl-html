@@ -51,18 +51,20 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
         return 'Label';
     }
 
-    public function decorate(DecorationResults $results, FormElement & HtmlElementInterface $formElement): void
+    public function decorate(DecorationResults $results, FormElement $formElement): void
     {
+        $isHtmlElement = $formElement instanceof HtmlElementInterface;
+
         if (
             $formElement instanceof FormSubmitElement
-            || $formElement->getTag() === 'fieldset'
             || $formElement->getLabel() === null
+            || $isHtmlElement && $formElement->getTag() === 'fieldset'
         ) {
             return;
         }
 
         $labelAttr = new Attributes(['class' => $this->getClass()]);
-        if ($formElement->getAttributes()->has('id')) {
+        if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
             $labelAttr->add(['for' => $formElement->getAttributes()->get('id')->getValue()]);
         }
 
