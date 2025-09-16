@@ -519,7 +519,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     protected function isIntermediateWrapper(ValidHtml $element): bool
     {
         foreach ($this->content as $child) {
-            if ($child instanceof self && $child->wrappedBy($element)) {
+            if ($child instanceof self && ($child->wrappedBy($element) || $child->isIntermediateWrapper($element))) {
                 return true;
             }
         }

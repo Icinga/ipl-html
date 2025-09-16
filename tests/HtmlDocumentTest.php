@@ -110,6 +110,34 @@ class HtmlDocumentTest extends TestCase
         );
     }
 
+    public function testMultipleReferencesToWrappedElementAreCorrectlyResolved(): void
+    {
+        $a = h::tag('a');
+        $b = h::tag('b');
+        $c = h::tag('c');
+
+        $a->prependWrapper($b); // b -> a
+        $b->addHtml($a);
+
+        // b
+        // \
+        //  a
+
+        $a->addWrapper($c); // c -> b -> a
+        $c->addHtml(h::tag('d', $a));
+
+        // c -> b
+        // \    \
+        //  d    a
+        //  \
+        //   a
+
+        $this->assertHtml(
+            '<c><d><b><a></a></b></d></c>',
+            $a
+        );
+    }
+
     public function testWrapperLoopsAreDetected()
     {
         $a = h::tag('a');
