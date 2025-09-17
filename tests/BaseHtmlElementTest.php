@@ -5,7 +5,6 @@ namespace ipl\Tests\Html;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\HtmlString;
 
-// @codingStandardsIgnoreStart
 class DefaultAttributesAsProperty extends BaseHtmlElement
 {
     protected $tag = 'div';
@@ -82,7 +81,6 @@ class AttributeValueDependingOnContent extends BaseHtmlElement
 
 class BaseHtmlElementTest extends TestCase
 {
-    // @codingStandardsIgnoreEnd
     public function testRenderDefaultAttributesAsProperty()
     {
         $this->assertXmlStringEqualsXmlString(
