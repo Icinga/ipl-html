@@ -28,14 +28,14 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /** @var bool Whether the document has been assembled */
     protected $hasBeenAssembled = false;
 
-    /** @var ?(HtmlDocument|Wrappable) Wrapper */
+    /** @var ?Wrappable Wrapper */
     protected $wrapper;
 
-    /** @var ?(HtmlDocument|Wrappable) Wrapped element */
-    private null|HtmlDocument|Wrappable $wrapped = null;
+    /** @var ?Wrappable Wrapped element */
+    private null|Wrappable $wrapped = null;
 
-    /** @var ?(HtmlDocument|Wrappable) The currently responsible wrapper */
-    private null|HtmlDocument|Wrappable $renderedBy = null;
+    /** @var ?Wrappable The currently responsible wrapper */
+    private null|Wrappable $renderedBy = null;
 
     /** @var ValidHtml[] Content */
     private $content = [];
@@ -46,11 +46,11 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Set the element to wrap
      *
-     * @param HtmlDocument|Wrappable $element
+     * @param Wrappable $element
      *
      * @return $this
      */
-    private function setWrapped(HtmlDocument|Wrappable $element)
+    private function setWrapped(Wrappable $element)
     {
         $this->wrapped = $element;
 
@@ -60,7 +60,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
     /**
      * Consume the wrapped element
      *
-     * @return ?(HtmlDocument|Wrappable)
+     * @return ?Wrappable
      */
     private function consumeWrapped()
     {
@@ -391,7 +391,6 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         $wrapper = $this->wrapper;
 
         if (isset($this->renderedBy)) {
-            // TODO: The instanceof check can be removed as once the Wrappable interface is removed
             if (
                 $wrapper === $this->renderedBy
                 || ($wrapper instanceof self && $wrapper->contains($this->renderedBy))
@@ -446,27 +445,14 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this->wrapper;
     }
 
-    public function setWrapper(HtmlDocument|Wrappable $wrapper)
+    public function setWrapper(Wrappable $wrapper)
     {
-        if (! $wrapper instanceof self) {
-            trigger_error(
-                sprintf(
-                    '%s::%s: Passing an instance of %s that does not extend class %s is deprecated.',
-                    static::class,
-                    __FUNCTION__,
-                    Wrappable::class,
-                    self::class
-                ),
-                E_USER_DEPRECATED
-            );
-        }
-
         $this->wrapper = $wrapper;
 
         return $this;
     }
 
-    public function addWrapper(HtmlDocument|Wrappable $wrapper)
+    public function addWrapper(Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);
@@ -477,7 +463,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return $this;
     }
 
-    public function prependWrapper(HtmlDocument|Wrappable $wrapper)
+    public function prependWrapper(Wrappable $wrapper)
     {
         if ($this->wrapper === null) {
             $this->setWrapper($wrapper);

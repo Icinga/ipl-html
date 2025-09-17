@@ -2,13 +2,10 @@
 
 namespace ipl\Html\Contract;
 
-use ipl\Html\HtmlDocument;
 use ipl\Html\ValidHtml;
 
 /**
  * Representation of wrappable elements
- *
- * @deprecated Use {@see HtmlDocument} instead.
  */
 interface Wrappable extends ValidHtml
 {

@@ -8,7 +8,6 @@ use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
-use ipl\Html\HtmlDocument;
 use LogicException;
 
 use function ipl\Stdlib\get_php_type;
@@ -96,7 +95,7 @@ class FieldsetElement extends BaseFormElement implements DefaultFormElementDecor
         return null;
     }
 
-    public function setWrapper(HtmlDocument|Wrappable $wrapper)
+    public function setWrapper(Wrappable $wrapper)
     {
         // TODO(lippserd): Revise decorator implementation to properly implement decorator propagation
         if (
