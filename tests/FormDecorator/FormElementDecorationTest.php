@@ -36,6 +36,7 @@ HTML;
         $html = <<<'HTML'
 <form method="POST">
   <div class="test-decorator"></div>
+  <input type="text" name="element-1">
 </form>
 HTML;
 
