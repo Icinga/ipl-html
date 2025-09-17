@@ -223,14 +223,20 @@ trait FormElements
             }
         }
 
-        $isHidden = $element instanceof HiddenElement || ! $element->getAttributes()->get('hidden')->isEmpty();
         $defaultDecorators = $this->getDefaultElementDecorators();
-        if (! $isHidden && ! empty($defaultDecorators) && ! $this->hasDefaultElementDecorator()) {
+        if (
+            ! empty($defaultDecorators)
+            && ! $this->hasDefaultElementDecorator()
+            && ! $element instanceof HiddenElement
+            && $element->getAttributes()->get('hidden')->isEmpty()
+        ) {
             if ($element instanceof DefaultFormElementDecoration) {
                 $element->setDefaultElementDecorators($defaultDecorators);
             }
 
-            $elementDecoratorChain->addDecorators($defaultDecorators);
+            if (! isset($options['decorators'])) {
+                $elementDecoratorChain->addDecorators($defaultDecorators);
+            }
         }
 
         if ($options !== null) {
