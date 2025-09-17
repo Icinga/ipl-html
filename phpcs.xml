@@ -4,6 +4,7 @@
     <file>./</file>
     <arg name="extensions" value="php"/>
     <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>tests/*</exclude-pattern>
 
     <arg name="report-width" value="auto"/>
     <arg name="report-full"/>
