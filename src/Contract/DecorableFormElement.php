@@ -12,7 +12,7 @@ interface DecorableFormElement
     /**
      * Get all decorators of this element
      *
-     * @return DecoratorChain
+     * @return DecoratorChain<FormElementDecoration>
      */
     public function getDecorators(): DecoratorChain;
 
@@ -22,4 +22,11 @@ interface DecorableFormElement
      * @return bool
      */
     public function hasDecorators(): bool;
+
+    /**
+     * Decorate the element using its decorators
+     *
+     * @return void
+     */
+    public function applyDecoration(): void;
 }

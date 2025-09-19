@@ -3,10 +3,11 @@
 namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\FormElementDecoration;
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
@@ -46,12 +47,7 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
         return $this;
     }
 
-    public function getName(): string
-    {
-        return 'Label';
-    }
-
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
 
@@ -68,7 +64,7 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
             $labelAttr->add(['for' => $formElement->getAttributes()->get('id')->getValue()]);
         }
 
-        $results->append(new HtmlElement('label', $labelAttr, new Text($formElement->getLabel())));
+        $result->append(new HtmlElement('label', $labelAttr, new Text($formElement->getLabel())));
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void

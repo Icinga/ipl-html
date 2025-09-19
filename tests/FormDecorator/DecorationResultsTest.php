@@ -2,36 +2,23 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\Html;
 use ipl\Tests\Html\TestCase;
 
 class DecorationResultsTest extends TestCase
 {
-    protected DecorationResults $results;
+    protected FormElementDecorationResult $results;
 
     public function setUp(): void
     {
-        $this->results = new DecorationResults();
+        $this->results = new FormElementDecorationResult();
     }
 
     public function testEmptyDecorationResultsRenderEmptyString(): void
     {
         $this->assertSame('', $this->results->assemble()->render());
-    }
-
-    public function testMethodSkipDecorators(): void
-    {
-        $this->assertSame([], $this->results->getSkipDecorators());
-        $this->assertSame(
-            ['Decorator1'],
-            $this->results->skipDecorators('Decorator1')->getSkipDecorators()
-        );
-        $this->assertSame(
-            ['Decorator1', 'Decorator2', 'Decorator3'],
-            $this->results->skipDecorators('Decorator2', 'Decorator3')->getSkipDecorators()
-        );
     }
 
     public function testMethodAppend(): void
@@ -161,7 +148,7 @@ HTML;
     public function testMethodTransformSupportAllCasesAndDoNotThrowAnException(): void
     {
         foreach (Transformation::cases() as $transformation) {
-            $this->results->transform($transformation, Html::tag('div'));
+            $transformation->apply($this->results, Html::tag('div'));
         }
 
         $this->assertNotEmpty($this->results->assemble()->render());
@@ -169,26 +156,26 @@ HTML;
 
     public function testMethodTransformResultsSameAsAppendPrependAndWrap(): void
     {
-        $transform = new DecorationResults();
+        $transform = new FormElementDecorationResult();
 
         $this->assertSame(
             $this->results->append(Html::tag('tag1'))->assemble()->render(),
-            $transform->transform(Transformation::Append, Html::tag('tag1'))->assemble()->render()
+            Transformation::Append->apply($transform, Html::tag('tag1'))->assemble()->render()
         );
 
         $this->assertSame(
             $this->results->wrap(Html::tag('tag2'))->assemble()->render(),
-            $transform->transform(Transformation::Wrap, Html::tag('tag2'))->assemble()->render()
+            Transformation::Wrap->apply($transform, Html::tag('tag2'))->assemble()->render()
         );
 
         $this->assertSame(
             $this->results->prepend(Html::tag('tag3'))->assemble()->render(),
-            $transform->transform(Transformation::Prepend, Html::tag('tag3'))->assemble()->render()
+            Transformation::Prepend->apply($transform, Html::tag('tag3'))->assemble()->render()
         );
 
         $this->assertSame(
             $this->results->append(Html::tag('tag4'))->assemble()->render(),
-            $transform->transform(Transformation::Append, Html::tag('tag4'))->assemble()->render()
+            Transformation::Append->apply($transform, Html::tag('tag4'))->assemble()->render()
         );
     }
 }

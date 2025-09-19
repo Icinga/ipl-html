@@ -4,10 +4,11 @@ namespace ipl\Html\FormDecoration;
 
 use InvalidArgumentException;
 use ipl\Html\Attributes;
-use ipl\Html\Contract\FormElementDecoration;
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\HtmlElement;
 use RuntimeException;
 use Throwable;
@@ -139,16 +140,11 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
         return $this;
     }
 
-    public function getName(): string
-    {
-        return 'HtmlTag';
-    }
-
     /**
      * @throws InvalidArgumentException if the condition callback does not return a boolean
      * @throws RuntimeException if the condition callback throws an exception
      */
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $condition = $this->getCondition();
         if ($condition !== null) {
@@ -171,8 +167,8 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
         }
 
         $class = $this->getClass();
-        $results->transform(
-            $this->getTransformation(),
+        $this->getTransformation()->apply(
+            $result,
             new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]))
         );
     }

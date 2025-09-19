@@ -3,11 +3,11 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Attributes;
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
 use ipl\Html\HtmlElement;
 
 /**
@@ -26,9 +26,9 @@ class TestWithOptionsDecorator implements FormElementDecoration, DecoratorOption
         return 'TestWithOptions';
     }
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
-        $results->wrap(new HtmlElement('div', new Attributes(['class' => 'test-with-options-decorator'])));
+        $result->wrap(new HtmlElement('div', new Attributes(['class' => 'test-with-options-decorator'])));
     }
 
     /**

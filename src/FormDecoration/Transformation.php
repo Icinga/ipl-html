@@ -2,17 +2,38 @@
 
 namespace ipl\Html\FormDecoration;
 
+use ipl\Html\Contract\DecorationResult;
+use ipl\Html\Contract\MutableHtml;
+use ipl\Html\ValidHtml;
+
 /**
- * Describes how the content should be transformed
+ * Describes how a decoration result should be transformed
  */
 enum Transformation
 {
-    /** Add the element at the end of the existing content */
+    /** Add HTML to the end of the result */
     case Append;
 
-    /** Add the element at the beginning of the existing content. */
+    /** Prepend HTML to the beginning of the result */
     case Prepend;
 
-    /** Wrap the existing content */
+    /** Set HTML as the container of the result */
     case Wrap;
+
+    /**
+     * Transform the given results according to this case with the given HTML
+     *
+     * @param DecorationResult $result
+     * @param ValidHtml|MutableHtml $html
+     *
+     * @return DecorationResult
+     */
+    public function apply(DecorationResult $result, ValidHtml|MutableHtml $html): DecorationResult
+    {
+        return match ($this) {
+             self::Append  => $result->append($html),
+             self::Prepend => $result->prepend($html),
+             self::Wrap    => $result->wrap($html)
+        };
+    }
 }

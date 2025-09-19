@@ -3,10 +3,11 @@
 namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\FormElementDecoration;
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
@@ -44,12 +45,7 @@ class ErrorsDecorator implements FormElementDecoration, DecoratorOptionsInterfac
         return $this;
     }
 
-    public function getName(): string
-    {
-        return 'Errors';
-    }
-
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));
         foreach ($formElement->getMessages() as $message) {
@@ -57,7 +53,7 @@ class ErrorsDecorator implements FormElementDecoration, DecoratorOptionsInterfac
         }
 
         if (! $errors->isEmpty()) {
-            $results->append($errors);
+            $result->append($errors);
         }
     }
 

@@ -2,9 +2,9 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
 
 /**
  * Render the $formElement
@@ -16,8 +16,8 @@ class TestRenderElementDecorator implements FormElementDecoration
         return 'TestRenderElement';
     }
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
-        $results->append($formElement);
+        $result->append($formElement);
     }
 }

@@ -12,7 +12,7 @@ use LogicException;
 
 use function ipl\Stdlib\get_php_type;
 
-class FieldsetElement extends BaseFormElement implements DefaultFormElementDecoration
+class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\FormElements, DefaultFormElementDecoration
 {
     use FormElements {
         FormElements::getValue as private getElementValue;

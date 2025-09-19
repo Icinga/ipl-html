@@ -3,7 +3,7 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\LabelDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\SubmitButtonElement;
@@ -18,11 +18,6 @@ class LabelDecoratorTest extends TestCase
     public function setUp(): void
     {
         $this->decorator = new LabelDecorator();
-    }
-
-    public function testMethodGetName(): void
-    {
-        $this->assertNotEmpty($this->decorator->getName());
     }
 
     public function testDefaultCssClassExists(): void
@@ -44,8 +39,8 @@ class LabelDecoratorTest extends TestCase
 
     public function testWithLabelAttributeOnly(): void
     {
-        $results = new DecorationResults();
-        $this->decorator->decorate($results, new TextElement('test', ['label' => 'Label Here']));
+        $results = new FormElementDecorationResult();
+        $this->decorator->decorateFormElement($results, new TextElement('test', ['label' => 'Label Here']));
 
         $this->assertHtml(
             '<label class="form-element-label">Label Here</label>',
@@ -55,8 +50,8 @@ class LabelDecoratorTest extends TestCase
 
     public function testWithLabelAndIdAttribute(): void
     {
-        $results = new DecorationResults();
-        $this->decorator->decorate(
+        $results = new FormElementDecorationResult();
+        $this->decorator->decorateFormElement(
             $results,
             new TextElement('test', ['label' => 'Label Here', 'id' => 'test-id'])
         );
@@ -69,8 +64,8 @@ class LabelDecoratorTest extends TestCase
 
     public function testWithEmptyLabelAttribute(): void
     {
-        $results = new DecorationResults();
-        $this->decorator->decorate($results, new TextElement('test', ['label' => '']));
+        $results = new FormElementDecorationResult();
+        $this->decorator->decorateFormElement($results, new TextElement('test', ['label' => '']));
 
         $this->assertHtml(
             '<label class="form-element-label"></label>',
@@ -80,30 +75,30 @@ class LabelDecoratorTest extends TestCase
 
     public function testWithoutLabelAttribute(): void
     {
-        $results = new DecorationResults();
-        $this->decorator->decorate($results, new TextElement('test'));
+        $results = new FormElementDecorationResult();
+        $this->decorator->decorateFormElement($results, new TextElement('test'));
 
         $this->assertSame('', $results->assemble()->render());
     }
 
     public function testThatSubmitElementsAndFieldsetElementsAreIgnored(): void
     {
-        $results = new DecorationResults();
-        $this->decorator->decorate($results, new FieldsetElement('test'));
-        $this->decorator->decorate($results, new SubmitButtonElement('test'));
-        $this->decorator->decorate($results, new SubmitElement('test'));
+        $results = new FormElementDecorationResult();
+        $this->decorator->decorateFormElement($results, new FieldsetElement('test'));
+        $this->decorator->decorateFormElement($results, new SubmitButtonElement('test'));
+        $this->decorator->decorateFormElement($results, new SubmitElement('test'));
 
         $this->assertSame('', $results->assemble()->render());
     }
 
     public function testNonHtmlFormElementsAreSupported(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $element = $this->createStub(FormElement::class);
         $element->method('getLabel')->willReturn('Testing');
         $element->expects($this->never())->method('getAttributes');
 
-        $this->decorator->decorate($results, $element);
+        $this->decorator->decorateFormElement($results, $element);
 
         $this->assertHtml('<label class="form-element-label">Testing</label>', $results->assemble());
     }
