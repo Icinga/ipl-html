@@ -5,7 +5,7 @@ namespace ipl\Tests\Html\FormDecorator;
 use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecorator\DecorationResults;
+use ipl\Html\FormDecoration\DecorationResults;
 use ipl\Html\HtmlElement;
 
 /**

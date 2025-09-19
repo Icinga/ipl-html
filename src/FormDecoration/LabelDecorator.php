@@ -1,24 +1,26 @@
 <?php
 
-namespace ipl\Html\FormDecorator;
+namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
 /**
- * Decorates the errors messages of the form element
+ * Decorates the label of the form element
  */
-class ErrorsDecorator implements Decorator, DecoratorOptionsInterface
+class LabelDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
     /** @var string|string[] CSS classes to apply */
-    protected string|array $class = 'form-element-errors';
+    protected string|array $class = 'form-element-label';
 
     /**
      * Get the css class(es)
@@ -46,19 +48,27 @@ class ErrorsDecorator implements Decorator, DecoratorOptionsInterface
 
     public function getName(): string
     {
-        return 'Errors';
+        return 'Label';
     }
 
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
-        $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));
-        foreach ($formElement->getMessages() as $message) {
-            $errors->addHtml(new HtmlElement('li', null, Text::create($message)));
+        $isHtmlElement = $formElement instanceof HtmlElementInterface;
+
+        if (
+            $formElement instanceof FormSubmitElement
+            || $formElement->getLabel() === null
+            || $isHtmlElement && $formElement->getTag() === 'fieldset'
+        ) {
+            return;
         }
 
-        if (! $errors->isEmpty()) {
-            $results->append($errors);
+        $labelAttr = new Attributes(['class' => $this->getClass()]);
+        if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
+            $labelAttr->add(['for' => $formElement->getAttributes()->get('id')->getValue()]);
         }
+
+        $results->append(new HtmlElement('label', $labelAttr, new Text($formElement->getLabel())));
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void

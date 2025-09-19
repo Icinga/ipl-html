@@ -7,7 +7,7 @@ use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecorator\DecorationResults;
+use ipl\Html\FormDecoration\DecorationResults;
 use ipl\Html\HtmlElement;
 
 /**

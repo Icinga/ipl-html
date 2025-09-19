@@ -8,7 +8,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
-use ipl\Html\FormDecorator\DecoratorChain;
+use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
 use ipl\Stdlib\Events;

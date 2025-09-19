@@ -3,7 +3,6 @@
 namespace ipl\Html\Contract;
 
 use ipl\Html\Attributes;
-use ipl\Html\FormDecorator\DecorationResults;
 
 /**
  * Interface for decorators that provide options

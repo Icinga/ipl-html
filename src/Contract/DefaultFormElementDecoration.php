@@ -2,7 +2,7 @@
 
 namespace ipl\Html\Contract;
 
-use ipl\Html\FormDecorator\DecoratorChain;
+use ipl\Html\FormDecoration\DecoratorChain;
 
 /**
  * Interface for form elements that support default element decoration

@@ -1,26 +1,25 @@
 <?php
 
-namespace ipl\Html\FormDecorator;
+namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
 /**
- * Decorates the label of the form element
+ * Decorates the description of the form element
  */
-class LabelDecorator implements Decorator, DecoratorOptionsInterface
+class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
     /** @var string|string[] CSS classes to apply */
-    protected string|array $class = 'form-element-label';
+    protected string|array $class = 'form-element-description';
 
     /**
      * Get the css class(es)
@@ -48,27 +47,31 @@ class LabelDecorator implements Decorator, DecoratorOptionsInterface
 
     public function getName(): string
     {
-        return 'Label';
+        return 'Description';
     }
 
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
+        $description = $formElement->getDescription();
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
 
-        if (
-            $formElement instanceof FormSubmitElement
-            || $formElement->getLabel() === null
-            || $isHtmlElement && $formElement->getTag() === 'fieldset'
-        ) {
+        if ($description === null || $isHtmlElement && $formElement->getTag() === 'fieldset') {
             return;
         }
 
-        $labelAttr = new Attributes(['class' => $this->getClass()]);
+        $descriptionId = null;
         if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
-            $labelAttr->add(['for' => $formElement->getAttributes()->get('id')->getValue()]);
+            $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
+            $formElement->getAttributes()->set('aria-describedby', $descriptionId);
         }
 
-        $results->append(new HtmlElement('label', $labelAttr, new Text($formElement->getLabel())));
+        $results->append(
+            new HtmlElement(
+                'p',
+                new Attributes(['class' => $this->getClass(), 'id' => $descriptionId]),
+                new Text($description)
+            )
+        );
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void

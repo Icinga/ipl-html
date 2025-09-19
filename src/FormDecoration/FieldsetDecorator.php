@@ -1,6 +1,6 @@
 <?php
 
-namespace ipl\Html\FormDecorator;
+namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;

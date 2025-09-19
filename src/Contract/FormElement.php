@@ -4,7 +4,7 @@ namespace ipl\Html\Contract;
 
 use ipl\Html\Attributes;
 use ipl\Html\Form;
-use ipl\Html\FormDecorator\DecoratorChain;
+use ipl\Html\FormDecoration\DecoratorChain;
 
 /**
  * Representation of form elements

@@ -2,7 +2,7 @@
 
 namespace ipl\Html\Contract;
 
-use ipl\Html\FormDecorator\DecorationResults;
+use ipl\Html\FormDecoration\DecorationResults;
 
 /**
  * Representation of form element decorator

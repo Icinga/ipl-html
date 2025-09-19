@@ -4,9 +4,9 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use InvalidArgumentException;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecorator\DecorationResults;
-use ipl\Html\FormDecorator\HtmlTagDecorator;
-use ipl\Html\FormDecorator\Transformation;
+use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\HtmlTagDecorator;
+use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\FormElement\TextElement;
 use ipl\Tests\Html\TestCase;
 use RuntimeException;

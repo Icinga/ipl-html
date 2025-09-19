@@ -3,8 +3,8 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecorator\DecorationResults;
-use ipl\Html\FormDecorator\ErrorsDecorator;
+use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\ErrorsDecorator;
 use ipl\Html\FormElement\TextElement;
 use ipl\Tests\Html\TestCase;
 

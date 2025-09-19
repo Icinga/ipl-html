@@ -1,25 +1,24 @@
 <?php
 
-namespace ipl\Html\FormDecorator;
+namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
 use ipl\Html\Contract\Decorator;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 
 /**
- * Decorates the description of the form element
+ * Decorates the errors messages of the form element
  */
-class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
+class ErrorsDecorator implements Decorator, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
     /** @var string|string[] CSS classes to apply */
-    protected string|array $class = 'form-element-description';
+    protected string|array $class = 'form-element-errors';
 
     /**
      * Get the css class(es)
@@ -47,31 +46,19 @@ class DescriptionDecorator implements Decorator, DecoratorOptionsInterface
 
     public function getName(): string
     {
-        return 'Description';
+        return 'Errors';
     }
 
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
-        $description = $formElement->getDescription();
-        $isHtmlElement = $formElement instanceof HtmlElementInterface;
-
-        if ($description === null || $isHtmlElement && $formElement->getTag() === 'fieldset') {
-            return;
+        $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));
+        foreach ($formElement->getMessages() as $message) {
+            $errors->addHtml(new HtmlElement('li', null, Text::create($message)));
         }
 
-        $descriptionId = null;
-        if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
-            $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
-            $formElement->getAttributes()->set('aria-describedby', $descriptionId);
+        if (! $errors->isEmpty()) {
+            $results->append($errors);
         }
-
-        $results->append(
-            new HtmlElement(
-                'p',
-                new Attributes(['class' => $this->getClass(), 'id' => $descriptionId]),
-                new Text($description)
-            )
-        );
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void
