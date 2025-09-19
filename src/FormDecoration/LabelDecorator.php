@@ -12,6 +12,7 @@ use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
+use ipl\Html\ValidHtml;
 
 /**
  * Decorates the label of the form element
@@ -51,20 +52,42 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
     {
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
 
+        $elementLabel = $this->getElementLabel($formElement);
         if (
             $formElement instanceof FormSubmitElement
-            || $formElement->getLabel() === null
-            || $isHtmlElement && $formElement->getTag() === 'fieldset'
+            || $elementLabel === null
+            || ($isHtmlElement && $formElement->getTag() === 'fieldset')
         ) {
             return;
         }
 
-        $labelAttr = new Attributes(['class' => $this->getClass()]);
-        if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
-            $labelAttr->add(['for' => $formElement->getAttributes()->get('id')->getValue()]);
+        if ($elementLabel instanceof HtmlElementInterface) {
+            $attributes['class'] = $this->getClass();
+            if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
+                $attributes['for'] = $formElement->getAttributes()->get('id')->getValue();
+            }
+
+            $elementLabel->addAttributes($attributes);
         }
 
-        $result->append(new HtmlElement('label', $labelAttr, new Text($formElement->getLabel())));
+        $result->append($elementLabel);
+    }
+
+    /**
+     * Get the label element for the given form element
+     *
+     * @param FormElement $formElement
+     *
+     * @return ?ValidHtml The label element or null if no label is set
+     */
+    protected function getElementLabel(FormElement $formElement): ?ValidHtml
+    {
+        $label = $formElement->getLabel();
+        if ($label === null) {
+            return null;
+        }
+
+        return new HtmlElement('label', content: new Text($label));
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void
