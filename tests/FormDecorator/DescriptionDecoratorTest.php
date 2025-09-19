@@ -3,7 +3,7 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\DescriptionDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\TextElement;
@@ -43,7 +43,7 @@ class DescriptionDecoratorTest extends TestCase
 
     public function testWithDescriptionAttributeOnly(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement($results, new TextElement('test', ['description' => 'Testing']));
 
         $this->assertHtml('<p class="form-element-description">Testing</p>', $results->assemble());
@@ -51,7 +51,7 @@ class DescriptionDecoratorTest extends TestCase
 
     public function testWithDescriptionAndIdAttribute(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement(
             $results,
             new TextElement('test', ['description' => 'Testing', 'id' => 'test-id'])
@@ -62,7 +62,7 @@ class DescriptionDecoratorTest extends TestCase
 
     public function testWithEmptyDescriptionAttribute(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement($results, new TextElement('test', ['description' => '']));
 
         $this->assertHtml('<p class="form-element-description"></p>', $results->assemble());
@@ -70,7 +70,7 @@ class DescriptionDecoratorTest extends TestCase
 
     public function testWithoutDescriptionAttribute(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement($results, new TextElement('test'));
 
         $this->assertSame('', $results->assemble()->render());
@@ -78,7 +78,7 @@ class DescriptionDecoratorTest extends TestCase
 
     public function testFieldsetElementsAreIgnored(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement($results, new FieldsetElement('test'));
 
         $this->assertSame('', $results->assemble()->render());
@@ -86,7 +86,7 @@ class DescriptionDecoratorTest extends TestCase
 
     public function testNonHtmlFormElementsAreSupported(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $element = $this->createStub(FormElement::class);
         $element->method('getDescription')->willReturn('Testing');
         $element->expects($this->never())->method('getAttributes');

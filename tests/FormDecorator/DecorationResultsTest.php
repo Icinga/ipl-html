@@ -2,18 +2,18 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\Html;
 use ipl\Tests\Html\TestCase;
 
 class DecorationResultsTest extends TestCase
 {
-    protected DecorationResults $results;
+    protected FormElementDecorationResult $results;
 
     public function setUp(): void
     {
-        $this->results = new DecorationResults();
+        $this->results = new FormElementDecorationResult();
     }
 
     public function testEmptyDecorationResultsRenderEmptyString(): void
@@ -156,7 +156,7 @@ HTML;
 
     public function testMethodTransformResultsSameAsAppendPrependAndWrap(): void
     {
-        $transform = new DecorationResults();
+        $transform = new FormElementDecorationResult();
 
         $this->assertSame(
             $this->results->append(Html::tag('tag1'))->assemble()->render(),

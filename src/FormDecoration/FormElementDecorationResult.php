@@ -12,7 +12,7 @@ use ipl\Html\ValidHtml;
  *
  * @phpstan-type content array<int, ValidHtml|array<int, mixed>>
  */
-class DecorationResults implements DecorationResult
+class FormElementDecorationResult implements DecorationResult
 {
     /** @var content The HTML content */
     protected array $content = [];
