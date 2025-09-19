@@ -12,6 +12,7 @@ use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormDecorator\DecoratorInterface;
+use ipl\Html\HtmlDocument;
 use ipl\Html\ValidHtml;
 use ipl\Stdlib\Events;
 use ipl\Stdlib\Plugins;
@@ -559,16 +560,18 @@ trait FormElements
         return parent::remove($content);
     }
 
-    public function getContent()
+    protected function beforeRender(): void
     {
+        if ($this instanceof HtmlDocument) {
+            parent::beforeRender();
+        }
+
         foreach ($this->decoratedElements ?? [] as $element => &$decorated) {
             if (! $decorated) {
                 $element->applyDecoration();
                 $decorated = true;
             }
         }
-
-        return parent::getContent();
     }
 
     /**
