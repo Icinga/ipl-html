@@ -63,8 +63,13 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
 
         if ($elementLabel instanceof HtmlElementInterface) {
             $attributes['class'] = $this->getClass();
-            if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
-                $attributes['for'] = $formElement->getAttributes()->get('id')->getValue();
+            if ($isHtmlElement) {
+                $elementAttributes = $formElement->getAttributes();
+                if (! $elementAttributes->has('id')) {
+                    $elementAttributes->set('id', uniqid('form-element-'));
+                }
+
+                $attributes['for'] = $elementAttributes->get('id')->getValue();
             }
 
             $elementLabel->addAttributes($attributes);
