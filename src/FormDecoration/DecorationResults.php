@@ -2,6 +2,7 @@
 
 namespace ipl\Html\FormDecoration;
 
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\MutableHtml;
 use ipl\Html\HtmlDocument;
 use ipl\Html\ValidHtml;
@@ -11,68 +12,28 @@ use ipl\Html\ValidHtml;
  *
  * @phpstan-type content array<int, ValidHtml|array<int, mixed>>
  */
-class DecorationResults
+class DecorationResults implements DecorationResult
 {
     /** @var content The HTML content */
     protected array $content = [];
 
-    /**
-     * Transform the results according to the given case with the given HTML element
-     *
-     * @param Transformation $case
-     * @param ValidHtml|MutableHtml $item
-     *
-     * @return $this
-     */
-    public function transform(Transformation $case, ValidHtml|MutableHtml $item): static
+    public function append(ValidHtml $html): static
     {
-        match ($case) {
-            Transformation::Append  => $this->append($item),
-            Transformation::Prepend => $this->prepend($item),
-            Transformation::Wrap    => $this->wrap($item)
-        };
+        $this->content[] = $html;
 
         return $this;
     }
 
-    /**
-     * Add the given HTML element to the results
-     *
-     * @param ValidHtml $item The HTML content to be added
-     *
-     * @return $this
-     */
-    public function append(ValidHtml $item): static
+    public function prepend(ValidHtml $html): static
     {
-        $this->content[] = $item;
+        array_unshift($this->content, $html);
 
         return $this;
     }
 
-    /**
-     * Add the given HTML element to the beginning of the results
-     *
-     * @param ValidHtml $item The HTML element to be added
-     *
-     * @return $this
-     */
-    public function prepend(ValidHtml $item): static
+    public function wrap(MutableHtml $html): static
     {
-        array_unshift($this->content, $item);
-
-        return $this;
-    }
-
-    /**
-     * Add the given HTML element as the wrapper of the results
-     *
-     * @param MutableHtml $item The HTML element to wrap around the content
-     *
-     * @return $this
-     */
-    public function wrap(MutableHtml $item): static
-    {
-        $this->content = [[$item, $this->content]];
+        $this->content = [[$html, $this->content]];
 
         return $this;
     }

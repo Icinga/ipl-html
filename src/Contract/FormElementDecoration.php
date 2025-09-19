@@ -2,8 +2,6 @@
 
 namespace ipl\Html\Contract;
 
-use ipl\Html\FormDecoration\DecorationResults;
-
 /**
  * Representation of form element decorator
  */
@@ -13,18 +11,18 @@ interface FormElementDecoration
      * Decorate the given form element
      *
      * A decorator can create HTML elements and apply attributes to the given $formElement element.
-     * Only the elements added to {@see DecorationResults} are rendered in the end.
+     * Only the elements added to {@see DecorationResult} are rendered in the end.
      *
-     * The element can be added to the {@see DecorationResults} using the following three methods:
-     * - {@see DecorationResults::append()} will add the element to the end of the results.
-     * - {@see DecorationResults::prepend()} will add the element to the beginning of the results.
-     * - {@see DecorationResults::wrap()} will wrap the results with the given element.
+     * The element can be added to the {@see DecorationResult} using the following three methods:
+     * - {@see DecorationResult::append()} will add the given HTML to the end of the result
+     * - {@see DecorationResult::prepend()} will prepend the given HTML to the beginning of the result
+     * - {@see DecorationResult::wrap()} will set the given HTML as the container of the result
      *
      * **Reference implementation:**
      *
      *```
      *
-     * public function decorate(DecorationResults $results, FormElement $formElement): void
+     * public function decorate(DecorationResult $result, FormElement $formElement): void
      * {
      *     $description = $formElement->getDescription();
      *
@@ -32,14 +30,14 @@ interface FormElementDecoration
      *         return;
      *     }
      *
-     *     $results->append(new HtmlElement('p', null, new Text($description)));
+     *     $result->append(new HtmlElement('p', null, new Text($description)));
      * }
      * ```
      *
-     * @param DecorationResults $results
+     * @param DecorationResult $result
      * @param FormElement $formElement
      *
      * @return void
      */
-    public function decorate(DecorationResults $results, FormElement $formElement): void;
+    public function decorate(DecorationResult $result, FormElement $formElement): void;
 }

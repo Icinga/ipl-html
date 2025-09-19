@@ -3,10 +3,11 @@
 namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\FormElementDecoration;
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
@@ -45,7 +46,7 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
         return $this;
     }
 
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorate(DecorationResult $result, FormElement $formElement): void
     {
         $description = $formElement->getDescription();
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
@@ -60,7 +61,7 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
             $formElement->getAttributes()->set('aria-describedby', $descriptionId);
         }
 
-        $results->append(
+        $result->append(
             new HtmlElement(
                 'p',
                 new Attributes(['class' => $this->getClass(), 'id' => $descriptionId]),
