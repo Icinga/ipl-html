@@ -467,6 +467,7 @@ HTML;
 <p class="form-element-description">Description</p>
 HTML;
 
-        $this->assertHtml($html, $radio->getDecorators()->apply($radio));
+        $radio->getDecorators()->apply($radio);
+        $this->assertHtml($html, $radio);
     }
 }

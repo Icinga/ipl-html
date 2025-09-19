@@ -18,7 +18,7 @@ class DecorationResultsTest extends TestCase
 
     public function testEmptyDecorationResultsRenderEmptyString(): void
     {
-        $this->assertSame('', $this->results->render());
+        $this->assertSame('', $this->results->assemble()->render());
     }
 
     public function testMethodSkipDecorators(): void
@@ -47,7 +47,7 @@ class DecorationResultsTest extends TestCase
 <div class="third">Third</div>
 HTML;
 
-        $this->assertHtml($html, $this->results);
+        $this->assertHtml($html, $this->results->assemble());
     }
 
     public function testMethodPrepend(): void
@@ -63,7 +63,7 @@ HTML;
 <div class="third">Third</div>
 HTML;
 
-        $this->assertHtml($html, $this->results);
+        $this->assertHtml($html, $this->results->assemble());
     }
 
     public function testMethodWrap(): void
@@ -81,7 +81,7 @@ HTML;
 </div>
 HTML;
 
-        $this->assertHtml($html, $this->results);
+        $this->assertHtml($html, $this->results->assemble());
     }
 
     public function testAppendAfterWrap(): void
@@ -98,7 +98,7 @@ HTML;
 <div class="second">Second</div>
 HTML;
 
-        $this->assertHtml($html, $this->results);
+        $this->assertHtml($html, $this->results->assemble());
     }
     public function testPrependAfterWrap(): void
     {
@@ -113,7 +113,7 @@ HTML;
   <div class="first">First</div>
 </div>
 HTML;
-        $this->assertHtml($html, $this->results);
+        $this->assertHtml($html, $this->results->assemble());
     }
 
     public function testMixed(): void
@@ -155,7 +155,7 @@ HTML;
 <tag12></tag12>
 <tag14></tag14>
 HTML;
-        $this->assertHtml($html, $this->results);
+        $this->assertHtml($html, $this->results->assemble());
     }
 
     public function testMethodTransformSupportAllCasesAndDoNotThrowAnException(): void
@@ -164,7 +164,7 @@ HTML;
             $this->results->transform($transformation, Html::tag('div'));
         }
 
-        $this->assertNotEmpty($this->results->render());
+        $this->assertNotEmpty($this->results->assemble()->render());
     }
 
     public function testMethodTransformResultsSameAsAppendPrependAndWrap(): void
@@ -172,23 +172,23 @@ HTML;
         $transform = new DecorationResults();
 
         $this->assertSame(
-            $this->results->append(Html::tag('tag1'))->render(),
-            $transform->transform(Transformation::Append, Html::tag('tag1'))->render()
+            $this->results->append(Html::tag('tag1'))->assemble()->render(),
+            $transform->transform(Transformation::Append, Html::tag('tag1'))->assemble()->render()
         );
 
         $this->assertSame(
-            $this->results->wrap(Html::tag('tag2'))->render(),
-            $transform->transform(Transformation::Wrap, Html::tag('tag2'))->render()
+            $this->results->wrap(Html::tag('tag2'))->assemble()->render(),
+            $transform->transform(Transformation::Wrap, Html::tag('tag2'))->assemble()->render()
         );
 
         $this->assertSame(
-            $this->results->prepend(Html::tag('tag3'))->render(),
-            $transform->transform(Transformation::Prepend, Html::tag('tag3'))->render()
+            $this->results->prepend(Html::tag('tag3'))->assemble()->render(),
+            $transform->transform(Transformation::Prepend, Html::tag('tag3'))->assemble()->render()
         );
 
         $this->assertSame(
-            $this->results->append(Html::tag('tag4'))->render(),
-            $transform->transform(Transformation::Append, Html::tag('tag4'))->render()
+            $this->results->append(Html::tag('tag4'))->assemble()->render(),
+            $transform->transform(Transformation::Append, Html::tag('tag4'))->assemble()->render()
         );
     }
 }

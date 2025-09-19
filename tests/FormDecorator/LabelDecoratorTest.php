@@ -49,7 +49,7 @@ class LabelDecoratorTest extends TestCase
 
         $this->assertHtml(
             '<label class="form-element-label">Label Here</label>',
-            $results
+            $results->assemble()
         );
     }
 
@@ -63,7 +63,7 @@ class LabelDecoratorTest extends TestCase
 
         $this->assertHtml(
             '<label for="test-id" class="form-element-label">Label Here</label>',
-            $results
+            $results->assemble()
         );
     }
 
@@ -74,7 +74,7 @@ class LabelDecoratorTest extends TestCase
 
         $this->assertHtml(
             '<label class="form-element-label"></label>',
-            $results
+            $results->assemble()
         );
     }
 
@@ -83,7 +83,7 @@ class LabelDecoratorTest extends TestCase
         $results = new DecorationResults();
         $this->decorator->decorate($results, new TextElement('test'));
 
-        $this->assertSame('', $results->render());
+        $this->assertSame('', $results->assemble()->render());
     }
 
     public function testThatSubmitElementsAndFieldsetElementsAreIgnored(): void
@@ -93,7 +93,7 @@ class LabelDecoratorTest extends TestCase
         $this->decorator->decorate($results, new SubmitButtonElement('test'));
         $this->decorator->decorate($results, new SubmitElement('test'));
 
-        $this->assertSame('', $results->render());
+        $this->assertSame('', $results->assemble()->render());
     }
 
     public function testNonHtmlFormElementsAreSupported(): void
@@ -105,6 +105,6 @@ class LabelDecoratorTest extends TestCase
 
         $this->decorator->decorate($results, $element);
 
-        $this->assertHtml('<label class="form-element-label">Testing</label>', $results);
+        $this->assertHtml('<label class="form-element-label">Testing</label>', $results->assemble());
     }
 }
