@@ -10,11 +10,6 @@ use ipl\Html\Contract\FormElement;
  */
 class RenderElementDecorator implements FormElementDecoration
 {
-    public function getName(): string
-    {
-        return 'RenderElement';
-    }
-
     public function decorate(DecorationResults $results, FormElement $formElement): void
     {
         $results->append($formElement);
