@@ -4,7 +4,7 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use Exception;
 use InvalidArgumentException;
-use ipl\Html\FormDecorator\DecoratorChain;
+use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormElement\TextElement;
 use ipl\Tests\Html\TestCase;
 
@@ -189,8 +189,8 @@ class DecoratorChainTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Expects array value at position 0 to be a string or an instance of ipl\Html\Contract\Decorator,'
-            . ' got ipl\Html\FormDecorator\DecoratorChain instead'
+            'Expects array value at position 0 to be a string or an instance of ipl\Html\Contract\FormElementDecoration,'
+            . ' got ipl\Html\FormDecoration\DecoratorChain instead'
         );
 
         $this->chain->addDecorators([$this->chain]);

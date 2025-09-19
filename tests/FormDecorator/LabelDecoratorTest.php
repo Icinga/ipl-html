@@ -3,8 +3,8 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecorator\DecorationResults;
-use ipl\Html\FormDecorator\LabelDecorator;
+use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\LabelDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\SubmitButtonElement;
 use ipl\Html\FormElement\SubmitElement;

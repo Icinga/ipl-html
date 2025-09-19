@@ -2,8 +2,8 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
-use ipl\Html\FormDecorator\DecorationResults;
-use ipl\Html\FormDecorator\Transformation;
+use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\Html;
 use ipl\Tests\Html\TestCase;
 

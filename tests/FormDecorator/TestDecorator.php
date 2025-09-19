@@ -3,15 +3,15 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecorator\DecorationResults;
+use ipl\Html\FormDecoration\DecorationResults;
 use ipl\Html\HtmlElement;
 
 /**
  * Wraps the $formElement with a div with class "test-decorator"
  */
-class TestDecorator implements Decorator
+class TestDecorator implements FormElementDecoration
 {
     public function getName(): string
     {
