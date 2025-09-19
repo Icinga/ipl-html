@@ -99,23 +99,11 @@ trait FormElements
         return $this;
     }
 
-    /**
-     * Get all elements
-     *
-     * @return FormElement[]
-     */
     public function getElements()
     {
         return $this->elements;
     }
 
-    /**
-     * Get whether the given element exists
-     *
-     * @param string|FormElement $element
-     *
-     * @return bool
-     */
     public function hasElement($element)
     {
         if (is_string($element)) {
@@ -129,15 +117,6 @@ trait FormElements
         return false;
     }
 
-    /**
-     * Get the element by the given name
-     *
-     * @param string $name
-     *
-     * @return FormElement
-     *
-     * @throws InvalidArgumentException If no element with the given name exists
-     */
     public function getElement($name)
     {
         if (! array_key_exists($name, $this->elements)) {
@@ -150,20 +129,6 @@ trait FormElements
         return $this->elements[$name];
     }
 
-    /**
-     * Add an element
-     *
-     * @param string|FormElement $typeOrElement Type of the element as string or an instance of FormElement
-     * @param string             $name          Name of the element
-     * @param mixed              $options       Element options as key-value pairs
-     *
-     * @return $this
-     *
-     * @throws InvalidArgumentException If $typeOrElement is neither a string nor an instance of FormElement
-     *                                  or if $typeOrElement is a string and $name is not set
-     *                                  or if $typeOrElement is a string but type is unknown
-     *                                  or if $typeOrElement is an instance of FormElement but does not have a name
-     */
     public function addElement($typeOrElement, $name = null, $options = null)
     {
         if (is_string($typeOrElement)) {
@@ -257,17 +222,6 @@ trait FormElements
         return $element;
     }
 
-    /**
-     * Register an element
-     *
-     * Registers the element for value and validation handling but does not add it to the render stack.
-     *
-     * @param FormElement $element
-     *
-     * @return $this
-     *
-     * @throws InvalidArgumentException If $element does not provide a name
-     */
     public function registerElement(FormElement $element)
     {
         $name = $element->getName();
@@ -370,16 +324,6 @@ trait FormElements
         return $this;
     }
 
-    /**
-     * Get the value of the element specified by name
-     *
-     * Returns $default if the element does not exist or has no value.
-     *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
     public function getValue($name, $default = null)
     {
         if ($this->hasElement($name)) {
@@ -392,11 +336,6 @@ trait FormElements
         return $default;
     }
 
-    /**
-     * Get the values for all but ignored elements
-     *
-     * @return array Values as name-value pairs
-     */
     public function getValues()
     {
         $values = [];
@@ -409,13 +348,6 @@ trait FormElements
         return $values;
     }
 
-    /**
-     * Populate values of registered elements
-     *
-     * @param iterable<string, mixed> $values Values as name-value pairs
-     *
-     * @return $this
-     */
     public function populate($values)
     {
         foreach ($values as $name => $value) {
@@ -586,13 +518,26 @@ trait FormElements
     public function isValidEvent($event)
     {
         return in_array($event, [
-            Form::ON_SUCCESS,
+            Form::ON_SUBMIT,
             Form::ON_SENT,
             Form::ON_ERROR,
             Form::ON_REQUEST,
             Form::ON_VALIDATE,
             Form::ON_ELEMENT_REGISTERED,
         ]);
+    }
+
+    public function removeElement(string|FormElement $element)
+    {
+        if (is_string($element)) {
+            if (! $this->hasElement($element)) {
+                return $this;
+            }
+
+            $element = $this->getElement($element);
+        }
+
+        return $this->remove($element);
     }
 
     public function remove(ValidHtml $content)

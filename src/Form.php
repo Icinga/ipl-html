@@ -10,10 +10,10 @@ use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-class Form extends BaseHtmlElement implements Contract\Form, DefaultFormElementDecoration
+class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElements, DefaultFormElementDecoration
 {
     use FormElements {
-        FormElements::remove as private removeElement;
+        FormElements::remove as private baseRemove;
     }
     use Messages;
 
@@ -312,7 +312,7 @@ class Form extends BaseHtmlElement implements Contract\Form, DefaultFormElementD
             $this->submitButton = null;
         }
 
-        $this->removeElement($content);
+        $this->baseRemove($content);
 
         return $this;
     }
