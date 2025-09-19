@@ -4,7 +4,7 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use InvalidArgumentException;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\HtmlTagDecorator;
 use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\FormElement\TextElement;
@@ -53,7 +53,7 @@ class HtmlTagDecoratorTest extends TestCase
     {
         $formElement = new TextElement('test');
 
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator
             ->setTag('div')
             ->setCondition(fn($formElement) => false)
@@ -75,7 +75,7 @@ class HtmlTagDecoratorTest extends TestCase
 
         $this->decorator
             ->setCondition(fn() => notExist())
-            ->decorateFormElement(new DecorationResults(), new TextElement('test'));
+            ->decorateFormElement(new FormElementDecorationResult(), new TextElement('test'));
     }
 
     /**
@@ -88,13 +88,13 @@ class HtmlTagDecoratorTest extends TestCase
 
         $this->decorator
             ->setCondition(fn() => 1)
-            ->decorateFormElement(new DecorationResults(), new TextElement('test'));
+            ->decorateFormElement(new FormElementDecorationResult(), new TextElement('test'));
     }
 
     public function testMethodDecorateWithDefaultPlacementWrap(): void
     {
         $element = new TextElement('test');
-        $results = (new DecorationResults())->append($element);
+        $results = (new FormElementDecorationResult())->append($element);
         $this->decorator
             ->setTag('div')
             ->decorateFormElement($results, $element);
@@ -111,7 +111,7 @@ HTML;
     public function testMethodDecorateWithPlacementAppend(): void
     {
         $element = new TextElement('test');
-        $results = (new DecorationResults())->append($element);
+        $results = (new FormElementDecorationResult())->append($element);
         $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Append)
@@ -128,7 +128,7 @@ HTML;
     public function testMethodDecorateWithPlacementPrepend(): void
     {
         $element = new TextElement('test');
-        $results = (new DecorationResults())->append($element);
+        $results = (new FormElementDecorationResult())->append($element);
         $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Prepend)
@@ -144,7 +144,7 @@ HTML;
 
     public function testNonHtmlFormElementsAreSupported(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $element = $this->createStub(FormElement::class);
         $element->method('render')->willReturn('<input type="text" name="test">');
 

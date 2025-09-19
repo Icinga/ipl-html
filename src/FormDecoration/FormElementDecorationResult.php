@@ -8,11 +8,11 @@ use ipl\Html\HtmlDocument;
 use ipl\Html\ValidHtml;
 
 /**
- * DecorationResults stores and render the results of decorators
+ * Stores and renders the results of decorators
  *
  * @phpstan-type content array<int, ValidHtml|array<int, mixed>>
  */
-class DecorationResults implements DecorationResult
+class FormElementDecorationResult implements DecorationResult
 {
     /** @var content The HTML content */
     protected array $content = [];

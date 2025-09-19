@@ -3,7 +3,7 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\ErrorsDecorator;
 use ipl\Html\FormElement\TextElement;
 use ipl\Tests\Html\TestCase;
@@ -42,7 +42,7 @@ class ErrorsDecoratorTest extends TestCase
 
     public function testWithoutErrorMessages(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement($results, new TextElement('test'));
 
         $this->assertSame('', $results->assemble()->render());
@@ -50,7 +50,7 @@ class ErrorsDecoratorTest extends TestCase
 
     public function testWithErrorMessages(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement(
             $results,
             (new TextElement('test'))->setMessages(['First error', 'Second error'])
@@ -68,7 +68,7 @@ HTML;
 
     public function testNonHtmlFormElementsAreSupported(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $element = $this->createStub(FormElement::class);
         $element->method('getMessages')->willReturn(['First error', 'Second error']);
 

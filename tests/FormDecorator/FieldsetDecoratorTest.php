@@ -3,7 +3,7 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\FieldsetDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\TextElement;
@@ -21,7 +21,7 @@ class FieldsetDecoratorTest extends TestCase
     public function testWithDescriptionAttributeOnly(): void
     {
         $fieldset = new FieldsetElement('test', ['description' => 'Testing']);
-        $this->decorator->decorateFormElement(new DecorationResults(), $fieldset);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
 
         $html = <<<HTML
 <fieldset name="test">
@@ -35,7 +35,7 @@ HTML;
     public function testWithDescriptionAndIdAttributeOnly(): void
     {
         $fieldset = new FieldsetElement('test', ['description' => 'Testing', 'id' => 'test-id']);
-        $this->decorator->decorateFormElement(new DecorationResults(), $fieldset);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
 
         $html = <<<HTML
 <fieldset aria-describedby="desc_test-id" id="test-id" name="test">
@@ -49,7 +49,7 @@ HTML;
     public function testWithLabelAttributeOnly(): void
     {
         $fieldset = new FieldsetElement('test', ['label' => 'Testing']);
-        $this->decorator->decorateFormElement(new DecorationResults(), $fieldset);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
 
         $html = <<<HTML
 <fieldset name="test">
@@ -63,7 +63,7 @@ HTML;
     public function testWithLabelAndDescriptionAttribute(): void
     {
         $fieldset = new FieldsetElement('test', ['label' => 'Testing', 'description' => 'Testing']);
-        $this->decorator->decorateFormElement(new DecorationResults(), $fieldset);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
 
         $html = <<<HTML
 <fieldset name="test">
@@ -78,7 +78,7 @@ HTML;
     public function testWithoutLabelAndDescriptionAttribute(): void
     {
         $fieldset = new FieldsetElement('test');
-        $this->decorator->decorateFormElement(new DecorationResults(), $fieldset);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
 
         $html = <<<HTML
 <fieldset name="test"></fieldset>
@@ -90,7 +90,7 @@ HTML;
     public function testOnlyFieldsetElementsAreDecorated(): void
     {
         $textElement = new TextElement('test', ['label' => 'Testing', 'description' => 'Testing']);
-        $this->decorator->decorateFormElement(new DecorationResults(), $textElement);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $textElement);
 
         // no change applied by decorator
         $this->assertHtml('<input type="text" name="test">', $textElement);
@@ -98,7 +98,7 @@ HTML;
 
     public function testDecorationResultsRemainEmpty(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator->decorateFormElement($results, new FieldsetElement('test', ['label' => 'Testing']));
         $this->decorator->decorateFormElement($results, new FieldsetElement('test', ['label' => 'Testing']));
         $this->decorator->decorateFormElement($results, new FieldsetElement('test', ['label' => 'Testing']));
@@ -108,7 +108,7 @@ HTML;
 
     public function testNonHtmlFormElementsAreIgnored(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $element = $this->createStub(FormElement::class);
 
         $this->decorator->decorateFormElement($results, $element);

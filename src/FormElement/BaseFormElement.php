@@ -11,7 +11,7 @@ use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecoration\DecoratorChain;
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
@@ -433,7 +433,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
 
     public function applyDecoration(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         foreach ($this->getDecorators() as $decorator) {
             $decorator->decorateFormElement($results, $this);
         }
