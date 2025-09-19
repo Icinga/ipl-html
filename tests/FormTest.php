@@ -48,4 +48,16 @@ class FormTest extends TestCase
 
         $form->handleRequest($request2);
     }
+
+    public function testEscapeReservedChars(): void
+    {
+        // Reserved chars '.', ' ', '[' and ']' are escaped
+        $this->assertSame(Form::escapeReservedChars('foo.bar'), 'foo' . chr(28) . 'bar');
+        $this->assertSame(Form::escapeReservedChars('foo bar'), 'foo' . chr(29) . 'bar');
+        $this->assertSame(Form::escapeReservedChars('foo[bar]', true), 'foo' . chr(30) . 'bar' . chr(31));
+
+        // The string remains the same
+        $this->assertSame(Form::escapeReservedChars('foo[bar]'), 'foo[bar]');
+        $this->assertSame(Form::escapeReservedChars('foo-bar123', true), 'foo-bar123');
+    }
 }
