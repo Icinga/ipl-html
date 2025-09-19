@@ -148,7 +148,7 @@ HTML;
     public function testMethodTransformSupportAllCasesAndDoNotThrowAnException(): void
     {
         foreach (Transformation::cases() as $transformation) {
-            $this->results->transform($transformation, Html::tag('div'));
+            $transformation->apply($this->results, Html::tag('div'));
         }
 
         $this->assertNotEmpty($this->results->assemble()->render());
@@ -160,22 +160,22 @@ HTML;
 
         $this->assertSame(
             $this->results->append(Html::tag('tag1'))->assemble()->render(),
-            $transform->transform(Transformation::Append, Html::tag('tag1'))->assemble()->render()
+            Transformation::Append->apply($transform, Html::tag('tag1'))->assemble()->render()
         );
 
         $this->assertSame(
             $this->results->wrap(Html::tag('tag2'))->assemble()->render(),
-            $transform->transform(Transformation::Wrap, Html::tag('tag2'))->assemble()->render()
+            Transformation::Wrap->apply($transform, Html::tag('tag2'))->assemble()->render()
         );
 
         $this->assertSame(
             $this->results->prepend(Html::tag('tag3'))->assemble()->render(),
-            $transform->transform(Transformation::Prepend, Html::tag('tag3'))->assemble()->render()
+            Transformation::Prepend->apply($transform, Html::tag('tag3'))->assemble()->render()
         );
 
         $this->assertSame(
             $this->results->append(Html::tag('tag4'))->assemble()->render(),
-            $transform->transform(Transformation::Append, Html::tag('tag4'))->assemble()->render()
+            Transformation::Append->apply($transform, Html::tag('tag4'))->assemble()->render()
         );
     }
 }

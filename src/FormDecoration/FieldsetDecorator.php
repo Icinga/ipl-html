@@ -3,8 +3,9 @@
 namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\FormElementDecoration;
+use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\Contract\MutableHtml;
 use ipl\Html\HtmlElement;
@@ -15,7 +16,7 @@ use ipl\Html\Text;
  */
 class FieldsetDecorator implements FormElementDecoration
 {
-    public function decorate(DecorationResults $results, FormElement $formElement): void
+    public function decorate(DecorationResult $result, FormElement $formElement): void
     {
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
         if (! $formElement instanceof MutableHtml || ! $isHtmlElement || $formElement->getTag() !== 'fieldset') {
