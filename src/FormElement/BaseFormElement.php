@@ -435,7 +435,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     {
         $results = new DecorationResults();
         foreach ($this->getDecorators() as $decorator) {
-            $decorator->decorate($results, $this);
+            $decorator->decorateFormElement($results, $this);
         }
 
         $wrapper = $results->assemble();

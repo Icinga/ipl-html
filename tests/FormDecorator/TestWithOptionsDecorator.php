@@ -26,7 +26,7 @@ class TestWithOptionsDecorator implements FormElementDecoration, DecoratorOption
         return 'TestWithOptions';
     }
 
-    public function decorate(DecorationResult $result, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $result->wrap(new HtmlElement('div', new Attributes(['class' => 'test-with-options-decorator'])));
     }

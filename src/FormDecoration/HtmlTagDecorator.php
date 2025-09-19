@@ -144,7 +144,7 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
      * @throws InvalidArgumentException if the condition callback does not return a boolean
      * @throws RuntimeException if the condition callback throws an exception
      */
-    public function decorate(DecorationResult $result, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $condition = $this->getCondition();
         if ($condition !== null) {

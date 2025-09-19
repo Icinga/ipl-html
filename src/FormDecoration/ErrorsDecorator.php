@@ -45,7 +45,7 @@ class ErrorsDecorator implements FormElementDecoration, DecoratorOptionsInterfac
         return $this;
     }
 
-    public function decorate(DecorationResult $result, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $errors = new HtmlElement('ul', new Attributes(['class' => $this->getClass()]));
         foreach ($formElement->getMessages() as $message) {

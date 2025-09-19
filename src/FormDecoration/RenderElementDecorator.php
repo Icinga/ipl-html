@@ -11,7 +11,7 @@ use ipl\Html\Contract\FormElementDecoration;
  */
 class RenderElementDecorator implements FormElementDecoration
 {
-    public function decorate(DecorationResult $result, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $result->append($formElement);
     }

@@ -46,7 +46,7 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
         return $this;
     }
 
-    public function decorate(DecorationResult $result, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $description = $formElement->getDescription();
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
