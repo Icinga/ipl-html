@@ -57,13 +57,13 @@ class HtmlTagDecoratorTest extends TestCase
         $this->decorator
             ->setTag('div')
             ->setCondition(fn($formElement) => false)
-            ->decorate($results, $formElement);
+            ->decorateFormElement($results, $formElement);
 
         $this->assertSame('', $results->assemble()->render());
 
         $this->decorator
             ->setCondition(fn($formElement) => true)
-            ->decorate($results, $formElement);
+            ->decorateFormElement($results, $formElement);
 
         $this->assertSame('<div></div>', $results->assemble()->render());
     }
@@ -75,7 +75,7 @@ class HtmlTagDecoratorTest extends TestCase
 
         $this->decorator
             ->setCondition(fn() => notExist())
-            ->decorate(new DecorationResults(), new TextElement('test'));
+            ->decorateFormElement(new DecorationResults(), new TextElement('test'));
     }
 
     /**
@@ -88,7 +88,7 @@ class HtmlTagDecoratorTest extends TestCase
 
         $this->decorator
             ->setCondition(fn() => 1)
-            ->decorate(new DecorationResults(), new TextElement('test'));
+            ->decorateFormElement(new DecorationResults(), new TextElement('test'));
     }
 
     public function testMethodDecorateWithDefaultPlacementWrap(): void
@@ -97,7 +97,7 @@ class HtmlTagDecoratorTest extends TestCase
         $results = (new DecorationResults())->append($element);
         $this->decorator
             ->setTag('div')
-            ->decorate($results, $element);
+            ->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <div>
@@ -115,7 +115,7 @@ HTML;
         $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Append)
-            ->decorate($results, $element);
+            ->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <input type="text" name="test">
@@ -132,7 +132,7 @@ HTML;
         $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Prepend)
-            ->decorate($results, $element);
+            ->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <div></div>
@@ -151,7 +151,7 @@ HTML;
         $this->decorator->setTag('div');
         $results->append($element);
 
-        $this->decorator->decorate($results, $element);
+        $this->decorator->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <div>

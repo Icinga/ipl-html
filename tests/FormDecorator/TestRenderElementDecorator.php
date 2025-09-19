@@ -16,7 +16,7 @@ class TestRenderElementDecorator implements FormElementDecoration
         return 'TestRenderElement';
     }
 
-    public function decorate(DecorationResult $result, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $result->append($formElement);
     }

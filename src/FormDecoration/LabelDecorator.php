@@ -47,7 +47,7 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
         return $this;
     }
 
-    public function decorate(DecorationResult $result, FormElement $formElement): void
+    public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
 
