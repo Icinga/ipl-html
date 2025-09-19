@@ -543,7 +543,7 @@ trait FormElements
     {
         foreach ($this->decoratedElements ?? [] as $element => &$decorated) {
             if (! $decorated) {
-                $element->getDecorators()->apply($element);
+                $element->applyDecoration();
                 $decorated = true;
             }
         }

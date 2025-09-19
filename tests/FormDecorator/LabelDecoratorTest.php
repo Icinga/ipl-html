@@ -20,11 +20,6 @@ class LabelDecoratorTest extends TestCase
         $this->decorator = new LabelDecorator();
     }
 
-    public function testMethodGetName(): void
-    {
-        $this->assertNotEmpty($this->decorator->getName());
-    }
-
     public function testDefaultCssClassExists(): void
     {
         $this->assertNotEmpty($this->decorator->getClass());

@@ -20,10 +20,6 @@ class HtmlTagDecoratorTest extends TestCase
         $this->decorator = new HtmlTagDecorator();
     }
 
-    public function testMethodGetName(): void
-    {
-        $this->assertNotEmpty($this->decorator->getName());
-    }
     public function testExceptionThrownWhenNoTagSpecified(): void
     {
         $this->expectException(RuntimeException::class);
