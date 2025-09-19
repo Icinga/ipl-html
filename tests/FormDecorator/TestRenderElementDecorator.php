@@ -2,14 +2,14 @@
 
 namespace ipl\Tests\Html\FormDecorator;
 
-use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecoration\DecorationResults;
 
 /**
  * Render the $formElement
  */
-class TestRenderElementDecorator implements Decorator
+class TestRenderElementDecorator implements FormElementDecoration
 {
     public function getName(): string
     {

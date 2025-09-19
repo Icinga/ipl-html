@@ -189,7 +189,7 @@ class DecoratorChainTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Expects array value at position 0 to be a string or an instance of ipl\Html\Contract\Decorator,'
+            'Expects array value at position 0 to be a string or an instance of ipl\Html\Contract\FormElementDecoration,'
             . ' got ipl\Html\FormDecoration\DecoratorChain instead'
         );
 

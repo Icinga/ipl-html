@@ -7,7 +7,7 @@ use ipl\Html\FormDecoration\DecorationResults;
 /**
  * Representation of form element decorator
  */
-interface Decorator
+interface FormElementDecoration
 {
     /**
      * Get the name of the decorator

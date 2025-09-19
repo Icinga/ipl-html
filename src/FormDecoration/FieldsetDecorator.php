@@ -3,7 +3,7 @@
 namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\Contract\MutableHtml;
@@ -13,7 +13,7 @@ use ipl\Html\Text;
 /**
  * Decorates the fieldset of the form element
  */
-class FieldsetDecorator implements Decorator
+class FieldsetDecorator implements FormElementDecoration
 {
     public function getName(): string
     {

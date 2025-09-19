@@ -3,7 +3,7 @@
 namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
@@ -15,7 +15,7 @@ use ipl\Html\HtmlElement;
  *
  * Apply options using setter
  */
-class TestWithOptionsDecorator implements Decorator, DecoratorOptionsInterface
+class TestWithOptionsDecorator implements FormElementDecoration, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 

@@ -4,7 +4,7 @@ namespace ipl\Html\FormDecoration;
 
 use InvalidArgumentException;
 use ipl\Html\Attributes;
-use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
@@ -17,7 +17,7 @@ use function ipl\Stdlib\get_php_type;
 /**
  * Decorates the form element with an HTML tag
  */
-class HtmlTagDecorator implements Decorator, DecoratorOptionsInterface
+class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 

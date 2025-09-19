@@ -3,7 +3,7 @@
 namespace ipl\Html\FormDecoration;
 
 use ipl\Html\Attributes;
-use ipl\Html\Contract\Decorator;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\DecoratorOptions;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
@@ -15,7 +15,7 @@ use ipl\Html\Text;
 /**
  * Decorates the label of the form element
  */
-class LabelDecorator implements Decorator, DecoratorOptionsInterface
+class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
 {
     use DecoratorOptions;
 
