@@ -5,6 +5,7 @@ namespace ipl\Html\FormElement;
 use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
+use ipl\Html\Contract\DecorableFormElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
@@ -19,7 +20,7 @@ use ReflectionProperty;
  *
  * @phpstan-import-type decoratorsFormat from DecoratorChain
  */
-abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates
+abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates, DecorableFormElement
 {
     use Messages;
     use Translation;
