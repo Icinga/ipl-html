@@ -3,8 +3,12 @@
 namespace ipl\Html;
 
 use ipl\Html\Contract\DefaultFormElementDecoration;
+use ipl\Html\Contract\FormDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\Contract\MutableHtml;
+use ipl\Html\FormDecoration\DecoratorChain;
+use ipl\Html\FormDecoration\FormDecorationResult;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,6 +23,9 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
 
     /** @deprecated Use {@see Contract\Form::ON_SUBMIT} instead */
     public const ON_SUCCESS = 'success';
+
+    /** @var string Event emitted when all elements have been decorated */
+    public const ON_ELEMENTS_DECORATED = 'elementsDecorated';
 
     /** @var string Form submission URL */
     protected $action;
@@ -41,7 +48,15 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
     /** @var string */
     protected $redirectUrl;
 
+    /** @var ?DecoratorChain<FormDecoration> */
+    protected ?DecoratorChain $decorators = null;
+
     protected $tag = 'form';
+
+    public function __construct()
+    {
+        $this->registerEventListeners();
+    }
 
     /**
      * Get whether the given value is empty
@@ -177,6 +192,20 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
         $this->redirectUrl = $url;
 
         return $this;
+    }
+
+    /**
+     * Get the decorators of this form
+     *
+     * @return DecoratorChain<FormDecoration>
+     */
+    public function getDecorators(): DecoratorChain
+    {
+        if ($this->decorators === null) {
+            $this->decorators = new DecoratorChain(FormDecoration::class);
+        }
+
+        return $this->decorators;
     }
 
     public function handleRequest(ServerRequestInterface $request)
@@ -317,6 +346,14 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
         return $this;
     }
 
+    protected function applyDecoration(): void
+    {
+        $result = new FormDecorationResult($this);
+        foreach ($this->getDecorators() as $decorator) {
+            $decorator->decorateForm($result, $this);
+        }
+    }
+
     protected function onError()
     {
         $errors = Html::tag('ul', ['class' => 'errors']);
@@ -356,5 +393,15 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
         $attributes
             ->registerAttributeCallback('action', [$this, 'getAction'], [$this, 'setAction'])
             ->registerAttributeCallback('method', [$this, 'getMethod'], [$this, 'setMethod']);
+    }
+
+    /**
+     * Register event listeners for this form
+     *
+     * @return void
+     */
+    protected function registerEventListeners(): void
+    {
+        $this->once(self::ON_ELEMENTS_DECORATED, $this->applyDecoration(...));
     }
 }

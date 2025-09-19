@@ -504,7 +504,8 @@ trait FormElements
             Form::ON_ERROR,
             Form::ON_REQUEST,
             Form::ON_VALIDATE,
-            Form::ON_ELEMENT_REGISTERED
+            Form::ON_ELEMENT_REGISTERED,
+            Form::ON_ELEMENTS_DECORATED
         ]);
     }
 
@@ -547,6 +548,10 @@ trait FormElements
                 $decorated = true;
             }
         }
+
+        // Decoration is very similar to assembling, so the event is
+        // emitted once, as it must not happen multiple times
+        $this->emitOnce(Form::ON_ELEMENTS_DECORATED);
 
         return parent::getContent();
     }
