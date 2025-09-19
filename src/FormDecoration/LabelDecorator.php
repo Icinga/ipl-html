@@ -23,6 +23,9 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
     /** @var string|string[] CSS classes to apply */
     protected string|array $class = 'form-element-label';
 
+    /** @var bool Whether to apply the fallback id to the element if not set */
+    protected bool $applyFallbackId = true;
+
     /**
      * Get the css class(es)
      *
@@ -43,6 +46,20 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
     public function setClass(string|array $class): static
     {
         $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * Set whether to apply the fallback id to the element if not set
+     *
+     * @param bool $apply
+     *
+     * @return $this
+     */
+    public function applyFallbackId(bool $apply = true): static
+    {
+        $this->applyFallbackId = $apply;
 
         return $this;
     }
