@@ -80,16 +80,16 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
      * For example, <input name="foo[bar]baz"> becomes $_REQUEST['foo']['bar'].
      * See https://www.php.net/manual/en/language.variables.external.php
      *
-     * @param string $str The string to escape
+     * @param string $string The string to escape
      * @param bool   $escapeBrackets Whether to escape brackets
      *
      * @return string
      */
-    public static function escapeReservedChars(string $str, bool $escapeBrackets = false): string
+    public static function escapeReservedChars(string $string, bool $escapeBrackets = true): string
     {
         $escapeMap = [
             '.' => chr(28), // File Separator
-            ' ' =>  chr(29) // Group Separator
+            ' ' => chr(29)  // Group Separator
         ];
 
         if ($escapeBrackets) {
@@ -97,7 +97,7 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
             $escapeMap[']'] = chr(31); // Unit Separator
         }
 
-        return strtr($str, $escapeMap);
+        return strtr($string, $escapeMap);
     }
 
     public function getAction()
