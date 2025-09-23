@@ -6,6 +6,7 @@ use ipl\Html\Form;
 use ipl\Html\FormElement\TextElement;
 use ipl\Tests\Html\TestCase;
 use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
+use RuntimeException;
 
 class FormElementDecorationTest extends TestCase
 {
@@ -60,22 +61,32 @@ HTML;
         $this->assertHtml($html, $this->form);
     }
 
-    public function testLegacyDefaultElementDecoratorHasPriority(): void
+    public function testApplyingElementDecoratorsAfterLegacyDecoratorThrowsAnException(): void
     {
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Cannot use element decorators of type ipl\Html\Contract\FormElementDecoration and legacy decorator of'
+            .' type ipl\Html\Contract\FormElementDecorator together'
+        );
+
         $this->form
-            ->setDefaultElementDecorator(new SimpleFormElementDecorator())
-            ->setDefaultElementDecorators(['TestRenderElement', 'Test']) // no effect
-            ->addElement('text', 'element-1');
+            ->setDefaultElementDecorator(new SimpleFormElementDecorator()) // first legacy
+            ->setDefaultElementDecorators(['TestRenderElement', 'Test']);
+    }
 
-        $html = <<<'HTML'
-<form method="POST">
-  <div class="simple-decorator">
-    <input type="text" name="element-1">
-  </div>
-</form>
-HTML;
+    public function testApplyingLegacyDecoratorAfterElementDecoratorsThrowsAnException(): void
+    {
 
-        $this->assertHtml($html, $this->form);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Cannot use element decorators of type ipl\Html\Contract\FormElementDecoration and legacy decorator of'
+            .' type ipl\Html\Contract\FormElementDecorator together'
+        );
+
+        $this->form
+            ->setDefaultElementDecorators(['TestRenderElement', 'Test']) // first element decorators
+            ->setDefaultElementDecorator(new SimpleFormElementDecorator());
     }
 
     public function testExplicitDecoratorsHavePriorityOverLegacyDefaultElementDecorator(): void
