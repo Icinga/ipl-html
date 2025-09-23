@@ -45,7 +45,7 @@ class ErrorsDecoratorTest extends TestCase
         $results = new DecorationResults();
         $this->decorator->decorate($results, new TextElement('test'));
 
-        $this->assertSame('', $results->render());
+        $this->assertSame('', $results->assemble()->render());
     }
 
     public function testWithErrorMessages(): void
@@ -63,7 +63,7 @@ class ErrorsDecoratorTest extends TestCase
 </ul>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $results->assemble());
     }
 
     public function testNonHtmlFormElementsAreSupported(): void
@@ -81,6 +81,6 @@ HTML;
 </ul>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $results->assemble());
     }
 }

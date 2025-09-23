@@ -198,42 +198,46 @@ class DecoratorChainTest extends TestCase
 
     public function testMethodApplyWithoutADecoratorThatRendersTheElementItself(): void
     {
-        $results = $this->chain
+        $element = new TextElement('element-1');
+        $this->chain
             ->addDecorator('Test')
-            ->apply(new TextElement('element-1'));
+            ->apply($element);
 
         $html = <<<'HTML'
 <div class="test-decorator"></div>
+<input type="text" name="element-1">
 HTML;
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $element);
     }
 
     public function testMethodApplyWithADecoratorThatRendersTheElementItself(): void
     {
-        $results = $this->chain
+        $element = new TextElement('element-1');
+        $this->chain
             ->addDecorators(['TestRenderElement', 'Test'])
-            ->apply(new TextElement('element-1'));
+            ->apply($element);
 
         $html = <<<'HTML'
 <div class="test-decorator">
   <input type="text" name="element-1">
 </div>
 HTML;
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $element);
     }
 
     public function testMethodApplySkipADecoratorThatShouldBeSkipped(): void
     {
-        $results = $this->chain
+        $element = new TextElement('element-1');
+        $this->chain
             ->addDecorators(['TestSkipRenderElement', 'TestRenderElement', 'Test'])
-            ->apply(new TextElement('element-1'));
+            ->apply($element);
 
         $html = <<<'HTML'
 <div class="test-decorator">
   <input type="text" name="element-1">
 </div>
 HTML;
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $element);
     }
 
     public function testMethodApplyThrowsExceptionWhenADecoratorShouldBeSkippedButIsAlreadyApplied(): void

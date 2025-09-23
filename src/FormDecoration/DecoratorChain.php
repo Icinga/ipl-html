@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use ipl\Html\Contract\FormElementDecoration as Decorator;
 use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\ValidHtml;
 use ipl\Stdlib\Plugins;
 use LogicException;
 use UnexpectedValueException;
@@ -266,11 +265,11 @@ class DecoratorChain
      *
      * @param FormElement $formElement The form element to decorate
      *
-     * @return ValidHtml
+     * @return void
      *
      * @throws LogicException If a decorator wants to skip a decorator that has already been applied
      */
-    public function apply(FormElement $formElement): ValidHtml
+    public function apply(FormElement $formElement): void
     {
         $results = new DecorationResults();
         $appliedDecorators = [];
@@ -294,6 +293,9 @@ class DecoratorChain
             }
         }
 
-        return $results;
+        $result = $results->assemble();
+        if (! $result->isEmpty()) {
+            $formElement->addWrapper($result);
+        }
     }
 }

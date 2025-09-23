@@ -107,7 +107,7 @@ HTML;
         $this->decorator->decorate($results, new FieldsetElement('test', ['label' => 'Testing']));
         $this->decorator->decorate($results, new FieldsetElement('test', ['label' => 'Testing']));
 
-        $this->assertEmpty($results->render());
+        $this->assertEmpty($results->assemble()->render());
     }
 
     public function testNonHtmlFormElementsAreIgnored(): void
@@ -117,6 +117,6 @@ HTML;
 
         $this->decorator->decorate($results, $element);
 
-        $this->assertEmpty($results->render());
+        $this->assertEmpty($results->assemble()->render());
     }
 }

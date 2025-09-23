@@ -63,13 +63,13 @@ class HtmlTagDecoratorTest extends TestCase
             ->setCondition(fn($formElement) => false)
             ->decorate($results, $formElement);
 
-        $this->assertSame('', $results->render());
+        $this->assertSame('', $results->assemble()->render());
 
         $this->decorator
             ->setCondition(fn($formElement) => true)
             ->decorate($results, $formElement);
 
-        $this->assertSame('<div></div>', $results->render());
+        $this->assertSame('<div></div>', $results->assemble()->render());
     }
 
     public function testConditionCallbackThrowsExceptionWhenCallbackFailed(): void
@@ -109,7 +109,7 @@ class HtmlTagDecoratorTest extends TestCase
 </div>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $results->assemble());
     }
 
     public function testMethodDecorateWithPlacementAppend(): void
@@ -126,7 +126,7 @@ HTML;
 <div></div>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $results->assemble());
     }
 
     public function testMethodDecorateWithPlacementPrepend(): void
@@ -143,7 +143,7 @@ HTML;
 <input type="text" name="test">
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $results->assemble());
     }
 
     public function testNonHtmlFormElementsAreSupported(): void
@@ -163,6 +163,6 @@ HTML;
 </div>
 HTML;
 
-        $this->assertHtml($html, $results);
+        $this->assertHtml($html, $results->assemble());
     }
 }
