@@ -14,6 +14,7 @@ use ipl\Html\ValidHtml;
 use ipl\Stdlib\Events;
 use ipl\Stdlib\Plugins;
 use UnexpectedValueException;
+use WeakMap;
 
 use function ipl\Stdlib\get_php_type;
 
@@ -34,6 +35,9 @@ trait FormElements
 
     /** @var bool Whether the default element loader has been registered */
     protected $defaultElementLoaderRegistered = false;
+
+    /** @var ?WeakMap<FormElement, bool> The decorated elements */
+    private ?WeakMap $decoratedElements = null;
 
     /**
      * Custom Element decorator loader paths
@@ -528,6 +532,11 @@ trait FormElements
     {
         if ($element->hasDecorators()) {
             // new decorator implementation in use
+            $this->decoratedElements ??= new WeakMap();
+            if (! isset($this->decoratedElements[$element])) {
+                $this->decoratedElements[$element] = false;
+            }
+
             return $this;
         }
 
@@ -565,6 +574,10 @@ trait FormElements
     {
         if ($content instanceof FormElement) {
             if ($this->hasElement($content)) {
+                if (isset($this->decoratedElements[$content])) {
+                    unset($this->decoratedElements[$content]);
+                }
+
                 $name = array_search($content, $this->elements, true);
                 if ($name !== false) {
                     unset($this->elements[$name]);
@@ -573,6 +586,18 @@ trait FormElements
         }
 
         return parent::remove($content);
+    }
+
+    public function getContent()
+    {
+        foreach ($this->decoratedElements ?? [] as $element => &$decorated) {
+            if (! $decorated) {
+                $element->getDecorators()->apply($element);
+                $decorated = true;
+            }
+        }
+
+        return parent::getContent();
     }
 
     /**
