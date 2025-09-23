@@ -16,33 +16,6 @@ class DecorationResults
     /** @var content The HTML content */
     protected array $content = [];
 
-    /** @var string[] List of decorator names to skip */
-    protected array $skipDecorators = [];
-
-    /**
-     * Add decorator names to be skipped
-     *
-     * @param string ...$decoratorNames Decorator names to skip
-     *
-     * @return $this
-     */
-    public function skipDecorators(string ...$decoratorNames): static
-    {
-        $this->skipDecorators = array_merge($this->skipDecorators, $decoratorNames);
-
-        return $this;
-    }
-
-    /**
-     * Get the list of decorator names to skip
-     *
-     * @return string[]
-     */
-    public function getSkipDecorators(): array
-    {
-        return $this->skipDecorators;
-    }
-
     /**
      * Transform the results according to the given case with the given HTML element
      *

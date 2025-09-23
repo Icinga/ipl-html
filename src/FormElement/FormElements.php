@@ -3,6 +3,7 @@
 namespace ipl\Html\FormElement;
 
 use InvalidArgumentException;
+use ipl\Html\Contract\DecorableFormElement;
 use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecoration;
@@ -38,7 +39,7 @@ trait FormElements
     /** @var bool Whether the default element loader has been registered */
     protected $defaultElementLoaderRegistered = false;
 
-    /** @var ?WeakMap<FormElement, bool> The decorated elements */
+    /** @var ?WeakMap<FormElement & DecorableFormElement, bool> The decorated elements */
     private ?WeakMap $decoratedElements = null;
 
     /**
@@ -487,7 +488,7 @@ trait FormElements
      */
     protected function decorate(FormElement $element)
     {
-        if ($element->hasDecorators()) {
+        if ($element instanceof DecorableFormElement && $element->hasDecorators()) {
             // new decorator implementation in use
             $this->decoratedElements ??= new WeakMap();
             if (! isset($this->decoratedElements[$element])) {
@@ -562,7 +563,7 @@ trait FormElements
     {
         foreach ($this->decoratedElements ?? [] as $element => &$decorated) {
             if (! $decorated) {
-                $element->getDecorators()->apply($element);
+                $element->applyDecoration();
                 $decorated = true;
             }
         }

@@ -18,10 +18,6 @@ class FieldsetDecoratorTest extends TestCase
         $this->decorator = new FieldsetDecorator();
     }
 
-    public function testMethodGetName(): void
-    {
-        $this->assertNotEmpty($this->decorator->getName());
-    }
     public function testWithDescriptionAttributeOnly(): void
     {
         $fieldset = new FieldsetElement('test', ['description' => 'Testing']);

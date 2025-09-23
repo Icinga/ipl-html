@@ -18,11 +18,6 @@ class DescriptionDecoratorTest extends TestCase
         $this->decorator = new DescriptionDecorator();
     }
 
-    public function testMethodGetName(): void
-    {
-        $this->assertNotEmpty($this->decorator->getName());
-    }
-
     public function testDefaultCssClassExists(): void
     {
         $this->assertNotEmpty($this->decorator->getClass());

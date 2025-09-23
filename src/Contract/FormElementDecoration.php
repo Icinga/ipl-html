@@ -10,16 +10,6 @@ use ipl\Html\FormDecoration\DecorationResults;
 interface FormElementDecoration
 {
     /**
-     * Get the name of the decorator
-     *
-     * The name is used to identify the decorator. Decorators can skip upcoming decorator(s) by its name using
-     * {@see DecorationResults::$skipDecorators()} method.
-     *
-     * @return string
-     */
-    public function getName(): string;
-
-    /**
      * Decorate the given form element
      *
      * A decorator can create HTML elements and apply attributes to the given $formElement element.

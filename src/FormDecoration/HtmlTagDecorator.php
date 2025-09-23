@@ -139,11 +139,6 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
         return $this;
     }
 
-    public function getName(): string
-    {
-        return 'HtmlTag';
-    }
-
     /**
      * @throws InvalidArgumentException if the condition callback does not return a boolean
      * @throws RuntimeException if the condition callback throws an exception
