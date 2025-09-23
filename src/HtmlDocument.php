@@ -324,7 +324,7 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
                 $element->renderedBy = $this;
             }
 
-            $html[] = $this->renderElement($element);
+            $html[] = $element->render();
 
             if ($element instanceof self) {
                 $element->renderedBy = null;
@@ -332,18 +332,6 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         }
 
         return implode($this->contentSeparator, $html);
-    }
-
-    /**
-     * Render the given element to HTML
-     *
-     * @param ValidHtml $element
-     *
-     * @return string The rendered HTML
-     */
-    public function renderElement(ValidHtml $element): string
-    {
-        return $element->render();
     }
 
     public function __clone()

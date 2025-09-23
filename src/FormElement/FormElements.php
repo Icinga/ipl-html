@@ -608,25 +608,4 @@ trait FormElements
     protected function onElementRegistered(FormElement $element)
     {
     }
-
-    /**
-     * Render the element with decorators
-     *
-     * @param FormElement $element
-     *
-     * @return ValidHtml
-     */
-    protected function applyDecoration(FormElement $element): ValidHtml
-    {
-        return $element->getDecorators()->apply($element);
-    }
-
-    public function renderElement(ValidHtml $element): string
-    {
-        if ($element instanceof FormElement && $element->hasDecorators()) {
-            $element = $this->applyDecoration($element);
-        }
-
-        return parent::renderElement($element);
-    }
 }
