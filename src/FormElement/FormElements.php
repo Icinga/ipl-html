@@ -5,6 +5,7 @@ namespace ipl\Html\FormElement;
 use InvalidArgumentException;
 use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
@@ -13,6 +14,7 @@ use ipl\Html\FormDecorator\DecoratorInterface;
 use ipl\Html\ValidHtml;
 use ipl\Stdlib\Events;
 use ipl\Stdlib\Plugins;
+use RuntimeException;
 use UnexpectedValueException;
 use WeakMap;
 
@@ -77,6 +79,14 @@ trait FormElements
 
     public function setDefaultElementDecorators(array $decorators): static
     {
+        if ($this->hasDefaultElementDecorator()) {
+            throw new RuntimeException(sprintf(
+                'Cannot use element decorators of type %s and legacy decorator of type %s together',
+                FormElementDecoration::class,
+                FormElementDecorator::class
+            ));
+        }
+
         $this->defaultElementDecorators = $decorators;
 
         return $this;
@@ -227,6 +237,7 @@ trait FormElements
         if (
             ! empty($defaultDecorators)
             && ! $this->hasDefaultElementDecorator()
+            && empty($options['hidden'])
             && ! $element instanceof HiddenElement
             && $element->getAttributes()->get('hidden')->isEmpty()
         ) {
@@ -321,6 +332,14 @@ trait FormElements
      */
     public function setDefaultElementDecorator($decorator)
     {
+        if (! empty($this->getDefaultElementDecorators())) {
+            throw new RuntimeException(sprintf(
+                'Cannot use element decorators of type %s and legacy decorator of type %s together',
+                FormElementDecoration::class,
+                FormElementDecorator::class
+            ));
+        }
+
         if ($decorator instanceof FormElementDecorator || $decorator instanceof DecoratorInterface) {
             $this->defaultElementDecorator = $decorator;
         } else {
