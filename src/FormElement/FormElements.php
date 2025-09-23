@@ -237,6 +237,7 @@ trait FormElements
         if (
             ! empty($defaultDecorators)
             && ! $this->hasDefaultElementDecorator()
+            && empty($options['hidden'])
             && ! $element instanceof HiddenElement
             && $element->getAttributes()->get('hidden')->isEmpty()
         ) {
