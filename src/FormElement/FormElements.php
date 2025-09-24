@@ -188,32 +188,34 @@ trait FormElements
         /** @var FormElement $element */
         $element = new $class($name);
 
-        $customDecoratorPaths = $this->elementDecoratorLoaderPaths;
-        $elementDecoratorChain = $element->getDecorators();
-        if (! empty($customDecoratorPaths)) {
-            if ($element instanceof DefaultFormElementDecoration) {
-                $element->addElementDecoratorLoaderPaths($customDecoratorPaths);
+        if ($element instanceof DecorableFormElement) {
+            $customDecoratorPaths = $this->elementDecoratorLoaderPaths;
+            $elementDecoratorChain = $element->getDecorators();
+            if (! empty($customDecoratorPaths)) {
+                if ($element instanceof DefaultFormElementDecoration) {
+                    $element->addElementDecoratorLoaderPaths($customDecoratorPaths);
+                }
+
+                foreach ($customDecoratorPaths as $path) {
+                    $elementDecoratorChain->addDecoratorLoader($path[0], $path[1] ?? '');
+                }
             }
 
-            foreach ($customDecoratorPaths as $path) {
-                $elementDecoratorChain->addDecoratorLoader($path[0], $path[1] ?? '');
-            }
-        }
+            $defaultDecorators = $this->getDefaultElementDecorators();
+            if (
+                ! empty($defaultDecorators)
+                && ! $this->hasDefaultElementDecorator()
+                && empty($options['hidden'])
+                && ! $element instanceof HiddenElement
+                && $element->getAttributes()->get('hidden')->isEmpty()
+            ) {
+                if ($element instanceof DefaultFormElementDecoration) {
+                    $element->setDefaultElementDecorators($defaultDecorators);
+                }
 
-        $defaultDecorators = $this->getDefaultElementDecorators();
-        if (
-            ! empty($defaultDecorators)
-            && ! $this->hasDefaultElementDecorator()
-            && empty($options['hidden'])
-            && ! $element instanceof HiddenElement
-            && $element->getAttributes()->get('hidden')->isEmpty()
-        ) {
-            if ($element instanceof DefaultFormElementDecoration) {
-                $element->setDefaultElementDecorators($defaultDecorators);
-            }
-
-            if (! isset($options['decorators'])) {
-                $elementDecoratorChain->addDecorators($defaultDecorators);
+                if (! isset($options['decorators'])) {
+                    $elementDecoratorChain->addDecorators($defaultDecorators);
+                }
             }
         }
 
