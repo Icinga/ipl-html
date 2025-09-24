@@ -35,11 +35,11 @@ class DecoratorChainTest extends TestCase
             ->addDecorator('Test')
             ->addDecorator('TestWithOptions');
 
-        $this->assertCount(2, $this->chain);
+        $this->assertCount(2, iterator_to_array($this->chain));
 
         $this->chain->clearDecorators();
 
-        $this->assertCount(0, $this->chain);
+        $this->assertCount(0, iterator_to_array($this->chain));
     }
 
     /**
@@ -113,7 +113,7 @@ class DecoratorChainTest extends TestCase
             ['name' => 'TestWithOptions', 'options' => ['optionKey2' => 'optionValue2']]
         ];
 
-        $this->assertCount(count($decoratorFormats), $this->chain->addDecorators($decoratorFormats));
+        $this->assertCount(count($decoratorFormats), iterator_to_array($this->chain->addDecorators($decoratorFormats)));
     }
 
     /**
@@ -134,7 +134,7 @@ class DecoratorChainTest extends TestCase
 
         $this->assertCount(
             count($decoratorFormats),
-            $this->chain->addDecorators($chain)
+            iterator_to_array($this->chain->addDecorators($chain))
         );
     }
 
