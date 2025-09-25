@@ -229,8 +229,15 @@ trait FormElements
 
     public function registerElement(FormElement $element)
     {
-        $escapedName = $element->getEscapedName();
         $name = $element->getName();
+
+        // This check is required as the getEscapedName method is not implemented in
+        // the FormElement interface
+        if ($element instanceof BaseFormElement) {
+            $escapedName = $element->getEscapedName();
+        } else {
+            $escapedName = $name;
+        }
 
         if ($name === null) {
             throw new InvalidArgumentException(sprintf(

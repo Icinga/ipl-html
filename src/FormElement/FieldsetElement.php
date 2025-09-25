@@ -116,6 +116,8 @@ class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\Form
                 $multiple = $element->isMultiple();
             }
 
+            // This check is required as the getEscapedName method is not implemented in
+            // the FormElement interface
             if ($element instanceof BaseFormElement) {
                 $name = $element->getEscapedName();
             } else {
