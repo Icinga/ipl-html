@@ -2,8 +2,8 @@
 
 namespace ipl\Tests\Html;
 
+use DOMDocument;
 use ipl\Html\ValidHtml;
-use PHPUnit\Util\Xml;
 
 // phpcs:disable
 if (class_exists('PHPUnit_Util_XML')) {
@@ -21,7 +21,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param string    $expectedHtml
      * @param ValidHtml $actual
      */
-    protected function assertHtml($expectedHtml, ValidHtml $actual)
+    protected function assertHtml($expectedHtml, ValidHtml $actualHtml)
     {
         $expectedHtml = str_replace(
             "\n",
@@ -29,15 +29,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             preg_replace('/^\s+/m', '', trim($expectedHtml))
         );
 
-        if (method_exists(Xml::class, 'load')) {
-            $expectedHtml = Xml::load($expectedHtml, true);
-            $actualHtml = Xml::load($actual->render(), true);
-        } else {
-            $expectedHtml = (new Xml\Loader())->load($expectedHtml, true);
-            $actualHtml = (new Xml\Loader())->load($actual->render(), true);
-        }
+        $expected = new DOMDocument();
+        $this->assertTrue($expected->loadHTML($expectedHtml), 'Expected HTML is not valid');
+        $actual = new DOMDocument();
+        $this->assertTrue($actual->loadHTML($actualHtml->render()), 'Actual HTML is not valid');
 
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertEquals($expected, $actual);
     }
 
     /**

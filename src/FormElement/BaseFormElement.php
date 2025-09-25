@@ -7,9 +7,11 @@ use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\DecorableFormElement;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecoration\DecoratorChain;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\I18n\Translation;
 use ipl\Stdlib\Messages;
 use ipl\Validator\ValidatorChain;
@@ -52,7 +54,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     /** @var array<int, mixed> Value candidates of the element */
     protected $valueCandidates = [];
 
-    /** All registered decorators */
+    /** @var ?DecoratorChain<FormElementDecoration> All registered decorators */
     protected ?DecoratorChain $decorators = null;
 
     /**
@@ -402,7 +404,7 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function getDecorators(): DecoratorChain
     {
         if ($this->decorators === null) {
-            $this->decorators = new DecoratorChain();
+            $this->decorators = new DecoratorChain(FormElementDecoration::class);
         }
 
         return $this->decorators;
@@ -427,5 +429,18 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     public function hasDecorators(): bool
     {
         return $this->getDecorators()->hasDecorators();
+    }
+
+    public function applyDecoration(): void
+    {
+        $results = new FormElementDecorationResult();
+        foreach ($this->getDecorators() as $decorator) {
+            $decorator->decorateFormElement($results, $this);
+        }
+
+        $wrapper = $results->assemble();
+        if (! $wrapper->isEmpty()) {
+            $this->addWrapper($wrapper);
+        }
     }
 }

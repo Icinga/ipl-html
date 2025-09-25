@@ -86,9 +86,9 @@ class HtmlDocumentTest extends TestCase
 
     public function testTopLevelWrappersReferencedFromBelowAgain()
     {
-        $a = h::tag('a');
-        $b = h::tag('b');
-        $c = h::tag('c');
+        $a = h::tag('div', ['class' => 'a']);
+        $b = h::tag('div', ['class' => 'b']);
+        $c = h::tag('div', ['class' => 'c']);
         $d = (new HtmlDocument())->add('Just some');
 
         $d->addWrapper($a);     // a -> d
@@ -96,7 +96,7 @@ class HtmlDocumentTest extends TestCase
         $c->prependWrapper($b); // a -> b -> c -> d
 
         // This might also be done during assembly of $a (Think of a form element decorator here)
-        $a->add(h::tag('e', 'content'));
+        $a->add(h::tag('div', 'content'));
         $a->prepend($d);
 
         // a -> b -> c
@@ -105,16 +105,16 @@ class HtmlDocumentTest extends TestCase
         //   \-> e
 
         $this->assertHtml(
-            '<a><b><c>Just some</c></b><e>content</e></a>',
+            '<div class="a"><div class="b"><div class="c">Just some</div></div><div>content</div></div>',
             $d
         );
     }
 
     public function testMultipleReferencesToWrappedElementAreCorrectlyResolved(): void
     {
-        $a = h::tag('a');
-        $b = h::tag('b');
-        $c = h::tag('c');
+        $a = h::tag('div', ['class' => 'a']);
+        $b = h::tag('div', ['class' => 'b']);
+        $c = h::tag('div', ['class' => 'c']);
 
         $a->prependWrapper($b); // b -> a
         $b->addHtml($a);
@@ -124,7 +124,7 @@ class HtmlDocumentTest extends TestCase
         //  a
 
         $a->addWrapper($c); // c -> b -> a
-        $c->addHtml(h::tag('d', $a));
+        $c->addHtml(h::tag('div', $a));
 
         // c -> b
         // \    \
@@ -133,7 +133,7 @@ class HtmlDocumentTest extends TestCase
         //   a
 
         $this->assertHtml(
-            '<c><d><b><a></a></b></d></c>',
+            '<div class="c"><div><div class="b"><div class="a"></div></div></div></div>',
             $a
         );
     }
@@ -162,9 +162,9 @@ class HtmlDocumentTest extends TestCase
 
     public function testWrapperLoopsAreDetectedAsLateAsPossible()
     {
-        $a = h::tag('a');
-        $b = h::tag('b');
-        $c = h::tag('c');
+        $a = h::tag('div', ['class' => 'a']);
+        $b = h::tag('div', ['class' => 'b']);
+        $c = h::tag('div', ['class' => 'c']);
 
         $a->addWrapper($c); // c -> a
         $a->prependWrapper($b); // c -> b -> a
@@ -176,17 +176,17 @@ class HtmlDocumentTest extends TestCase
         // \--->\-->/
 
         $this->assertHtml(
-            '<c><b><a></a></b></c>',
+            '<div class="c"><div class="b"><div class="a"></div></div></div>',
             $a
         );
     }
 
     public function testWrapperReuseWorks()
     {
-        $a = h::tag('a');
-        $b = h::tag('b');
-        $c = h::tag('c');
-        $d = h::tag('d');
+        $a = h::tag('div', ['class' => 'a']);
+        $b = h::tag('div', ['class' => 'b']);
+        $c = h::tag('div', ['class' => 'c']);
+        $d = h::tag('div', ['class' => 'd']);
 
         $c->addWrapper($b); // b -> c
         $b->addWrapper($a); // a -> b -> c
@@ -198,18 +198,18 @@ class HtmlDocumentTest extends TestCase
         // \-------->\-> d
 
         $this->assertHtml(
-            '<a><b><c><a><d></d></a></c></b></a>',
+            '<div class="a"><div class="b"><div class="c"><div class="a"><div class="d"></div></div></div></div></div>',
             $c
         );
     }
 
     public function testRenderedByIsCorrectlyReset()
     {
-        $a = h::tag('a');
-        $b = h::tag('b');
-        $c = h::tag('c');
-        $d = h::tag('d');
-        $e = h::tag('e');
+        $a = h::tag('div', ['class' => 'a']);
+        $b = h::tag('div', ['class' => 'b']);
+        $c = h::tag('div', ['class' => 'c']);
+        $d = h::tag('div', ['class' => 'd']);
+        $e = h::tag('div', ['class' => 'e']);
 
         $a->setWrapper($b); // b -> a
         $c->setWrapper($d); // d -> c
@@ -226,33 +226,33 @@ class HtmlDocumentTest extends TestCase
         $c->prependWrapper($e); // d -> e -> c
 
         $this->assertHtml(
-            '<b><e><a></a></e></b>',
+            '<div class="b"><div class="e"><div class="a"></div></div></div>',
             $a
         );
         $this->assertHtml(
-            '<d><e><c></c></e></d>',
+            '<div class="d"><div class="e"><div class="c"></div></div></div>',
             $c
         );
     }
 
     public function testWrapperCanPositionWrappedElement()
     {
-        $a = h::tag('tag', 'content');
+        $a = h::tag('div', 'content');
         $a->addWrapper(h::tag('div', ['class' => 'wrapper'], $a));
 
         $this->assertHtml(
-            '<div class="wrapper"><tag>content</tag></div>',
+            '<div class="wrapper"><div>content</div></div>',
             $a
         );
     }
 
     public function testWrapperCanPositionWrappedElementInAnExtraContainer()
     {
-        $a = h::tag('tag', 'content');
+        $a = h::tag('div', 'content');
         $a->addWrapper(h::tag('div', ['class' => 'outer'], h::tag('div', ['class' => 'inner'], $a)));
 
         $this->assertHtml(
-            '<div class="outer"><div class="inner"><tag>content</tag></div></div>',
+            '<div class="outer"><div class="inner"><div>content</div></div></div>',
             $a
         );
     }

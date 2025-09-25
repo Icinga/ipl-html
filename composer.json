@@ -17,6 +17,7 @@
     "guzzlehttp/psr7": "^2.5"
   },
   "require-dev": {
+    "ext-dom": "*",
     "ipl/stdlib": "dev-main",
     "ipl/validator": "dev-main"
   },

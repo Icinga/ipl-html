@@ -2,12 +2,11 @@
 
 namespace ipl\Html\FormDecoration;
 
+use Generator;
 use InvalidArgumentException;
-use ipl\Html\Contract\FormElementDecoration as Decorator;
 use ipl\Html\Contract\DecoratorOptionsInterface;
-use ipl\Html\Contract\FormElement;
 use ipl\Stdlib\Plugins;
-use LogicException;
+use IteratorAggregate;
 use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
@@ -15,23 +14,33 @@ use function ipl\Stdlib\get_php_type;
 /**
  * DecoratorChain for form elements
  *
+ * @template TDecorator of object
+ * @implements IteratorAggregate<int, TDecorator>
+ *
  * @phpstan-type decoratorOptionsFormat array<string, mixed>
  * @phpstan-type _decoratorsFormat1 array<string, decoratorOptionsFormat>
- * @phpstan-type _decoratorsFormat2 array<int, string|Decorator|array{name: string, options?: decoratorOptionsFormat}>
+ * @phpstan-type _decoratorsFormat2 array<int, string|TDecorator|array{name: string, options?: decoratorOptionsFormat}>
  * @phpstan-type decoratorsFormat _decoratorsFormat1 | _decoratorsFormat2
  */
-class DecoratorChain
+class DecoratorChain implements IteratorAggregate
 {
     use Plugins;
 
-    /** @var Decorator[] All registered decorators */
-    protected array $decorators = [];
+    /** @var class-string<TDecorator> The type of decorator to accept */
+    private string $decoratorType;
+
+    /** @var TDecorator[] All registered decorators */
+    private array $decorators = [];
 
     /**
      * Create a new decorator chain
+     *
+     * @param class-string<TDecorator> $decoratorType The type of decorator to accept
      */
-    public function __construct()
+    public function __construct(string $decoratorType)
     {
+        $this->decoratorType = $decoratorType;
+
         $this->addDefaultPluginLoader('decorator', __NAMESPACE__, 'Decorator');
     }
 
@@ -53,21 +62,27 @@ class DecoratorChain
     /**
      * Add a decorator to the chain.
      *
-     * @param Decorator|string          $decorator
-     * @param decoratorOptionsFormat    $options Only allowed if parameter 1 is a string
+     * @param TDecorator|string      $decorator
+     * @param decoratorOptionsFormat $options Only allowed if parameter 1 is a string
      *
      * @return $this
      *
      * @throws InvalidArgumentException If the decorator specification is invalid
      */
-    public function addDecorator(Decorator|string $decorator, array $options = []): static
+    public function addDecorator(object|string $decorator, array $options = []): static
     {
         if (! empty($options) && ! is_string($decorator)) {
             throw new InvalidArgumentException('No options are allowed with parameter 1 of type Decorator');
         }
 
-        if (! $decorator instanceof Decorator) {
+        if (is_string($decorator)) {
             $decorator = $this->createDecorator($decorator, $options);
+        } elseif (! $decorator instanceof $this->decoratorType) {
+            throw new InvalidArgumentException(sprintf(
+                'Expects parameter 1 to be a string or an instance of %s, got %s instead',
+                $this->decoratorType,
+                get_php_type($decorator)
+            ));
         }
 
         $this->decorators[] = $decorator;
@@ -110,7 +125,7 @@ class DecoratorChain
      * ];
      * ```
      *
-     * @param static|decoratorsFormat $decorators
+     * @param static<TDecorator>|decoratorsFormat $decorators
      *
      * @return $this
      *
@@ -119,7 +134,7 @@ class DecoratorChain
     public function addDecorators(DecoratorChain|array $decorators): static
     {
         if ($decorators instanceof static) {
-            foreach ($decorators->getDecorators() as $decorator) {
+            foreach ($decorators->decorators as $decorator) {
                 $this->addDecorator($decorator);
             }
 
@@ -169,11 +184,11 @@ class DecoratorChain
                 ));
             }
 
-            if (! is_string($decoratorName) && ! $decoratorName instanceof Decorator) {
+            if (! is_string($decoratorName) && ! $decoratorName instanceof $this->decoratorType) {
                 throw new InvalidArgumentException(sprintf(
                     'Expects array value at position %d to be a string or an instance of %s, got %s instead',
                     $position,
-                    Decorator::class,
+                    $this->decoratorType,
                     get_php_type($decoratorName)
                 ));
             }
@@ -182,16 +197,6 @@ class DecoratorChain
         }
 
         return $this;
-    }
-
-    /**
-     * Get all decorators
-     *
-     * @return Decorator[]
-     */
-    public function getDecorators(): array
-    {
-        return $this->decorators;
     }
 
     /**
@@ -212,11 +217,11 @@ class DecoratorChain
      * @param string $name
      * @param decoratorOptionsFormat $options
      *
-     * @return Decorator
+     * @return TDecorator
      *
      * @throws InvalidArgumentException If the given decorator is unknown
      */
-    protected function createDecorator(string $name, array $options = []): Decorator
+    protected function createDecorator(string $name, array $options = []): object
     {
         $class = $this->loadPlugin('decorator', $name);
 
@@ -229,11 +234,11 @@ class DecoratorChain
 
         $decorator = new $class();
 
-        if (! $decorator instanceof Decorator) {
+        if (! $decorator instanceof $this->decoratorType) {
             throw new UnexpectedValueException(sprintf(
                 "%s expects loader to return an instance of %s for decorator '%s', got %s instead",
                 __METHOD__,
-                Decorator::class,
+                $this->decoratorType,
                 $name,
                 get_php_type($decorator)
             ));
@@ -261,41 +266,15 @@ class DecoratorChain
     }
 
     /**
-     * Apply the registered decorators to the given form element
+     * Iterate over all decorators
      *
-     * @param FormElement $formElement The form element to decorate
-     *
-     * @return void
-     *
-     * @throws LogicException If a decorator wants to skip a decorator that has already been applied
+     * @return Generator<TDecorator>
      */
-    public function apply(FormElement $formElement): void
+    #[\Override]
+    public function getIterator(): Generator
     {
-        $results = new DecorationResults();
-        $appliedDecorators = [];
-        $toSkip = [];
         foreach ($this->decorators as $decorator) {
-            $decoratorName = $decorator->getName();
-            if (in_array($decoratorName, $toSkip, true)) {
-                continue;
-            }
-
-            $decorator->decorate($results, $formElement);
-
-            $appliedDecorators[] = $decoratorName;
-            $toSkip = $results->getSkipDecorators();
-            $alreadyApplied = array_intersect($toSkip, $appliedDecorators);
-            if (! empty($alreadyApplied)) {
-                throw new LogicException(sprintf(
-                    "Cannot skip Decorator(s) '%s', Decoration already applied",
-                    implode("', '", $alreadyApplied)
-                ));
-            }
-        }
-
-        $result = $results->assemble();
-        if (! $result->isEmpty()) {
-            $formElement->addWrapper($result);
+            yield $decorator;
         }
     }
 }

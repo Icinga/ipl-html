@@ -501,9 +501,19 @@ class HtmlDocument implements Countable, Wrappable, MutableHtml
         return false;
     }
 
+    /**
+     * Last call before rendering the document
+     *
+     * @return void
+     */
+    protected function beforeRender(): void
+    {
+    }
+
     public function render()
     {
         $this->ensureAssembled();
+        $this->beforeRender();
         if ($this->wrapper === null) {
             return $this->renderUnwrapped();
         } else {

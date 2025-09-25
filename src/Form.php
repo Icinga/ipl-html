@@ -3,26 +3,27 @@
 namespace ipl\Html;
 
 use ipl\Html\Contract\DefaultFormElementDecoration;
+use ipl\Html\Contract\FormDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
+use ipl\Html\Contract\MutableHtml;
+use ipl\Html\FormDecoration\DecoratorChain;
+use ipl\Html\FormDecoration\FormDecorationResult;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-class Form extends BaseHtmlElement implements DefaultFormElementDecoration
+class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElements, DefaultFormElementDecoration
 {
     use FormElements {
-        FormElements::remove as private removeElement;
+        FormElements::remove as private baseRemove;
+        FormElements::beforeRender as private baseBeforeRender;
     }
     use Messages;
 
-    public const ON_ELEMENT_REGISTERED = 'elementRegistered';
-    public const ON_ERROR = 'error';
-    public const ON_REQUEST = 'request';
+    /** @deprecated Use {@see Contract\Form::ON_SUBMIT} instead */
     public const ON_SUCCESS = 'success';
-    public const ON_SENT = 'sent';
-    public const ON_VALIDATE = 'validate';
 
     /** @var string Form submission URL */
     protected $action;
@@ -45,6 +46,12 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
     /** @var string */
     protected $redirectUrl;
 
+    /** @var ?DecoratorChain<FormDecoration> */
+    protected ?DecoratorChain $decorators = null;
+
+    /** @var bool Whether the form has been decorated */
+    protected bool $decorated = false;
+
     protected $tag = 'form';
 
     /**
@@ -59,11 +66,6 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         return $value === null || $value === [] || (is_string($value) && trim($value) === '');
     }
 
-    /**
-     * Get the Form submission URL
-     *
-     * @return string|null
-     */
     public function getAction()
     {
         return $this->action;
@@ -83,11 +85,6 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         return $this;
     }
 
-    /**
-     * Get the HTTP method to submit the form with
-     *
-     * @return string
-     */
     public function getMethod()
     {
         return $this->method;
@@ -157,9 +154,6 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         return null;
     }
 
-    /**
-     * @return ServerRequestInterface|null
-     */
     public function getRequest()
     {
         return $this->request;
@@ -197,16 +191,25 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
     }
 
     /**
-     * @param ServerRequestInterface $request
+     * Get the decorators of this form
      *
-     * @return $this
+     * @return DecoratorChain<FormDecoration>
      */
+    public function getDecorators(): DecoratorChain
+    {
+        if ($this->decorators === null) {
+            $this->decorators = new DecoratorChain(FormDecoration::class);
+        }
+
+        return $this->decorators;
+    }
+
     public function handleRequest(ServerRequestInterface $request)
     {
         $this->setRequest($request);
 
         if (! $this->hasBeenSent()) {
-            $this->emit(Form::ON_REQUEST, [$request, $this]);
+            $this->emit(Contract\Form::ON_REQUEST, [$request, $this]);
 
             // Always assemble
             $this->ensureAssembled();
@@ -236,32 +239,25 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         if ($this->hasBeenSubmitted()) {
             if ($this->isValid()) {
                 try {
-                    $this->emit(Form::ON_SENT, [$this]);
+                    $this->emit(Contract\Form::ON_SENT, [$this]);
                     $this->onSuccess();
-                    $this->emitOnce(Form::ON_SUCCESS, [$this]);
+                    $this->emitOnce(Contract\Form::ON_SUBMIT, [$this]);
                 } catch (Throwable $e) {
                     $this->addMessage($e);
                     $this->onError();
-                    $this->emit(Form::ON_ERROR, [$e, $this]);
+                    $this->emit(Contract\Form::ON_ERROR, [$e, $this]);
                 }
             } else {
                 $this->onError();
             }
         } else {
             $this->validatePartial();
-            $this->emit(Form::ON_SENT, [$this]);
+            $this->emit(Contract\Form::ON_SENT, [$this]);
         }
 
         return $this;
     }
 
-    /**
-     * Get whether the form has been sent
-     *
-     * A form is considered sent if the request's method equals the form's method.
-     *
-     * @return bool
-     */
     public function hasBeenSent()
     {
         if ($this->request === null) {
@@ -271,14 +267,6 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         return $this->request->getMethod() === $this->getMethod();
     }
 
-    /**
-     * Get whether the form has been submitted
-     *
-     * A form is submitted when it has been sent and when the primary submit button, if set, has been pressed.
-     * This method calls {@link hasBeenSent()} in order to detect whether the form has been sent.
-     *
-     * @return bool
-     */
     public function hasBeenSubmitted()
     {
         if (! $this->hasBeenSent()) {
@@ -292,19 +280,12 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         return true;
     }
 
-    /**
-     * Get whether the form is valid
-     *
-     * {@link validate()} is called automatically if the form has not been validated before.
-     *
-     * @return bool
-     */
     public function isValid()
     {
         if ($this->isValid === null) {
             $this->validate();
 
-            $this->emit(self::ON_VALIDATE, [$this]);
+            $this->emit(Contract\Form::ON_VALIDATE, [$this]);
         }
 
         return $this->isValid;
@@ -356,9 +337,28 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
             $this->submitButton = null;
         }
 
-        $this->removeElement($content);
+        $this->baseRemove($content);
 
         return $this;
+    }
+
+    /**
+     * Apply the form decoration
+     *
+     * @return void
+     */
+    protected function applyDecoration(): void
+    {
+        if ($this->decorated) {
+            return;
+        }
+
+        $result = new FormDecorationResult($this);
+        foreach ($this->getDecorators() as $decorator) {
+            $decorator->decorateForm($result, $this);
+        }
+
+        $this->decorated = true;
     }
 
     protected function onError()
@@ -400,5 +400,12 @@ class Form extends BaseHtmlElement implements DefaultFormElementDecoration
         $attributes
             ->registerAttributeCallback('action', [$this, 'getAction'], [$this, 'setAction'])
             ->registerAttributeCallback('method', [$this, 'getMethod'], [$this, 'setMethod']);
+    }
+
+    protected function beforeRender(): void
+    {
+        $this->baseBeforeRender();
+
+        $this->applyDecoration();
     }
 }

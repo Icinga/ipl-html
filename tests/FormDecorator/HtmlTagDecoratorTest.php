@@ -4,7 +4,7 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use InvalidArgumentException;
 use ipl\Html\Contract\FormElement;
-use ipl\Html\FormDecoration\DecorationResults;
+use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\HtmlTagDecorator;
 use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\FormElement\TextElement;
@@ -20,10 +20,6 @@ class HtmlTagDecoratorTest extends TestCase
         $this->decorator = new HtmlTagDecorator();
     }
 
-    public function testMethodGetName(): void
-    {
-        $this->assertNotEmpty($this->decorator->getName());
-    }
     public function testExceptionThrownWhenNoTagSpecified(): void
     {
         $this->expectException(RuntimeException::class);
@@ -57,17 +53,17 @@ class HtmlTagDecoratorTest extends TestCase
     {
         $formElement = new TextElement('test');
 
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $this->decorator
             ->setTag('div')
             ->setCondition(fn($formElement) => false)
-            ->decorate($results, $formElement);
+            ->decorateFormElement($results, $formElement);
 
         $this->assertSame('', $results->assemble()->render());
 
         $this->decorator
             ->setCondition(fn($formElement) => true)
-            ->decorate($results, $formElement);
+            ->decorateFormElement($results, $formElement);
 
         $this->assertSame('<div></div>', $results->assemble()->render());
     }
@@ -79,7 +75,7 @@ class HtmlTagDecoratorTest extends TestCase
 
         $this->decorator
             ->setCondition(fn() => notExist())
-            ->decorate(new DecorationResults(), new TextElement('test'));
+            ->decorateFormElement(new FormElementDecorationResult(), new TextElement('test'));
     }
 
     /**
@@ -92,16 +88,16 @@ class HtmlTagDecoratorTest extends TestCase
 
         $this->decorator
             ->setCondition(fn() => 1)
-            ->decorate(new DecorationResults(), new TextElement('test'));
+            ->decorateFormElement(new FormElementDecorationResult(), new TextElement('test'));
     }
 
     public function testMethodDecorateWithDefaultPlacementWrap(): void
     {
         $element = new TextElement('test');
-        $results = (new DecorationResults())->append($element);
+        $results = (new FormElementDecorationResult())->append($element);
         $this->decorator
             ->setTag('div')
-            ->decorate($results, $element);
+            ->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <div>
@@ -115,11 +111,11 @@ HTML;
     public function testMethodDecorateWithPlacementAppend(): void
     {
         $element = new TextElement('test');
-        $results = (new DecorationResults())->append($element);
+        $results = (new FormElementDecorationResult())->append($element);
         $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Append)
-            ->decorate($results, $element);
+            ->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <input type="text" name="test">
@@ -132,11 +128,11 @@ HTML;
     public function testMethodDecorateWithPlacementPrepend(): void
     {
         $element = new TextElement('test');
-        $results = (new DecorationResults())->append($element);
+        $results = (new FormElementDecorationResult())->append($element);
         $this->decorator
             ->setTag('div')
             ->setTransformation(Transformation::Prepend)
-            ->decorate($results, $element);
+            ->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <div></div>
@@ -148,14 +144,14 @@ HTML;
 
     public function testNonHtmlFormElementsAreSupported(): void
     {
-        $results = new DecorationResults();
+        $results = new FormElementDecorationResult();
         $element = $this->createStub(FormElement::class);
         $element->method('render')->willReturn('<input type="text" name="test">');
 
         $this->decorator->setTag('div');
         $results->append($element);
 
-        $this->decorator->decorate($results, $element);
+        $this->decorator->decorateFormElement($results, $element);
 
         $html = <<<'HTML'
 <div>
