@@ -11,6 +11,7 @@ use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\HtmlElementInterface;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
+use ipl\Html\ValidHtml;
 
 /**
  * Decorates the description of the form element
@@ -48,14 +49,13 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
 
     public function decorateFormElement(DecorationResult $result, FormElement $formElement): void
     {
-        $description = $formElement->getDescription();
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
 
-        if ($description === null || ($isHtmlElement && $formElement->getTag() === 'fieldset')) {
+        if ($formElement->getDescription() === null || ($isHtmlElement && $formElement->getTag() === 'fieldset')) {
             return;
         }
 
-        $descriptionId = null;
+        $elementDescription = $this->getElementDescription($formElement);
         if ($isHtmlElement) {
             if ($formElement->getAttributes()->has('id')) {
                 $elementId = $formElement->getAttributes()->get('id')->getValue();
@@ -66,15 +66,25 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
 
             $descriptionId = 'desc_' . $elementId;
             $formElement->getAttributes()->set('aria-describedby', $descriptionId);
+
+            $elementDescription->getAttributes()->set('id', $descriptionId);
         }
 
-        $result->append(
-            new HtmlElement(
-                'p',
-                new Attributes(['class' => $this->getClass(), 'id' => $descriptionId]),
-                new Text($description)
-            )
-        );
+        $elementDescription->getAttributes()->add('class', $this->getClass());
+
+        $result->append($elementDescription);
+    }
+
+    /**
+     * Get the element description as HTML
+     *
+     * @param FormElement $formElement
+     *
+     * @return HtmlElementInterface & ValidHtml
+     */
+    protected function getElementDescription(FormElement $formElement): HtmlElementInterface & ValidHtml
+    {
+        return new HtmlElement('p', content: new Text($formElement->getDescription()));
     }
 
     protected function registerAttributeCallbacks(Attributes $attributes): void
