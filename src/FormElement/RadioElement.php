@@ -109,6 +109,8 @@ class RadioElement extends BaseFormElement
 
     protected function assemble()
     {
+        // To avoid duplicate ids for options. Required for tests or if someone sets explicitly.
+        $this->getAttributes()->remove('id');
         foreach ($this->options as $option) {
             $radio = (new InputElement($this->getValueOfNameAttribute()))
                 ->setType($this->type)

@@ -37,15 +37,16 @@ class LabelDecoratorTest extends TestCase
         );
     }
 
-    public function testWithLabelAttributeOnly(): void
+    public function testDecoratorCreatesRandomIdIfNotSpecified(): void
     {
-        $results = new FormElementDecorationResult();
-        $this->decorator->decorateFormElement($results, new TextElement('test', ['label' => 'Label Here', 'id' => 'test-id']));
+        $element = new TextElement('test', ['label' => '']);
 
-        $this->assertHtml(
-            '<label class="form-element-label" for="test-id">Label Here</label>',
-            $results->assemble()
-        );
+        $this->assertFalse($element->getAttributes()->has('id'));
+
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('id'));
+        $this->assertNotEmpty($element->getAttributes()->get('id')->getValue());
     }
 
     public function testWithLabelAndIdAttribute(): void
@@ -71,18 +72,6 @@ class LabelDecoratorTest extends TestCase
             '<label class="form-element-label" for="test-id"></label>',
             $results->assemble()
         );
-    }
-
-    public function testDecoratorCreatesRandomIdIfNotSpecified(): void
-    {
-        $element = new TextElement('test', ['label' => '']);
-
-        $this->assertFalse($element->getAttributes()->has('id'));
-
-        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
-
-        $this->assertTrue($element->getAttributes()->has('id'));
-        $this->assertNotEmpty($element->getAttributes()->get('id')->getValue());
     }
 
     public function testWithoutLabelAttribute(): void

@@ -9,6 +9,7 @@ use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\HtmlElementInterface;
+use ipl\Html\FormElement\RadioElement;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 use ipl\Html\ValidHtml;
@@ -61,7 +62,12 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
                 $elementId = $formElement->getAttributes()->get('id')->getValue();
             } else {
                 $elementId = uniqid('form-element-');
-                $formElement->getAttributes()->set('id', $elementId);
+
+                // RadioElement applies all its attributes to each of its options, so we cannot set a fallback
+                // id attribute here.
+                if (! $formElement instanceof RadioElement) {
+                    $formElement->getAttributes()->set('id', $elementId);
+                }
             }
 
             $descriptionId = 'desc_' . $elementId;

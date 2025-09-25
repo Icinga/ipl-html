@@ -10,6 +10,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\Contract\HtmlElementInterface;
+use ipl\Html\FormElement\RadioElement;
 use ipl\Html\HtmlElement;
 use ipl\Html\Text;
 use ipl\Html\ValidHtml;
@@ -63,7 +64,9 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
 
         if ($elementLabel instanceof HtmlElementInterface) {
             $attributes['class'] = $this->getClass();
-            if ($isHtmlElement) {
+            // RadioElement applies all its attributes to each of its options, so we cannot set a fallback
+            // id and for attribute here.
+            if ($isHtmlElement && ! $formElement instanceof RadioElement) {
                 $elementAttributes = $formElement->getAttributes();
                 if (! $elementAttributes->has('id')) {
                     $elementAttributes->set('id', uniqid('form-element-'));
