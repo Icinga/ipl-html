@@ -51,13 +51,20 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
         $description = $formElement->getDescription();
         $isHtmlElement = $formElement instanceof HtmlElementInterface;
 
-        if ($description === null || $isHtmlElement && $formElement->getTag() === 'fieldset') {
+        if ($description === null || ($isHtmlElement && $formElement->getTag() === 'fieldset')) {
             return;
         }
 
         $descriptionId = null;
-        if ($isHtmlElement && $formElement->getAttributes()->has('id')) {
-            $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
+        if ($isHtmlElement) {
+            if ($formElement->getAttributes()->has('id')) {
+                $elementId = $formElement->getAttributes()->get('id')->getValue();
+            } else {
+                $elementId = uniqid('form-element-');
+                $formElement->getAttributes()->set('id', $elementId);
+            }
+
+            $descriptionId = 'desc_' . $elementId;
             $formElement->getAttributes()->set('aria-describedby', $descriptionId);
         }
 
