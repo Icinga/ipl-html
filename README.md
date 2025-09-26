@@ -12,3 +12,4 @@ Please read on in our [documentation](doc/10-Quickstart.md):
 * [Tables](doc/30-Tables.md) shows how this package can simplify working with
   tables
 * [Forms](doc/40-Forms.md) explains how to implement powerful HTML forms
+* [Form element decorators](doc/45-Form-Decorators.md) shows how to decorate form elements
