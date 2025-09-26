@@ -7,6 +7,9 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\HtmlDocument;
 
+/**
+ * @deprecated Use one of the new {@see FormElementDecoration} decorators instead
+ */
 class CallbackDecorator extends HtmlDocument implements FormElementDecorator
 {
     /** @var Closure The decorating callback */
