@@ -8,6 +8,9 @@ use ipl\Html\FormElement\BaseFormElement;
 use ipl\Html\Html;
 use ipl\Html\ValidHtml;
 
+/**
+ * @deprecated Use one of the new {@see FormElementDecoration} decorators instead
+ */
 class DdDtDecorator extends BaseHtmlElement implements DecoratorInterface
 {
     protected $tag = 'dl';

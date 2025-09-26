@@ -5,6 +5,7 @@ namespace ipl\Html\FormDecorator;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\FormElement;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormElement\FieldsetElement;
@@ -15,6 +16,8 @@ use ipl\Html\Text;
 
 /**
  * Form element decorator based on div elements
+ *
+ * @deprecated Use one of the new {@see FormElementDecoration} decorators instead
  */
 class DivDecorator extends BaseHtmlElement implements FormElementDecorator
 {
