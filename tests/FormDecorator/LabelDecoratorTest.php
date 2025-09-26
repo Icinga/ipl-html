@@ -49,6 +49,25 @@ class LabelDecoratorTest extends TestCase
         $this->assertNotEmpty($element->getAttributes()->get('id')->getValue());
     }
 
+    public function testAttributeForAlwaysExists(): void
+    {
+        $results = new FormElementDecorationResult();
+        $this->decorator->decorateFormElement(
+            $results,
+            new TextElement('test', ['label' => 'Label Here', 'id' => 'test-id'])
+        );
+
+        $this->assertStringContainsString('for="test-id"', $results->assemble()->render());
+
+        // with random fallback id
+        $this->decorator->decorateFormElement(
+            $results,
+            new TextElement('test', ['label' => 'Label Here'])
+        );
+
+        $this->assertStringContainsString('for="form-element-', $results->assemble()->render());
+    }
+
     public function testWithLabelAndIdAttribute(): void
     {
         $results = new FormElementDecorationResult();

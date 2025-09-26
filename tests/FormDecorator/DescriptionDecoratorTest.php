@@ -53,6 +53,22 @@ class DescriptionDecoratorTest extends TestCase
         $this->assertNotEmpty($element->getAttributes()->get('id')->getValue());
     }
 
+    public function testAttributeAriaDescribedByAlwaysExists(): void
+    {
+        $element = new TextElement('test', ['description' => 'Testing', 'id' => 'test-id']);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('aria-describedby'));
+        $this->assertSame('desc_test-id', $element->getAttributes()->get('aria-describedby')->getValue());
+
+        // with random fallback id
+        $element = new TextElement('test', ['description' => 'Testing']);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('aria-describedby'));
+        $this->assertNotEmpty($element->getAttributes()->get('aria-describedby')->getValue());
+    }
+
     public function testWithDescriptionAndIdAttribute(): void
     {
         $results = new FormElementDecorationResult();
