@@ -278,6 +278,7 @@ trait FormElements
      * Get the default element decorator, if any
      *
      * @return FormElementDecorator|null
+     * @deprecated Use {@see getDefaultElementDecorators()} instead
      */
     public function getDefaultElementDecorator()
     {
@@ -295,6 +296,7 @@ trait FormElements
      *
      * @return $this
      *
+     * @deprecated Use {@see setDefaultElementDecorators()} instead
      * @throws InvalidArgumentException If $decorator is a string and can't be loaded from registered decorator loaders
      *                                  or if a decorator loader does not return an instance of
      *                                  {@link FormElementDecorator}
@@ -433,6 +435,7 @@ trait FormElements
      * @param string $postfix   Decorator name postfix, if any
      *
      * @return $this
+     * @deprecated Use {@see addElementDecoratorLoaderPaths()} instead
      */
     public function addDecoratorLoader($namespace, $postfix = null)
     {

@@ -6,6 +6,8 @@ use ipl\Html\ValidHtml;
 
 /**
  * Representation of form element decorators
+ *
+ * @deprecated Use {@see FormElementDecoration} instead
  */
 interface FormElementDecorator extends ValidHtml
 {

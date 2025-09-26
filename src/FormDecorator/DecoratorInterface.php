@@ -2,10 +2,10 @@
 
 namespace ipl\Html\FormDecorator;
 
-use ipl\Html\Contract\FormElementDecorator;
+use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\FormElement\BaseFormElement;
 
-/** @deprecated Use {@link FormElementDecorator} instead */
+/** @deprecated Use {@see FormElementDecoration} instead */
 interface DecoratorInterface
 {
     /**
