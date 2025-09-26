@@ -41,12 +41,32 @@ class DescriptionDecoratorTest extends TestCase
         $this->assertSame('', $decorator->getClass());
     }
 
-    public function testWithDescriptionAttributeOnly(): void
+    public function testDecoratorCreatesRandomIdIfNotSpecified(): void
     {
-        $results = new FormElementDecorationResult();
-        $this->decorator->decorateFormElement($results, new TextElement('test', ['description' => 'Testing']));
+        $element = new TextElement('test', ['description' => 'Testing']);
 
-        $this->assertHtml('<p class="form-element-description">Testing</p>', $results->assemble());
+        $this->assertFalse($element->getAttributes()->has('id'));
+
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('id'));
+        $this->assertNotEmpty($element->getAttributes()->get('id')->getValue());
+    }
+
+    public function testAttributeAriaDescribedByAlwaysExists(): void
+    {
+        $element = new TextElement('test', ['description' => 'Testing', 'id' => 'test-id']);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('aria-describedby'));
+        $this->assertSame('desc_test-id', $element->getAttributes()->get('aria-describedby')->getValue());
+
+        // with random fallback id
+        $element = new TextElement('test', ['description' => 'Testing']);
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('aria-describedby'));
+        $this->assertNotEmpty($element->getAttributes()->get('aria-describedby')->getValue());
     }
 
     public function testWithDescriptionAndIdAttribute(): void
@@ -63,9 +83,12 @@ class DescriptionDecoratorTest extends TestCase
     public function testWithEmptyDescriptionAttribute(): void
     {
         $results = new FormElementDecorationResult();
-        $this->decorator->decorateFormElement($results, new TextElement('test', ['description' => '']));
+        $this->decorator->decorateFormElement(
+            $results,
+            new TextElement('test', ['description' => '', 'id' => 'test-id']) // added id to avoid random id
+        );
 
-        $this->assertHtml('<p class="form-element-description"></p>', $results->assemble());
+        $this->assertHtml('<p class="form-element-description" id="desc_test-id"></p>', $results->assemble());
     }
 
     public function testWithoutDescriptionAttribute(): void

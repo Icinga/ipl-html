@@ -37,15 +37,35 @@ class LabelDecoratorTest extends TestCase
         );
     }
 
-    public function testWithLabelAttributeOnly(): void
+    public function testDecoratorCreatesRandomIdIfNotSpecified(): void
+    {
+        $element = new TextElement('test', ['label' => '']);
+
+        $this->assertFalse($element->getAttributes()->has('id'));
+
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('id'));
+        $this->assertNotEmpty($element->getAttributes()->get('id')->getValue());
+    }
+
+    public function testAttributeForAlwaysExists(): void
     {
         $results = new FormElementDecorationResult();
-        $this->decorator->decorateFormElement($results, new TextElement('test', ['label' => 'Label Here']));
-
-        $this->assertHtml(
-            '<label class="form-element-label">Label Here</label>',
-            $results->assemble()
+        $this->decorator->decorateFormElement(
+            $results,
+            new TextElement('test', ['label' => 'Label Here', 'id' => 'test-id'])
         );
+
+        $this->assertStringContainsString('for="test-id"', $results->assemble()->render());
+
+        // with random fallback id
+        $this->decorator->decorateFormElement(
+            $results,
+            new TextElement('test', ['label' => 'Label Here'])
+        );
+
+        $this->assertStringContainsString('for="form-element-', $results->assemble()->render());
     }
 
     public function testWithLabelAndIdAttribute(): void
@@ -65,10 +85,10 @@ class LabelDecoratorTest extends TestCase
     public function testWithEmptyLabelAttribute(): void
     {
         $results = new FormElementDecorationResult();
-        $this->decorator->decorateFormElement($results, new TextElement('test', ['label' => '']));
+        $this->decorator->decorateFormElement($results, new TextElement('test', ['label' => '', 'id' => 'test-id']));
 
         $this->assertHtml(
-            '<label class="form-element-label"></label>',
+            '<label class="form-element-label" for="test-id"></label>',
             $results->assemble()
         );
     }

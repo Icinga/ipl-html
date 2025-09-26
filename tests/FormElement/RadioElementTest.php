@@ -454,7 +454,7 @@ HTML;
 
     public function testIsDecoratedWithLabelAndDescription(): void
     {
-        $radio = new RadioElement('radio');
+        $radio = new RadioElement('radio', ['id' => 'radio']);
         $radio->setLabel('Radio');
         $radio->setDescription('Description');
         $radio->setOptions(['a' => 'A', 'b' => 'B']);
@@ -462,9 +462,9 @@ HTML;
 
         $html = <<<'HTML'
 <label class="form-element-label">Radio</label>
-<label class="radio-label"><input value="a" name="radio" type="radio">A</label>
-<label class="radio-label"><input value="b" name="radio" type="radio">B</label>
-<p class="form-element-description">Description</p>
+<label class="radio-label"><input aria-describedby="desc_radio" value="a" name="radio" type="radio">A</label>
+<label class="radio-label"><input aria-describedby="desc_radio" value="b" name="radio" type="radio">B</label>
+<p class="form-element-description" id="desc_radio">Description</p>
 HTML;
 
         $radio->applyDecoration();
