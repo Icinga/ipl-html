@@ -6,7 +6,11 @@ use ArrayAccess;
 use ArrayIterator;
 use InvalidArgumentException;
 use IteratorAggregate;
+use LogicException;
+use RuntimeException;
+use Throwable;
 use Traversable;
+use UnexpectedValueException;
 
 use function ipl\Stdlib\get_php_type;
 
@@ -23,11 +27,14 @@ use function ipl\Stdlib\get_php_type;
  */
 class Attributes implements ArrayAccess, IteratorAggregate
 {
-    /** @var Attribute[] */
+    /** @var array<string, Attribute> */
     protected $attributes = [];
 
     /** @var callable[] */
     protected $callbacks = [];
+
+    /** @var array<string, callable> */
+    private array $newCallbacks = [];
 
     /** @var string */
     protected $prefix = '';
@@ -108,7 +115,7 @@ class Attributes implements ArrayAccess, IteratorAggregate
     /**
      * Get the collection of attributes as array
      *
-     * @return Attribute[]
+     * @return array<string, Attribute>
      */
     public function getAttributes()
     {
@@ -367,6 +374,62 @@ class Attributes implements ArrayAccess, IteratorAggregate
     }
 
     /**
+     * Call the callback for the attribute with the given name
+     *
+     * @param string $name
+     *
+     * @return ImmutableAttribute
+     *
+     * @throws LogicException If the callback's result is not an ImmutableAttribute and none can be created from it
+     * @throws RuntimeException If the callback throws an exception
+     */
+    public function call(string $name): ImmutableAttribute
+    {
+        if (! isset($this->newCallbacks[$name])) {
+            return ImmutableAttribute::createEmpty($name);
+        }
+
+        $callback = $this->newCallbacks[$name];
+
+        try {
+            $attribute = call_user_func($callback);
+        } catch (Throwable $e) {
+            throw new RuntimeException(
+                'Error while calling attribute callback: ' . $e->getMessage(),
+                previous: $e
+            );
+        }
+
+        if ($attribute instanceof ImmutableAttribute) {
+            return $attribute;
+        }
+
+        if ($attribute === null || is_scalar($attribute)) {
+            return ImmutableAttribute::create($name, $attribute);
+        }
+
+        throw new UnexpectedValueException(
+            'An attribute callback must return a scalar, null' .
+            ' or an ImmutableAttribute, got a ' . get_php_type($attribute)
+        );
+    }
+
+    /**
+     * Set a callback for the attribute with the given name
+     *
+     * @param string $name
+     * @param callable $callback
+     *
+     * @return $this
+     */
+    public function setCallback(string $name, callable $callback): static
+    {
+        $this->newCallbacks[$name] = $callback;
+
+        return $this;
+    }
+
+    /**
      * Register callback for an attribute
      *
      * @param string    $name           Name of the attribute to register the callback for
@@ -374,7 +437,9 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * @param ?callable $setterCallback Callback to call when setting the attribute
      *
      * @return $this
+     * @deprecated Use {@see setCallback()} instead
      */
+    #[\Deprecated('Use setCallback() instead')]
     public function registerAttributeCallback(string $name, ?callable $callback, ?callable $setterCallback = null): self
     {
         if ($callback !== null) {
@@ -401,26 +466,25 @@ class Attributes implements ArrayAccess, IteratorAggregate
      * @return string
      *
      * @throws InvalidArgumentException If the result of a callback is invalid
+     * @throws LogicException If both legacy and new attribute callbacks are used at the same time
      */
     public function render()
     {
+        $conflicts = array_intersect_key($this->callbacks, $this->newCallbacks);
+        if (! empty($conflicts)) {
+            throw new LogicException(
+                'Cannot use both legacy and new attribute callbacks at the same time.'
+                . ' Offending attributes: ' . implode(', ', array_keys($conflicts))
+            );
+        }
+
         $attributes = $this->attributes;
-        foreach ($this->callbacks as $name => $callback) {
-            $attribute = call_user_func($callback);
-            if ($attribute instanceof Attribute) {
-                if ($attribute->isEmpty()) {
-                    continue;
-                }
-            } elseif ($attribute === null) {
+        $callbackResults = array_map($this->legacyCall(...), array_keys($this->callbacks));
+        $newCallbackResults = array_map($this->call(...), array_keys($this->newCallbacks));
+
+        foreach (array_merge($newCallbackResults, $callbackResults) as $attribute) {
+            if ($attribute->isEmpty()) {
                 continue;
-            } elseif (is_scalar($attribute)) {
-                $attribute = Attribute::create($name, $attribute);
-            } else {
-                throw new InvalidArgumentException(sprintf(
-                    'A registered attribute callback must return a scalar, null'
-                    . ' or an Attribute, got a %s',
-                    get_php_type($attribute)
-                ));
             }
 
             $name = $attribute->getName();
@@ -448,6 +512,33 @@ class Attributes implements ArrayAccess, IteratorAggregate
         $separator = ' ' . $this->getPrefix();
 
         return $separator . implode($separator, $parts);
+    }
+
+    /**
+     * Call the registered callback for the attribute with the given name
+     *
+     * @param string $name
+     *
+     * @return Attribute
+     *
+     * @throws InvalidArgumentException If the callback's result is not an Attribute and none can be created from it
+     */
+    private function legacyCall(string $name): Attribute
+    {
+        $callback = $this->callbacks[$name];
+        $attribute = call_user_func($callback);
+        if ($attribute instanceof Attribute) {
+            return $attribute;
+        }
+
+        if ($attribute === null || is_scalar($attribute)) {
+            return Attribute::create($name, $attribute);
+        }
+
+        throw new InvalidArgumentException(
+            'An attribute callback must return a scalar, null' .
+            ' or an Attribute, got a ' . get_php_type($attribute)
+        );
     }
 
     /**
@@ -518,5 +609,10 @@ class Attributes implements ArrayAccess, IteratorAggregate
         foreach ($this->attributes as &$attribute) {
             $attribute = clone $attribute;
         }
+
+        // Reset callbacks to avoid memory leaks
+        $this->callbacks = [];
+        $this->newCallbacks = [];
+        $this->setterCallbacks = [];
     }
 }
