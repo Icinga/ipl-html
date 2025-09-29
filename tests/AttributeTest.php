@@ -212,6 +212,34 @@ class AttributeTest extends TestCase
         Attribute::create('a_a', 'sa');
     }
 
+    public function testSanitizeIdRemovesInvalidCharactersAndPrependsA()
+    {
+        $this->assertSame('aabc-_', Attribute::sanitizeId('a b$c-_.:Ä'));
+    }
+
+    public function testSanitizeIdForIdStartingWithNumber()
+    {
+        $this->assertSame('a123abc', Attribute::sanitizeId('123abc'));
+    }
+
+    public function testSanitizeIdWithEmptyString()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('ID must not be empty');
+
+        Attribute::sanitizeId('');
+    }
+
+    public function testSanitizeIdRemovesUnicodeAndKeepsAscii()
+    {
+        $this->assertSame('ass', Attribute::sanitizeId('♥süßs'));
+    }
+
+    public function testSanitizeIdKeepsHyphenAndUnderscore()
+    {
+        $this->assertSame('afoo_bar-baz', Attribute::sanitizeId('foo_bar-baz'));
+    }
+
     protected function simpleAttribute()
     {
         return new Attribute('class', 'simple');

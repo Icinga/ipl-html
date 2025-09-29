@@ -72,6 +72,28 @@ class Attribute
     }
 
     /**
+     * Sanitize the given ID
+     *
+     * Removes all characters that are not alphanumeric, underscore or hyphen. Additionally,
+     * the result is enforced to not start with a number by prepending the letter 'a'.
+     * Use it if you need to ensure that an ID is safe to use in CSS selectors.
+     *
+     * @param non-empty-string $id
+     *
+     * @return string
+     *
+     * @throws InvalidArgumentException If the ID is an empty string
+     */
+    public static function sanitizeId(string $id): string
+    {
+        if (empty($id)) {
+            throw new InvalidArgumentException('ID must not be empty');
+        }
+
+        return 'a' . preg_replace('/[^a-z0-9_\-]/i', '', $id);
+    }
+
+    /**
      * Escape the name of an attribute
      *
      * Makes sure that the name of an attribute really is a string.
