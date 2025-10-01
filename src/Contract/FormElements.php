@@ -2,9 +2,10 @@
 
 namespace ipl\Html\Contract;
 
+use Evenement\EventEmitterInterface;
 use InvalidArgumentException;
 
-interface FormElements
+interface FormElements extends EventEmitterInterface
 {
     /** @var string Event emitted when an element is registered */
     public const ON_ELEMENT_REGISTERED = 'elementRegistered';
