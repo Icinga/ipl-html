@@ -2,9 +2,10 @@
 
 namespace ipl\Html\Contract;
 
+use Evenement\EventEmitterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface Form
+interface Form extends EventEmitterInterface
 {
     /** @var string Event emitted when the form is associated with a request but is not sent */
     public const ON_REQUEST = 'request';
