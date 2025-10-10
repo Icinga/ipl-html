@@ -161,4 +161,68 @@ HTML;
 
         $this->assertHtml($html, $results->assemble());
     }
+
+    public function testClassOption(): void
+    {
+        $results = new FormElementDecorationResult();
+        $element = $this->createStub(FormElement::class);
+        $element->method('render')->willReturn('<input type="text" name="test">');
+
+        $this->decorator->setTag('div');
+        $this->decorator->setClass('test-class');
+        $results->append($element);
+
+        $this->decorator->decorateFormElement($results, $element);
+
+        $html = <<<'HTML'
+<div class="test-class">
+    <input type="text" name="test">
+</div>
+HTML;
+
+        $this->assertHtml($html, $results->assemble());
+    }
+
+    public function testAttrsOption(): void
+    {
+        $results = new FormElementDecorationResult();
+        $element = $this->createStub(FormElement::class);
+        $element->method('render')->willReturn('<input type="text" name="test">');
+
+        $this->decorator->setTag('div');
+        $this->decorator->setAttrs(['data-test' => 'test']);
+        $results->append($element);
+
+        $this->decorator->decorateFormElement($results, $element);
+
+        $html = <<<'HTML'
+<div data-test="test">
+    <input type="text" name="test">
+</div>
+HTML;
+
+        $this->assertHtml($html, $results->assemble());
+    }
+
+    public function testClassOptionHasPrecedenceOverAttrsOption(): void
+    {
+        $results = new FormElementDecorationResult();
+        $element = $this->createStub(FormElement::class);
+        $element->method('render')->willReturn('<input type="text" name="test">');
+
+        $this->decorator->setTag('div');
+        $this->decorator->setAttrs(['class' => 'ignored', 'data-test' => 'test']);
+        $this->decorator->setClass('test-class');
+        $results->append($element);
+
+        $this->decorator->decorateFormElement($results, $element);
+
+        $html = <<<'HTML'
+<div class="test-class" data-test="test">
+    <input type="text" name="test">
+</div>
+HTML;
+
+        $this->assertHtml($html, $results->assemble());
+    }
 }

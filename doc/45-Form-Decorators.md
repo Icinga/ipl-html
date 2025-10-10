@@ -108,6 +108,7 @@ additional markup around elements.
 - Allowed options:
   - `tag` (string, required): The HTML tag name to create (e.g., div, span, p).
   - `class` (string|string[], optional): CSS class(es) to add to the tag.
+  - `attrs` (array<string, mixed>, optional): Additional attributes to add to the tag.
   - `transformation` (ipl\Html\FormDecoration\Transformation, optional): One of Wrap, Prepend, Append.
   - `condition` (callable(FormElement): bool, optional): If provided and returns false, the tag is not added.
 

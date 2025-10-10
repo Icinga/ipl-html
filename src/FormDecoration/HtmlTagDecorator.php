@@ -38,6 +38,9 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
     /** @var ?(string|string[]) CSS classes to apply */
     protected null|string|array $class = null;
 
+    /** @var array<string, mixed> Attributes to apply */
+    protected array $attrs = [];
+
     /**
      * Get the HTML tag to use for the decoration
      *
@@ -141,6 +144,30 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
     }
 
     /**
+     * Get attributes to apply
+     *
+     * @return array<string, mixed>
+     */
+    public function getAttrs(): array
+    {
+        return $this->attrs;
+    }
+
+    /**
+     * Set attributes to apply
+     *
+     * @param array<string, mixed> $attrs
+     *
+     * @return $this
+     */
+    public function setAttrs(array $attrs): static
+    {
+        $this->attrs = $attrs;
+
+        return $this;
+    }
+
+    /**
      * @throws InvalidArgumentException if the condition callback does not return a boolean
      * @throws RuntimeException if the condition callback throws an exception
      */
@@ -169,7 +196,12 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
         $class = $this->getClass();
         $this->getTransformation()->apply(
             $result,
-            new HtmlElement($this->getTag(), $class === null ? null : new Attributes(['class' => $class]))
+            new HtmlElement(
+                $this->getTag(),
+                $class === null
+                    ? new Attributes($this->getAttrs())
+                    : new Attributes(['class' => $class] + $this->getAttrs())
+            )
         );
     }
 
@@ -179,6 +211,7 @@ class HtmlTagDecorator implements FormElementDecoration, DecoratorOptionsInterfa
             ->registerAttributeCallback('tag', null, $this->setTag(...))
             ->registerAttributeCallback('transformation', null, $this->setTransformation(...))
             ->registerAttributeCallback('condition', null, $this->setCondition(...))
-            ->registerAttributeCallback('class', null, $this->setClass(...));
+            ->registerAttributeCallback('class', null, $this->setClass(...))
+            ->registerAttributeCallback('attrs', null, $this->setAttrs(...));
     }
 }
