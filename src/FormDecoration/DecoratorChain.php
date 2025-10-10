@@ -17,9 +17,10 @@ use function ipl\Stdlib\get_php_type;
  * @template TDecorator of object
  * @implements IteratorAggregate<int, TDecorator>
  *
+ * @phpstan-type Ident string|class-string
  * @phpstan-type decoratorOptionsFormat array<string, mixed>
- * @phpstan-type _decoratorsFormat1 array<string, decoratorOptionsFormat>
- * @phpstan-type _decoratorsFormat2 array<int, string|TDecorator|array{name: string, options?: decoratorOptionsFormat}>
+ * @phpstan-type _decoratorsFormat1 array<Ident, decoratorOptionsFormat>
+ * @phpstan-type _decoratorsFormat2 array<int, Ident|TDecorator|array{name: Ident, options?: decoratorOptionsFormat}>
  * @phpstan-type decoratorsFormat _decoratorsFormat1 | _decoratorsFormat2
  */
 class DecoratorChain implements IteratorAggregate
@@ -62,7 +63,7 @@ class DecoratorChain implements IteratorAggregate
     /**
      * Add a decorator to the chain.
      *
-     * @param TDecorator|string      $decorator
+     * @param TDecorator|Ident       $decorator
      * @param decoratorOptionsFormat $options Only allowed if parameter 1 is a string
      *
      * @return $this
@@ -100,28 +101,34 @@ class DecoratorChain implements IteratorAggregate
      * ```
      * // When no options are required or defaults are sufficient
      * $decorators = [
-     *      'HtmlTag',
-     *      'Label'
+     *     'HtmlTag',
+     *     'Label'
      * ];
      *
      * // Override default options by defining the option key and value
      *
      * // key: decorator name, value: options
      * $decorators = [
-     *      'HtmlTag' => ['tag' => 'span', 'placement' => 'append'],
-     *      'Label' => ['class' => 'element-label']
+     *     'HtmlTag' => ['tag' => 'span', 'placement' => 'append'],
+     *     'Label' => ['class' => 'element-label']
      * ];
      *
      * // or define the `name` and `options` key
      * $decorators = [
-     *      ['name' => 'HtmlTag', 'options' => ['tag' => 'span', 'placement' => 'append']],
-     *      ['name' => 'Label', 'options' => ['class' => 'element-label']]
+     *     ['name' => 'HtmlTag', 'options' => ['tag' => 'span', 'placement' => 'append']],
+     *     ['name' => 'Label', 'options' => ['class' => 'element-label']]
      * ];
      *
      * // or add Decorator instances
      * $decorators = [
-     *      (new HtmlTagDecorator())->getAttributes()->add(['tag' => 'span', 'placement' => 'append']),
-     *      (new LabelDecorator())->getAttributes()->add(['class' => 'element-label'])
+     *     (new HtmlTagDecorator())->getAttributes()->add(['tag' => 'span', 'placement' => 'append']),
+     *     (new LabelDecorator())->getAttributes()->add(['class' => 'element-label'])
+     * ];
+     *
+     * // Class paths are also supported
+     * $decorators = [
+     *     LabelDecorator::class,
+     *     ['name' => HtmlTagDecorator::class, ['tag' => 'span', 'placement' => 'append']]
      * ];
      * ```
      *
@@ -214,34 +221,44 @@ class DecoratorChain implements IteratorAggregate
     /**
      * Create a decorator from the given name and options
      *
-     * @param string $name
+     * @param Ident $name
      * @param decoratorOptionsFormat $options
      *
      * @return TDecorator
      *
-     * @throws InvalidArgumentException If the given decorator is unknown
+     * @throws InvalidArgumentException If the given decorator is unknown or not an instance of the expected type
+     * @throws UnexpectedValueException If the loaded decorator is not an instance of the expected type
      */
     protected function createDecorator(string $name, array $options = []): object
     {
-        $class = $this->loadPlugin('decorator', $name);
+        if (class_exists($name)) {
+            $decorator = new $name();
+            if (! $decorator instanceof $this->decoratorType) {
+                throw new InvalidArgumentException(sprintf(
+                    "Invalid decorator class '%s'. decorator must be an instance of %s",
+                    $name,
+                    $this->decoratorType,
+                ));
+            }
+        } else {
+            $class = $this->loadPlugin('decorator', $name);
+            if (! $class) {
+                throw new InvalidArgumentException(sprintf(
+                    "Can't load decorator '%s'. decorator unknown",
+                    $name
+                ));
+            }
 
-        if (! $class) {
-            throw new InvalidArgumentException(sprintf(
-                "Can't load decorator '%s'. decorator unknown",
-                $name
-            ));
-        }
-
-        $decorator = new $class();
-
-        if (! $decorator instanceof $this->decoratorType) {
-            throw new UnexpectedValueException(sprintf(
-                "%s expects loader to return an instance of %s for decorator '%s', got %s instead",
-                __METHOD__,
-                $this->decoratorType,
-                $name,
-                get_php_type($decorator)
-            ));
+            $decorator = new $class();
+            if (! $decorator instanceof $this->decoratorType) {
+                throw new UnexpectedValueException(sprintf(
+                    "%s expects loader to return an instance of %s for decorator '%s', got %s instead",
+                    __METHOD__,
+                    $this->decoratorType,
+                    $name,
+                    get_php_type($decorator)
+                ));
+            }
         }
 
         if (! empty($options)) {
