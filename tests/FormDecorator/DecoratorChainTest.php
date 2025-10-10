@@ -5,6 +5,7 @@ namespace ipl\Tests\Html\FormDecorator;
 use InvalidArgumentException;
 use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\Contract\FormElementDecoration;
+use ipl\Html\HtmlDocument;
 use ipl\Tests\Html\TestCase;
 
 class DecoratorChainTest extends TestCase
@@ -104,11 +105,23 @@ class DecoratorChainTest extends TestCase
         $this->chain->addDecorator(new TestDecorator(), ['optionKey1' => 'optionValue1']);
     }
 
+    public function testMethodAddDecoratorThrowsExceptionWhenInvalidClassPathIsPassed(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Invalid decorator class 'ipl\Html\HtmlDocument'."
+            ." decorator must be an instance of ipl\Html\Contract\FormElementDecoration"
+        );
+
+        $this->chain->addDecorator(HtmlDocument::class);
+    }
+
     public function testMethodAddDecoratorsWithValidArrayAsParam(): void
     {
         $decoratorFormats = [
             'TestWithOptions',
             new TestWithOptionsDecorator(),
+            TestWithOptionsDecorator::class,
             'TestWithOptions' => ['optionKey1' => 'optionValue1', 'options' => ['optionKey2' => 'optionValue2']],
             ['name' => 'TestWithOptions', 'options' => ['optionKey2' => 'optionValue2']]
         ];
