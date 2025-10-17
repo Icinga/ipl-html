@@ -7,6 +7,7 @@ use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\HtmlDocument;
 use ipl\Tests\Html\TestCase;
+use ValueError;
 
 class DecoratorChainTest extends TestCase
 {
@@ -20,11 +21,11 @@ class DecoratorChainTest extends TestCase
 
     public function testMethodAddDecorator(): void
     {
-        $this->chain->addDecorator('Test');
+        $this->chain->addDecorator('test', 'Test');
         $decorators = iterator_to_array($this->chain);
 
         $this->assertNotEmpty($decorators);
-        $this->assertInstanceOf(TestDecorator::class, $decorators[0]);;
+        $this->assertInstanceOf(TestDecorator::class, $decorators[0]);
     }
 
     /**
@@ -33,8 +34,8 @@ class DecoratorChainTest extends TestCase
     public function testMethodClearDecorators(): void
     {
          $this->chain
-            ->addDecorator('Test')
-            ->addDecorator('TestWithOptions');
+            ->addDecorator('test', 'Test')
+            ->addDecorator('test2', 'TestWithOptions');
 
         $this->assertCount(2, iterator_to_array($this->chain));
 
@@ -51,8 +52,8 @@ class DecoratorChainTest extends TestCase
         $this->assertFalse($this->chain->hasDecorators());
 
         $this->chain
-            ->addDecorator('Test')
-            ->addDecorator('TestWithOptions');
+            ->addDecorator('test1', 'Test')
+            ->addDecorator('test2', 'TestWithOptions');
 
         $this->assertTrue($this->chain->hasDecorators());
         $this->assertFalse($this->chain->clearDecorators()->hasDecorators());
@@ -63,14 +64,14 @@ class DecoratorChainTest extends TestCase
      */
     public function testMethodAddDecoratorWithAllowedParamFormats(): void
     {
-        $this->chain->addDecorator('TestWithOptions');
+        $this->chain->addDecorator('test', 'TestWithOptions');
         $decorators = iterator_to_array($this->chain);
         $this->assertCount(1, $decorators);
         $decorator = $decorators[0];
         $this->assertInstanceOf(TestWithOptionsDecorator::class, $decorator);
         $this->chain->clearDecorators();
 
-        $this->chain->addDecorator(new TestWithOptionsDecorator());
+        $this->chain->addDecorator('test', new TestWithOptionsDecorator());
         $decorators = iterator_to_array($this->chain);
         $this->assertCount(1, $decorators);
         $decorator = $decorators[0];
@@ -81,7 +82,7 @@ class DecoratorChainTest extends TestCase
             'attrs' => ['setter' => 'setter'], // set via setAttrs(), returned values of getAttrs() contains it
             'not-setter' => 'not-setter' // added as attribute, returned values of getAttrs() does not contain it
         ];
-        $this->chain->addDecorator('TestWithOptions', $options);
+        $this->chain->addDecorator('test', 'TestWithOptions', $options);
         $decorators = iterator_to_array($this->chain);
         $this->assertCount(1, $decorators);
         $decorator = $decorators[0];
@@ -95,14 +96,14 @@ class DecoratorChainTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Can't load decorator 'invalid'. decorator unknown");
 
-        $this->chain->addDecorator('invalid');
+        $this->chain->addDecorator('unknown', 'invalid');
     }
 
     public function testMethodAddDecoratorThrowsExceptionWhenDecoratorInstanceWithOptionsIsPassed(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No options are allowed with parameter 1 of type Decorator');
-        $this->chain->addDecorator(new TestDecorator(), ['optionKey1' => 'optionValue1']);
+        $this->chain->addDecorator('test', new TestDecorator(), ['optionKey1' => 'optionValue1']);
     }
 
     public function testMethodAddDecoratorThrowsExceptionWhenInvalidClassPathIsPassed(): void
@@ -113,17 +114,19 @@ class DecoratorChainTest extends TestCase
             ." decorator must be an instance of ipl\Html\Contract\FormElementDecoration"
         );
 
-        $this->chain->addDecorator(HtmlDocument::class);
+        $this->chain->addDecorator('document', HtmlDocument::class);
     }
 
     public function testMethodAddDecoratorsWithValidArrayAsParam(): void
     {
         $decoratorFormats = [
             'TestWithOptions',
-            new TestWithOptionsDecorator(),
-            TestWithOptionsDecorator::class,
-            'TestWithOptions' => ['optionKey1' => 'optionValue1', 'options' => ['optionKey2' => 'optionValue2']],
-            ['name' => 'TestWithOptions', 'options' => ['optionKey2' => 'optionValue2']]
+            'test' => new TestWithOptionsDecorator(),
+            'test2' => TestWithOptionsDecorator::class,
+            'test3' => [
+                'name' => 'TestWithOptions',
+                'options' => ['optionKey1' => 'optionValue1', 'options' => ['optionKey2' => 'optionValue2']]
+            ]
         ];
 
         $this->assertCount(count($decoratorFormats), iterator_to_array($this->chain->addDecorators($decoratorFormats)));
@@ -136,9 +139,11 @@ class DecoratorChainTest extends TestCase
     {
         $decoratorFormats = [
             'TestWithOptions',
-            new TestWithOptionsDecorator(),
-            'TestWithOptions' => ['optionKey1' => 'optionValue1'],
-            ['name' => 'TestWithOptions', 'options' => ['optionKey2' => 'optionValue2']]
+            'test1' => new TestWithOptionsDecorator(),
+            'test2' => [
+                'name' => 'TestWithOptions',
+                'options' => ['optionKey1' => 'optionValue1']
+            ]
         ];
 
         $chain = (new DecoratorChain(FormElementDecoration::class))
@@ -168,8 +173,8 @@ class DecoratorChainTest extends TestCase
         $this->chain->clearDecorators();
 
         $decoratorFormats = [
-            ['name' => 'TestWithOptions'],
-            ['name' => 'Test']
+            'test1' => ['name' => 'TestWithOptions'],
+            'test2' => ['name' => 'Test']
         ];
         $decorators = iterator_to_array($this->chain->addDecorators($decoratorFormats));
         $this->assertCount(count($decoratorFormats), $decorators);
@@ -182,7 +187,7 @@ class DecoratorChainTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Key 'name' is missing");
 
-        $this->chain->addDecorators([['TestWithOptions']]);
+        $this->chain->addDecorators(['test' => ['TestWithOptions']]);
     }
 
     public function testAddDecoratorsThrowsExceptionWhenADecoratorAsNonAssociativeArrayDefinesUnknownKeys(): void
@@ -192,7 +197,7 @@ class DecoratorChainTest extends TestCase
 
         $this->chain
             ->addDecorators([
-                ['name' => 'TestWithOptions', 'unknownKey' => 'unknownValue', 5 => 'also unknown'],
+                'test' => ['name' => 'TestWithOptions', 'unknownKey' => 'unknownValue', 5 => 'also unknown'],
             ]);
     }
 
@@ -200,8 +205,7 @@ class DecoratorChainTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            "The key must be a decorator name and value must be an array of options, got value of type"
-            . " 'string' for key 'something'",
+            "Can't load decorator 'this is string instead of array'. decorator unknown"
         );
 
         $this->chain->addDecorators(['something' => 'this is string instead of array']);
@@ -211,10 +215,80 @@ class DecoratorChainTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Expects array value at position 0 to be a string or an instance of ipl\Html\Contract\FormElementDecoration,'
-            . ' got ipl\Html\FormDecoration\DecoratorChain instead'
+            'Unexpected type at position 0, string expected, got ipl\Html\FormDecoration\DecoratorChain instead'
         );
 
         $this->chain->addDecorators([$this->chain]);
+    }
+
+    public function testAddDecoratorsDetectsDuplicateIdentifiers(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Decorator with identifier 'Test' already exists. Duplicate identifiers are not allowed."
+        );
+
+        $this->chain->addDecorators([
+            'Test' => 'TestWithOptions',
+            'Test'
+        ]);
+    }
+
+    public function testHasDecoratorReturnsFalseWhenNoDecoratorsAreAdded(): void
+    {
+        $this->assertFalse($this->chain->hasDecorator('test'));
+    }
+
+    public function testHasDecoratorReturnsTrueWhenDecoratorIsAdded(): void
+    {
+        $this->chain->addDecorator('test', 'Test');
+        $this->assertTrue($this->chain->hasDecorator('test'));
+    }
+
+    public function testHasDecoratorReturnsFalseWhenDecoratorIsNotAdded(): void
+    {
+        $this->chain->addDecorator('test1', 'Test');
+        $this->assertFalse($this->chain->hasDecorator('test2'));
+    }
+
+    public function testAddDecoratorThrowsExceptionWhenDecoratorIsAlreadyAdded(): void
+    {
+        $this->expectException(ValueError::class);
+        $this->expectExceptionMessage(
+            'Decorator with identifier "test" already exists. Use replaceDecorator() to replace it.'
+        );
+
+        $this->chain
+            ->addDecorator('test', 'Test')
+            ->addDecorator('test', 'Test');
+    }
+
+    public function testReplaceDecoratorWorksEvenIfThereIsNoDecoratorYet(): void
+    {
+        $this->chain->replaceDecorator('test', 'Test');
+        $this->assertTrue($this->chain->hasDecorator('test'));
+    }
+
+    public function testReplaceDecoratorWorksWhenDecoratorIsAlreadyAdded(): void
+    {
+        $this->chain
+            ->addDecorator('test', 'Test')
+            ->replaceDecorator('test', 'TestWithOptions');
+
+        $decorators = iterator_to_array($this->chain);
+        $this->assertCount(1, $decorators);
+        $this->assertInstanceOf(TestWithOptionsDecorator::class, $decorators[0]);
+    }
+
+    public function testReplaceDecoratorPreservesDecoratorOrder(): void
+    {
+        $this->chain
+            ->addDecorator('test1', 'Test')
+            ->addDecorator('test2', 'TestWithOptions')
+            ->replaceDecorator('test1', 'TestRenderElement');
+
+        $decorators = iterator_to_array($this->chain);
+        $this->assertInstanceOf(TestRenderElementDecorator::class, $decorators[0]);
+        $this->assertInstanceOf(TestWithOptionsDecorator::class, $decorators[1]);
     }
 }

@@ -42,6 +42,7 @@ class FormDecorationTest extends TestCase
         $form = new \ipl\Html\Form();
         $form->addHtml(Html::tag('div', ['class' => 'test-html']));
         $form->getDecorators()->addDecorator(
+            'test',
             $this->createFormDecorator()
                 ->setTransformation(Transformation::Prepend)
         );
@@ -57,11 +58,12 @@ class FormDecorationTest extends TestCase
         $form = new \ipl\Html\Form();
         $form->addElementDecoratorLoaderPaths([[__NAMESPACE__, 'Decorator']]);
         $form->getDecorators()->addDecorator(
+            'test',
             $this->createFormDecorator()
                 ->setTransformation(Transformation::Prepend)
         );
         $form->addElement('text', 'test', [
-            'decorators' => ['TestRenderElement', $this->createFormDecorator()]
+            'decorators' => ['TestRenderElement', 'test' => $this->createFormDecorator()]
         ]);
 
         $html = <<<'HTML'
@@ -81,6 +83,7 @@ HTML;
         $form = new \ipl\Html\Form();
         $form->addHtml(Html::tag('div', ['class' => 'test-html']));
         $form->getDecorators()->addDecorator(
+            'test',
             $this->createFormDecorator()
                 ->setTransformation(Transformation::Append)
         );
@@ -96,6 +99,7 @@ HTML;
         $form = new \ipl\Html\Form();
         $form->addHtml(Html::tag('div', ['class' => 'test-html']));
         $form->getDecorators()->addDecorator(
+            'test',
             $this->createFormDecorator()
                 ->setTransformation(Transformation::Wrap)
         );
@@ -117,9 +121,9 @@ HTML;
         $singleton->expects($this->once())->method('decorateFormElement');
 
         $form = new \ipl\Html\Form();
-        $form->getDecorators()->addDecorator($singleton);
+        $form->getDecorators()->addDecorator('test', $singleton);
         $form->addElement('text', 'test', [
-            'decorators' => [$singleton]
+            'decorators' => ['test' => $singleton]
         ]);
 
         $form->render();
@@ -129,6 +133,7 @@ HTML;
     {
         $form = new \ipl\Html\Form();
         $form->getDecorators()->addDecorator(
+            'test',
             $this->createFormDecorator()
                 ->setTransformation(Transformation::Append)
         );
@@ -165,9 +170,9 @@ HTML;
         };
 
         $form = new \ipl\Html\Form();
-        $form->getDecorators()->addDecorator($decorator);
+        $form->getDecorators()->addDecorator('test', $decorator);
         $form->addElement('text', 'test', [
-            'decorators' => [$decorator]
+            'decorators' => ['test' => $decorator]
         ]);
 
         $form->render();

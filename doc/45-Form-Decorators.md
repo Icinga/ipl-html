@@ -77,14 +77,14 @@ array form. For the full list of supported options, see the respective classes u
 
 ```php
 $form->setDefaultElementDecorators([
-    [
+    'label' => [
         'name' => 'Label',
         'options' => [
             'class' => ['form-element-label', 'text-bold']
         ],
     ],
     'RenderElement',
-    [
+    'description' => [
         'name' => 'Description',
         'options' => [
             'class' => 'help-text'
@@ -121,7 +121,7 @@ $form = (new Form())
         'Label',
         'RenderElement',
         'Description',
-        [
+        'group' => [
             'name' => 'HtmlTag',
             'options' => [
                 'tag'       => 'div',
@@ -152,7 +152,7 @@ $form->setDefaultElementDecorators([
     'Label',
     'RenderElement',
     'Description',
-    [
+    'separator' => [
         'name' => 'HtmlTag',
         'options' => [
             'tag'               => 'span',
@@ -183,7 +183,7 @@ $form->setDefaultElementDecorators([
     'Label',
     'RenderElement',
     'Description',
-    [
+    'before' => [
         'name' => 'HtmlTag',
         'options' => [
             'tag'               => 'span',
@@ -214,7 +214,7 @@ $form->setDefaultElementDecorators([
     'Label',
     'RenderElement',
     'Description',
-    [
+    'required' => [
         'name' => 'HtmlTag',
         'options' => [
             'tag'               => 'div',
