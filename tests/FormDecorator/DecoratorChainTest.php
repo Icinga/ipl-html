@@ -102,7 +102,7 @@ class DecoratorChainTest extends TestCase
     public function testMethodAddDecoratorThrowsExceptionWhenDecoratorInstanceWithOptionsIsPassed(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No options are allowed with parameter 1 of type Decorator');
+        $this->expectExceptionMessage('No options are allowed with parameter #2 of type Decorator');
         $this->chain->addDecorator('test', new TestDecorator(), ['optionKey1' => 'optionValue1']);
     }
 
@@ -185,7 +185,7 @@ class DecoratorChainTest extends TestCase
     public function testAddDecoratorsThrowsExceptionWhenADecoratorAsNonAssociativeArrayDoesNotDefineNameKey(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Key 'name' is missing");
+        $this->expectExceptionMessage("Invalid decorator 'test'. Key 'name' is missing");
 
         $this->chain->addDecorators(['test' => ['TestWithOptions']]);
     }
@@ -211,14 +211,26 @@ class DecoratorChainTest extends TestCase
         $this->chain->addDecorators(['something' => 'this is string instead of array']);
     }
 
-    public function testAddDecoratorsThrowsExceptionWhenADecoratorAsAssociativeArrayDoesNotDefineOptionsAsArrayX(): void
+    public function testAddDecoratorsThrowsExceptionWhenADecoratorOfTypeNonStringIsDefinedWithoutAnIdentifier(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Unexpected type at position 0, string expected, got ipl\Html\FormDecoration\DecoratorChain instead'
+            'Unexpected type at position 0, string expected, got ipl\Html\FormDecoration\DecoratorChain instead.'
+            . ' Either provide an $identifier (string) as the key, or ensure the value is of type string',
         );
 
         $this->chain->addDecorators([$this->chain]);
+    }
+
+    public function testAddDecoratorsThrowsExceptionWhenADecoratorOfTypeClassStringIsDefinedWithoutAnIdentifier(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Unexpected type at position 0, string expected, got class ipl\Html\FormDecoration\DecoratorChain instead.'
+            . ' Either provide an $identifier (string) as the key, or ensure the value is of type string',
+        );
+
+        $this->chain->addDecorators([$this->chain::class]);
     }
 
     public function testAddDecoratorsDetectsDuplicateIdentifiers(): void
@@ -290,5 +302,45 @@ class DecoratorChainTest extends TestCase
         $decorators = iterator_to_array($this->chain);
         $this->assertInstanceOf(TestRenderElementDecorator::class, $decorators[0]);
         $this->assertInstanceOf(TestWithOptionsDecorator::class, $decorators[1]);
+    }
+
+    public function testAddDecoratorThrowsExceptionForUnexpectedClassInstance(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+                'Expects parameter #2 to be a string or an instance of'
+                . ' ipl\Html\Contract\FormElementDecoration, got ipl\Html\HtmlDocument instead',
+        );
+
+        $this->chain->addDecorator('document', new HtmlDocument());
+    }
+
+    public function testAddDecoratorsThrowsWhenNameKeyIsNotString(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Invalid decorator 'test'. Value of the 'name' key must be a string, got integer instead"
+        );
+
+        $this->chain->addDecorators(['test' => ['name' => 5]]);
+    }
+
+    public function testAddDecoratorsThrowsForInvalidTypeForIdentifier(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Invalid type for identifier 'test', expected an array, a string or an instance of"
+             ." ipl\Html\Contract\FormElementDecoration, got integer instead",
+        );
+
+        $this->chain->addDecorators(['test' => 5]);
+    }
+
+    public function testAddDecoratorWithOptionsWithADecoratorWhichDoesNotSupportOptions(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Decorator 'Test' does not support options");
+
+        $this->chain->addDecorator('test', 'Test', ['foo' => 'bar']);
     }
 }

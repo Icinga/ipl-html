@@ -78,7 +78,7 @@ class DecoratorChain implements IteratorAggregate
      *
      * @param string                 $identifier
      * @param TDecorator|Ident       $decorator
-     * @param decoratorOptionsFormat $options Only allowed if parameter 2 is a string
+     * @param decoratorOptionsFormat $options Only allowed if parameter #2 is a string
      *
      * @return $this
      *
@@ -93,14 +93,14 @@ class DecoratorChain implements IteratorAggregate
                 $identifier
             ));
         } elseif (! empty($options) && ! is_string($decorator)) {
-            throw new InvalidArgumentException('No options are allowed with parameter 1 of type Decorator');
+            throw new InvalidArgumentException('No options are allowed with parameter #2 of type Decorator');
         }
 
         if (is_string($decorator)) {
             $decorator = $this->createDecorator($decorator, $options);
         } elseif (! $decorator instanceof $this->decoratorType) {
             throw new InvalidArgumentException(sprintf(
-                'Expects parameter 1 to be a string or an instance of %s, got %s instead',
+                'Expects parameter #2 to be a string or an instance of %s, got %s instead',
                 $this->decoratorType,
                 get_php_type($decorator)
             ));
@@ -116,7 +116,7 @@ class DecoratorChain implements IteratorAggregate
      *
      * @param string                 $identifier
      * @param TDecorator|Ident       $decorator
-     * @param decoratorOptionsFormat $options Only allowed if parameter 2 is a string
+     * @param decoratorOptionsFormat $options Only allowed if parameter #2 is a string
      *
      * @return $this
      */
@@ -200,13 +200,15 @@ class DecoratorChain implements IteratorAggregate
             if (is_int($identifier)) {
                 if (! is_string($decoratorOptions)) {
                     throw new InvalidArgumentException(sprintf(
-                        'Unexpected type at position %d, string expected, got %s instead',
+                        'Unexpected type at position %d, string expected, got %s instead.'
+                        . ' Either provide an $identifier (string) as the key, or ensure the value is of type string',
                         $identifier,
                         get_php_type($decoratorOptions)
                     ));
                 } elseif (class_exists($decoratorOptions)) {
                     throw new InvalidArgumentException(sprintf(
-                        'Unexpected type at position %d, string expected, got class %s instead',
+                        'Unexpected type at position %d, string expected, got class %s instead.'
+                        . ' Either provide an $identifier (string) as the key, or ensure the value is of type string',
                         $identifier,
                         $decoratorOptions
                     ));
@@ -226,7 +228,7 @@ class DecoratorChain implements IteratorAggregate
                     ));
                 } elseif (! is_string($decoratorOptions['name'])) {
                     throw new InvalidArgumentException(sprintf(
-                        "Invalid decorator '%s'. Key 'name' must be a string, got %s instead",
+                        "Invalid decorator '%s'. Value of the 'name' key must be a string, got %s instead",
                         $identifier,
                         get_php_type($decoratorOptions['name'])
                     ));
@@ -254,8 +256,8 @@ class DecoratorChain implements IteratorAggregate
                 $decoratorOptions = $options;
             } else {
                 throw new InvalidArgumentException(sprintf(
-                    "Invalid type for identifier %s, expected an array,"
-                    . " a string or an instance of %s, got '%s' instead",
+                    "Invalid type for identifier '%s', expected an array,"
+                    . " a string or an instance of %s, got %s instead",
                     $identifier,
                     $this->decoratorType,
                     get_php_type($decoratorOptions)
