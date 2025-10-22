@@ -132,45 +132,50 @@ class DecoratorChain implements IteratorAggregate
      *
      * The order of the decorators is important, as it determines the rendering order.
      *
+     * > NOTE: Decorators are registered with unique identifiers to enable easy replacement. If the decorator is
+     * provided as a string and no identifier is given, the decorator name is used as a fallback. In all other cases,
+     * an identifier must be specified explicitly.
+     *
+     *  *It is recommended to use the decorator name or its purpose as the identifier, for example, 'container' for an
+     * 'HtmlTag' decorator that wraps content.*
+     *
      *   *The following array formats are supported:*
      *
      * ```
-     * // When no options are required or defaults are sufficient
+     * // (1) When no options are required or defaults are sufficient
      * $decorators = [
      *     'Label',
      *     'Description'
      * ];
      *
-     * // Custom identifiers
-     * $decorators = [
-     *     'label' => 'Label',
-     *     'description' => 'Description'
-     * ];
+     * // For the array above, the identifiers are 'Label' and 'Description'.
      *
-     * // Override default options
+     *  // (2) Use Custom identifiers
+     *  $decorators = [
+     *     'your-custom-identifier' => 'your-custom-decorator',
+     *  ];
      *
-     * // key: decorator identifier, value: name and options
+     * // NOTE: For the following formats, identifiers MUST be defined manually.
+     *
+     * // (3) Override default options, key: decorator identifier, value: name and options
      * $decorators = [
+     *     'Label' => 'Label',
      *     'container' => [
-     *          'name' => 'HtmlTag',
-     *          'options' => ['tag' => 'span', 'placement' => 'append']
-     *      ],
-     *     'label' => [
-     *         'name' => 'Label',
-     *         'options' => ['class' => 'element-label']
-     *     ]
+     *          'name'      => 'HtmlTag',
+     *          'options'   => ['tag' => 'div']
+     *      ]
      * ];
      *
-     * // or add Decorator instances
+     * // (4) Add Decorator instances
      * $decorators = [
-     *     'container' => (new HtmlTagDecorator())->getAttributes()->add(['tag' => 'span', 'placement' => 'append']),
-     *     'label' => (new LabelDecorator())->getAttributes()->add(['class' => 'element-label'])
+     *     'Label'      => new LabelDecorator(),
+     *     'container'  => (new HtmlTagDecorator())->setTag('div')->setAttrs(['class' => 'container'])
      * ];
      *
-     * // Class paths are also supported
+     * // (5) Class paths are also supported
      * $decorators = [
-     *     'label' => LabelDecorator::class,
-     *     'container' => ['name' => HtmlTagDecorator::class, ['tag' => 'span', 'placement' => 'append']]
+     *     'Label'      => LabelDecorator::class,
+     *     'container'  => ['name' => HtmlTagDecorator::class, 'options' => ['tag' => 'div']]
      * ];
      * ```
      *
@@ -250,7 +255,7 @@ class DecoratorChain implements IteratorAggregate
             } else {
                 throw new InvalidArgumentException(sprintf(
                     "Invalid type for identifier %s, expected an array,"
-                    . "a string or an instance of %s, got '%s' instead",
+                    . " a string or an instance of %s, got '%s' instead",
                     $identifier,
                     $this->decoratorType,
                     get_php_type($decoratorOptions)

@@ -11,6 +11,13 @@ rendering order.
 The decoration of an element is triggered only when the form is rendered. This ensures that decoration remains isolated
 and does not produce unexpected side effects.
 
+> NOTE: Decorators are registered with unique identifiers to enable easy replacement. If the decorator is provided as a
+> string and no identifier is given, the decorator name is used as a fallback. In all other cases, an identifier must be
+> specified explicitly.
+
+It is recommended to use the decorator name or its purpose as the identifier, for example, 'container' for an 'HtmlTag'
+decorator that wraps content.
+
 Example usage
 -------------
 Let's decorate a form element using the built-in `Label` and `Description` decorators.
