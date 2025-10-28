@@ -8,6 +8,7 @@ use ipl\Html\Contract\DecoratorOptionsInterface;
 use ipl\Stdlib\Plugins;
 use IteratorAggregate;
 use UnexpectedValueException;
+use ValueError;
 
 use function ipl\Stdlib\get_php_type;
 
@@ -30,7 +31,7 @@ class DecoratorChain implements IteratorAggregate
     /** @var class-string<TDecorator> The type of decorator to accept */
     private string $decoratorType;
 
-    /** @var TDecorator[] All registered decorators */
+    /** @var array<string, TDecorator> All registered decorators */
     private array $decorators = [];
 
     /**
@@ -61,34 +62,69 @@ class DecoratorChain implements IteratorAggregate
     }
 
     /**
-     * Add a decorator to the chain.
+     * Get whether the chain has a decorator with the given identifier
      *
+     * @param string $identifier
+     *
+     * @return bool
+     */
+    public function hasDecorator(string $identifier): bool
+    {
+        return isset($this->decorators[$identifier]);
+    }
+
+    /**
+     * Add a decorator to the chain
+     *
+     * @param string                 $identifier
      * @param TDecorator|Ident       $decorator
-     * @param decoratorOptionsFormat $options Only allowed if parameter 1 is a string
+     * @param decoratorOptionsFormat $options Only allowed if parameter #2 is a string
      *
      * @return $this
      *
+     * @throws ValueError If the decorator with the given identifier already exists
      * @throws InvalidArgumentException If the decorator specification is invalid
      */
-    public function addDecorator(object|string $decorator, array $options = []): static
+    public function addDecorator(string $identifier, object|string $decorator, array $options = []): static
     {
-        if (! empty($options) && ! is_string($decorator)) {
-            throw new InvalidArgumentException('No options are allowed with parameter 1 of type Decorator');
+        if (isset($this->decorators[$identifier])) {
+            throw new ValueError(sprintf(
+                'Decorator with identifier "%s" already exists. Use replaceDecorator() to replace it.',
+                $identifier
+            ));
+        } elseif (! empty($options) && ! is_string($decorator)) {
+            throw new InvalidArgumentException('No options are allowed with parameter #2 of type Decorator');
         }
 
         if (is_string($decorator)) {
             $decorator = $this->createDecorator($decorator, $options);
         } elseif (! $decorator instanceof $this->decoratorType) {
             throw new InvalidArgumentException(sprintf(
-                'Expects parameter 1 to be a string or an instance of %s, got %s instead',
+                'Expects parameter #2 to be a string or an instance of %s, got %s instead',
                 $this->decoratorType,
                 get_php_type($decorator)
             ));
         }
 
-        $this->decorators[] = $decorator;
+        $this->decorators[$identifier] = $decorator;
 
         return $this;
+    }
+
+    /**
+     * Replace a decorator in the chain with a new one
+     *
+     * @param string                 $identifier
+     * @param TDecorator|Ident       $decorator
+     * @param decoratorOptionsFormat $options Only allowed if parameter #2 is a string
+     *
+     * @return $this
+     */
+    public function replaceDecorator(string $identifier, object|string $decorator, array $options = []): static
+    {
+        $this->decorators[$identifier] = null; // Preserve the placement of the previous decorator
+
+        return $this->addDecorator($identifier, $decorator, $options);
     }
 
     /**
@@ -96,39 +132,50 @@ class DecoratorChain implements IteratorAggregate
      *
      * The order of the decorators is important, as it determines the rendering order.
      *
+     * > NOTE: Decorators are registered with unique identifiers to enable easy replacement. If the decorator is
+     * provided as a string and no identifier is given, the decorator name is used as a fallback. In all other cases,
+     * an identifier must be specified explicitly.
+     *
+     *  *It is recommended to use the decorator name or its purpose as the identifier, for example, 'container' for an
+     * 'HtmlTag' decorator that wraps content.*
+     *
      *   *The following array formats are supported:*
      *
      * ```
-     * // When no options are required or defaults are sufficient
+     * // (1) When no options are required or defaults are sufficient
      * $decorators = [
-     *     'HtmlTag',
-     *     'Label'
+     *     'Label',
+     *     'Description'
      * ];
      *
-     * // Override default options by defining the option key and value
+     * // For the array above, the identifiers are 'Label' and 'Description'.
      *
-     * // key: decorator name, value: options
+     *  // (2) Use Custom identifiers
+     *  $decorators = [
+     *     'your-custom-identifier' => 'your-custom-decorator',
+     *  ];
+     *
+     * // NOTE: For the following formats, identifiers MUST be defined manually.
+     *
+     * // (3) Override default options, key: decorator identifier, value: name and options
      * $decorators = [
-     *     'HtmlTag' => ['tag' => 'span', 'placement' => 'append'],
-     *     'Label' => ['class' => 'element-label']
+     *     'Label' => 'Label',
+     *     'container' => [
+     *          'name'      => 'HtmlTag',
+     *          'options'   => ['tag' => 'div']
+     *      ]
      * ];
      *
-     * // or define the `name` and `options` key
+     * // (4) Add Decorator instances
      * $decorators = [
-     *     ['name' => 'HtmlTag', 'options' => ['tag' => 'span', 'placement' => 'append']],
-     *     ['name' => 'Label', 'options' => ['class' => 'element-label']]
+     *     'Label'      => new LabelDecorator(),
+     *     'container'  => (new HtmlTagDecorator())->setTag('div')->setAttrs(['class' => 'container'])
      * ];
      *
-     * // or add Decorator instances
+     * // (5) Class paths are also supported
      * $decorators = [
-     *     (new HtmlTagDecorator())->getAttributes()->add(['tag' => 'span', 'placement' => 'append']),
-     *     (new LabelDecorator())->getAttributes()->add(['class' => 'element-label'])
-     * ];
-     *
-     * // Class paths are also supported
-     * $decorators = [
-     *     LabelDecorator::class,
-     *     ['name' => HtmlTagDecorator::class, ['tag' => 'span', 'placement' => 'append']]
+     *     'Label'      => LabelDecorator::class,
+     *     'container'  => ['name' => HtmlTagDecorator::class, 'options' => ['tag' => 'div']]
      * ];
      * ```
      *
@@ -141,66 +188,90 @@ class DecoratorChain implements IteratorAggregate
     public function addDecorators(DecoratorChain|array $decorators): static
     {
         if ($decorators instanceof static) {
-            foreach ($decorators->decorators as $decorator) {
-                $this->addDecorator($decorator);
+            foreach ($decorators->decorators as $identifier => $decorator) {
+                $this->addDecorator($identifier, $decorator);
             }
 
             return $this;
         }
 
         foreach ($decorators as $decoratorName => $decoratorOptions) {
-            $position = $decoratorName;
-            if (is_int($decoratorName)) {
-                if (is_array($decoratorOptions)) {
-                    if (! isset($decoratorOptions['name'])) {
-                        throw new InvalidArgumentException("Key 'name' is missing");
-                    }
-
-                    $decoratorName = $decoratorOptions['name'];
-                    unset($decoratorOptions['name']);
-
-                    $options = [];
-                    if (isset($decoratorOptions['options'])) {
-                        $options = $decoratorOptions['options'];
-
-                        unset($decoratorOptions['options']);
-                    }
-
-                    if (! empty($decoratorOptions)) {
-                        throw new InvalidArgumentException(
-                            sprintf(
-                                "No other keys except 'name' and 'options' are allowed, got '%s'",
-                                implode("', '", array_keys($decoratorOptions))
-                            )
-                        );
-                    }
-
-                    $decoratorOptions = $options;
-                } else {
-                    $decoratorName = $decoratorOptions;
-                    $decoratorOptions = [];
+            $identifier = $decoratorName;
+            if (is_int($identifier)) {
+                if (! is_string($decoratorOptions)) {
+                    throw new InvalidArgumentException(sprintf(
+                        'Unexpected type at position %d, string expected, got %s instead.'
+                        . ' Either provide an $identifier (string) as the key, or ensure the value is of type string',
+                        $identifier,
+                        get_php_type($decoratorOptions)
+                    ));
+                } elseif (class_exists($decoratorOptions)) {
+                    throw new InvalidArgumentException(sprintf(
+                        'Unexpected type at position %d, string expected, got class %s instead.'
+                        . ' Either provide an $identifier (string) as the key, or ensure the value is of type string',
+                        $identifier,
+                        $decoratorOptions
+                    ));
                 }
-            }
 
-            if (! is_array($decoratorOptions)) {
-                throw new InvalidArgumentException(sprintf(
-                    "The key must be a decorator name and value must be an array of options, got value of type"
-                    . " '%s' for key '%s'",
-                    get_php_type($decoratorOptions),
-                    $decoratorName,
-                ));
-            }
+                $decoratorName = $decoratorOptions;
+                $identifier = $decoratorName;
+                $decoratorOptions = [];
+            } elseif (is_string($decoratorOptions) || $decoratorOptions instanceof $this->decoratorType) {
+                $decoratorName = $decoratorOptions;
+                $decoratorOptions = [];
+            } elseif (is_array($decoratorOptions)) {
+                if (! isset($decoratorOptions['name'])) {
+                    throw new InvalidArgumentException(sprintf(
+                        "Invalid decorator '%s'. Key 'name' is missing",
+                        $identifier
+                    ));
+                } elseif (! is_string($decoratorOptions['name'])) {
+                    throw new InvalidArgumentException(sprintf(
+                        "Invalid decorator '%s'. Value of the 'name' key must be a string, got %s instead",
+                        $identifier,
+                        get_php_type($decoratorOptions['name'])
+                    ));
+                }
 
-            if (! is_string($decoratorName) && ! $decoratorName instanceof $this->decoratorType) {
+                $decoratorName = $decoratorOptions['name'];
+                unset($decoratorOptions['name']);
+
+                $options = [];
+                if (isset($decoratorOptions['options'])) {
+                    $options = $decoratorOptions['options'];
+
+                    unset($decoratorOptions['options']);
+                }
+
+                if (! empty($decoratorOptions)) {
+                    throw new InvalidArgumentException(
+                        sprintf(
+                            "No other keys except 'name' and 'options' are allowed, got '%s'",
+                            implode("', '", array_keys($decoratorOptions))
+                        )
+                    );
+                }
+
+                $decoratorOptions = $options;
+            } else {
                 throw new InvalidArgumentException(sprintf(
-                    'Expects array value at position %d to be a string or an instance of %s, got %s instead',
-                    $position,
+                    "Invalid type for identifier '%s', expected an array,"
+                    . " a string or an instance of %s, got %s instead",
+                    $identifier,
                     $this->decoratorType,
-                    get_php_type($decoratorName)
+                    get_php_type($decoratorOptions)
                 ));
             }
 
-            $this->addDecorator($decoratorName, $decoratorOptions);
+            if ($this->hasDecorator($identifier)) {
+                throw new InvalidArgumentException(sprintf(
+                    "Decorator with identifier '%s' already exists. Duplicate identifiers are not allowed.",
+                    $identifier
+                ));
+            }
+
+            $this->addDecorator($identifier, $decoratorName, $decoratorOptions);
         }
 
         return $this;
