@@ -2,7 +2,6 @@
 
 namespace ipl\Html\FormDecoration;
 
-use ipl\Html\Attributes;
 use ipl\Html\Contract\DecorationResult;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecoration;
@@ -23,16 +22,10 @@ class FieldsetDecorator implements FormElementDecoration
             return;
         }
 
+        // No fallback id & aria-describedby required. The legend already provides an accessible label for the fieldset
         $description = $formElement->getDescription();
         if ($description !== null) {
-            $attributes = null;
-            if ($formElement->getAttributes()->has('id')) {
-                $descriptionId = 'desc_' . $formElement->getAttributes()->get('id')->getValue();
-                $formElement->getAttributes()->set('aria-describedby', $descriptionId);
-                $attributes = new Attributes(['id' => $descriptionId]);
-            }
-
-            $formElement->prependHtml(new HtmlElement('p', $attributes, new Text($description)));
+            $formElement->prependHtml(new HtmlElement('p', content: new Text($description)));
         }
 
         $label = $formElement->getLabel();

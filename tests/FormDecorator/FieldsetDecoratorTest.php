@@ -32,20 +32,6 @@ HTML;
         $this->assertHtml($html, $fieldset);
     }
 
-    public function testWithDescriptionAndIdAttributeOnly(): void
-    {
-        $fieldset = new FieldsetElement('test', ['description' => 'Testing', 'id' => 'test-id']);
-        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
-
-        $html = <<<HTML
-<fieldset aria-describedby="desc_test-id" id="test-id" name="test">
-  <p id="desc_test-id">Testing</p>
-</fieldset>
-HTML;
-
-        $this->assertHtml($html, $fieldset);
-    }
-
     public function testWithLabelAttributeOnly(): void
     {
         $fieldset = new FieldsetElement('test', ['label' => 'Testing']);
@@ -60,7 +46,7 @@ HTML;
         $this->assertHtml($html, $fieldset);
     }
 
-    public function testWithLabelAndDescriptionAttribute(): void
+    public function testWithLabelAndDescriptionAttributes(): void
     {
         $fieldset = new FieldsetElement('test', ['label' => 'Testing', 'description' => 'Testing']);
         $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
@@ -75,7 +61,7 @@ HTML;
         $this->assertHtml($html, $fieldset);
     }
 
-    public function testWithoutLabelAndDescriptionAttribute(): void
+    public function testWithoutLabelAndDescriptionAttributes(): void
     {
         $fieldset = new FieldsetElement('test');
         $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
