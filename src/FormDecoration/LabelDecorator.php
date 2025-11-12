@@ -25,6 +25,9 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
     /** @var string|string[] CSS classes to apply */
     protected string|array $class = 'form-element-label';
 
+    /** @var callable A callback used to generate a unique ID based on the element name */
+    private $uniqueName = 'uniqid';
+
     /**
      * Get the css class(es)
      *
@@ -69,7 +72,7 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
             if ($isHtmlElement && ! $formElement instanceof RadioElement) {
                 $elementAttributes = $formElement->getAttributes();
                 if (! $elementAttributes->has('id')) {
-                    $elementAttributes->set('id', uniqid('form-element-'));
+                    $elementAttributes->set('id', call_user_func($this->uniqueName, $formElement->getName()));
                 }
 
                 $attributes['for'] = $elementAttributes->get('id')->getValue();
@@ -101,5 +104,12 @@ class LabelDecorator implements FormElementDecoration, DecoratorOptionsInterface
     protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         $attributes->registerAttributeCallback('class', null, $this->setClass(...));
+        $attributes->registerAttributeCallback(
+            'uniqueName',
+            null,
+            function ($callback) {
+                $this->uniqueName = $callback;
+            }
+        );
     }
 }

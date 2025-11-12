@@ -65,7 +65,7 @@ class LabelDecoratorTest extends TestCase
             new TextElement('test', ['label' => 'Label Here'])
         );
 
-        $this->assertStringContainsString('for="form-element-', $results->assemble()->render());
+        $this->assertMatchesRegularExpression('/for="test[^"]+"/', $results->assemble()->render());
     }
 
     public function testWithLabelAndIdAttribute(): void
