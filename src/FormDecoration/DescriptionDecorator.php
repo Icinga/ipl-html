@@ -24,6 +24,9 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
     /** @var string|string[] CSS classes to apply */
     protected string|array $class = 'form-element-description';
 
+    /** @var callable A callback used to generate a unique ID based on the element name */
+    private $uniqueName = 'uniqid';
+
     /**
      * Get the css class(es)
      *
@@ -61,7 +64,7 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
             if ($formElement->getAttributes()->has('id')) {
                 $elementId = $formElement->getAttributes()->get('id')->getValue();
             } else {
-                $elementId = uniqid('form-element-');
+                $elementId = call_user_func($this->uniqueName, $formElement->getName());
 
                 // RadioElement applies all its attributes to each of its options, so we cannot set a fallback
                 // id attribute here.
@@ -96,5 +99,12 @@ class DescriptionDecorator implements FormElementDecoration, DecoratorOptionsInt
     protected function registerAttributeCallbacks(Attributes $attributes): void
     {
         $attributes->registerAttributeCallback('class', null, $this->setClass(...));
+        $attributes->registerAttributeCallback(
+            'uniqueName',
+            null,
+            function ($callback) {
+                $this->uniqueName = $callback;
+            }
+        );
     }
 }
