@@ -74,6 +74,24 @@ class DecoratorChain implements IteratorAggregate
     }
 
     /**
+     * Get the decorator with the given identifier
+     *
+     * @param string $identifier
+     *
+     * @return TDecorator
+     *
+     * @throws InvalidArgumentException If the given identifier is unknown
+     */
+    public function getDecorator(string $identifier): object
+    {
+        if (! $this->hasDecorator($identifier)) {
+            throw new InvalidArgumentException(sprintf('No decorator with identifier "%s" registered', $identifier));
+        }
+
+        return $this->decorators[$identifier];
+    }
+
+    /**
      * Add a decorator to the chain
      *
      * @param string                 $identifier
