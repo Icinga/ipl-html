@@ -401,7 +401,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         $attributes = $this->getAttributes();
 
         $callbacksProperty = new ReflectionProperty(get_class($attributes), 'callbacks');
-        $callbacksProperty->setAccessible(true);
         $callbacks = $callbacksProperty->getValue($attributes);
 
         if (isset($callbacks['name'])) {
