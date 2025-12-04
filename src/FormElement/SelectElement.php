@@ -32,7 +32,7 @@ class SelectElement extends BaseFormElement
     /**
      * Get the option with specified value
      *
-     * @param string|int|null $value
+     * @param string|int $value
      *
      * @return ?SelectOption
      */
@@ -119,7 +119,7 @@ class SelectElement extends BaseFormElement
     /**
      * Make the selectOption for the specified value and the label
      *
-     * @param string|int|null $value Value of the option
+     * @param string|int $value Value of the option
      * @param string|array $label Label of the option
      *
      * @return SelectOption|HtmlElement

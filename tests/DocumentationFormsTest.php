@@ -25,7 +25,7 @@ class DocumentationFormsTest extends TestCase
         $form->addElement('select', 'customer', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -57,7 +57,7 @@ class DocumentationFormsTest extends TestCase
         $form->addElement('select', 'customer', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
