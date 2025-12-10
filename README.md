@@ -1,7 +1,5 @@
 # Icinga PHP Library - Html abstraction layer
 
-![Build Status](https://github.com/Icinga/ipl-html/actions/workflows/php.yml/badge.svg)
-
 This is a prototype of the HTML abstraction layer for the new Icinga PHP library.
 Please do not use this for anything important yet, as all APIs, Interfaces and
 paths are still subject to change.
