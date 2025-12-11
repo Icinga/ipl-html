@@ -91,7 +91,7 @@ class FormTest extends TestCase
         $this->assertSame('bar', $form->getPopulatedValue('foo bar'));
 
         // Test for data population; The POST data contains the escaped chars
-        $form->populate(['foo'. chr(28) . 'bar' => 'foo1', 'foo'. chr(29) . 'bar' => 'bar1']);
+        $form->populate(['foo' . chr(28) . 'bar' => 'foo1', 'foo' . chr(29) . 'bar' => 'bar1']);
         $this->assertSame('foo1', $form->getPopulatedValue('foo.bar'));
         $this->assertSame('bar1', $form->getPopulatedValue('foo bar'));
     }

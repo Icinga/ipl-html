@@ -111,7 +111,7 @@ class DecoratorChainTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             "Invalid decorator class 'ipl\Html\HtmlDocument'."
-            ." decorator must be an instance of ipl\Html\Contract\FormElementDecoration"
+            . " decorator must be an instance of ipl\Html\Contract\FormElementDecoration"
         );
 
         $this->chain->addDecorator('document', HtmlDocument::class);
@@ -308,8 +308,8 @@ class DecoratorChainTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-                'Expects parameter #2 to be a string or an instance of'
-                . ' ipl\Html\Contract\FormElementDecoration, got ipl\Html\HtmlDocument instead',
+            'Expects parameter #2 to be a string or an instance of'
+            . ' ipl\Html\Contract\FormElementDecoration, got ipl\Html\HtmlDocument instead',
         );
 
         $this->chain->addDecorator('document', new HtmlDocument());
@@ -330,7 +330,7 @@ class DecoratorChainTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             "Invalid type for identifier 'test', expected an array, a string or an instance of"
-             ." ipl\Html\Contract\FormElementDecoration, got integer instead",
+             . " ipl\Html\Contract\FormElementDecoration, got integer instead",
         );
 
         $this->chain->addDecorators(['test' => 5]);
