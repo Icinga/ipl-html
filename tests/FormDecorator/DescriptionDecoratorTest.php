@@ -110,7 +110,7 @@ class DescriptionDecoratorTest extends TestCase
     public function testNonHtmlFormElementsAreSupported(): void
     {
         $results = new FormElementDecorationResult();
-        $element = $this->createStub(FormElement::class);
+        $element = $this->createMock(FormElement::class);
         $element->method('getDescription')->willReturn('Testing');
         $element->expects($this->never())->method('getAttributes');
 
