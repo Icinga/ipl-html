@@ -4,150 +4,117 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\HtmlString;
-
-class DefaultAttributesAsProperty extends BaseHtmlElement
-{
-    protected $tag = 'div';
-
-    protected $defaultAttributes = ['class' => 'test'];
-}
-
-class DefaultAttributesAsMethod extends BaseHtmlElement
-{
-    protected $tag = 'div';
-
-    public function getDefaultAttributes()
-    {
-        return ['class' => 'test'];
-    }
-}
-
-class VoidElementWithContent extends BaseHtmlElement
-{
-    protected $tag = 'img';
-
-    protected function assemble()
-    {
-        $this->add('content');
-    }
-}
-
-class Img extends BaseHtmlElement
-{
-    protected function tag()
-    {
-        return 'img';
-    }
-}
-
-class Div extends BaseHtmlElement
-{
-    protected $tag = 'div';
-}
-
-class NoTag extends BaseHtmlElement
-{
-
-}
-
-class SpecialHtmlString extends HtmlString
-{
-    public $state;
-
-    public function render()
-    {
-        $html = parent::render();
-
-        $this->state = 42;
-
-        return $html;
-    }
-}
-
-class AttributeValueDependingOnContent extends BaseHtmlElement
-{
-    protected $tag = 'div';
-
-    protected function assemble()
-    {
-        $specialHtmlString = new SpecialHtmlString('<hr>');
-        $this->addHtml($specialHtmlString);
-
-        $this->getAttributes()->registerAttributeCallback('state', function () use ($specialHtmlString) {
-            return $specialHtmlString->state;
-        });
-    }
-}
+use RuntimeException;
 
 class BaseHtmlElementTest extends TestCase
 {
     public function testRenderDefaultAttributesAsProperty()
     {
+        $defaultAttributesAsProperty = new class extends BaseHtmlElement {
+            protected $tag = 'div';
+
+            protected $defaultAttributes = ['class' => 'test'];
+        };
+
         $this->assertXmlStringEqualsXmlString(
             '<div class="test"></div>',
-            (new DefaultAttributesAsProperty())->render()
+            $defaultAttributesAsProperty->render()
         );
     }
 
     public function testRenderDefaultAttributesAsMethod()
     {
+        $defaultAttributesAsMethod = new class extends BaseHtmlElement {
+            protected $tag = 'div';
+
+            public function getDefaultAttributes()
+            {
+                return ['class' => 'test'];
+            }
+        };
+
         $this->assertXmlStringEqualsXmlString(
             '<div class="test"></div>',
-            (new DefaultAttributesAsMethod())->render()
+            $defaultAttributesAsMethod->render()
         );
     }
 
     public function testExceptionThrownForVoidElementsWithContent()
     {
-        $this->expectException(\RuntimeException::class);
-        (new VoidElementWithContent())->render();
+        $voidElementWithContent = new class extends BaseHtmlElement {
+            protected $tag = 'img';
+
+            protected function assemble()
+            {
+                $this->add('content');
+            }
+        };
+
+        $this->expectException(RuntimeException::class);
+        $voidElementWithContent->render();
     }
 
     public function testGetTag()
     {
-        $element = new Img();
+        $img = new class extends BaseHtmlElement {
+            protected function tag()
+            {
+                return 'img';
+            }
+        };
 
-        $this->assertSame('img', $element->getTag());
-        $this->assertTrue($element->isVoid());
-        $this->assertFalse($element->wantsClosingTag());
+        $this->assertSame('img', $img->getTag());
+        $this->assertTrue($img->isVoid());
+        $this->assertFalse($img->wantsClosingTag());
     }
 
     public function testSetTag()
     {
-        $element = new Div();
+        $div = new class extends BaseHtmlElement {
+            protected $tag = 'div';
+        };
 
-        $this->assertSame('div', $element->getTag());
-        $this->assertFalse($element->isVoid());
-        $this->assertTrue($element->wantsClosingTag());
+        $this->assertSame('div', $div->getTag());
+        $this->assertFalse($div->isVoid());
+        $this->assertTrue($div->wantsClosingTag());
 
-        $element->setTag('img');
+        $div->setTag('img');
 
-        $this->assertSame('img', $element->getTag());
-        $this->assertTrue($element->isVoid());
-        $this->assertFalse($element->wantsClosingTag());
+        $this->assertSame('img', $div->getTag());
+        $this->assertTrue($div->isVoid());
+        $this->assertFalse($div->wantsClosingTag());
     }
 
     public function testAssertTagInRender()
     {
-        $this->expectException(\RuntimeException::class);
-        (new NoTag())->render();
+        $noTag = new class extends BaseHtmlElement {};
+
+        $this->expectException(RuntimeException::class);
+        $noTag->render();
     }
 
     public function testAssertTagInIsVoid()
     {
-        $this->expectException(\RuntimeException::class);
-        (new NoTag())->isVoid();
+        $noTag = new class extends BaseHtmlElement {};
+
+        $this->expectException(RuntimeException::class);
+        $noTag->isVoid();
     }
 
     public function testAssertTagInGetTag()
     {
-        $this->expectException(\RuntimeException::class);
-        (new NoTag())->getTag();
+        $noTag = new class extends BaseHtmlElement {};
+
+        $this->expectException(RuntimeException::class);
+        $noTag->getTag();
     }
 
     public function testSetVoid()
     {
-        $element = new Img();
+        $element = new class extends BaseHtmlElement {
+            protected $tag = 'img';
+        };
+
         $this->assertFalse($element->wantsClosingTag());
         $this->assertEquals('<img />', $element->render());
         $element->setVoid();
@@ -166,11 +133,35 @@ class BaseHtmlElementTest extends TestCase
 
     public function testAttributeValueDependingOnContent()
     {
-        $element = new AttributeValueDependingOnContent();
+        $attributeValueDependingOnContent = new class extends BaseHtmlElement {
+            protected $tag = 'div';
+
+            protected function assemble()
+            {
+                $specialHtmlString = new class ('<hr>') extends HtmlString {
+                    public $state;
+
+                    public function render()
+                    {
+                        $html = parent::render();
+
+                        $this->state = 42;
+
+                        return $html;
+                    }
+                };
+
+                $this->addHtml($specialHtmlString);
+
+                $this->getAttributes()->registerAttributeCallback('state', function () use ($specialHtmlString) {
+                    return $specialHtmlString->state;
+                });
+            }
+        };
 
         $this->assertHtml(
             '<div state="42"><hr></div>',
-            $element
+            $attributeValueDependingOnContent
         );
     }
 }
