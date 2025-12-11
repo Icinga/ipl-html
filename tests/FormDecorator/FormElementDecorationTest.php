@@ -67,7 +67,7 @@ HTML;
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'Cannot use element decorators of type ipl\Html\Contract\FormElementDecoration and legacy decorator of'
-            .' type ipl\Html\Contract\FormElementDecorator together'
+            . ' type ipl\Html\Contract\FormElementDecorator together'
         );
 
         $this->form
@@ -81,7 +81,7 @@ HTML;
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'Cannot use element decorators of type ipl\Html\Contract\FormElementDecoration and legacy decorator of'
-            .' type ipl\Html\Contract\FormElementDecorator together'
+            . ' type ipl\Html\Contract\FormElementDecorator together'
         );
 
         $this->form

@@ -87,7 +87,7 @@ class BaseHtmlElementTest extends TestCase
 
     public function testAssertTagInRender()
     {
-        $noTag = new class extends BaseHtmlElement {};
+        $noTag = new class extends BaseHtmlElement {}; // phpcs:ignore
 
         $this->expectException(RuntimeException::class);
         $noTag->render();
@@ -95,7 +95,7 @@ class BaseHtmlElementTest extends TestCase
 
     public function testAssertTagInIsVoid()
     {
-        $noTag = new class extends BaseHtmlElement {};
+        $noTag = new class extends BaseHtmlElement {}; // phpcs:ignore
 
         $this->expectException(RuntimeException::class);
         $noTag->isVoid();
@@ -103,7 +103,7 @@ class BaseHtmlElementTest extends TestCase
 
     public function testAssertTagInGetTag()
     {
-        $noTag = new class extends BaseHtmlElement {};
+        $noTag = new class extends BaseHtmlElement {}; // phpcs:ignore
 
         $this->expectException(RuntimeException::class);
         $noTag->getTag();
