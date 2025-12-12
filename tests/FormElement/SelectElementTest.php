@@ -8,6 +8,7 @@ use ipl\Html\FormElement\SelectOption;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use UnexpectedValueException;
 
 class SelectElementTest extends TestCase
@@ -441,6 +442,7 @@ HTML;
         $this->assertSame([], $select->getValue());
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testNullAndTheEmptyStringAreEquallyHandled()
     {
         $form = new Form();
@@ -490,6 +492,7 @@ HTML;
         $this->assertHtml($html, $select2);
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testGetOptionGetValueAndElementGetValueHandleNullAndTheEmptyStringEqually()
     {
         $select = new SelectElement('select');
@@ -530,6 +533,7 @@ HTML;
         $this->assertHtml($html, $form->getElement('select'));
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
     {
         $select = new SelectElement('select');
