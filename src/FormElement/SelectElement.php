@@ -38,6 +38,9 @@ class SelectElement extends BaseFormElement
      */
     public function getOption($value): ?SelectOption
     {
+        // php>=8.5 does not support null as array key
+        $value = $value ?? '';
+
         return $this->options[$value] ?? null;
     }
 
@@ -141,6 +144,9 @@ class SelectElement extends BaseFormElement
         $option->getAttributes()->registerAttributeCallback('selected', function () use ($option) {
             return $this->isSelectedOption($option->getValue());
         });
+
+        // php>=8.5 does not support null as array key
+        $value = $value ?? '';
 
         $this->options[$value] = $option;
 
