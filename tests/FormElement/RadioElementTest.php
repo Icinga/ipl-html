@@ -10,6 +10,7 @@ use ipl\Html\FormElement\RadioOption;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 
 class RadioElementTest extends TestCase
 {
@@ -282,6 +283,7 @@ HTML;
         $this->assertFalse($radio->isValid());
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testNullAndTheEmptyStringAreEquallyHandled()
     {
         $form = new Form();
@@ -410,6 +412,7 @@ HTML;
         $this->assertSame('Car', $radio->getOption('car')->getLabel());
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
     {
         $radio = new RadioElement('radio');
@@ -436,6 +439,7 @@ HTML;
         $this->assertTrue($radio->getOption('')->isDisabled());
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testGetOptionGetValueAndElementGetValueHandleNullAndTheEmptyStringEqually()
     {
         $radio = new RadioElement('radio');

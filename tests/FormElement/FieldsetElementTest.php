@@ -15,7 +15,7 @@ use LogicException;
 class FieldsetElementTest extends TestCase
 {
     private const SELECT_OPTIONS_TO_TEST = [
-        null  => 'Nothing',
+        ''    => 'Nothing',
         1     => 'One',
         'two' => 2,
     ];

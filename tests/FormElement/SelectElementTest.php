@@ -8,6 +8,7 @@ use ipl\Html\FormElement\SelectOption;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\TestCase;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use UnexpectedValueException;
 
 class SelectElementTest extends TestCase
@@ -17,7 +18,7 @@ class SelectElementTest extends TestCase
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -43,7 +44,7 @@ HTML;
             'label'   => 'Customer',
             'value'   => '3',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -72,7 +73,7 @@ HTML;
             'label'   => 'Customer',
             'value'   => '4',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -93,7 +94,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                '' => 'Please choose',
                 'Some Options' => [
                     '1'  => 'The one',
                     '4'  => 'Four',
@@ -125,7 +126,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                '' => 'Please choose',
                 'Some options' => [
                     '1'  => 'The one',
                     '4'  => 'Four',
@@ -160,7 +161,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                '' => 'Please choose',
                 'Some options' => [
                     '1'  => 'The one',
                     '4'  => [
@@ -204,7 +205,7 @@ HTML;
             'label'   => 'Customer',
             'value'   => '1',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -228,7 +229,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -280,7 +281,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'     => 'Customer',
             'options'   => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -301,7 +302,7 @@ HTML;
             'label'     => 'Customer',
             'multiple'  => true,
             'options'   => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -323,7 +324,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -441,6 +442,7 @@ HTML;
         $this->assertSame([], $select->getValue());
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testNullAndTheEmptyStringAreEquallyHandled()
     {
         $form = new Form();
@@ -490,6 +492,7 @@ HTML;
         $this->assertHtml($html, $select2);
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testGetOptionGetValueAndElementGetValueHandleNullAndTheEmptyStringEqually()
     {
         $select = new SelectElement('select');
@@ -530,6 +533,7 @@ HTML;
         $this->assertHtml($html, $form->getElement('select'));
     }
 
+    #[RequiresPhp('< 8.5')]
     public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
     {
         $select = new SelectElement('select');
