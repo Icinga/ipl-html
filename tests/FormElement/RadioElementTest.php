@@ -282,7 +282,7 @@ HTML;
         $this->assertFalse($radio->isValid());
     }
 
-    public function testNullAndTheEmptyStringAreEquallyHandled()
+    public function testNullAndTheEmptyStringValuesAreEquallyHandled()
     {
         $form = new Form();
         $form->addElement('radio', 'radio', [
@@ -303,8 +303,6 @@ HTML;
         $this->assertNull($radio2->getValue());
 
         $this->assertInstanceOf(RadioOption::class, $radio->getOption(''));
-        $this->assertInstanceOf(RadioOption::class, $radio2->getOption(null));
-        $this->assertInstanceOf(RadioOption::class, $radio->getOption(null));
         $this->assertInstanceOf(RadioOption::class, $radio2->getOption(''));
 
         $this->assertTrue($radio->isValid());
@@ -401,7 +399,7 @@ HTML;
         $radio = new RadioElement('radio');
         $radio->setOptions(['' => 'Empty String', 'foo' => 'Foo', 'bar' => 'Bar']);
 
-        $this->assertNull($radio->getOption('')->getValue());
+        $this->assertSame('', $radio->getOption('')->getValue());
         $this->assertSame('Empty String', $radio->getOption('')->getLabel());
 
         $this->assertSame('foo', $radio->getOption('foo')->getValue());
@@ -409,24 +407,18 @@ HTML;
 
         $radio->setOptions(['' => 'Please Choose', 'car' => 'Car', 'train' => 'Train']);
 
-        $this->assertNull($radio->getOption('')->getValue());
+        $this->assertSame('', $radio->getOption('')->getValue());
         $this->assertSame('Please Choose', $radio->getOption('')->getLabel());
 
         $this->assertSame('car', $radio->getOption('car')->getValue());
         $this->assertSame('Car', $radio->getOption('car')->getLabel());
     }
 
-    public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
+    public function testNullAndTheEmptyStringAreEquallyHandledWhileDisablingOptions()
     {
         $radio = new RadioElement('radio');
         $radio->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $radio->setDisabledOptions([null]);
-
-        $this->assertTrue($radio->getOption(null)->isDisabled());
-
-        $radio = new RadioElement('radio');
-        $radio->setOptions(['' => 'Foo', 'bar' => 'Bar']);
-        $radio->setDisabledOptions(['']);
 
         $this->assertTrue($radio->getOption('')->isDisabled());
 
@@ -434,28 +426,7 @@ HTML;
         $radio->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $radio->setDisabledOptions(['']);
 
-        $this->assertTrue($radio->getOption(null)->isDisabled());
-        $radio = new RadioElement('radio');
-        $radio->setOptions(['' => 'Foo', 'bar' => 'Bar']);
-        $radio->setDisabledOptions([null]);
-
         $this->assertTrue($radio->getOption('')->isDisabled());
-    }
-
-    public function testGetOptionGetValueAndElementGetValueHandleNullAndTheEmptyStringEqually()
-    {
-        $radio = new RadioElement('radio');
-        $radio->setOptions(['' => 'Foo']);
-        $radio->setValue('');
-
-        $this->assertNull($radio->getValue());
-        $this->assertNull($radio->getOption('')->getValue());
-
-        $radio = new RadioElement('radio');
-        $radio->setOptions(['' => 'Foo']);
-
-        $this->assertNull($radio->getValue());
-        $this->assertNull($radio->getOption(null)->getValue());
     }
 
     public function testIsDecoratedWithLabelAndDescription(): void

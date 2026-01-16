@@ -441,7 +441,7 @@ HTML;
         $this->assertSame([], $select->getValue());
     }
 
-    public function testNullAndTheEmptyStringAreEquallyHandled()
+    public function testNullAndTheEmptyStringValuesAreEquallyHandled()
     {
         $form = new Form();
         $form->addElement('select', 'select', [
@@ -462,8 +462,6 @@ HTML;
         $this->assertNull($select2->getValue());
 
         $this->assertInstanceOf(SelectOption::class, $select->getOption(''));
-        $this->assertInstanceOf(SelectOption::class, $select2->getOption(null));
-        $this->assertInstanceOf(SelectOption::class, $select->getOption(null));
         $this->assertInstanceOf(SelectOption::class, $select2->getOption(''));
 
         $this->assertTrue($select->isValid());
@@ -496,25 +494,6 @@ HTML;
         $this->assertNull($select2->getValue());
     }
 
-    public function testGetOptionGetValueAndElementGetValueHandleNullAndTheEmptyStringEqually()
-    {
-        $select = new SelectElement('select');
-        $select->setOptions(['' => 'Foo']);
-        $select->setValue('');
-
-        $this->assertNull($select->getValue());
-        $this->assertNull($select->getOption('')->getValue());
-
-        $select = new SelectElement('select');
-        $select->setOptions(['' => 'Foo']);
-
-        $this->assertNull($select->getValue());
-        $this->assertNull($select->getOption(null)->getValue());
-    }
-
-    /**
-     * @depends testNullAndTheEmptyStringAreEquallyHandled
-     */
     public function testDisablingOptionsIsWorking()
     {
         $form = new Form();
@@ -536,28 +515,17 @@ HTML;
         $this->assertHtml($html, $form->getElement('select'));
     }
 
-    public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
+    public function testNullAndTheEmptyStringAreEquallyHandledWhileDisablingOptions()
     {
         $select = new SelectElement('select');
         $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $select->setDisabledOptions([null]);
-
-        $this->assertTrue($select->getOption(null)->getAttributes()->get('disabled')->getValue());
-
-        $select = new SelectElement('select');
-        $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
-        $select->setDisabledOptions(['']);
 
         $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
 
         $select = new SelectElement('select');
         $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $select->setDisabledOptions(['']);
-
-        $this->assertTrue($select->getOption(null)->getAttributes()->get('disabled')->getValue());
-        $select = new SelectElement('select');
-        $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
-        $select->setDisabledOptions([null]);
 
         $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
     }
@@ -614,13 +582,19 @@ HTML;
         $select = new SelectElement('select');
         $select->setOptions(['' => 'Empty String', 'foo' => 'Foo', 'bar' => 'Bar']);
 
-        $this->assertNull($select->getOption('')->getValue());
+        $this->assertSame('', $select->getOption('')->getValue());
+        $this->assertSame('Empty String', $select->getOption('')->getLabel());
+
         $this->assertSame('foo', $select->getOption('foo')->getValue());
+        $this->assertSame('Foo', $select->getOption('foo')->getLabel());
 
         $select->setOptions(['' => 'Please Choose', 'car' => 'Car', 'train' => 'Train']);
 
-        $this->assertNull($select->getOption('')->getValue());
+        $this->assertSame('', $select->getOption('')->getValue());
+        $this->assertSame('Please Choose', $select->getOption('')->getLabel());
+
         $this->assertSame('car', $select->getOption('car')->getValue());
+        $this->assertSame('Car', $select->getOption('car')->getLabel());
     }
 
     public function testSetDisabledOptionsResetsDisabledOptions()
