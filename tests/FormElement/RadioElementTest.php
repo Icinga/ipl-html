@@ -290,7 +290,7 @@ HTML;
             'value' => ''
         ]);
         $form->addElement('radio', 'radio2', [
-            'options' => [null => 'Please choose'],
+            'options' => ['' => 'Please choose'],
             'value' => null
         ]);
 
@@ -419,7 +419,7 @@ HTML;
     public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
     {
         $radio = new RadioElement('radio');
-        $radio->setOptions([null => 'Foo', 'bar' => 'Bar']);
+        $radio->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $radio->setDisabledOptions([null]);
 
         $this->assertTrue($radio->getOption(null)->isDisabled());
@@ -431,7 +431,7 @@ HTML;
         $this->assertTrue($radio->getOption('')->isDisabled());
 
         $radio = new RadioElement('radio');
-        $radio->setOptions([null => 'Foo', 'bar' => 'Bar']);
+        $radio->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $radio->setDisabledOptions(['']);
 
         $this->assertTrue($radio->getOption(null)->isDisabled());
@@ -452,7 +452,7 @@ HTML;
         $this->assertNull($radio->getOption('')->getValue());
 
         $radio = new RadioElement('radio');
-        $radio->setOptions([null => 'Foo']);
+        $radio->setOptions(['' => 'Foo']);
 
         $this->assertNull($radio->getValue());
         $this->assertNull($radio->getOption(null)->getValue());

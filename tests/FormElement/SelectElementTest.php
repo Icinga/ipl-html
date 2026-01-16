@@ -17,7 +17,7 @@ class SelectElementTest extends TestCase
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -43,7 +43,7 @@ HTML;
             'label'   => 'Customer',
             'value'   => '3',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -72,7 +72,7 @@ HTML;
             'label'   => 'Customer',
             'value'   => '4',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -93,7 +93,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                '' => 'Please choose',
                 'Some Options' => [
                     '1'  => 'The one',
                     '4'  => 'Four',
@@ -125,7 +125,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                '' => 'Please choose',
                 'Some options' => [
                     '1'  => 'The one',
                     '4'  => 'Four',
@@ -160,7 +160,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                '' => 'Please choose',
                 'Some options' => [
                     '1'  => 'The one',
                     '4'  => [
@@ -204,7 +204,7 @@ HTML;
             'label'   => 'Customer',
             'value'   => '1',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -228,7 +228,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -280,7 +280,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'     => 'Customer',
             'options'   => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -301,7 +301,7 @@ HTML;
             'label'     => 'Customer',
             'multiple'  => true,
             'options'   => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -323,7 +323,7 @@ HTML;
         $select = new SelectElement('elname', [
             'label'   => 'Customer',
             'options' => [
-                null => 'Please choose',
+                ''   => 'Please choose',
                 '1'  => 'The one',
                 '4'  => 'Four',
                 '5'  => 'Hi five',
@@ -449,7 +449,7 @@ HTML;
             'value' => ''
         ]);
         $form->addElement('select', 'select2', [
-            'options' => [null => 'Please choose'],
+            'options' => ['' => 'Please choose'],
             'value' => null
         ]);
 
@@ -506,7 +506,7 @@ HTML;
         $this->assertNull($select->getOption('')->getValue());
 
         $select = new SelectElement('select');
-        $select->setOptions([null => 'Foo']);
+        $select->setOptions(['' => 'Foo']);
 
         $this->assertNull($select->getValue());
         $this->assertNull($select->getOption(null)->getValue());
@@ -539,7 +539,7 @@ HTML;
     public function testNullAndTheEmptyStringAreAlsoEquallyHandledWhileDisablingOptions()
     {
         $select = new SelectElement('select');
-        $select->setOptions([null => 'Foo', 'bar' => 'Bar']);
+        $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $select->setDisabledOptions([null]);
 
         $this->assertTrue($select->getOption(null)->getAttributes()->get('disabled')->getValue());
@@ -551,7 +551,7 @@ HTML;
         $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
 
         $select = new SelectElement('select');
-        $select->setOptions([null => 'Foo', 'bar' => 'Bar']);
+        $select->setOptions(['' => 'Foo', 'bar' => 'Bar']);
         $select->setDisabledOptions(['']);
 
         $this->assertTrue($select->getOption(null)->getAttributes()->get('disabled')->getValue());
