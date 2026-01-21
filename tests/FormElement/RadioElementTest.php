@@ -341,6 +341,12 @@ HTML;
 HTML;
 
         $this->assertHtml($html, $radio2);
+
+        $radio->setValue(null);
+        $this->assertNull($radio->getValue());
+
+        $radio2->setValue('');
+        $this->assertNull($radio2->getValue());
     }
 
     public function testSetOptionsResetsOptions()
@@ -469,5 +475,112 @@ HTML;
 
         $radio->applyDecoration();
         $this->assertHtml($html, $radio);
+    }
+
+    public function testSetDisabledOptionsResetsDisabledOptions()
+    {
+        $radio = new RadioElement('test', [
+            'options'   => [
+                '1' => 'Foo',
+                2   => 'Bar',
+                3   => 'Yes'
+            ]
+        ]);
+
+        $radio->setDisabledOptions(['1']);
+        $this->assertTrue($radio->getOption('1')->isDisabled());
+        $this->assertFalse($radio->getOption(2)->isDisabled());
+        $this->assertFalse($radio->getOption(3)->isDisabled());
+
+        $radio->setDisabledOptions([3]);
+        $this->assertFalse($radio->getOption('1')->isDisabled());
+        $this->assertFalse($radio->getOption(2)->isDisabled());
+        $this->assertTrue($radio->getOption(3)->isDisabled());
+
+        $radio->setDisabledOptions([]);
+        $this->assertFalse($radio->getOption('1')->isDisabled());
+        $this->assertFalse($radio->getOption(2)->isDisabled());
+        $this->assertFalse($radio->getOption(3)->isDisabled());
+    }
+
+
+    public function testEmptyStringOptionCannotBeDisabledByFalsyValuesExceptNullOrEmptyString()
+    {
+        $radio = new RadioElement('test', [
+            'options' => [
+                ''      => 'Option to disable',
+                'foo'   => 'Foo'
+            ]
+        ]);
+
+        $radio->setDisabledOptions([false, 0, [], 0.0]);
+        $this->assertFalse($radio->getOption('')->isDisabled());
+
+        $radio->setDisabledOptions([null]);
+        $this->assertTrue($radio->getOption('')->isDisabled());
+
+        $radio->setDisabledOptions(['']);
+        $this->assertTrue($radio->getOption('')->isDisabled());
+    }
+
+    public function testEmptyStringOptionCannotBeCheckedByFalsyValuesExceptNullOrEmptyString()
+    {
+        $radio = new RadioElement('test', [
+            'options' => [
+                ''      => 'Option to check',
+                'foo'   => 'Foo'
+            ]
+        ]);
+
+        $radio->setValue(false);
+        $this->assertStringNotContainsString('checked', $radio->render());
+
+        $radio->setValue(0);
+        $this->assertStringNotContainsString('checked', $radio->render());
+
+        $radio->setValue([]);
+        $this->assertStringNotContainsString('checked', $radio->render());
+
+        $radio->setValue(0.0);
+        $this->assertStringNotContainsString('checked', $radio->render());
+
+        $radio->setValue('');
+        $this->assertStringContainsString('checked', $radio->render());
+
+        $radio->setValue(null);
+        $this->assertStringContainsString('checked', $radio->render());
+    }
+
+    public function testDisabledOptionsCanBePreSet()
+    {
+        $radio = new RadioElement('test', [
+            'disabledOptions' => ['foo']
+        ]);
+        $radio->setOptions(['foo' => 'Foo', 'bar' => 'Bar']);
+
+        $this->assertTrue($radio->getOption('foo')->isDisabled());
+        $this->assertFalse($radio->getOption('bar')->isDisabled());
+    }
+
+    public function testGetOptionThrowsExceptionIfOptionDoesNotExist()
+    {
+        $radio = new RadioElement('test');
+        $radio->setOptions(['foo' => 'Foo']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('There is no such option "bar"');
+        $radio->getOption('bar');
+    }
+
+    public function testAttributesAreAppliedToAllOptions()
+    {
+        $radio = new RadioElement('test', [
+            'options' => ['foo' => 'Foo', 'bar' => 'Bar'],
+            'class'   => 'my-radio'
+        ]);
+
+        $html = $radio->render();
+        $this->assertStringContainsString('class="my-radio"', $html);
+        $this->assertSame(2, substr_count($html, 'class="my-radio"'));
     }
 }

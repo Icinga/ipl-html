@@ -488,6 +488,12 @@ HTML;
 </select>
 HTML;
         $this->assertHtml($html, $select2);
+
+        $select->setValue(null);
+        $this->assertNull($select->getValue());
+
+        $select2->setValue('');
+        $this->assertNull($select2->getValue());
     }
 
     public function testGetOptionGetValueAndElementGetValueHandleNullAndTheEmptyStringEqually()
@@ -597,10 +603,10 @@ HTML;
 
         $select->setOptions(['car' => 'Car', 'train' => 'Train']);
 
+        $this->assertNull($select->getOption('foo'));
+        $this->assertNull($select->getOption('bar'));
         $this->assertInstanceOf(SelectOption::class, $select->getOption('car'));
         $this->assertInstanceOf(SelectOption::class, $select->getOption('train'));
-
-        $this->assertNull($select->getOption('foo'));
     }
 
     public function testGetOptionReturnsPreviouslySetOption()
@@ -615,5 +621,146 @@ HTML;
 
         $this->assertNull($select->getOption('')->getValue());
         $this->assertSame('car', $select->getOption('car')->getValue());
+    }
+
+    public function testSetDisabledOptionsResetsDisabledOptions()
+    {
+        $select = new SelectElement('test', [
+            'options'   => [
+                '1' => 'Foo',
+                2   => 'Bar',
+                3   => 'Yes'
+            ]
+        ]);
+
+        $select->setDisabledOptions(['1']);
+        $this->assertTrue($select->getOption('1')->getAttributes()->get('disabled')->getValue());
+        $this->assertFalse($select->getOption(2)->getAttributes()->get('disabled')->getValue());
+        $this->assertFalse($select->getOption(3)->getAttributes()->get('disabled')->getValue());
+
+        $select->setDisabledOptions([3]);
+        $this->assertFalse($select->getOption('1')->getAttributes()->get('disabled')->getValue());
+        $this->assertFalse($select->getOption(2)->getAttributes()->get('disabled')->getValue());
+        $this->assertTrue($select->getOption(3)->getAttributes()->get('disabled')->getValue());
+
+        $select->setDisabledOptions([]);
+        $this->assertFalse($select->getOption('1')->getAttributes()->get('disabled')->getValue());
+        $this->assertFalse($select->getOption(2)->getAttributes()->get('disabled')->getValue());
+        $this->assertFalse($select->getOption(3)->getAttributes()->get('disabled')->getValue());
+    }
+
+    public function testEmptyStringOptionCannotBeDisabledByFalsyValuesExceptNullOrEmptyString()
+    {
+        $select = new SelectElement('test', [
+            'options' => [
+                ''      => 'Option to disable',
+                'foo'   => 'Foo'
+            ]
+        ]);
+
+        $select->setDisabledOptions([false, 0, [], 0.0]);
+        $this->assertFalse($select->getOption('')->getAttributes()->get('disabled')->getValue());
+
+        $select->setDisabledOptions([null]);
+        $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
+
+        $select->setDisabledOptions(['']);
+        $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
+    }
+
+    public function testEmptyStringOptionCannotBeSelectedByFalsyValuesExceptNullOrEmptyString()
+    {
+        $select = new SelectElement('test', [
+            'options' => [
+                ''      => 'Option to select',
+                'foo'   => 'Foo'
+            ]
+        ]);
+
+        $select->setValue(false);
+        $this->assertStringNotContainsString('selected', $select->render());
+
+        $select->setValue(0);
+        $this->assertStringNotContainsString('selected', $select->render());
+
+        $select->setValue(0.0);
+        $this->assertStringNotContainsString('selected', $select->render());
+
+        $select->setValue('');
+        $this->assertStringContainsString('selected', $select->render());
+
+        $select->setValue(null);
+        $this->assertStringContainsString('selected', $select->render());
+    }
+
+    public function testNumbersOfTypeIntOrStringAsOptionKeysAreHandledEqually()
+    {
+        $select = new SelectElement('test', [
+            'label'     => 'Test',
+            'options'   => [
+                '1' => 'Foo',
+                2   => 'Bar',
+                3   => 'Yes'
+            ]
+        ]);
+
+        $select->setValue(2);
+
+        $html = <<<'HTML'
+<select name="test">
+    <option value="1">Foo</option>
+    <option value="2" selected>Bar</option>
+    <option value="3">Yes</option>
+</select>
+HTML;
+        $this->assertHtml($html, $select);
+
+        $select->setValue('2');
+        $this->assertHtml($html, $select);
+
+        $select->setDisabledOptions([2]);
+        $this->assertTrue($select->getOption(2)->getAttributes()->get('disabled')->getValue());
+
+        $select->setDisabledOptions(['2']);
+        $this->assertTrue($select->getOption(2)->getAttributes()->get('disabled')->getValue());
+
+        $select->setOptions([]);
+
+        $select->setDisabledOptions(['5']);
+
+        $select->setOptions(['5' => 'Five', 8 => 'Eight']);
+        $this->assertTrue($select->getOption(5)->getAttributes()->get('disabled')->getValue());
+
+        $select->getOption(5)->getAttributes()->get('disabled')->setValue(false);
+        $this->assertFalse($select->getOption(5)->getAttributes()->get('disabled')->getValue());
+    }
+
+    public function testDisabledOptionsCanBePreSet()
+    {
+        $select = new SelectElement('test', [
+            'disabledOptions' => ['foo']
+        ]);
+        $select->setOptions(['foo' => 'Foo', 'bar' => 'Bar']);
+
+        $this->assertTrue($select->getOption('foo')->getAttributes()->get('disabled')->getValue());
+        $this->assertFalse($select->getOption('bar')->getAttributes()->get('disabled')->getValue());
+    }
+
+    public function testGetOptionReturnsNullIfOptionDoesNotExist()
+    {
+        $select = new SelectElement('test');
+        $select->setOptions(['foo' => 'Foo']);
+
+        $this->assertNull($select->getOption('bar'));
+    }
+
+    public function testMultiOptionsAttributeIsSupportedForZf1Compatibility()
+    {
+        $select = new SelectElement('test', [
+            'multiOptions' => ['foo' => 'Foo', 'bar' => 'Bar']
+        ]);
+
+        $this->assertInstanceOf(SelectOption::class, $select->getOption('foo'));
+        $this->assertInstanceOf(SelectOption::class, $select->getOption('bar'));
     }
 }
