@@ -56,7 +56,7 @@ interface FormElement extends Wrappable
      *
      * @return $this
      */
-    public function addMessage($message);
+    public function addMessage(string $message): static;
 
     /**
      * Get the name of the element

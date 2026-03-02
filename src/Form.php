@@ -277,7 +277,7 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
                     $this->onSuccess();
                     $this->emitOnce(Contract\Form::ON_SUBMIT, [$this]);
                 } catch (Throwable $e) {
-                    $this->addMessage($e);
+                    $this->addMessage($e->getMessage());
                     $this->onError();
                     $this->emit(Contract\Form::ON_ERROR, [$e, $this]);
                 }
