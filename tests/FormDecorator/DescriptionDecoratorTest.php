@@ -91,6 +91,23 @@ class DescriptionDecoratorTest extends TestCase
         $this->assertHtml('<p class="form-element-description" id="desc_test-id"></p>', $results->assemble());
     }
 
+    public function testAriaDescribedByIsAppendedIfAlreadyExists(): void
+    {
+        $element = new TextElement('test', [
+            'description'       => 'Testing',
+            'id'                => 'test-id',
+            'aria-describedby'  => 'preset-id'
+        ]);
+
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $element);
+
+        $this->assertTrue($element->getAttributes()->has('aria-describedby'));
+        $this->assertSame(
+            ['preset-id', 'desc_test-id'],
+            $element->getAttributes()->get('aria-describedby')->getValue()
+        );
+    }
+
     public function testWithoutDescriptionAttribute(): void
     {
         $results = new FormElementDecorationResult();
