@@ -536,7 +536,7 @@ trait FormElements
         return $this;
     }
 
-    public function isValidEvent($event)
+    public function isValidEvent(string $event): bool
     {
         return in_array($event, [
             Form::ON_SUBMIT,

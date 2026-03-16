@@ -11,14 +11,14 @@
   "require": {
     "php": ">=8.2",
     "ext-fileinfo": "*",
-    "ipl/stdlib": ">=0.12.0",
+    "ipl/stdlib": "dev-modernize-code-with-breaking-changes",
     "ipl/validator": ">=0.5.0",
     "psr/http-message": "^1.1",
     "guzzlehttp/psr7": "^2.8"
   },
   "require-dev": {
     "ext-dom": "*",
-    "ipl/stdlib": "dev-main",
+    "ipl/stdlib": "dev-modernize-code-with-breaking-changes",
     "ipl/validator": "dev-main"
   },
   "autoload": {
