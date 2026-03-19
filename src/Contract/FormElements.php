@@ -100,4 +100,11 @@ interface FormElements extends EventEmitterInterface
      * @return $this
      */
     public function populate(iterable $values);
+
+    /**
+     * Validate all elements that have a value
+     *
+     * @return $this
+     */
+    public function validatePartial(): static;
 }

@@ -70,29 +70,6 @@ class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\Form
         return $this;
     }
 
-    /**
-     * Validate all elements that have a value
-     *
-     * @return $this
-     */
-    public function validatePartial(): static
-    {
-        $this->ensureAssembled();
-
-        foreach ($this->getElements() as $element) {
-            if ($element->hasValue()) {
-                if ($element instanceof self) {
-                    // Validate only the elements of the fieldset that have a value
-                    $element->validatePartial();
-                } else {
-                    $element->validate();
-                }
-            }
-        }
-
-        return $this;
-    }
-
     public function validate()
     {
         $this->ensureAssembled();

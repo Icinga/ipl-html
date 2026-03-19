@@ -8,7 +8,6 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
 use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormDecoration\FormDecorationResult;
-use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
@@ -343,29 +342,6 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
         }
 
         $this->isValid = $valid;
-
-        return $this;
-    }
-
-    /**
-     * Validate all elements that have a value
-     *
-     * @return $this
-     */
-    public function validatePartial()
-    {
-        $this->ensureAssembled();
-
-        foreach ($this->getElements() as $element) {
-            if ($element->hasValue()) {
-                if ($element instanceof FieldsetElement) {
-                    // Validate only the elements of the fieldset that have a value
-                    $element->validatePartial();
-                } else {
-                    $element->validate();
-                }
-            }
-        }
 
         return $this;
     }
