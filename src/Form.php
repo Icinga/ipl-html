@@ -6,9 +6,9 @@ use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormSubmitElement;
-use ipl\Html\Contract\MutableHtml;
 use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormDecoration\FormDecorationResult;
+use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
 use Psr\Http\Message\ServerRequestInterface;
@@ -358,7 +358,12 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
 
         foreach ($this->getElements() as $element) {
             if ($element->hasValue()) {
-                $element->validate();
+                if ($element instanceof FieldsetElement) {
+                    // Validate only the elements of the fieldset that have a value
+                    $element->validatePartial();
+                } else {
+                    $element->validate();
+                }
             }
         }
 
