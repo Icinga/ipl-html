@@ -42,10 +42,10 @@ class FormTest extends TestCase
 
         $form->handleRequest($request);
 
-        $request2 = $this->createMock(ServerRequestInterface::class);
-        $request2->expects($this->any())->method('getMethod')->willReturn('POST');
-        $request2->expects($this->once())->method('getParsedBody')->willReturn([]);
-        $request2->expects($this->once())->method('getUploadedFiles')->willReturn([]);
+        $request2 = $this->createStub(ServerRequestInterface::class);
+        $request2->method('getMethod')->willReturn('POST');
+        $request2->method('getParsedBody')->willReturn([]);
+        $request2->method('getUploadedFiles')->willReturn([]);
 
         $form->handleRequest($request2);
     }
