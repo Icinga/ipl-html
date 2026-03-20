@@ -2,7 +2,6 @@
 
 namespace ipl\Html\FormElement;
 
-use Generator;
 use InvalidArgumentException;
 use ipl\Html\Contract\DecorableFormElement;
 use ipl\Html\Contract\DefaultFormElementDecoration;
@@ -105,19 +104,6 @@ trait FormElements
     public function getElements()
     {
         return $this->elements;
-    }
-
-    public function yieldElements(): Generator
-    {
-        $this->ensureAssembled();
-
-        foreach ($this->elements as $element) {
-            if ($element instanceof \ipl\Html\Contract\FormElements) {
-                yield from $element->yieldElements();
-            } else {
-                yield $element;
-            }
-        }
     }
 
     public function hasElement($element)

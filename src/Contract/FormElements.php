@@ -3,7 +3,6 @@
 namespace ipl\Html\Contract;
 
 use Evenement\EventEmitterInterface;
-use Generator;
 use InvalidArgumentException;
 
 interface FormElements extends EventEmitterInterface
@@ -17,15 +16,6 @@ interface FormElements extends EventEmitterInterface
      * @return FormElement[]
      */
     public function getElements();
-
-    /**
-     * Yield all sub form elements by traversing the form elements tree recursively
-     *
-     * Recurses into nested {@see FormElements} instances instead of yielding them directly.
-     *
-     * @return Generator<FormElement>
-     */
-    public function yieldElements(): Generator;
 
     /**
      * Get whether the given element exists

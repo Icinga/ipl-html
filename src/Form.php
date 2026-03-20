@@ -2,6 +2,7 @@
 
 namespace ipl\Html;
 
+use Generator;
 use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormDecoration;
 use ipl\Html\Contract\FormElement;
@@ -353,9 +354,7 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
      */
     public function validatePartial()
     {
-        $this->ensureAssembled();
-
-        foreach ($this->yieldElements() as $element) {
+        foreach ($this->yieldElements($this) as $element) {
             if ($element->hasValue()) {
                 $element->validate();
             }
@@ -440,5 +439,29 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
         $this->baseBeforeRender();
 
         $this->applyDecoration();
+    }
+
+    /**
+     * Yield all sub form elements of $from by traversing the form elements tree recursively
+     *
+     * Recurses into nested {@see FormElements} instances instead of yielding them directly.
+     *
+     * @param Contract\FormElements $from Entry point for traversing
+     *
+     * @return Generator<FormElement>
+     */
+    protected function yieldElements(Contract\FormElements $from): Generator
+    {
+        if ($from instanceof HtmlDocument) {
+            $from->ensureAssembled();
+        }
+
+        foreach ($from->getElements() as $element) {
+            if ($element instanceof Contract\FormElements) {
+                yield from $this->yieldElements($element);
+            } else {
+                yield $element;
+            }
+        }
     }
 }
