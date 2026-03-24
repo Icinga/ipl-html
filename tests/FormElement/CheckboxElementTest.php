@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\FormElement\CheckboxElement;
+use ipl\Html\Test\TestCase;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 

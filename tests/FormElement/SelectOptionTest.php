@@ -4,7 +4,7 @@ namespace ipl\Tests\Html\FormElement;
 
 use ipl\Html\FormElement\SelectElement;
 use ipl\Html\FormElement\SelectOption;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class SelectOptionTest extends TestCase
 {

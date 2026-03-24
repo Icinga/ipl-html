@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use InvalidArgumentException;
 use ipl\Html\Html;
+use ipl\Html\Test\TestCase;
 
 class HtmlTest extends TestCase
 {

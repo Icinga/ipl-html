@@ -5,6 +5,7 @@ namespace ipl\Tests\Html;
 use ipl\Html\Form;
 use ipl\Html\FormElement\TextElement;
 use ipl\Html\Html;
+use ipl\Html\Test\TestCase;
 
 class DocumentationFormsTest extends TestCase
 {

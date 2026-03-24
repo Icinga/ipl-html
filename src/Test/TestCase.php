@@ -1,6 +1,6 @@
 <?php
 
-namespace ipl\Tests\Html;
+namespace ipl\Html\Test;
 
 use DOMDocument;
 use ipl\Html\ValidHtml;

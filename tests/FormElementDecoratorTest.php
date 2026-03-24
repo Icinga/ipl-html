@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Form;
+use ipl\Html\Test\TestCase;
 use ipl\Tests\Html\TestDummy\PositionedFormElementDecorator;
 use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
 use ipl\Tests\Html\TestDummy\WithinContainerFormElementDecorator;

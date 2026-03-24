@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use DateTime;
 use ipl\Html\FormElement\LocalDateTimeElement;
+use ipl\Html\Test\TestCase;
 
 class LocalDateTimeElementTest extends TestCase
 {

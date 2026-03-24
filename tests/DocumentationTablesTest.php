@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Table;
+use ipl\Html\Test\TestCase;
 
 class DocumentationTablesTest extends TestCase
 {

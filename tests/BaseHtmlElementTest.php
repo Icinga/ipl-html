@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\HtmlString;
+use ipl\Html\Test\TestCase;
 use RuntimeException;
 
 class BaseHtmlElementTest extends TestCase

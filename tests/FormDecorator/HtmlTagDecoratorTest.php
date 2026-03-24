@@ -8,7 +8,7 @@ use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\HtmlTagDecorator;
 use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\FormElement\TextElement;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 use RuntimeException;
 
 class HtmlTagDecoratorTest extends TestCase

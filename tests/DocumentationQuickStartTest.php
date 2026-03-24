@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Html;
+use ipl\Html\Test\TestCase;
 
 class DocumentationQuickStartTest extends TestCase
 {

@@ -3,8 +3,9 @@
 namespace ipl\Tests\Html;
 
 use Exception;
-use ipl\Html\TemplateString;
 use ipl\Html\Html;
+use ipl\Html\TemplateString;
+use ipl\Html\Test\TestCase;
 
 class TemplateStringTest extends TestCase
 {

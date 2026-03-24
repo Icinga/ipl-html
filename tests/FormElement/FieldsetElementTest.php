@@ -7,7 +7,7 @@ use ipl\Html\FormDecorator\DivDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
 use ipl\Validator\CallbackValidator;
 use LogicException;

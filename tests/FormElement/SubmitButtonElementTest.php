@@ -4,7 +4,7 @@ namespace ipl\Tests\Html\FormElement;
 
 use ipl\Html\Form;
 use ipl\Html\FormElement\SubmitButtonElement;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class SubmitButtonElementTest extends TestCase
 {

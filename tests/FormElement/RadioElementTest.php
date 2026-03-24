@@ -9,7 +9,7 @@ use ipl\Html\FormElement\RadioElement;
 use ipl\Html\FormElement\RadioOption;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class RadioElementTest extends TestCase
 {

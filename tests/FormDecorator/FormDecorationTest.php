@@ -9,7 +9,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\Html;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class FormDecorationTest extends TestCase
 {

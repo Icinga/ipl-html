@@ -4,7 +4,7 @@ namespace ipl\Tests\Html\FormDecorator;
 
 use ipl\Html\Form;
 use ipl\Html\FormElement\TextElement;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 use ipl\Tests\Html\TestDummy\SimpleFormElementDecorator;
 use RuntimeException;
 
