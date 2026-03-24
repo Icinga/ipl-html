@@ -4,37 +4,31 @@ namespace ipl\Html\Test;
 
 use DOMDocument;
 use ipl\Html\ValidHtml;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
-// phpcs:disable
-if (class_exists('PHPUnit_Util_XML')) {
-    // Support older PHPUnit versions
-    class_alias('PHPUnit_Util_XML', 'PHPUnit\\Util\\Xml');
-}
-
-// phpcs:enable
-
-abstract class TestCase extends \PHPUnit\Framework\TestCase
+abstract class TestCase extends BaseTestCase
 {
     /**
      * Assert that HTML is equal
      *
-     * @param string    $expectedHtml
+     * @param string    $expected
      * @param ValidHtml $actual
      */
-    protected function assertHtml($expectedHtml, ValidHtml $actualHtml)
+    protected function assertHtml(string $expected, ValidHtml $actual): void
     {
         $expectedHtml = str_replace(
             "\n",
             '',
-            preg_replace('/^\s+/m', '', trim($expectedHtml))
+            preg_replace('/^\s+/m', '', trim($expected))
         );
+        $actualHtml = $actual->render();
 
-        $expected = new DOMDocument();
-        $this->assertTrue($expected->loadHTML($expectedHtml), 'Expected HTML is not valid');
-        $actual = new DOMDocument();
-        $this->assertTrue($actual->loadHTML($actualHtml->render()), 'Actual HTML is not valid');
+        $expectedDom = new DOMDocument();
+        $this->assertTrue($expectedDom->loadHTML($expectedHtml), 'Expected HTML is not valid');
+        $actualDom = new DOMDocument();
+        $this->assertTrue($actualDom->loadHTML($actualHtml), 'Actual HTML is not valid');
 
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expectedDom, $actualDom);
     }
 
     /**
@@ -42,7 +36,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * processed must have a root node, e.g. the HTML `<b>foo</b><b>bar</b>` would always fail with "Extra content at
      * the end of the document". {@link assertHtml()} just does the job.
      */
-    protected function assertRendersHtml($html, ValidHtml $element)
+    protected function assertRendersHtml(string $html, ValidHtml $element): void
     {
         $this->assertXmlStringEqualsXmlString($html, $element->render());
     }
