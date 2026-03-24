@@ -433,12 +433,12 @@ trait FormElements
      * Add a decorator loader
      *
      * @param string $namespace Namespace of the decorators
-     * @param string $postfix   Decorator name postfix, if any
+     * @param ?string $postfix Decorator name postfix, if any
      *
      * @return $this
      * @deprecated Use {@see addElementDecoratorLoaderPaths()} instead
      */
-    public function addDecoratorLoader($namespace, $postfix = null)
+    public function addDecoratorLoader(string $namespace, ?string $postfix = null): static
     {
         $this->addPluginLoader('decorator', $namespace, $postfix);
 
@@ -449,11 +449,11 @@ trait FormElements
      * Add an element loader
      *
      * @param string $namespace Namespace of the elements
-     * @param string $postfix   Element name postfix, if any
+     * @param ?string $postfix Element name postfix, if any
      *
      * @return $this
      */
-    public function addElementLoader($namespace, $postfix = null)
+    public function addElementLoader(string $namespace, ?string $postfix = null): static
     {
         $this->addPluginLoader('element', $namespace, $postfix);
 
