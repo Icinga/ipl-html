@@ -5,6 +5,7 @@ namespace ipl\Tests\Html;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\Html as h;
 use ipl\Html\HtmlDocument;
+use ipl\Html\Test\TestCase;
 use ipl\Tests\Html\TestDummy\AddsContentDuringAssemble;
 use ipl\Tests\Html\TestDummy\AddsWrapperDuringAssemble;
 use ipl\Tests\Html\TestDummy\IterableElement;

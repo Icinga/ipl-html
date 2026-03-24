@@ -5,7 +5,7 @@ namespace ipl\Tests\Html\FormDecorator;
 use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\Transformation;
 use ipl\Html\Html;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class DecorationResultsTest extends TestCase
 {

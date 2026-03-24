@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\HtmlString;
+use ipl\Html\Test\TestCase;
 use ipl\Html\Text;
 
 class HtmlStringTest extends TestCase

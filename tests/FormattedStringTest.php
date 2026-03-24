@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\FormattedString;
 use ipl\Html\Html;
+use ipl\Html\Test\TestCase;
 use ipl\Tests\Html\TestDummy\ObjectThatCanBeCastedToString;
 
 class FormattedStringTest extends TestCase

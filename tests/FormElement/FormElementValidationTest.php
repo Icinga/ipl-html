@@ -7,7 +7,7 @@ use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\TextElement;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 use ipl\Validator\CallbackValidator;
 
 class FormElementValidationTest extends TestCase

@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\HtmlDocument;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 use ValueError;
 
 class DecoratorChainTest extends TestCase

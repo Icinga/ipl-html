@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\Form;
 use ipl\Html\FormElement\BaseFormElement;
+use ipl\Html\Test\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 
 class FormTest extends TestCase

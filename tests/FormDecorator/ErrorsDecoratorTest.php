@@ -6,7 +6,7 @@ use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\ErrorsDecorator;
 use ipl\Html\FormElement\TextElement;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class ErrorsDecoratorTest extends TestCase
 {

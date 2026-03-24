@@ -6,6 +6,7 @@ use ipl\Html\Attribute;
 use ipl\Html\Attributes;
 use ipl\Html\BaseHtmlElement;
 use ipl\Html\HtmlString;
+use ipl\Html\Test\TestCase;
 use ipl\Html\ValidHtml;
 
 class AttributesTest extends TestCase

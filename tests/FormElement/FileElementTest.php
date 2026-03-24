@@ -11,7 +11,7 @@ use ipl\Html\FormElement\FileElement;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
 use ipl\Tests\Html\Lib\FileElementWithAdjustableConfig;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 use Psr\Http\Message\StreamInterface;
 
 class FileElementTest extends TestCase

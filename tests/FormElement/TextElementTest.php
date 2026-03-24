@@ -4,7 +4,7 @@ namespace ipl\Tests\Html\FormElement;
 
 use ipl\Html\Attributes;
 use ipl\Html\FormElement\TextElement;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class TextElementTest extends TestCase
 {

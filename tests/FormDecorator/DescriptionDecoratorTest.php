@@ -7,7 +7,7 @@ use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\DescriptionDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\TextElement;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 
 class DescriptionDecoratorTest extends TestCase
 {

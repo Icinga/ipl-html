@@ -7,7 +7,7 @@ use ipl\Html\FormElement\SelectElement;
 use ipl\Html\FormElement\SelectOption;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
-use ipl\Tests\Html\TestCase;
+use ipl\Html\Test\TestCase;
 use UnexpectedValueException;
 
 class SelectElementTest extends TestCase

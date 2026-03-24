@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\DeferredText;
+use ipl\Html\Test\TestCase;
 use Exception;
 
 class DeferredTextTest extends TestCase

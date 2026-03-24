@@ -3,6 +3,7 @@
 namespace ipl\Tests\Html;
 
 use ipl\Html\Attribute;
+use ipl\Html\Test\TestCase;
 
 class AttributeTest extends TestCase
 {
