@@ -115,6 +115,32 @@ class CheckboxElementTest extends TestCase
         );
     }
 
+    public function testDisabledCheckedCheckboxRendersHiddenElementWithCheckedValue()
+    {
+        $checkbox = new CheckboxElement('test');
+        $checkbox->setChecked(true);
+        $checkbox->getAttributes()->set('disabled', true);
+
+        $this->assertHtml(
+            '<input type="hidden" name="test" value="y">'
+            . '<input checked="checked" disabled="disabled" type="checkbox" name="test" value="y">',
+            $checkbox
+        );
+    }
+
+    public function testDisabledUncheckedCheckboxRendersHiddenElementWithUncheckedValue()
+    {
+        $checkbox = new CheckboxElement('test');
+        $checkbox->setChecked(false);
+        $checkbox->getAttributes()->set('disabled', true);
+
+        $this->assertHtml(
+            '<input type="hidden" name="test" value="n">'
+            . '<input disabled="disabled" type="checkbox" name="test" value="y">',
+            $checkbox
+        );
+    }
+
     public function testCheckboxNotValidIfRequiredAndUnchecked()
     {
         $checkbox = new CheckboxElement('test');
