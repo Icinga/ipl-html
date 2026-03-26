@@ -4,6 +4,7 @@ namespace ipl\Tests\Html;
 
 use ipl\Html\Form;
 use ipl\Html\FormElement\BaseFormElement;
+use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\Test\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -61,6 +62,46 @@ class FormTest extends TestCase
         // The string remains the same
         $this->assertSame(Form::escapeReservedChars('foo[bar]', false), 'foo[bar]');
         $this->assertSame(Form::escapeReservedChars('foo-bar123'), 'foo-bar123');
+    }
+
+    public function testValidatePartialOnlyValidatesFieldsetChildrenWithAValue(): void
+    {
+        $fieldset = (new FieldsetElement('set'))
+            ->addElement('text', 'filled', ['required' => true])
+            ->addElement('text', 'empty', ['required' => true]);
+        $fieldset->getElement('filled')->setValue('value');
+
+        $form = (new Form())
+            ->addElement($fieldset)
+            ->validatePartial();
+
+        $this->assertTrue(
+            $form->getElement('set')->getElement('filled')->isValid(),
+            'Fieldset child with a value is not validated during partial validation'
+        );
+        $this->assertEmpty(
+            $form->getElement('set')->getElement('empty')->getMessages(),
+            'Empty fieldset child produces a required error during partial validation'
+        );
+    }
+
+    public function testValidatePartialRecursesIntoNestedFieldsets(): void
+    {
+        $innerFieldset = (new FieldsetElement('inner'))
+            ->addElement('text', 'deep', ['required' => true]);
+        $innerFieldset->getElement('deep')->setValue('value');
+
+        $outerFieldset = (new FieldsetElement('outer'))
+            ->addElement($innerFieldset);
+
+        $form = (new Form())
+            ->addElement($outerFieldset)
+            ->validatePartial();
+
+        $this->assertTrue(
+            $form->getElement('outer')->getElement('inner')->getElement('deep')->isValid(),
+            'Nested fieldset child with a value is not validated during partial validation'
+        );
     }
 
     public function testFormElementsWithReservedCharsInName(): void
