@@ -354,7 +354,7 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
      */
     public function validatePartial()
     {
-        foreach ($this->yieldElements($this) as $element) {
+        foreach ($this->yieldElementsRecursive($this) as $element) {
             if ($element->hasValue()) {
                 $element->validate();
             }
@@ -450,7 +450,7 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
      *
      * @return Generator<FormElement>
      */
-    protected function yieldElements(Contract\FormElements $from): Generator
+    protected function yieldElementsRecursive(Contract\FormElements $from): Generator
     {
         if ($from instanceof HtmlDocument) {
             $from->ensureAssembled();
@@ -458,7 +458,7 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
 
         foreach ($from->getElements() as $element) {
             if ($element instanceof Contract\FormElements) {
-                yield from $this->yieldElements($element);
+                yield from $this->yieldElementsRecursive($element);
             } else {
                 yield $element;
             }
