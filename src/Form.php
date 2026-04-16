@@ -66,6 +66,26 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
         return $value === null || $value === [] || (is_string($value) && trim($value) === '');
     }
 
+    /**
+     * Return the given string unchanged.
+     *
+     * @param string $string
+     * @param bool $escapeBrackets
+     *
+     * @return string
+     * @deprecated Escaping element names must be explicitly done. This method does not escape
+     *             anymore and will be removed in a future version.
+     */
+    public static function escapeReservedChars(string $string, bool $escapeBrackets = true): string
+    {
+        trigger_error(sprintf(
+            '%s is deprecated. Escaping element names must be explicitly done.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
+
+        return $string;
+    }
+
     public function getAction()
     {
         return $this->action;
