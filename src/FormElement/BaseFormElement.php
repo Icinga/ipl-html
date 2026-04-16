@@ -130,15 +130,8 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
     {
         $this->name = $name;
 
-        // TODO: phpdoc always expressed that only strings are accepted, but some usages passed null despite that.
-        //       The isset check is only a compatibility measure to not break BC. Remove once the interface actually
-        //       requires a string. And don't ever dare to allow null (`?string`) due to this check!!!1
-        if (isset($this->name)) {
-            // Name is always escaped
-            $this->escapedName = Form::escapeReservedChars($name);
-        } else {
-            $this->escapedName = '';
-        }
+        // Name is always escaped
+        $this->escapedName = Form::escapeReservedChars($name);
 
         return $this;
     }
