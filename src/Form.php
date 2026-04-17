@@ -67,37 +67,23 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
     }
 
     /**
-     * Escape reserved chars in the given string
+     * Return the given string unchanged.
      *
-     * The characters '.', ' ' and optionally brackets are converted to unused control characters
-     * File Separator: ␜, Group Separator: ␝, Record Separator: ␝, and Unit Separator: ␟ respectively.
-     *
-     * This is done because:
-     * PHP converts dots and spaces in form element names to underscores by default in the request data.
-     * For example, <input name="a.b" /> becomes $_REQUEST["a_b"].
-     *
-     * And if an external variable name begins with a valid array syntax, trailing characters are silently ignored.
-     * For example, <input name="foo[bar]baz"> becomes $_REQUEST['foo']['bar'].
-     * See https://www.php.net/manual/en/language.variables.external.php
-     *
-     * @param string $string The string to escape
-     * @param bool   $escapeBrackets Whether to escape brackets
+     * @param string $string
+     * @param bool $escapeBrackets
      *
      * @return string
+     * @deprecated Escaping element names must be explicitly done. This method does not escape
+     *             anymore and will be removed in a future version.
      */
     public static function escapeReservedChars(string $string, bool $escapeBrackets = true): string
     {
-        $escapeMap = [
-            '.' => chr(28), // File Separator
-            ' ' => chr(29)  // Group Separator
-        ];
+        trigger_error(sprintf(
+            '%s is deprecated. Escaping element names must be explicitly done.',
+            __METHOD__
+        ), E_USER_DEPRECATED);
 
-        if ($escapeBrackets) {
-            $escapeMap['['] = chr(30); // Record Separator
-            $escapeMap[']'] = chr(31); // Unit Separator
-        }
-
-        return strtr($string, $escapeMap);
+        return $string;
     }
 
     public function getAction()

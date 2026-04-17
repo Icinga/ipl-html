@@ -230,14 +230,6 @@ trait FormElements
     {
         $name = $element->getName();
 
-        // This check is required as the getEscapedName method is not implemented in
-        // the FormElement interface
-        if ($element instanceof BaseFormElement) {
-            $escapedName = $element->getEscapedName();
-        } else {
-            $escapedName = $name;
-        }
-
         if ($name === null) {
             throw new InvalidArgumentException(sprintf(
                 '%s expects the element to provide a name',
@@ -247,13 +239,11 @@ trait FormElements
 
         $this->elements[$name] = $element;
 
-        if (array_key_exists($escapedName, $this->populatedValues)) {
-            $element->setValue(
-                $this->populatedValues[$escapedName][count($this->populatedValues[$escapedName]) - 1]
-            );
+        if (array_key_exists($name, $this->populatedValues)) {
+            $element->setValue($this->populatedValues[$name][count($this->populatedValues[$name]) - 1]);
 
             if ($element instanceof ValueCandidates) {
-                $element->setValueCandidates($this->populatedValues[$escapedName]);
+                $element->setValueCandidates($this->populatedValues[$name]);
             }
         }
 
@@ -369,7 +359,7 @@ trait FormElements
     public function populate($values)
     {
         foreach ($values as $name => $value) {
-            $this->populatedValues[Form::escapeReservedChars($name)][] = $value;
+            $this->populatedValues[$name][] = $value;
             if ($this->hasElement($name)) {
                 $this->getElement($name)->setValue($value);
             }
@@ -390,7 +380,6 @@ trait FormElements
      */
     public function getPopulatedValue($name, $default = null)
     {
-        $name = Form::escapeReservedChars($name);
         return isset($this->populatedValues[$name])
             ? $this->populatedValues[$name][count($this->populatedValues[$name]) - 1]
             : $default;
@@ -405,7 +394,6 @@ trait FormElements
      */
     public function clearPopulatedValue($name)
     {
-        $name = Form::escapeReservedChars($name);
         if (isset($this->populatedValues[$name])) {
             unset($this->populatedValues[$name]);
         }
