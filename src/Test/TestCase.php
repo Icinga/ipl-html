@@ -24,9 +24,9 @@ abstract class TestCase extends BaseTestCase
         $actualHtml = $actual->render();
 
         $expectedDom = new DOMDocument();
-        $this->assertTrue($expectedDom->loadHTML($expectedHtml), 'Expected HTML is not valid');
+        $this->assertTrue($expectedDom->loadHTML($expectedHtml, LIBXML_NOERROR), 'Expected HTML is not valid');
         $actualDom = new DOMDocument();
-        $this->assertTrue($actualDom->loadHTML($actualHtml), 'Actual HTML is not valid');
+        $this->assertTrue($actualDom->loadHTML($actualHtml, LIBXML_NOERROR), 'Actual HTML is not valid');
 
         $this->assertEquals($expectedDom, $actualDom);
     }
