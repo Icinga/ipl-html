@@ -349,6 +349,11 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
         return $this;
     }
 
+    public function isValidEvent($event)
+    {
+        return $event === self::ON_ASSEMBLED || parent::isValidEvent($event);
+    }
+
     public function remove(ValidHtml $content)
     {
         if ($this->submitButton === $content) {
