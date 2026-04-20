@@ -225,13 +225,6 @@ class SelectElement extends BaseFormElement
             [$this, 'setDisabledOptions']
         );
 
-        // ZF1 compatibility:
-        $this->getAttributes()->registerAttributeCallback(
-            'multiOptions',
-            null,
-            [$this, 'setOptions']
-        );
-
         $this->registerMultipleAttributeCallback($attributes);
     }
 }
