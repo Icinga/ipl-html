@@ -28,6 +28,26 @@ class SelectElement extends BaseFormElement
     /** @var array|string|null */
     protected $value;
 
+    /** @var bool Whether to prepend a disabled "Please choose" option */
+    protected bool $pleaseChoose = false;
+
+    /**
+     * Set whether to prepend a disabled "Please choose" option
+     *
+     * When enabled, a disabled option with an empty value and the label
+     * " - Please choose - " is prepended to the rendered options.
+     *
+     * @param bool $pleaseChoose
+     *
+     * @return $this
+     */
+    public function setPleaseChoose(bool $pleaseChoose): self
+    {
+        $this->pleaseChoose = $pleaseChoose;
+
+        return $this;
+    }
+
     /**
      * Get the option with specified value
      *
@@ -206,6 +226,14 @@ class SelectElement extends BaseFormElement
 
     protected function assemble()
     {
+        if ($this->pleaseChoose && ! isset($this->optionContent[''])) {
+            $option = (new SelectOption('', sprintf(' - %s - ', $this->translate('Please choose'))))
+                ->setAttribute('disabled', true);
+            $option->getAttributes()->registerAttributeCallback('selected', fn() => $this->isSelectedOption(''));
+            $this->options[''] = $option;
+            $this->addHtml($option);
+        }
+
         $this->addHtml(...array_values($this->optionContent));
     }
 
@@ -224,6 +252,8 @@ class SelectElement extends BaseFormElement
             null,
             [$this, 'setDisabledOptions']
         );
+
+        $attributes->registerAttributeCallback('pleaseChoose', null, $this->setPleaseChoose(...));
 
         // ZF1 compatibility:
         $this->getAttributes()->registerAttributeCallback(
