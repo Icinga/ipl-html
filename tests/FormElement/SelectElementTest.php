@@ -737,4 +737,78 @@ HTML;
         $this->assertInstanceOf(SelectOption::class, $select->getOption('foo'));
         $this->assertInstanceOf(SelectOption::class, $select->getOption('bar'));
     }
+
+    public function testPleaseChoosePrependsDisabledOption()
+    {
+        StaticTranslator::$instance = new NoopTranslator();
+
+        $select = new SelectElement('theme', [
+            'options'      => ['light' => 'Light', 'dark' => 'Dark'],
+            'pleaseChoose' => true,
+        ]);
+
+        $html = <<<'HTML'
+<select name="theme">
+    <option value="" selected disabled> - Please choose - </option>
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+    }
+
+    public function testPleaseChooseOptionIsDeselectedWhenValueIsSet()
+    {
+        StaticTranslator::$instance = new NoopTranslator();
+
+        $select = new SelectElement('theme', [
+            'options'      => ['light' => 'Light', 'dark' => 'Dark'],
+            'value'        => 'light',
+            'pleaseChoose' => true,
+        ]);
+
+        $html = <<<'HTML'
+<select name="theme">
+    <option value="" disabled> - Please choose - </option>
+    <option value="light" selected>Light</option>
+    <option value="dark">Dark</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+    }
+
+    public function testPleaseChooseDoesNotOverrideExistingEmptyOption()
+    {
+        StaticTranslator::$instance = new NoopTranslator();
+
+        $select = new SelectElement('theme', [
+            'options'      => ['' => 'Custom placeholder', 'light' => 'Light'],
+            'pleaseChoose' => true,
+        ]);
+
+        $html = <<<'HTML'
+<select name="theme">
+    <option value="" selected>Custom placeholder</option>
+    <option value="light">Light</option>
+</select>
+HTML;
+
+        $this->assertHtml($html, $select);
+    }
+
+    public function testPleaseChooseCanBeSetViaFluentApi()
+    {
+        StaticTranslator::$instance = new NoopTranslator();
+
+        $select = (new SelectElement('theme'))
+            ->setOptions(['light' => 'Light', 'dark' => 'Dark'])
+            ->setPleaseChoose(true);
+
+        $this->assertTrue($select->getOption('') === null); // not yet assembled
+        $select->render();
+        $this->assertInstanceOf(SelectOption::class, $select->getOption(''));
+        $this->assertTrue($select->getOption('')->getAttributes()->get('disabled')->getValue());
+    }
 }
