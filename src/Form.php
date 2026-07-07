@@ -312,6 +312,18 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
     }
 
     /**
+     * Get whether the form has already been validated
+     *
+     * Unlike {@see isValid()}, this never triggers validation.
+     *
+     * @return bool
+     */
+    public function hasBeenValidated()
+    {
+        return $this->isValid !== null;
+    }
+
+    /**
      * Validate all elements
      *
      * @return $this
