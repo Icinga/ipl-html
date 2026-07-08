@@ -143,6 +143,52 @@ class FileElementTest extends TestCase
         $this->assertNull($thirdForm->getValue('test'));
     }
 
+    public function testUploadedFileIsStoredOnlyOnceWhenSetValueIsReplayed()
+    {
+        // FormElements::registerElement() replays every populated value through setValue().
+        // A file element that is populated more than once before it is registered must not
+        // attempt to move its already-moved upload a second time.
+
+        $form = new class extends Form {
+            protected function assemble()
+            {
+                $this->addElement('file', 'test', [
+                    'destination' => sys_get_temp_dir()
+                ]);
+            }
+        };
+
+        $file = new UploadedFile(
+            Utils::streamFor('lorem ipsum dolorem'),
+            19,
+            0,
+            'test.txt',
+            'text/plain'
+        );
+
+        $storedPath = implode(DIRECTORY_SEPARATOR, [sys_get_temp_dir(), sha1('test.txt')]);
+        @unlink($storedPath);
+
+        // Two populate() calls for the same name accumulate two values, so registerElement()
+        // calls setValue() twice on the same upload once the element is added during assemble().
+        $form->populate(['test' => $file]);
+        $form->populate(['test' => $file]);
+
+        $form->ensureAssembled();
+
+        $this->assertSame(
+            'test.txt',
+            $form->getElement('test')->getValue()->getClientFilename()
+        );
+
+        $this->assertSame(
+            'lorem ipsum dolorem',
+            $form->getValue('test')->getStream()->getContents()
+        );
+
+        @unlink($storedPath);
+    }
+
     public function testUploadedFileCanBeMoved()
     {
         $form = new class extends Form {

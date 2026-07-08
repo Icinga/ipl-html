@@ -224,6 +224,16 @@ class FileElement extends InputElement
                 continue;
             }
 
+            if (isset($this->files[$name]) && is_file($path)) {
+                // The file has already been stored, e.g. because setValue() was called more than
+                // once for the same upload ({@see FormElements::registerElement()} replays every
+                // populated value). Re-moving the original upload would fail as its stream has
+                // already been moved.
+                $storedFiles[] = $this->files[$name];
+
+                continue;
+            }
+
             $file->moveTo($path);
 
             // Re-created to ensure moveTo() still works if called externally
