@@ -11,6 +11,8 @@ use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormDecoration\FormDecorationResult;
 use ipl\Html\FormElement\FormElements;
 use ipl\Stdlib\Messages;
+use ipl\Web\Common\CalloutType;
+use ipl\Web\Widget\Callout;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
@@ -381,17 +383,12 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
 
     protected function onError()
     {
-        $errors = Html::tag('ul', ['class' => 'errors']);
         foreach ($this->getMessages() as $message) {
             if ($message instanceof Throwable) {
                 $message = $message->getMessage();
             }
 
-            $errors->addHtml(Html::tag('li', $message));
-        }
-
-        if (! $errors->isEmpty()) {
-            $this->prependHtml($errors);
+            $this->prependHtml(new Callout(CalloutType::Error, $message));
         }
     }
 
