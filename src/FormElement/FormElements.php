@@ -67,7 +67,7 @@ trait FormElements
     private $elements = [];
 
     /** @var array<string, array<int, mixed>> */
-    private $populatedValues = [];
+    protected $populatedValues = [];
 
     /**
      * Get the default element decorators.
