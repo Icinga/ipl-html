@@ -5,11 +5,13 @@ namespace ipl\Tests\Html\FormDecorator;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\LabelDecorator;
+use ipl\Html\HtmlString;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\SubmitButtonElement;
 use ipl\Html\FormElement\SubmitElement;
 use ipl\Html\FormElement\TextElement;
 use ipl\Html\Test\TestCase;
+use ipl\Html\ValidHtml;
 
 class LabelDecoratorTest extends TestCase
 {
@@ -109,6 +111,50 @@ class LabelDecoratorTest extends TestCase
         $this->decorator->decorateFormElement($results, new SubmitElement('test'));
 
         $this->assertSame('', $results->assemble()->render());
+    }
+
+    public function testStringLabelIsEscaped(): void
+    {
+        $results = new FormElementDecorationResult();
+        $element = new TextElement('test', ['id' => 'test-id']);
+        $element->setLabel('<em>italic</em>');
+        $this->decorator->decorateFormElement($results, $element);
+
+        $this->assertHtml(
+            '<label for="test-id" class="form-element-label">&lt;em&gt;italic&lt;/em&gt;</label>',
+            $results->assemble()
+        );
+    }
+
+    public function testValidHtmlLabelIsRenderedAsIs(): void
+    {
+        $results = new FormElementDecorationResult();
+        $element = new TextElement('test', ['id' => 'test-id']);
+        $element->setLabel(new HtmlString('<em>italic</em>'));
+        $this->decorator->decorateFormElement($results, $element);
+
+        $this->assertHtml(
+            '<label for="test-id" class="form-element-label"><em>italic</em></label>',
+            $results->assemble()
+        );
+    }
+
+    public function testRenderOnlyValidHtmlLabelIsRenderedAsIs(): void
+    {
+        $results = new FormElementDecorationResult();
+        $element = new TextElement('test', ['id' => 'test-id']);
+        $element->setLabel(new class implements ValidHtml {
+            public function render(): string
+            {
+                return '<em>italic</em>';
+            }
+        });
+        $this->decorator->decorateFormElement($results, $element);
+
+        $this->assertHtml(
+            '<label for="test-id" class="form-element-label"><em>italic</em></label>',
+            $results->assemble()
+        );
     }
 
     public function testNonHtmlFormElementsAreSupported(): void
