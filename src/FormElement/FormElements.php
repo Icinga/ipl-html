@@ -386,6 +386,20 @@ trait FormElements
     }
 
     /**
+     * Get the chain of populated values of the element specified by name
+     *
+     * Returns an empty array if there is no populated value for this element.
+     *
+     * @param string $name
+     *
+     * @return array
+     */
+    public function getPopulatedValues(string $name): array
+    {
+        return $this->populatedValues[$name] ?? [];
+    }
+
+    /**
      * Clear populated value of the given element
      *
      * @param string $name
