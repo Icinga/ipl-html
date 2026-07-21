@@ -390,7 +390,7 @@ trait FormElements
      *
      * Returns an empty array if there is no populated value for this element.
      *
-     * @param string $name
+     * @param string $name Element name
      *
      * @return array
      */
