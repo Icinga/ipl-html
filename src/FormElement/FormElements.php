@@ -386,7 +386,7 @@ trait FormElements
     }
 
     /**
-     * Get the chain of populated values of the element specified by name
+     * Get the populated values chain of the element specified by name
      *
      * Returns an empty array if there is no populated value for this element.
      *
