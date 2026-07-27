@@ -7,7 +7,9 @@ use ipl\Html\FormDecoration\FormElementDecorationResult;
 use ipl\Html\FormDecoration\FieldsetDecorator;
 use ipl\Html\FormElement\FieldsetElement;
 use ipl\Html\FormElement\TextElement;
+use ipl\Html\HtmlString;
 use ipl\Html\Test\TestCase;
+use ipl\Html\ValidHtml;
 
 class FieldsetDecoratorTest extends TestCase
 {
@@ -90,6 +92,56 @@ HTML;
         $this->decorator->decorateFormElement($results, new FieldsetElement('test', ['label' => 'Testing']));
 
         $this->assertEmpty($results->assemble()->render());
+    }
+
+    public function testStringLabelIsEscaped(): void
+    {
+        $fieldset = new FieldsetElement('test');
+        $fieldset->setLabel('<em>italic</em>');
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
+
+        $html = <<<HTML
+<fieldset name="test">
+  <legend>&lt;em&gt;italic&lt;/em&gt;</legend>
+</fieldset>
+HTML;
+
+        $this->assertHtml($html, $fieldset);
+    }
+
+    public function testHtmlStringLabelIsRenderedAsIs(): void
+    {
+        $fieldset = new FieldsetElement('test');
+        $fieldset->setLabel(new HtmlString('<em>italic</em>'));
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
+
+        $html = <<<HTML
+<fieldset name="test">
+  <legend><em>italic</em></legend>
+</fieldset>
+HTML;
+
+        $this->assertHtml($html, $fieldset);
+    }
+
+    public function testRenderOnlyValidHtmlLabelIsRenderedAsIs(): void
+    {
+        $fieldset = new FieldsetElement('test');
+        $fieldset->setLabel(new class implements ValidHtml {
+            public function render(): string
+            {
+                return '<em>italic</em>';
+            }
+        });
+        $this->decorator->decorateFormElement(new FormElementDecorationResult(), $fieldset);
+
+        $html = <<<HTML
+<fieldset name="test">
+  <legend><em>italic</em></legend>
+</fieldset>
+HTML;
+
+        $this->assertHtml($html, $fieldset);
     }
 
     public function testNonHtmlFormElementsAreIgnored(): void
