@@ -386,6 +386,21 @@ trait FormElements
     }
 
     /**
+     * Get the populated values of the element specified by name
+     *
+     * Values are returned in population order, from earliest to latest.
+     * Returns an empty array if no value was populated for this element.
+     *
+     * @param string $name Element name
+     *
+     * @return list<mixed>
+     */
+    public function getPopulatedValues(string $name): array
+    {
+        return $this->populatedValues[$name] ?? [];
+    }
+
+    /**
      * Clear populated value of the given element
      *
      * @param string $name
