@@ -110,7 +110,7 @@ class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\Form
 
     public function isValidEvent($event)
     {
-        return $event === static::ON_ELEMENT_REGISTERED;
+        return $event === static::ON_ELEMENT_REGISTERED || $event === static::ON_ASSEMBLED;
     }
 
     protected function onElementRegistered(FormElement $element)

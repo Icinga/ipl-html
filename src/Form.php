@@ -369,6 +369,7 @@ class Form extends BaseHtmlElement implements Contract\Form, Contract\FormElemen
             Contract\Form::ON_REQUEST,
             Contract\Form::ON_VALIDATE,
             static::ON_ELEMENT_REGISTERED,
+            static::ON_ASSEMBLED,
         ]);
     }
 
