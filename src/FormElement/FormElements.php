@@ -23,6 +23,10 @@ use WeakMap;
 use function ipl\Stdlib\get_php_type;
 
 /**
+ * Classes using this trait must override `isValidEvent` to restrict which
+ * event names are valid. Without an override, `Events::isValidEvent` accepts
+ * any event name unconditionally.
+ *
  * @phpstan-import-type decoratorsFormat from DecoratorChain
  * @phpstan-import-type loaderPaths from DefaultFormElementDecoration
  */
@@ -248,7 +252,7 @@ trait FormElements
         }
 
         $this->onElementRegistered($element);
-        $this->emit(Form::ON_ELEMENT_REGISTERED, [$element]);
+        $this->emit(static::ON_ELEMENT_REGISTERED, [$element]);
 
         return $this;
     }
@@ -537,18 +541,6 @@ trait FormElements
         }
 
         return $this;
-    }
-
-    public function isValidEvent($event)
-    {
-        return in_array($event, [
-            Form::ON_SUBMIT,
-            Form::ON_SENT,
-            Form::ON_ERROR,
-            Form::ON_REQUEST,
-            Form::ON_VALIDATE,
-            Form::ON_ELEMENT_REGISTERED,
-        ]);
     }
 
     public function removeElement(string|FormElement $element)
