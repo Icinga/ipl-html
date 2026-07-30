@@ -252,7 +252,7 @@ trait FormElements
         }
 
         $this->onElementRegistered($element);
-        $this->emit(Form::ON_ELEMENT_REGISTERED, [$element]);
+        $this->emit(static::ON_ELEMENT_REGISTERED, [$element]);
 
         return $this;
     }
