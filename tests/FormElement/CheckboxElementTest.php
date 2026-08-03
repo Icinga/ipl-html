@@ -2,6 +2,7 @@
 
 namespace ipl\Tests\Html;
 
+use ipl\Html\Form;
 use ipl\Html\FormElement\CheckboxElement;
 use ipl\Html\Test\TestCase;
 use ipl\I18n\NoopTranslator;
@@ -148,5 +149,98 @@ class CheckboxElementTest extends TestCase
         $checkbox->setChecked(false);
 
         $this->assertFalse($checkbox->isValid());
+    }
+
+    public function testCheckboxValidIfRequiredAndChecked()
+    {
+        $checkbox = new CheckboxElement('test');
+        $checkbox->setRequired();
+        $checkbox->setChecked(true);
+
+        $this->assertTrue($checkbox->isValid());
+    }
+
+    public function testRenderingDoesNotDependOnAttributeOrder()
+    {
+        $expected = '<input type="hidden" name="test" value="b">'
+            . '<input checked="checked" type="checkbox" name="test" value="a">';
+
+        $this->assertHtml($expected, new CheckboxElement('test', [
+            'checkedValue'   => 'a',
+            'uncheckedValue' => 'b',
+            'value'          => 'a'
+        ]));
+
+        $this->assertHtml($expected, new CheckboxElement('test', [
+            'value'          => 'a',
+            'checkedValue'   => 'a',
+            'uncheckedValue' => 'b'
+        ]));
+    }
+
+    public function testValueDoesNotDependOnAttributeOrder()
+    {
+        $attributes = ['checkedValue' => 'a', 'uncheckedValue' => 'b', 'value' => true];
+
+        $orders = [
+            ['checkedValue', 'uncheckedValue', 'value'],
+            ['checkedValue', 'value', 'uncheckedValue'],
+            ['uncheckedValue', 'checkedValue', 'value'],
+            ['uncheckedValue', 'value', 'checkedValue'],
+            ['value', 'checkedValue', 'uncheckedValue'],
+            ['value', 'uncheckedValue', 'checkedValue']
+        ];
+
+        foreach ($orders as $order) {
+            $ordered = [];
+            foreach ($order as $name) {
+                $ordered[$name] = $attributes[$name];
+            }
+
+            $checkbox = new CheckboxElement('test', $ordered);
+            $message = sprintf('Attributes set in the order: %s', implode(', ', $order));
+
+            $this->assertTrue($checkbox->isChecked(), $message);
+            $this->assertSame('a', $checkbox->getValue(), $message);
+        }
+    }
+
+    public function testUncheckedValueAppliesToBooleanValueSetBeforehand()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'          => false,
+            'checkedValue'   => 'a',
+            'uncheckedValue' => 'b'
+        ]);
+
+        $this->assertFalse($checkbox->isChecked());
+        $this->assertSame('b', $checkbox->getValue());
+    }
+
+    public function testCheckedAttributeAppliesCheckedValueSetAfterwards()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'checked'      => true,
+            'checkedValue' => 'a'
+        ]);
+
+        $this->assertTrue($checkbox->isChecked());
+        $this->assertSame('a', $checkbox->getValue());
+    }
+
+    public function testPopulatedValueOverridesValueAttribute()
+    {
+        $form = (new Form())
+            ->addElement('checkbox', 'test', [
+                'checkedValue'   => '1',
+                'uncheckedValue' => '0',
+                'value'          => '1'
+            ])
+            ->populate(['test' => '0']);
+
+        /** @var CheckboxElement $element */
+        $element = $form->getElement('test');
+        $this->assertFalse($element->isChecked());
+        $this->assertSame('0', $form->getValue('test'));
     }
 }

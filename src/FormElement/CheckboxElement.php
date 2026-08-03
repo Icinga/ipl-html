@@ -6,9 +6,6 @@ use ipl\Html\Attributes;
 
 class CheckboxElement extends InputElement
 {
-    /** @var bool Whether the checkbox is checked */
-    protected $checked = false;
-
     /** @var string Value of the checkbox when it is checked */
     protected $checkedValue = 'y';
 
@@ -24,11 +21,18 @@ class CheckboxElement extends InputElement
      */
     public function isChecked()
     {
-        return $this->checked;
+        return $this->getValue() === $this->getCheckedValue();
     }
 
     /**
      * Set whether the checkbox is checked
+     *
+     * This stores a boolean that {@see getValue()} resolves to the checked or
+     * unchecked value on read.
+     *
+     * Because this sets the element's value, a required checkbox is considered
+     * to have a value, and therefore passes validation, as soon as it is
+     * checked, even before the form has been submitted.
      *
      * @param bool $checked
      *
@@ -36,9 +40,7 @@ class CheckboxElement extends InputElement
      */
     public function setChecked($checked)
     {
-        $this->checked = (bool) $checked;
-
-        return $this;
+        return $this->setValue((bool) $checked);
     }
 
     /**
@@ -89,15 +91,24 @@ class CheckboxElement extends InputElement
         return $this;
     }
 
-    public function setValue($value)
+    /**
+     * Get the value of the element
+     *
+     * A boolean value is resolved to the checked or unchecked value here, not
+     * when it is set. This way these values can still change afterward,
+     * no matter in which order the element's attributes are set.
+     *
+     * @return mixed
+     */
+    public function getValue()
     {
+        $value = parent::getValue();
+
         if (is_bool($value)) {
-            $value = $value ? $this->getCheckedValue() : $this->getUncheckedValue();
+            return $value ? $this->getCheckedValue() : $this->getUncheckedValue();
         }
 
-        $this->setChecked($value === $this->getCheckedValue());
-
-        return parent::setValue($value);
+        return $value;
     }
 
     public function getValueAttribute()
@@ -127,11 +138,14 @@ class CheckboxElement extends InputElement
     }
 
     /**
-     * Determine if the checkbox is considered "checked".
+     * Determine if the checkbox is considered "checked"
+     *
      * Returns true if the current value matches the checked value, otherwise false.
+     *
+     * @return bool
      */
     public function hasValue(): bool
     {
-        return $this->getValue() === $this->getCheckedValue();
+        return $this->isChecked();
     }
 }
