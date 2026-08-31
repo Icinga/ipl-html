@@ -8,7 +8,6 @@ use ipl\Html\BaseHtmlElement;
 use ipl\Html\Contract\DecorableFormElement;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecoration;
-use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormDecoration\FormElementDecorationResult;
@@ -23,7 +22,7 @@ use ReflectionProperty;
  *
  * @phpstan-import-type decoratorsFormat from DecoratorChain
  */
-abstract class BaseFormElement extends BaseHtmlElement implements FormElement, ValueCandidates, DecorableFormElement
+abstract class BaseFormElement extends BaseHtmlElement implements FormElement, DecorableFormElement
 {
     use Messages;
     use Translation;
@@ -51,9 +50,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
 
     /** @var mixed Value of the element */
     protected $value;
-
-    /** @var array<int, mixed> Value candidates of the element */
-    protected $valueCandidates = [];
 
     /** @var ?DecoratorChain<FormElementDecoration> All registered decorators */
     protected ?DecoratorChain $decorators = null;
@@ -246,18 +242,6 @@ abstract class BaseFormElement extends BaseHtmlElement implements FormElement, V
         }
 
         $this->valid = null;
-
-        return $this;
-    }
-
-    public function getValueCandidates()
-    {
-        return $this->valueCandidates;
-    }
-
-    public function setValueCandidates(array $values)
-    {
-        $this->valueCandidates = $values;
 
         return $this;
     }

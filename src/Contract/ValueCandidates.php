@@ -2,6 +2,11 @@
 
 namespace ipl\Html\Contract;
 
+/**
+ * @deprecated Only {@see \ipl\Html\FormElement\PasswordElement} ever used this even
+ * though {@see \ipl\Html\FormElement\BaseFormElement} implements it. No replacement
+ * will be provided.
+ */
 interface ValueCandidates
 {
     /**

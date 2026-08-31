@@ -8,7 +8,6 @@ use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecoration;
 use ipl\Html\Contract\FormElementDecorator;
-use ipl\Html\Contract\ValueCandidates;
 use ipl\Html\Form;
 use ipl\Html\FormDecoration\DecoratorChain;
 use ipl\Html\FormDecorator\DecoratorInterface;
@@ -244,10 +243,8 @@ trait FormElements
         $this->elements[$name] = $element;
 
         if (array_key_exists($name, $this->populatedValues)) {
-            $element->setValue($this->populatedValues[$name][count($this->populatedValues[$name]) - 1]);
-
-            if ($element instanceof ValueCandidates) {
-                $element->setValueCandidates($this->populatedValues[$name]);
+            foreach ($this->populatedValues[$name] as $value) {
+                $element->setValue($value);
             }
         }
 
