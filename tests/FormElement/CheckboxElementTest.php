@@ -7,6 +7,7 @@ use ipl\Html\FormElement\CheckboxElement;
 use ipl\Html\Test\TestCase;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
+use ipl\Validator\CallbackValidator;
 
 class CheckboxElementTest extends TestCase
 {
@@ -226,6 +227,53 @@ class CheckboxElementTest extends TestCase
 
         $this->assertTrue($checkbox->isChecked());
         $this->assertSame('a', $checkbox->getValue());
+    }
+
+    public function testValidCheckboxBecomesInvalidAfterCheckedValueChanges()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'      => true,
+            'validators' => [new CallbackValidator(fn($value) => $value === 'y')]
+        ]);
+
+        $this->assertTrue($checkbox->isValid());
+
+        // Changing checkedValue changes the effective value from 'y' to 'a'.
+        $checkbox->setCheckedValue('a');
+
+        $this->assertFalse($checkbox->isValid());
+    }
+
+    public function testInvalidCheckboxBecomesValidAfterCheckedValueChanges()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'      => true,
+            'validators' => [new CallbackValidator(fn($value) => $value === 'x')]
+        ]);
+
+        $this->assertFalse($checkbox->isValid());
+
+        // Changing checkedValue to the accepted value makes the checkbox valid.
+        $checkbox->setCheckedValue('x');
+
+        $this->assertTrue($checkbox->isValid());
+    }
+
+    public function testInvalidCheckboxBecomesValidAfterUncheckedValueChangesToCheckedValue()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'    => false,
+            'required' => true,
+        ]);
+
+        $this->assertFalse($checkbox->isValid());
+
+        // Setting the unchecked value to match the checked value makes the
+        // stored boolean "false" resolve to the checked value, so the checkbox
+        // is now considered checked and has a value.
+        $checkbox->setUncheckedValue($checkbox->getCheckedValue());
+
+        $this->assertTrue($checkbox->isValid());
     }
 
     public function testPopulatedValueOverridesValueAttribute()

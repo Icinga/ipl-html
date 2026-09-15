@@ -63,6 +63,7 @@ class CheckboxElement extends InputElement
     public function setCheckedValue($checkedValue)
     {
         $this->checkedValue = $checkedValue;
+        $this->valid = null;
 
         return $this;
     }
@@ -87,6 +88,7 @@ class CheckboxElement extends InputElement
     public function setUncheckedValue($uncheckedValue)
     {
         $this->uncheckedValue = $uncheckedValue;
+        $this->valid = null;
 
         return $this;
     }
