@@ -8,6 +8,7 @@ use ipl\Html\Contract\DefaultFormElementDecoration;
 use ipl\Html\Contract\FormElement;
 use ipl\Html\Contract\FormElementDecorator;
 use ipl\Html\Contract\Wrappable;
+use ipl\Html\Form;
 use LogicException;
 
 use function ipl\Stdlib\get_php_type;
@@ -19,6 +20,9 @@ class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\Form
     }
 
     protected $tag = 'fieldset';
+
+    /** @var ?Form The form this fieldset is registered to */
+    protected ?Form $form = null;
 
     /**
      * Get whether any of this set's elements has a value
@@ -113,6 +117,17 @@ class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\Form
         return $event === static::ON_ELEMENT_REGISTERED || $event === static::ON_ASSEMBLED;
     }
 
+    public function onRegistered(Form $form)
+    {
+        $this->form = $form;
+        parent::onRegistered($form);
+
+        // Not getElements(), as ipl-web's TermInput assembles itself there, before it's decorated
+        foreach ($this->elements as $element) {
+            $element->onRegistered($form);
+        }
+    }
+
     protected function onElementRegistered(FormElement $element)
     {
         $element->getAttributes()->registerAttributeCallback('name', function () use ($element) {
@@ -133,5 +148,10 @@ class FieldsetElement extends BaseFormElement implements \ipl\Html\Contract\Form
                 $multiple ? '[]' : ''
             );
         });
+
+        // Notified only now, so that the element already has its nested name
+        if ($this->form !== null) {
+            $element->onRegistered($this->form);
+        }
     }
 }
