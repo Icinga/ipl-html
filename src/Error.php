@@ -17,7 +17,7 @@ use function ipl\Stdlib\get_php_type;
 abstract class Error
 {
     /** @var bool */
-    protected static $showTraces = true;
+    protected static $showTraces = false;
 
     /**
      *
