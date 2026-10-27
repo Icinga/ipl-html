@@ -2,10 +2,12 @@
 
 namespace ipl\Tests\Html;
 
+use ipl\Html\Form;
 use ipl\Html\FormElement\CheckboxElement;
 use ipl\Html\Test\TestCase;
 use ipl\I18n\NoopTranslator;
 use ipl\I18n\StaticTranslator;
+use ipl\Validator\CallbackValidator;
 
 class CheckboxElementTest extends TestCase
 {
@@ -148,5 +150,145 @@ class CheckboxElementTest extends TestCase
         $checkbox->setChecked(false);
 
         $this->assertFalse($checkbox->isValid());
+    }
+
+    public function testCheckboxValidIfRequiredAndChecked()
+    {
+        $checkbox = new CheckboxElement('test');
+        $checkbox->setRequired();
+        $checkbox->setChecked(true);
+
+        $this->assertTrue($checkbox->isValid());
+    }
+
+    public function testRenderingDoesNotDependOnAttributeOrder()
+    {
+        $expected = '<input type="hidden" name="test" value="b">'
+            . '<input checked="checked" type="checkbox" name="test" value="a">';
+
+        $this->assertHtml($expected, new CheckboxElement('test', [
+            'checkedValue'   => 'a',
+            'uncheckedValue' => 'b',
+            'value'          => 'a'
+        ]));
+
+        $this->assertHtml($expected, new CheckboxElement('test', [
+            'value'          => 'a',
+            'checkedValue'   => 'a',
+            'uncheckedValue' => 'b'
+        ]));
+    }
+
+    public function testValueDoesNotDependOnAttributeOrder()
+    {
+        $attributes = ['checkedValue' => 'a', 'uncheckedValue' => 'b', 'value' => true];
+
+        $orders = [
+            ['checkedValue', 'uncheckedValue', 'value'],
+            ['checkedValue', 'value', 'uncheckedValue'],
+            ['uncheckedValue', 'checkedValue', 'value'],
+            ['uncheckedValue', 'value', 'checkedValue'],
+            ['value', 'checkedValue', 'uncheckedValue'],
+            ['value', 'uncheckedValue', 'checkedValue']
+        ];
+
+        foreach ($orders as $order) {
+            $ordered = [];
+            foreach ($order as $name) {
+                $ordered[$name] = $attributes[$name];
+            }
+
+            $checkbox = new CheckboxElement('test', $ordered);
+            $message = sprintf('Attributes set in the order: %s', implode(', ', $order));
+
+            $this->assertTrue($checkbox->isChecked(), $message);
+            $this->assertSame('a', $checkbox->getValue(), $message);
+        }
+    }
+
+    public function testUncheckedValueAppliesToBooleanValueSetBeforehand()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'          => false,
+            'checkedValue'   => 'a',
+            'uncheckedValue' => 'b'
+        ]);
+
+        $this->assertFalse($checkbox->isChecked());
+        $this->assertSame('b', $checkbox->getValue());
+    }
+
+    public function testCheckedAttributeAppliesCheckedValueSetAfterwards()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'checked'      => true,
+            'checkedValue' => 'a'
+        ]);
+
+        $this->assertTrue($checkbox->isChecked());
+        $this->assertSame('a', $checkbox->getValue());
+    }
+
+    public function testValidCheckboxBecomesInvalidAfterCheckedValueChanges()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'      => true,
+            'validators' => [new CallbackValidator(fn($value) => $value === 'y')]
+        ]);
+
+        $this->assertTrue($checkbox->isValid());
+
+        // Changing checkedValue changes the effective value from 'y' to 'a'.
+        $checkbox->setCheckedValue('a');
+
+        $this->assertFalse($checkbox->isValid());
+    }
+
+    public function testInvalidCheckboxBecomesValidAfterCheckedValueChanges()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'      => true,
+            'validators' => [new CallbackValidator(fn($value) => $value === 'x')]
+        ]);
+
+        $this->assertFalse($checkbox->isValid());
+
+        // Changing checkedValue to the accepted value makes the checkbox valid.
+        $checkbox->setCheckedValue('x');
+
+        $this->assertTrue($checkbox->isValid());
+    }
+
+    public function testInvalidCheckboxBecomesValidAfterUncheckedValueChangesToCheckedValue()
+    {
+        $checkbox = new CheckboxElement('test', [
+            'value'    => false,
+            'required' => true,
+        ]);
+
+        $this->assertFalse($checkbox->isValid());
+
+        // Setting the unchecked value to match the checked value makes the
+        // stored boolean "false" resolve to the checked value, so the checkbox
+        // is now considered checked and has a value.
+        $checkbox->setUncheckedValue($checkbox->getCheckedValue());
+
+        $this->assertTrue($checkbox->isValid());
+    }
+
+    public function testPopulatedValueOverridesValueAttribute()
+    {
+        $form = (new Form())
+            ->addElement('checkbox', 'test', [
+                'checkedValue'   => '1',
+                'uncheckedValue' => '0',
+                'value'          => '1'
+            ])
+            ->populate(['test' => '0']);
+
+        /** @var CheckboxElement $element */
+        $element = $form->getElement('test');
+        $this->assertFalse($element->isChecked());
+        $this->assertSame('0', $form->getValue('test'));
     }
 }
